@@ -14,9 +14,8 @@ devtools::use_build_ignore("create_package_steps.R")
 # Depends: R (>= 2.10)
 
 # Use packages needed by functions, vignettes, etc.
-devtools::use_package("dplyr", "Suggests")
-devtools::use_package("kableExtra", "Suggests")
-devtools::use_package("tidyr", "Suggests")
+devtools::use_package("RegionalCurve", "Imports")
+
 
 
 ## Write Code
@@ -41,16 +40,7 @@ devtools::document()
 
 
 ## Add Data
-# Create the /data-raw folder and add to .Rbuildignore
-devtools::use_data_raw()
 
-# Use the `Regional_Curve_Database.Rmd` file to process the data
-
-# Add regional_curve to data
-devtools::use_data(regional_curve, overwrite = TRUE)
-
-# Add regional_curve_graphs to R/sysdata.rda
-devtools::use_data(regional_curve_graphs, internal = TRUE, overwrite = TRUE)
 
 
 ## Organize
