@@ -1,0 +1,18 @@
+Package: fgm
+Title: A Package for Fluvial Geomorphic Analysis
+Version: 0.1.0
+Authors@R: person("Michael", "Dougherty", 
+                  email = "Michael.P.Dougherty@usace.army.mil", 
+                  role = c("aut", "cre"))
+Description: This package contains a wide range of functions for performing
+    fluvial geomorphic analysis. This package is designed for use with the 
+    FluvialGeomorph Python package. The FluvialGeomorph package contains an 
+    ArcGIS toolbox that can be used to extract spatial data from high-
+    resolution terrain data. FluvialGeomorph uses functions in this package 
+    to perform a wide range of fluvial geomorphic analysis (e.g., extract 
+    stream channel dimensions, help choose bankfull elevation for ungaged 
+    streams).
+License: GPL-3
+Depends: R (>= 2.10)
+Encoding: UTF-8
+LazyData: true
