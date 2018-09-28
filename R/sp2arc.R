@@ -12,7 +12,7 @@
 #'
 sp2arc <- function(sp_object, fc_path) {
   # Convert the sp object to an ArcGIS data object
-  arcobj <- arc.sp2data(sp_object)
+  arcobj <- arcgisbinding::arc.sp2data(sp_object)
   # Write the ArcGIS object to a geodatabase feature class
-  arc.write(data = arcobj, path = fc_path)
+  arcgisbinding::arc.write(data = arcobj, path = fc_path)
 }

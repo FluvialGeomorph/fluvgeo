@@ -1,6 +1,7 @@
-#' @title Updates cross section dimensions for the specified reach.
+#' @title Update dimensions and stats for the input reach
 #'
-#' @description Updates
+#' @description Update cross section dimensions and GOF stats for the input
+#'     reach.
 #'
 #' @export
 #' @param xs_points_path  character; The path to the file geodatabase feature

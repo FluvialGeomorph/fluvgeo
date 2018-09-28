@@ -1,0 +1,22 @@
+#' @title Update \code{xs_points}
+#'
+#' @description Updates the \code{xs_points} SpatialPointsDataFrame object
+#'     with terrain data for the specified reach.
+#'
+#' @export
+#' @param ReachName        character; The reach name of the new xs_points data.
+#' @param xs_points_reach  sp object; The sp object containing the xs_points
+#'                         for the specified reach.
+#' @param xs_points        sp object; The sp object containing the xs_points for
+#'                         the study area.
+#'
+#' @return An updated SpatialPointsDataFrame object containing the terrain data
+#'     for the specified reach.
+#'
+update_xs_points <- function(ReachName, xs_points_reach, xs_points) {
+  # Remove existing recods from xs_points for the specified reach
+  xs_points <- xs_points[xs_points@data$ReachName != ReachName, ]
+  # Append new xs points to xs_points
+  xs_points <- rbind(xs_points, xs_points_reach)
+  return(xs_points)
+}

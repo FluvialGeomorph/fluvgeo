@@ -2,3 +2,5 @@
 
 export(arc2sp)
 export(sp2arc)
+export(update_reach)
+export(update_xs_points)
