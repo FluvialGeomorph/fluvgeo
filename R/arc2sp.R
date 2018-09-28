@@ -1,4 +1,4 @@
-#' @title Converts ArcGIS feature class to \code{sp} format
+#' @title Converts ArcGIS feature class to an \code{sp} object
 #'
 #' @description Opens an ArcGIS feature class and converts it to the \code{sp}
 #'     spatial data format.
@@ -12,8 +12,8 @@ arc2sp <- function(fc_path) {
   # Open a connection to the specified ArcGIS feature class
   arcobj <- arcgisbinding::arc.open(fc_path)
   # Select the ArcGIS data
-  arc <- arc.select(arcobj)
+  arc <- arcgisbinding::arc.select(arcobj)
   # Convert the ArcGIS format to the sp format
-  sp <- arc.data2sp(arc)
+  sp <- arcgisbinding::arc.data2sp(arc)
   return(sp)
 }
