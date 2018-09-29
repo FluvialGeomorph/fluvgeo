@@ -2,37 +2,37 @@
 % Please edit documentation in R/xs_geometry.R
 \name{xs_geometry}
 \alias{xs_geometry}
-\title{Calculate hydraulic geometry for a single cross section.}
+\title{Calculate cross section width, depth, area.}
 \usage{
-xs_geometry(xs_points, bankfull_elevation)
+xs_geometry(xs_points, detrend_elevation)
 }
 \arguments{
 \item{xs_points}{character; a data frame of cross section points.
 Must be a single cross section.}
 
-\item{bankfull_elevation}{numeric; The detrended bankfull elevation (in
-feet) that is used to calculate hydraulic
-geometry.}
+\item{detrend_elevation}{numeric; The detrended elevation (in feet) that
+is used to calculate hydraulic geometry.}
 }
 \value{
 A data frame of hydraulic dimensions at the specified detrended
-   bankfull elevation. The data frame contains the fields:
+   elevation. The data frame contains the fields:
    \describe{
-       \item{xs_width}{The cross section width at the specified detrended
-                       bankfull elevation}
-       \item{xs_depth}{The maximum depth at the specified detrended bankfull
-                       elevation}
-       \item{xs_area}{The cross sectional area at the specified detrended
-                      bankfull elevation}
-       \item{bankfull_elev}{The ground elevation of the detrended bankfull
-                            elevation}
+       \item{xs_width}{numeric; The cross section width at the specified
+                       detrended elevation.}
+       \item{xs_depth}{numeric; The maximum depth at the specified
+                       detrended elevation.}
+       \item{xs_area}{numeric; The cross sectional area at the specified
+                      detrended elevation.}
+       \item{ground_elev}{numeric; The ground elevation of the detrended
+                          elevation.}
    }
 }
 \description{
-Calculates the hydraulic geometry for the input cross
-    section.
+Calculates the hydraulic geometry (width, depth, area, and
+    ground elevation) for the input cross section at the specified
+    detrended elevation.
 }
-\note{
+\details{
 The cross section points used as input to this function must represent
       only one cross section. See the documentation for the example
       \code{sin_xs_points} data frame for the specification of this input
@@ -48,6 +48,6 @@ sin_xs_points_df <- sin_xs_points@data
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]
 
 # Calculate hydraulic geometry for a single cross section
-xs_geometry(xs_points = sin_xs_points_4, bankfull_elevation = 103.5)
+xs_geometry(xs_points = sin_xs_points_4, detrend_elevation = 103.5)
 
 }

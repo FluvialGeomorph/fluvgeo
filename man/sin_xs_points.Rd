@@ -4,29 +4,30 @@
 \name{sin_xs_points}
 \alias{sin_xs_points}
 \title{Sinachwine Creek, IL stream cross section points}
-\format{A \code{SpatialPointsDataFrame} with 1413 observations and 9 variables.
+\format{A \code{SpatialPointsDataFrame} with 1413 observations and 9
+    variables.
 \describe{
-    \item{OBJECTID}{The ArcGIS feature class assigned unique identifier for
-                    each point in the dataset.}
-    \item{Seq}{The cross section unique identifier. Seq is only unique within
-               a reach.}
-    \item{POINT_X}{The longitude or easting of the point. Coordinate system
-                   units can be determined by checking the
-                   \code{sin_xs_points@proj4string}}
-    \item{POINT_Y}{The latitude or northing of the point. Coordinate system
-                   units can be determined by checking the
-                   \code{sin_xs_points@proj4string}}
-    \item{POINT_M}{The route distance of this cross section from the
-                   upstream end of the reach. Coordinate system units can
-                   be determined by checking the
-                   \code{sin_xs_points@proj4string}}
-    \item{Watershed_Area_SqMile}{The area of the watershed upstream from this
-                   cross section in square miles.}
-    \item{km_to_mouth}{Distance downstream from this cross section to the
-                       end of the reach.}
-    \item{DEM_Z}{The elevation of the point. By convention, the vertical
-                 units used in this project are NADV88 feet.}
-    \item{Detrend_DEM_Z}{The detrended elevation of the point. }
+    \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
+                    identifier for each point in the dataset.}
+    \item{Seq}{numeric; The cross section unique identifier. Seq is only
+               unique within a reach.}
+    \item{POINT_X}{numeric; The longitude or easting of the point.
+                   Coordinate system units can be determined by checking the
+                   \code{sin_xs_points@proj4string}.}
+    \item{POINT_Y}{numeric; The latitude or northing of the point.
+                   Coordinate system units can be determined by checking the
+                   \code{sin_xs_points@proj4string}.}
+    \item{POINT_M}{numeric; The route distance of this cross section from
+                   the upstream end of the reach. Coordinate system units
+                   can be determined by checking the
+                   \code{sin_xs_points@proj4string}.}
+    \item{Watershed_Area_SqMile}{numeric; The area of the watershed upstream
+                   from this cross section in square miles.}
+    \item{km_to_mouth}{numeric; Distance downstream from this cross section
+                   to the end of the reach.}
+    \item{DEM_Z}{numeric; The elevation of the point. By convention, the
+                 vertical units used in this project are NADV88 feet.}
+    \item{Detrend_DEM_Z}{numeric; The detrended elevation of the point.}
 }}
 \usage{
 sin_xs_points
