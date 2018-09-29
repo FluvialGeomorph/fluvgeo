@@ -2,8 +2,14 @@
 An R Package for performing **F**luvial **G**eo**M**orphology analysis <img src="man/figures/castle.png" align="right" />
 
 # Install
-Clone the repository from di2e to a local folder. Use the follow code to 
-install the
+Use the following code to install the package from source within CorpsNet. 
+
+```r
+# Install from a local source tarball
+install.packages("//mvrdfs//egis//Work//Office//Regional//ERDC/EMRRP_Sediment//Methods//fgm_0.1.0.tar.gz",
+                 source = TRUE, repos = NULL)
+        
+```
 
 ## Funding
 Funding for development and maintenance of `RegionalCurve` was provided by the 
