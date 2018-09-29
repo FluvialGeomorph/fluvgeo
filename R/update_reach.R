@@ -13,8 +13,8 @@
 #' @param gof_stats       data frame; The data frame that holds the gof stats.
 #' @param regions         character vector; A vector of region names for which
 #'                        GOF stats will be calculated.
-#' @param bankfull_elevations numeric vector; A numeric vector of bankfull
-#'                            elevations for which GOF stats will be
+#' @param bankfull_elevations numeric vector; A numeric vector of detrended
+#'                            bankfull elevations for which GOF stats will be
 #'                            calculated.
 #'
 #' @return A list containing three data frames updated for the specified reach:

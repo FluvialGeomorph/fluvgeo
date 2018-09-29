@@ -2,7 +2,7 @@
 % Please edit documentation in R/update_xs_points.R
 \name{update_xs_points}
 \alias{update_xs_points}
-\title{Update \code{xs_points}}
+\title{Update the \code{xs_points} data frame}
 \usage{
 update_xs_points(reach_name, xs_points_reach, xs_points)
 }

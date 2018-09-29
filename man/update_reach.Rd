@@ -22,8 +22,8 @@ dimensions.}
 \item{regions}{character vector; A vector of region names for which
 GOF stats will be calculated.}
 
-\item{bankfull_elevations}{numeric vector; A numeric vector of bankfull
-elevations for which GOF stats will be
+\item{bankfull_elevations}{numeric vector; A numeric vector of detrended
+bankfull elevations for which GOF stats will be
 calculated.}
 }
 \value{

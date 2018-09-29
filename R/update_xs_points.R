@@ -1,4 +1,4 @@
-#' @title Update \code{xs_points}
+#' @title Update the \code{xs_points} data frame
 #'
 #' @description Updates the \code{xs_points} SpatialPointsDataFrame object
 #'     with terrain data for the specified reach.
