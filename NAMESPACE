@@ -2,6 +2,7 @@
 
 export(arc2sp)
 export(sp2arc)
+export(update_gof_stats)
 export(update_reach)
 export(update_xs_dims)
 export(update_xs_points)

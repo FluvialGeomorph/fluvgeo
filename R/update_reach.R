@@ -14,8 +14,8 @@
 #' @param regions         character vector; A vector of region names for which
 #'                        GOF stats will be calculated.
 #' @param bankfull_elevations numeric vector; A numeric vector of detrended
-#'                            bankfull elevations for which GOF stats will be
-#'                            calculated.
+#'                            bankfull elevations (units feet) for which GOF
+#'                            stats will be calculated.
 #'
 #' @return A list containing three data frames updated for the specified reach:
 #'     1. xs_dims, 2. xs_points, 3. gof_stats

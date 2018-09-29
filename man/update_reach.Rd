@@ -23,8 +23,8 @@ dimensions.}
 GOF stats will be calculated.}
 
 \item{bankfull_elevations}{numeric vector; A numeric vector of detrended
-bankfull elevations for which GOF stats will be
-calculated.}
+bankfull elevations (units feet) for which GOF
+stats will be calculated.}
 }
 \value{
 A list containing three data frames updated for the specified reach:
