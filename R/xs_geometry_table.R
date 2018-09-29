@@ -16,7 +16,7 @@
 #'
 #' @return A data frame of hydraulic dimensions for the specified cross section
 #'    at the specified detrended bankfull elevation.
-#'    @describe{
+#'    \describe{
 #'        \item{reach_name}{character; The name of the stream.}
 #'        \item{cross_section}{numeric; The cross section unique identifier.
 #'                         Seq is only unique within a reach.}
