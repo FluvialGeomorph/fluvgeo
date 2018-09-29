@@ -4,10 +4,10 @@
 \alias{update_xs_points}
 \title{Update \code{xs_points}}
 \usage{
-update_xs_points(ReachName, xs_points_reach, xs_points)
+update_xs_points(reach_name, xs_points_reach, xs_points)
 }
 \arguments{
-\item{ReachName}{character; The reach name of the new xs_points data.}
+\item{reach_name}{character; The reach name of the new xs_points data.}
 
 \item{xs_points_reach}{sp object; The sp object containing the xs_points
 for the specified reach.}
