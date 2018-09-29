@@ -1,0 +1,76 @@
+#' @title Calculate hydraulic geometry for a single cross section.
+#'
+#' @description Calculates the hydraulic geometry for the input cross
+#'     section.
+#'
+#' @export
+#' @param xs_points          character; a data frame of cross section points.
+#'                           Must be a single cross section.
+#' @param bankfull_elevation numeric; The detrended bankfull elevation (in
+#'                           feet) that is used to calculate hydraulic
+#'                           geometry.
+#'
+#' @return A data frame of hydraulic dimensions at the specified detrended
+#'    bankfull elevation. The data frame contains the fields:
+#'    \describe{
+#'        \item{xs_width}{The cross section width at the specified detrended
+#'                        bankfull elevation}
+#'        \item{xs_depth}{The maximum depth at the specified detrended bankfull
+#'                        elevation}
+#'        \item{xs_area}{The cross sectional area at the specified detrended
+#'                       bankfull elevation}
+#'        \item{bankfull_elev}{The ground elevation of the detrended bankfull
+#'                             elevation}
+#'    }
+#'
+#' @note The cross section points used as input to this function must represent
+#'       only one cross section. See the documentation for the example
+#'       \code{sin_xs_points} data frame for the specification of this input
+#'       \code{sp::SpatialPointsDataFrame} object.
+#'
+#' @importFrom stats approxfun integrate
+#'
+#' @examples
+#' # Extract the attribute data from the sin_xs_points SpatialPointsDataFrame
+#' #     object
+#' sin_xs_points_df <- sin_xs_points@@data
+#'
+#' # Subset the sin_xs_points data frame to contain only one cross section
+#' #     (Seq = 4).
+#' sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]
+#'
+#' # Calculate hydraulic geometry for a single cross section
+#' xs_geometry(xs_points = sin_xs_points_4, bankfull_elevation = 103.5)
+#'
+xs_geometry <- function(xs_points, bankfull_elevation) {
+  # Create local variables
+  xs_stations        <- xs_points$POINT_M * 3.28084   # Convert meters to ft
+  xs_dem_elev        <- xs_points$DEM_Z               # Elevations in feet
+  # Convert detrended bankfull elevation to actual elevation
+  eg <- mean(xs_points$DEM_Z - xs_points$Detrend_DEM_Z)
+  bf <- bankfull_elevation + eg
+  ## Calculate the cross sectional area under a proposed bankfull elevation
+  # Approach: the area between two curves is equal to the integral of the
+  # difference between the two curves.
+  # Calculate the difference between the two curves. This results in a new
+  # curve. Then approximate a function for this "difference" curve.
+  f1 <- approxfun(x = xs_stations , y = bf - xs_dem_elev)
+  # Remove values above the bankfull elevation (negative values)
+  f2 <- function(x) ifelse(f1(x) < 0, 0, f1(x))
+  # Calculate the cross sectional area by taking the integral of the area
+  # under the "difference" curve.
+  xs_area <- integrate(f = f2, lower = min(xs_stations),
+                       upper = max(xs_stations),
+                       subdivisions = 100000,
+                       stop.on.error = FALSE)
+  # Calculate cross sectional width (cross section spacing * # of xs
+  # depths > 0)
+  d1 <- f2(xs_stations)
+  xs_width <- mean(diff(xs_stations)) * length(d1[d1 > 0])
+  # Calculate cross sectional max depth
+  xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
+  # Construct output table
+  xs_dims <- data.frame(xs_width, xs_depth, xs_area$value, bf)
+  colnames(xs_dims) <- c("xs_width","xs_depth","xs_area","bankfull_elev")
+  return(xs_dims)
+}

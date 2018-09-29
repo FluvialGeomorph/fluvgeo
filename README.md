@@ -1,7 +1,7 @@
 # fgm
-An R Package for performing **F**luvial **G**eo**M**orphology analysis <img src="man/figures/castle.png" align="right" />
+An R Package for Performing **F**luvial **G**eo**M**orphology Analysis <img src="man/figures/castle.png" align="right" />
 
-# Install
+## Install
 Use the following code to install the package from source within CorpsNet. 
 
 ```r
