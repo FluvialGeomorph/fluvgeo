@@ -59,9 +59,9 @@
 xs_metrics <- function(xs_points, stream, xs_number,
                              bankfull_elevation) {
   # Subset xs_points for the current cross section
-  print(xs_number)
   xs <- na.omit(xs_points[xs_points$ReachName == stream &
-                            xs_points$Seq == xs_number,])
+                          xs_points$Seq == xs_number,])
+  print(paste0("    ", xs_number))
   # Determine drainage area
   drainageArea <- unique(xs$Watershed_Area_SqMile)
   # Calculate cross section geometry at bankfull
