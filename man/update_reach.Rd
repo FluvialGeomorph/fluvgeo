@@ -11,8 +11,8 @@ update_reach(xs_points_path, xs_points, xs_dims, gof_stats, regions,
 \item{xs_points_path}{character; The path to the file geodatabase feature
 class "cross_section_points" for the specified site.}
 
-\item{xs_points}{sp object; The sp object containing the xs_points for
-the study area.}
+\item{xs_points}{\code{sp} object; The \code{sp} object containing
+the \code{xs_points} for the study area.}
 
 \item{xs_dims}{data frame; The data frame that holds cross section
 dimensions.}
@@ -23,8 +23,8 @@ dimensions.}
 GOF stats will be calculated.}
 
 \item{bankfull_elevations}{numeric vector; A numeric vector of detrended
-bankfull elevations (units feet) for which GOF
-stats will be calculated.}
+bankfull elevations (units: detrended feet) for
+which GOF stats will be calculated.}
 }
 \value{
 A list containing three data frames updated for the specified reach:

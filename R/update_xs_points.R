@@ -4,11 +4,12 @@
 #'     with terrain data for the specified reach.
 #'
 #' @export
-#' @param reach_name       character; The reach name of the new xs_points data.
-#' @param xs_points_reach  sp object; The sp object containing the xs_points
-#'                         for the specified reach.
-#' @param xs_points        sp object; The sp object containing the xs_points for
-#'                         the study area.
+#' @param reach_name       character; The reach name of the new xs_points
+#'                         data.
+#' @param xs_points_reach  \code{sp} object; The \code{sp} object containing
+#'                         the \code{xs_points} for the specified reach.
+#' @param xs_points        \code{sp} object; The \code{sp} object containing
+#'                         the \code{xs_points} for the study area.
 #'
 #' @return An updated SpatialPointsDataFrame object containing the terrain data
 #'     for the specified reach.

@@ -5,7 +5,8 @@
 #'
 #' @export
 #' @param reach_name       character; The reach name of the new xs_points data.
-#' @param xs_points_reach  sp object; The sp object containing the xs_points.
+#' @param xs_points_reach  \code{sp} object; The \code{sp} object containing
+#'                         the \code{xs_points}.
 #' @param xs_dims          data frame; The data frame that holds cross section
 #'                         dimensions.
 #' @param regions         character vector; A vector of region names for which

@@ -20,8 +20,8 @@ of-fit statistics.}
 GOF stats will be calculated.}
 
 \item{bankfull_elevations}{numeric vector; A numeric vector of detrended
-bankfull elevations (units feet) for which GOF
-stats will be calculated.}
+bankfull elevations (units detrended feet) for
+which GOF stats will be calculated.}
 }
 \value{
 An updated \code{gof_stats} data frame for the specifed reach.

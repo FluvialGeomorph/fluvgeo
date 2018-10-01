@@ -10,7 +10,8 @@ update_xs_dims(reach_name, xs_points_reach, xs_dims, regions,
 \arguments{
 \item{reach_name}{character; The reach name of the new xs_points data.}
 
-\item{xs_points_reach}{sp object; The sp object containing the xs_points.}
+\item{xs_points_reach}{\code{sp} object; The \code{sp} object containing
+the \code{xs_points}.}
 
 \item{xs_dims}{data frame; The data frame that holds cross section
 dimensions.}
@@ -19,8 +20,8 @@ dimensions.}
 GOF stats will be calculated.}
 
 \item{bankfull_elevations}{numeric vector; A numeric vector of detrended
-bankfull elevations (units feet) for which GOF
-stats will be calculated.}
+bankfull elevations (units: detrended feet) for
+which GOF stats will be calculated.}
 }
 \value{
 An updated data frame of xs_dims for the specified reach.

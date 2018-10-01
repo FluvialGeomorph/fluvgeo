@@ -6,8 +6,8 @@
 #' @export
 #' @param xs_points_path  character; The path to the file geodatabase feature
 #'                        class "cross_section_points" for the specified site.
-#' @param xs_points       sp object; The sp object containing the xs_points for
-#'                        the study area.
+#' @param xs_points       \code{sp} object; The \code{sp} object containing
+#'                        the \code{xs_points} for the study area.
 #' @param xs_dims         data frame; The data frame that holds cross section
 #'                        dimensions.
 #' @param gof_stats       data frame; The data frame that holds the gof stats.

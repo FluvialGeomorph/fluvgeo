@@ -10,21 +10,22 @@ xs_geometry(xs_points, detrend_elevation)
 \item{xs_points}{character; a data frame of cross section points.
 Must be a single cross section.}
 
-\item{detrend_elevation}{numeric; The detrended elevation (in feet) that
-is used to calculate hydraulic geometry.}
+\item{detrend_elevation}{numeric; The detrended elevation used to
+calculate hydraulic geometry, units: detrended
+feet.}
 }
 \value{
 A data frame of hydraulic dimensions at the specified detrended
    elevation. The data frame contains the fields:
    \describe{
        \item{xs_width}{numeric; The cross section width at the specified
-                       detrended elevation.}
+                       detrended elevation, units: feet.}
        \item{xs_depth}{numeric; The maximum depth at the specified
-                       detrended elevation.}
+                       detrended elevation, units: feet.}
        \item{xs_area}{numeric; The cross sectional area at the specified
-                      detrended elevation.}
+                      detrended elevation, units: square feet.}
        \item{ground_elev}{numeric; The ground elevation of the detrended
-                          elevation.}
+                          elevation, units: NAVD88 feet.}
    }
 }
 \description{
