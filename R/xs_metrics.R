@@ -65,15 +65,12 @@ xs_metrics <- function(xs_points, stream, xs_number,
   # Subset xs_points for the current cross section
   xs <- na.omit(xs_points[xs_points$ReachName == stream &
                           xs_points$Seq == xs_number,])
-  print(paste0("    ", xs_number))
   # Determine drainage area
   drainageArea <- unique(xs$Watershed_Area_SqMile)
   # Calculate cross section geometry at bankfull
   xs_dims <- xs_geometry(xs, bankfull_elevation)
-  print(paste0("    ", bankfull_elevation))
   # Calculate cross section geometry at flood-prone
   fp_elevation <- bankfull_elevation + (bankfull_elevation - 100)
-  print(paste0("    ", fp_elevation))
   fp_dims <- xs_geometry(xs, fp_elevation)
   # Calculate width-depth ratio
   xs_width_depth <- xs_dims$xs_width / xs_dims$xs_depth

@@ -56,12 +56,18 @@ xs_regional_metrics <- function(xs_points, stream, xs_number,
                         xs_number = xs_number,
                         bankfull_elevation = bankfull_elevation)
   # Calculate RHG channel dimensions for current cross section
-  RHG_xs_area <- RHG(region, drainage_area, "area")
-  RHG_width   <- RHG(region, drainage_area, "width")
-  RHG_depth   <- RHG(region, drainage_area, "depth")
+  rhg_xs_area <- RHG(region = region,
+                     drainageArea = drainage_area,
+                     dimensionType = "area")
+  rhg_width   <- RHG(region = region,
+                     drainageArea = drainage_area,
+                     dimensionType = "width")
+  rhg_depth   <- RHG(region = region,
+                     drainageArea = drainage_area,
+                     dimensionType = "depth")
   # Build a data frame of RHG results
   rhg <- data.frame(stream, xs_number, region, bankfull_elevation,
-                    drainage_area, RHG_xs_area, RHG_width, RHG_depth)
+                    drainage_area, rhg_xs_area, rhg_width, rhg_depth)
   column_names <- c("reach_name", "cross_section", "xs_type",
                     "bankfull_elevation", "drainage_area", "xs_area",
                     "xs_width", "xs_depth")
