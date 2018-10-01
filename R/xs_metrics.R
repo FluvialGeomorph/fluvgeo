@@ -52,11 +52,11 @@
 #'    }
 #'
 #' @details Add methods description for calculating flood prone, width-depth
-#'     ratio, and entrenchment ratio.
+#'     ratio, and entrenchment ratio. Calls \code{xs_geometry()}.
 #'
 #' @importFrom stats na.omit
 #'
-xs_geometry_table <- function(xs_points, stream, xs_number,
+xs_metrics <- function(xs_points, stream, xs_number,
                              bankfull_elevation) {
   # Subset xs_points for the current cross section
   print(xs_number)
