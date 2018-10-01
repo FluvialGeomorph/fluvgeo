@@ -29,26 +29,30 @@
 #'                       (in feet) that is used to calculate hydraulic
 #'                       geometry.}
 #'        \item{drainage_area}{numeric; The area of the watershed upstream
-#'                       from this cross section in square miles.}
+#'                       from this cross section, units: square miles.}
 #'        \item{xs_area}{numeric; The cross sectional area at the specified
-#'                       detrended bankfull elevation.}
+#'                       detrended bankfull elevation, units: square feet.}
 #'        \item{xs_width}{numeric; The cross section width at the specified
-#'                        detrended bankfull elevation.}
+#'                        detrended bankfull elevation, units: feet.}
 #'        \item{xs_depth}{numeric; The maximum depth at the specified
-#'                        detrended bankfull elevation.}
+#'                        detrended bankfull elevation, units: detrended
+#'                        feet.}
 #'        \item{fp_area}{numeric; The cross sectional area at the flood prone
-#'                       elevation.}
+#'                       elevation, units: square feet.}
 #'        \item{fp_width}{numeric; The cross section width at the flood prone
-#'                        elevation.}
+#'                        elevation, units: feet.}
 #'        \item{fp_depth}{numeric; The maximum depth at the flood prone
-#'                        elevation.}
+#'                        elevation, units: feet.}
 #'        \item{xs_width_depth_ratio}{numeric; The bankfull width to bankfull
 #'                        depth ratio.}
 #'        \item{xs_entrenchment_ratio}{numeric; The entrenchment ratio (flood
 #'                        prone width) / (bankfull width).}
-#'        \item{watersurface_elev}{numeric; The water surface elevation.}
-#'        \item{bankfull_elev}{numeric; The bankfull elevation.}
-#'        \item{floodprone_elev}{numeric; The flood prone elevation.}
+#'        \item{watersurface_elev}{numeric; The water surface elevation,
+#'                        units: NAVD88 feet.}
+#'        \item{bankfull_elev}{numeric; The bankfull elevation, units: NAVD88
+#'                        feet.}
+#'        \item{floodprone_elev}{numeric; The flood prone elevation, units:
+#'                        NAVD88 feet.}
 #'    }
 #'
 #' @details Add methods description for calculating flood prone, width-depth
