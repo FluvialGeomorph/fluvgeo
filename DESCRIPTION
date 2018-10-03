@@ -22,5 +22,6 @@ Suggests: testthat,
 VignetteBuilder: knitr
 Imports: RegionalCurve,
     arcgisbinding,
-    sp
+    sp,
+    dplyr
 RoxygenNote: 6.1.0

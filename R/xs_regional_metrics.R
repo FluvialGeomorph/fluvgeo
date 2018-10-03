@@ -45,6 +45,7 @@
 #'    }
 #'
 #' @importFrom RegionalCurve RHG
+#' @importFrom dplyr bind_rows
 #'
 xs_regional_metrics <- function(xs_points, stream, xs_number,
                                 bankfull_elevation, region) {
@@ -67,14 +68,17 @@ xs_regional_metrics <- function(xs_points, stream, xs_number,
                      dimensionType = "depth")
   # Build a data frame of RHG results
   rhg <- data.frame(stream, xs_number, region, bankfull_elevation,
-                    drainage_area, rhg_xs_area, rhg_width, rhg_depth)
+                    drainage_area, rhg_xs_area, rhg_width, rhg_depth,
+                    stringsAsFactors = FALSE)
+  # Assign column names
   column_names <- c("reach_name", "cross_section", "xs_type",
                     "bankfull_elevation", "drainage_area", "xs_area",
                     "xs_width", "xs_depth")
+  # Assign column names to rhg data frame
   colnames(rhg) <- column_names
   # Build a data frame of xs geometry results
   xsg <- xs_geom[,column_names]
   # rbind rhg dimensions to xsg
-  dims <- rbind(rhg, xsg)
+  dims <- bind_rows(rhg, xsg)
   return(dims)
 }

@@ -17,6 +17,7 @@ devtools::use_build_ignore("create_package_steps.R")
 devtools::use_package("RegionalCurve", "Imports")
 devtools::use_package("sp", "Imports")
 devtools::use_package("arcgisbinding", "Imports")
+devtools::use_package("dplyr", "Imports")
 
 ## Write Code
 # Added RHG.R and RHG_graph_coefficients.R functions

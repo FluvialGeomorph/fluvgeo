@@ -86,7 +86,7 @@ xs_metrics <- function(xs_points, stream, xs_number,
                      xs_dims$xs_depth, fp_dims$xs_area, fp_dims$xs_width,
                      fp_dims$xs_depth, xs_width_depth, xs_entrench,
                      watersurface_elev, xs_dims$ground_elev,
-                     fp_dims$ground_elev)
+                     fp_dims$ground_elev, stringsAsFactors = FALSE)
   colnames(dims) <- c("reach_name","cross_section","xs_type",
                       "bankfull_elevation","drainage_area","xs_area",
                       "xs_width","xs_depth","fp_area","fp_width","fp_depth",

@@ -22,7 +22,7 @@ update_xs_dims <- function(reach_name, xs_points_reach, xs_dims, regions,
   # Remove existing records from xs_dims for the specified reach
   xs_dims <- xs_dims[xs_dims$ReachName != reach_name, ]
   # Calculate xs dimensions for the specified reach
-  xs_dims_reach <- xs_Dimensions(xs_points = xs_points_reach,
+  xs_dims_reach <- xs_dimensions(xs_points = xs_points_reach,
                                  streams = reach_name,
                                  regions = regions,
                                  bankfull_elevations = bankfull_elevations)

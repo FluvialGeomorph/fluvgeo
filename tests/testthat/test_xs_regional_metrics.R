@@ -23,9 +23,9 @@ test_that("Check that fields exist by name", {
 })
 
 test_that("Check that fields are of the correct data type", {
-  expect_true(is.factor(sin_4$reach_name))
+  expect_true(is.character(sin_4$reach_name))
   expect_true(is.numeric(sin_4$cross_section))
-  expect_true(is.factor(sin_4$xs_type))
+  expect_true(is.character(sin_4$xs_type))
   expect_true(is.numeric(sin_4$bankfull_elevation))
   expect_true(is.numeric(sin_4$drainage_area))
   expect_true(is.numeric(sin_4$xs_area))
@@ -37,9 +37,9 @@ test_that("Check that fields are of the correct data type", {
 sin_4_xs <- sin_4[sin_4$xs_type == "DEM derived cross section", ]
 
 test_that("Check dimensions from known stream",{
-  expect_match(as.character(sin_4_xs$reach_name), "Sinsinawa")
+  expect_match(sin_4_xs$reach_name,            "Sinsinawa")
   expect_equal(sin_4_xs$cross_section,         4,        tolerance = 1e-2)
-  expect_match(as.character(sin_4_xs$xs_type), "DEM derived cross section")
+  expect_match(sin_4_xs$xs_type,               "DEM derived cross section")
   expect_equal(sin_4_xs$bankfull_elevation,    103.5,    tolerance = 1e-2)
   expect_equal(sin_4_xs$drainage_area,         40.27062, tolerance = 1e-2)
   expect_equal(sin_4_xs$xs_area,               274.3170, tolerance = 1e-2)
@@ -51,9 +51,9 @@ test_that("Check dimensions from known stream",{
 sin_4_region <- sin_4[sin_4$xs_type == "Eastern United States", ]
 
 test_that("Check dimensions for region",{
-  expect_match(as.character(sin_4_region$reach_name), "Sinsinawa")
+  expect_match(sin_4_region$reach_name,            "Sinsinawa")
   expect_equal(sin_4_region$cross_section,         4,        tolerance = 1e-2)
-  expect_match(as.character(sin_4_region$xs_type), "Eastern United States")
+  expect_match(sin_4_region$xs_type,               "Eastern United States")
   expect_equal(sin_4_region$bankfull_elevation,    103.5,    tolerance = 1e-2)
   expect_equal(sin_4_region$drainage_area,         40.27062, tolerance = 1e-2)
   expect_equal(sin_4_region$xs_area,               263.8711, tolerance = 1e-2)

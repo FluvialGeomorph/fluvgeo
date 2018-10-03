@@ -30,9 +30,9 @@ test_that("Check that fields exist by name", {
 })
 
 test_that("Check that fields are of the correct data type", {
-  expect_true(is.factor(sin_4$reach_name))
+  expect_true(is.character(sin_4$reach_name))
   expect_true(is.numeric(sin_4$cross_section))
-  expect_true(is.factor(sin_4$xs_type))
+  expect_true(is.character(sin_4$xs_type))
   expect_true(is.numeric(sin_4$bankfull_elevation))
   expect_true(is.numeric(sin_4$drainage_area))
   expect_true(is.numeric(sin_4$xs_area))
@@ -49,9 +49,9 @@ test_that("Check that fields are of the correct data type", {
 })
 
 test_that("Check dimensions from known stream",{
-  expect_match(as.character(sin_4$reach_name), "Sinsinawa")
+  expect_match(sin_4$reach_name,            "Sinsinawa")
   expect_equal(sin_4$cross_section,         4,        tolerance = 1e-2)
-  expect_match(as.character(sin_4$xs_type), "DEM derived cross section")
+  expect_match(sin_4$xs_type,               "DEM derived cross section")
   expect_equal(sin_4$bankfull_elevation,    103.5,    tolerance = 1e-2)
   expect_equal(sin_4$drainage_area,         40.27062, tolerance = 1e-2)
   expect_equal(sin_4$xs_area,               274.3170, tolerance = 1e-2)
