@@ -68,6 +68,7 @@ xs_dimensions <- function(xs_points, streams, regions, bankfull_elevations) {
       }
     }
   }
+  # Append all of the xs_geoms data frames
   xs_dims <- bind_rows(xs_geoms)
   return(xs_dims)
 }

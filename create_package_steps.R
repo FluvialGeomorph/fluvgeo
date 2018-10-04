@@ -18,6 +18,7 @@ devtools::use_package("RegionalCurve", "Imports")
 devtools::use_package("sp", "Imports")
 devtools::use_package("arcgisbinding", "Imports")
 devtools::use_package("dplyr", "Imports")
+devtools::use_package("Metrics", "Imports")
 
 ## Write Code
 # Added RHG.R and RHG_graph_coefficients.R functions

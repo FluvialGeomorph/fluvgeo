@@ -23,9 +23,9 @@ update_gof_stats <- function(reach_name, xs_dims, gof_stats, regions,
   gof_stats_reach <- gof_stats[gof_stats$ReachName != reach_name, ]
   # Calculate gof_stats for the specified reach
   updated_gof_stats_reach <- build_gof_stats(xs_dims = xs_dims,
-                                    reach_name = reach_name,
+                                    streams = reach_name,
                                     regions = regions,
-                                    bankfull_elevations, bankfull_elevations)
+                                    bankfull_elevations = bankfull_elevations)
   # Append new gof stats to gof_stats
   gof_stats <- rbind(gof_stats_reach, updated_gof_stats_reach)
   return(gof_stats)

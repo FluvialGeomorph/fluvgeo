@@ -23,5 +23,6 @@ VignetteBuilder: knitr
 Imports: RegionalCurve,
     arcgisbinding,
     sp,
-    dplyr
+    dplyr,
+    Metrics
 RoxygenNote: 6.1.0
