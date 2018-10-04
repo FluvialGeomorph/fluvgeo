@@ -48,7 +48,7 @@ test_that("Check that fields are of the correct data type", {
   expect_true(is.numeric(sin_4$floodprone_elev))
 })
 
-test_that("Check dimensions from known stream",{
+test_that("Check dimensions from known stream", {
   expect_match(sin_4$reach_name,            "Sinsinawa")
   expect_equal(sin_4$cross_section,         4,        tolerance = 1e-2)
   expect_match(sin_4$xs_type,               "DEM derived cross section")

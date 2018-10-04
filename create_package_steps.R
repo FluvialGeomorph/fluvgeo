@@ -21,8 +21,8 @@ devtools::use_package("dplyr", "Imports")
 devtools::use_package("Metrics", "Imports")
 
 ## Write Code
-# Added RHG.R and RHG_graph_coefficients.R functions
-
+# Periodically lint the code
+devtools::lint()
 
 ## Test
 # Create the testing infrastructure
@@ -87,4 +87,6 @@ devtools::use_appveyor()
 
 # Check status of test code coverage
 # https://codecov.io/gh/mpdougherty/RegionalCurve
+
+
 

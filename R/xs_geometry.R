@@ -55,7 +55,7 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   # difference between the two curves.
   # Calculate the difference between the two curves. This results in a new
   # curve. Then approximate a function for this "difference" curve.
-  f1 <- approxfun(x = xs_stations , y = ae - xs_dem_elev)
+  f1 <- approxfun(x = xs_stations, y = ae - xs_dem_elev)
   # Remove values above the bankfull elevation (negative values)
   f2 <- function(x) ifelse(f1(x) < 0, 0, f1(x))
   # Calculate the cross sectional area by taking the integral of the area
@@ -72,6 +72,6 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
   # Construct output table
   xs_dims <- data.frame(xs_width, xs_depth, xs_area$value, ae)
-  colnames(xs_dims) <- c("xs_width","xs_depth","xs_area","ground_elev")
+  colnames(xs_dims) <- c("xs_width", "xs_depth", "xs_area", "ground_elev")
   return(xs_dims)
 }

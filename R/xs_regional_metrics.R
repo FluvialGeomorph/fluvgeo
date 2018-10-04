@@ -51,7 +51,7 @@ xs_regional_metrics <- function(xs_points, stream, xs_number,
                                 bankfull_elevation, region) {
   # Extract drainage area for the current xs from `XS_points` attribute table
   drainage_area <- unique(xs_points[xs_points$ReachName == stream &
-                           xs_points$Seq == xs_number,]$Watershed_Area_SqMile)
+                           xs_points$Seq == xs_number, ]$Watershed_Area_SqMile)
   # Calculate xs dimensions for current cross section
   xs_geom <- xs_metrics(xs_points = xs_points, stream = stream,
                         xs_number = xs_number,
@@ -77,7 +77,7 @@ xs_regional_metrics <- function(xs_points, stream, xs_number,
   # Assign column names to rhg data frame
   colnames(rhg) <- column_names
   # Build a data frame of xs geometry results
-  xsg <- xs_geom[,column_names]
+  xsg <- xs_geom[, column_names]
   # rbind rhg dimensions to xsg
   dims <- bind_rows(rhg, xsg)
   return(dims)

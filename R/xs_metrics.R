@@ -64,9 +64,9 @@ xs_metrics <- function(xs_points, stream, xs_number,
                              bankfull_elevation) {
   # Subset xs_points for the current cross section
   xs <- na.omit(xs_points[xs_points$ReachName == stream &
-                          xs_points$Seq == xs_number,])
+                          xs_points$Seq == xs_number, ])
   # Determine drainage area
-  drainageArea <- unique(xs$Watershed_Area_SqMile)
+  drainage_area <- unique(xs$Watershed_Area_SqMile)
   # Calculate cross section geometry at bankfull
   xs_dims <- xs_geometry(xs, bankfull_elevation)
   # Calculate cross section geometry at flood-prone
@@ -77,21 +77,22 @@ xs_metrics <- function(xs_points, stream, xs_number,
   # Calculate entrenchment ratio
   xs_entrench <- fp_dims$xs_width / xs_dims$xs_width
   # Calculate Water surface elevation
-  watersurface_elev <- xs[xs$Detrend_DEM_Z == min(xs$Detrend_DEM_Z),]$DEM_Z
+  watersurface_elev <- xs[xs$Detrend_DEM_Z == min(xs$Detrend_DEM_Z), ]$DEM_Z
   # Define type of cross section
   xs_type <- c("DEM derived cross section")
   # Build data frame of results
   dims <- data.frame(stream, xs_number, xs_type, bankfull_elevation,
-                     drainageArea, xs_dims$xs_area, xs_dims$xs_width,
+                     drainage_area, xs_dims$xs_area, xs_dims$xs_width,
                      xs_dims$xs_depth, fp_dims$xs_area, fp_dims$xs_width,
                      fp_dims$xs_depth, xs_width_depth, xs_entrench,
                      watersurface_elev, xs_dims$ground_elev,
                      fp_dims$ground_elev, stringsAsFactors = FALSE)
-  colnames(dims) <- c("reach_name","cross_section","xs_type",
-                      "bankfull_elevation","drainage_area","xs_area",
-                      "xs_width","xs_depth","fp_area","fp_width","fp_depth",
-                      "xs_width_depth_ratio","xs_entrenchment_ratio",
-                      "watersurface_elev","bankfull_elev",
+  colnames(dims) <- c("reach_name", "cross_section", "xs_type",
+                      "bankfull_elevation", "drainage_area",
+                      "xs_area", "xs_width", "xs_depth",
+                      "fp_area", "fp_width", "fp_depth",
+                      "xs_width_depth_ratio", "xs_entrenchment_ratio",
+                      "watersurface_elev", "bankfull_elev",
                       "floodprone_elev")
   return(dims)
 }

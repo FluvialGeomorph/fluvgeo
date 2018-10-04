@@ -36,7 +36,7 @@ test_that("Check that fields are of the correct data type", {
 # Select from sin_4 the "DEM derived cross section"
 sin_4_xs <- sin_4[sin_4$xs_type == "DEM derived cross section", ]
 
-test_that("Check dimensions from known stream",{
+test_that("Check dimensions from known stream", {
   expect_match(sin_4_xs$reach_name,            "Sinsinawa")
   expect_equal(sin_4_xs$cross_section,         4,        tolerance = 1e-2)
   expect_match(sin_4_xs$xs_type,               "DEM derived cross section")
@@ -50,7 +50,7 @@ test_that("Check dimensions from known stream",{
 # Select from sin_4 the regional cross section
 sin_4_region <- sin_4[sin_4$xs_type == "Eastern United States", ]
 
-test_that("Check dimensions for region",{
+test_that("Check dimensions for region", {
   expect_match(sin_4_region$reach_name,            "Sinsinawa")
   expect_equal(sin_4_region$cross_section,         4,        tolerance = 1e-2)
   expect_match(sin_4_region$xs_type,               "Eastern United States")
@@ -60,4 +60,3 @@ test_that("Check dimensions for region",{
   expect_equal(sin_4_region$xs_width,              60.76679, tolerance = 1e-2)
   expect_equal(sin_4_region$xs_depth,              4.488049, tolerance = 1e-2)
 })
-

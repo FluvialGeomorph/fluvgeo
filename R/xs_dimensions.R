@@ -47,7 +47,7 @@
 xs_dimensions <- function(xs_points, streams, regions, bankfull_elevations) {
   # Create a list to hold the cross section geometries
   xs_geoms <- list()
-  f = 1
+  f <- 1
   # Iterate through stream reaches
   for (g in streams) {
     # Iterate through regions
@@ -56,14 +56,14 @@ xs_dimensions <- function(xs_points, streams, regions, bankfull_elevations) {
       for (i in bankfull_elevations) {
         # Iterate through cross sectiions
         for (j in as.integer(levels(as.factor(
-                        xs_points[xs_points$ReachName == g,]$Seq)))) {
+                        xs_points[xs_points$ReachName == g, ]$Seq)))) {
           # Calculate current cross section geometry
           xs_geoms[[f]] <- xs_regional_metrics(xs_points = xs_points,
                                                stream = g,
                                                xs_number = j,
                                                bankfull_elevation = i,
                                                region = h)
-          f = f + 1
+          f <- f + 1
           }
       }
     }

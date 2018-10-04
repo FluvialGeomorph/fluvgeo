@@ -49,7 +49,7 @@
 build_gof_stats <- function(xs_dims, streams, regions, bankfull_elevations) {
   # Create a list to hold the cross section gof stats
   xs_stats <- list()
-  f = 1
+  f <- 1
   # Iterage through streams
   for (g in streams) {
     # Iterate through regions
@@ -59,11 +59,11 @@ build_gof_stats <- function(xs_dims, streams, regions, bankfull_elevations) {
         # Subset xs_dims for the current reach, region, and bankfull elevation
         xs_region <- xs_dims[xs_dims$reach_name == g &
                              xs_dims$xs_type == h &
-                             xs_dims$bankfull_elevation == i,]
+                             xs_dims$bankfull_elevation == i, ]
         # Subset xs_dims for the current reach, cross section, and bankfull el.
         xs_dim <- xs_dims[xs_dims$reach_name == g &
                           xs_dims$xs_type == "DEM derived cross section" &
-                          xs_dims$bankfull_elevation == i,]
+                          xs_dims$bankfull_elevation == i, ]
         # Calculate goodness of fit statistics
         rmse_area  <- rmse(actual    = xs_region$xs_area,
                            predicted = xs_dim$xs_area)
@@ -82,12 +82,12 @@ build_gof_stats <- function(xs_dims, streams, regions, bankfull_elevations) {
                           rmse_area, rmse_width, rmse_depth,
                           mae_area, mae_width, mae_depth,
                           stringsAsFactors = FALSE)
-        colnames(gfs) <- c("reach_name","region","bankfull_elevation",
-                           "rmse_area","rmse_width","rmse_depth",
-                           "mae_area","mae_width","mae_depth")
+        colnames(gfs) <- c("reach_name", "region", "bankfull_elevation",
+                           "rmse_area", "rmse_width", "rmse_depth",
+                           "mae_area", "mae_width", "mae_depth")
         # Add gfs data frame to xs_stats list
         xs_stats[[f]] <- gfs
-        f = f + 1
+        f <- f + 1
       }
     }
   }

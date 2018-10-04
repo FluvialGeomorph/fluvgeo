@@ -5,7 +5,7 @@ context("xs_geometry")
 sin_xs_points_df <- fgm::sin_xs_points@data
 
 # Subset sin_xs_points_df to contain only one cross section (Seq = 4)
-sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]
+sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4, ]
 
 sin_4 <- xs_geometry(xs_points = sin_xs_points_4,
                      detrend_elevation =  103.5)
