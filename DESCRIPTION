@@ -1,9 +1,19 @@
 Package: fgm
 Title: A Package for Fluvial Geomorphic Analysis
 Version: 0.1.0
-Authors@R: person("Michael", "Dougherty", 
-                  email = "Michael.P.Dougherty@usace.army.mil", 
-                  role = c("aut", "cre"))
+Authors@R: c(
+    person("Michael", "Dougherty", 
+           email = "Michael.P.Dougherty@usace.army.mil", 
+           role = c("aut", "cre")),
+    person("Christopher", "Haring",
+           email = "Christopher.P.Haring@usace.army.mil",
+           role = c("aut")),
+    person("Charles", "Theiling",
+           email = "Charles.H.Theiling@usace.army.mil",
+           role = c("aut")),
+    person("Davi", "Michl", role = c("ctb")),
+    person("Thomas", "Darby", role = c("ctb"))
+    )
 Description: This package contains a wide range of functions for performing
     fluvial geomorphic analysis. This package is designed for use with the 
     FluvialGeomorph Python package. The FluvialGeomorph package contains an 
@@ -24,5 +34,7 @@ Imports: RegionalCurve,
     arcgisbinding,
     sp,
     dplyr,
-    Metrics
+    Metrics,
+    assertthat,
+    purrr
 RoxygenNote: 6.1.0
