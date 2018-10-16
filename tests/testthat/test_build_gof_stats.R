@@ -16,7 +16,7 @@ sin_gof <- build_gof_stats(xs_dims = sin,
 
 test_that("Check that fields exist by name", {
   expect_true("reach_name"         %in% colnames(sin_gof))
-  expect_true("region"            %in% colnames(sin_gof))
+  expect_true("region"             %in% colnames(sin_gof))
   expect_true("bankfull_elevation" %in% colnames(sin_gof))
   expect_true("rmse_area"          %in% colnames(sin_gof))
   expect_true("rmse_width"         %in% colnames(sin_gof))
@@ -40,7 +40,7 @@ test_that("Check output dimensionality", {
                label = "number of reach_name records")
   expect_equal(length(unique(sin_gof$reach_name)),            1,
                label = "number of reaches")
-  expect_equal(length(unique(sin_gof$region)),               2,
+  expect_equal(length(unique(sin_gof$region)),                2,
                label = "number of regions")
   expect_equal(length(unique(sin_gof$bankfull_elevation)),    11,
                label = "number of bankfull elevations")

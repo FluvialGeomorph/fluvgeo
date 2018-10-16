@@ -7,7 +7,7 @@
 xs_geometry(xs_points, detrend_elevation)
 }
 \arguments{
-\item{xs_points}{character; a data frame of cross section points.
+\item{xs_points}{data frame; a data frame of cross section points.
 Must be a single cross section.}
 
 \item{detrend_elevation}{numeric; The detrended elevation used to

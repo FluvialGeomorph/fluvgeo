@@ -59,9 +59,44 @@
 #'     ratio, and entrenchment ratio. Calls \code{xs_geometry()}.
 #'
 #' @importFrom stats na.omit
+#' @importFrom assertthat assert_that
 #'
 xs_metrics <- function(xs_points, stream, xs_number,
                              bankfull_elevation) {
+  # Check parameters
+  assert_that(is.data.frame(xs_points),
+              msg = "'xs_points' must be a data frame")
+  assert_that("Seq" %in% colnames(xs_points),
+              msg = "Required field 'Seq' is missing from 'xs_points'")
+  assert_that("POINT_X" %in% colnames(xs_points),
+              msg = "Required field 'POINT_X' is missing from 'xs_points'")
+  assert_that("POINT_Y" %in% colnames(xs_points),
+              msg = "Required field 'POINT_Y' is missing from 'xs_points'")
+  assert_that("POINT_M" %in% colnames(xs_points),
+              msg = "Required field 'POINT_M' is missing from 'xs_points'")
+  assert_that("Watershed_Area_SqMile" %in% colnames(xs_points),
+              msg = "Required field 'Watershed_Area_SqMile' is missing from
+              'xs_points'")
+  assert_that("km_to_mouth" %in% colnames(xs_points),
+              msg = "Required field 'km_to_mouth' is missing from
+              'xs_points'")
+  assert_that("DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'DEM_Z' is missing from 'xs_points'")
+  assert_that("Detrend_DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'Detrend_DEM_Z' is missing from
+              'xs_points'")
+  assert_that("ReachName" %in% colnames(xs_points),
+              msg = "Required field 'ReachName' is missing from 'xs_points'")
+  assert_that(is.character(stream) && nchar(stream) != 0 &&
+              length(stream) == 1,
+              msg = "stream must be a character vector of length one")
+  assert_that(xs_number%%1 == 0 && length(xs_number) == 1,
+              msg = "xs_number must be an integer vector of length one")
+  assert_that(is.numeric(bankfull_elevation) &&
+              length(bankfull_elevation) == 1,
+              msg = "bankfull_elevation must be a numeric vector of
+                    length one")
+
   # Subset xs_points for the current cross section
   xs <- na.omit(xs_points[xs_points$ReachName == stream &
                           xs_points$Seq == xs_number, ])

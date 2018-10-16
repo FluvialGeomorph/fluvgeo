@@ -18,11 +18,14 @@ devtools::use_package("RegionalCurve", "Imports")
 devtools::use_package("sp", "Imports")
 devtools::use_package("arcgisbinding", "Imports")
 devtools::use_package("dplyr", "Imports")
+devtools::use_package("assertthat", "Imports")
+devtools::use_package("purrr", "Imports")
 devtools::use_package("Metrics", "Imports")
 
 ## Write Code
 # Periodically lint the code
 devtools::lint()
+
 
 ## Test
 # Create the testing infrastructure
@@ -88,5 +91,10 @@ devtools::use_appveyor()
 # Check status of test code coverage
 # https://codecov.io/gh/mpdougherty/RegionalCurve
 
+
+## Check
+# Use package goodpractice to check package
+library(goodpractice)
+goodpractice::gp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Methods/fgm")
 
 

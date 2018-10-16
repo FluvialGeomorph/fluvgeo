@@ -5,7 +5,7 @@
 #'     detrended elevation.
 #'
 #' @export
-#' @param xs_points         character; a data frame of cross section points.
+#' @param xs_points         data frame; a data frame of cross section points.
 #'                          Must be a single cross section.
 #' @param detrend_elevation numeric; The detrended elevation used to
 #'                          calculate hydraulic geometry, units: detrended
@@ -30,6 +30,7 @@
 #'       \code{sp::SpatialPointsDataFrame} object.
 #'
 #' @importFrom stats approxfun integrate
+#' @importFrom assertthat assert_that
 #'
 #' @examples
 #' # Extract the attribute data from the sin_xs_points SpatialPointsDataFrame
@@ -44,6 +45,32 @@
 #' xs_geometry(xs_points = sin_xs_points_4, detrend_elevation = 103.5)
 #'
 xs_geometry <- function(xs_points, detrend_elevation) {
+  # Check parameters
+  assert_that(is.data.frame(xs_points),
+              msg = "'xs_points' must be a data frame")
+  assert_that("Seq" %in% colnames(xs_points),
+              msg = "Required field 'Seq' is missing from 'xs_points'")
+  assert_that("POINT_X" %in% colnames(xs_points),
+              msg = "Required field 'POINT_X' is missing from 'xs_points'")
+  assert_that("POINT_Y" %in% colnames(xs_points),
+              msg = "Required field 'POINT_Y' is missing from 'xs_points'")
+  assert_that("POINT_M" %in% colnames(xs_points),
+              msg = "Required field 'POINT_M' is missing from 'xs_points'")
+  assert_that("Watershed_Area_SqMile" %in% colnames(xs_points),
+              msg = "Required field 'Watershed_Area_SqMile' is missing from
+              'xs_points'")
+  assert_that("km_to_mouth" %in% colnames(xs_points),
+              msg = "Required field 'km_to_mouth' is missing from
+              'xs_points'")
+  assert_that("DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'DEM_Z' is missing from 'xs_points'")
+  assert_that("Detrend_DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'Detrend_DEM_Z' is missing from
+              'xs_points'")
+  assert_that("ReachName" %in% colnames(xs_points),
+              msg = "Required field 'ReachName' is missing from 'xs_points'")
+  assert_that(is.numeric(detrend_elevation))
+
   # Create local variables
   xs_stations        <- xs_points$POINT_M * 3.28084   # Convert meters to ft
   xs_dem_elev        <- xs_points$DEM_Z               # Elevations in feet

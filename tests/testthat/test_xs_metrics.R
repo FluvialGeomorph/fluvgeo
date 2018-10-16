@@ -10,6 +10,73 @@ sin_4 <- xs_metrics(xs_points = sin_xs_points_df,
                     xs_number = 4,
                     bankfull_elevation = 103.5)
 
+test_that("Check parameters", {
+  expect_error(xs_metrics(xs_points = 10,
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-2],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-3],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-4],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-5],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-6],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-7],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-8],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-9],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df[,-10],
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = "",
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = c("stream1", "stream2"),
+                          xs_number = 4,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = "Sinsinawa",
+                          xs_number = 4.1,
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = "Sinsinawa",
+                          xs_number = c(4, 5),
+                          bankfull_elevation = 103.5))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = "a"))
+  expect_error(xs_metrics(xs_points = sin_xs_points_df,
+                          stream = "Sinsinawa",
+                          xs_number = 4,
+                          bankfull_elevation = c(103.5, 103.6)))
+})
+
 test_that("Check that fields exist by name", {
   expect_true("reach_name"            %in% colnames(sin_4))
   expect_true("cross_section"         %in% colnames(sin_4))
