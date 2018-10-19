@@ -43,8 +43,44 @@
 #'    }
 #'
 #' @importFrom dplyr bind_rows
+#' @importFrom assertthat assert_that
 #'
 xs_dimensions <- function(xs_points, streams, regions, bankfull_elevations) {
+  # Check parameters
+  assert_that(is.data.frame(xs_points),
+              msg = "'xs_points' must be a data frame")
+  assert_that("Seq" %in% colnames(xs_points),
+              msg = "Required field 'Seq' is missing from 'xs_points'")
+  assert_that("POINT_X" %in% colnames(xs_points),
+              msg = "Required field 'POINT_X' is missing from 'xs_points'")
+  assert_that("POINT_Y" %in% colnames(xs_points),
+              msg = "Required field 'POINT_Y' is missing from 'xs_points'")
+  assert_that("POINT_M" %in% colnames(xs_points),
+              msg = "Required field 'POINT_M' is missing from 'xs_points'")
+  assert_that("Watershed_Area_SqMile" %in% colnames(xs_points),
+              msg = "Required field 'Watershed_Area_SqMile' is missing from
+              'xs_points'")
+  assert_that("km_to_mouth" %in% colnames(xs_points),
+              msg = "Required field 'km_to_mouth' is missing from
+              'xs_points'")
+  assert_that("DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'DEM_Z' is missing from 'xs_points'")
+  assert_that("Detrend_DEM_Z" %in% colnames(xs_points),
+              msg = "Required field 'Detrend_DEM_Z' is missing from
+              'xs_points'")
+  assert_that("ReachName" %in% colnames(xs_points),
+              msg = "Required field 'ReachName' is missing from 'xs_points'")
+  assert_that(is.character(streams) && length(streams) > 0,
+              msg = "streams must be a character vector with at least one
+                     item")
+  assert_that(is.character(regions) && length(regions) > 0,
+              msg = "regions must be a character vector with at least one
+                     item")
+  assert_that(is.numeric(bankfull_elevations) &&
+              length(bankfull_elevations) > 0,
+              msg = "bankfull_elevations must be a numeric vector with at
+                     least one item")
+
   # Create a list to hold the cross section geometries
   xs_geoms <- list()
   f <- 1
