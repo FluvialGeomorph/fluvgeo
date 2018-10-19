@@ -45,8 +45,40 @@
 #'    }
 #'
 #' @importFrom Metrics rmse mae
+#' @importFrom assertthat assert_that
 #'
 build_gof_stats <- function(xs_dims, streams, regions, bankfull_elevations) {
+  # Check parameters
+  assert_that(is.data.frame(xs_dims),
+              msg = "'xs_dims' must be a data frame")
+  assert_that("reach_name" %in% colnames(xs_dims),
+              msg = "Required field 'reach_name' is missing from 'xs_dims'")
+  assert_that("cross_section" %in% colnames(xs_dims),
+              msg = "Required field 'cross_section' is missing from 'xs_dims'")
+  assert_that("xs_type" %in% colnames(xs_dims),
+              msg = "Required field 'xs_type' is missing from 'xs_dims'")
+  assert_that("bankfull_elevation" %in% colnames(xs_dims),
+              msg = "Required field 'bankfull_elevation' is missing from
+                    'xs_dims'")
+  assert_that("drainage_area" %in% colnames(xs_dims),
+              msg = "Required field 'drainage_area' is missing from 'xs_dims'")
+  assert_that("xs_area" %in% colnames(xs_dims),
+              msg = "Required field 'xs_area' is missing from 'xs_dims'")
+  assert_that("xs_width" %in% colnames(xs_dims),
+              msg = "Required field 'xs_width' is missing from 'xs_dims'")
+  assert_that("xs_depth" %in% colnames(xs_dims),
+              msg = "Required field 'xs_depth' is missing from 'xs_dims'")
+  assert_that(is.character(streams) && length(streams) > 0,
+              msg = "streams must be a character vector with at least one
+              item")
+  assert_that(is.character(regions) && length(regions) > 0,
+              msg = "regions must be a character vector with at least one
+              item")
+  assert_that(is.numeric(bankfull_elevations) &&
+                length(bankfull_elevations) > 0,
+              msg = "bankfull_elevations must be a numeric vector with at
+              least one item")
+
   # Create a list to hold the cross section gof stats
   xs_stats <- list()
   f <- 1
