@@ -20,9 +20,11 @@
 #' spatial dataset.
 #'
 #' @references
-#' \item{ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}}
-#' \item{\code{arcgisbinding} -
-#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+#' \describe{
+#'   \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+#'   \item{\code{arcgisbinding}}{
+#'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+#' }
 #'
 arc2sp <- function(fc_path) {
   # Open a connection to the specified ArcGIS feature class

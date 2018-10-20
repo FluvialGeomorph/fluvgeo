@@ -40,22 +40,30 @@ test_that("Check parameters", {
   expect_error(xs_regional_metrics(sin_xs_points_df[,-10], "Sinsinawa",
                                    4, 103.5, "MA"),
                info = "xs_points is missing the ReachName field")
-  expect_error(xs_regional_metrics(sin_xs_points_df,       "",
-                                   4, 103.5, "MA"))
+  expect_error(xs_regional_metrics(sin_xs_points_df, "",
+                                   4, 103.5, "MA"),
+               info = "stream is an empty string")
   expect_error(xs_regional_metrics(sin_xs_points_df, c("stream1", "stream2"),
-                                   4, 103.5, "MA"))
+                                   4, 103.5, "MA"),
+               info = "stream is a vector of length > 1")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   4.1, 103.5, "MA"))
+                                   4.1, 103.5, "MA"),
+               info = "xs_number is not an integer")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   c(4, 5), 103.5, "MA"))
+                                   c(4, 5), 103.5, "MA"),
+               info = "xs_number is a vector of length > 1")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   4, "a", "MA"))
+                                   4, "a", "MA"),
+               info = "bankfull_elevation is not numeric")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   4, c(103.5, 103.6), "MA"))
+                                   4, c(103.5, 103.6), "MA"),
+               info = "bankfull_elevation is a vector of length > 1")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   4, 103.5, 8))
+                                   4, 103.5, 8),
+               info = "region is a chaacter")
   expect_error(xs_regional_metrics(sin_xs_points_df, "Sinsinawa",
-                                   4, 103.5, c("MA", "VT")))
+                                   4, 103.5, c("MA", "VT")),
+               info = "region ia vector of length > 1")
 })
 
 test_that("Check that fields exist by name", {

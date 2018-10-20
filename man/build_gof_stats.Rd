@@ -56,7 +56,11 @@ Calculates goodness-of-fit statistics beteween cross section
     geometry and regional hydraulic geometry dimensions.
 }
 \details{
-Add a description of the goodness of fit calculation
+This function uses the function \code{Metrics::rmse} to calculate
+the root mean square error statistic and the function \code{Metrics::mae}
+to calculate the mean absolute error statistic.
+
+Add a description of how the goodness of fit calculation is made.
 }
 \examples{
 # Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame

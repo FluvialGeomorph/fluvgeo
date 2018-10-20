@@ -31,9 +31,11 @@ require ESRI \code{ArcGIS Desktop} or \code{ArcGIS Pro}.
 }
 
 \references{
-ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}
-arcgisbinding -
-\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
+\describe{
+  \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+  \item{\code{arcgisbinding}}{
+  \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+}
 }
 \author{
 \strong{Maintainer}: Michael Dougherty \email{Michael.P.Dougherty@usace.army.mil}

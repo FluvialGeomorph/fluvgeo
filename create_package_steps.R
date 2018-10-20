@@ -21,6 +21,7 @@ devtools::use_package("dplyr", "Imports")
 devtools::use_package("assertthat", "Imports")
 devtools::use_package("purrr", "Imports")
 devtools::use_package("Metrics", "Imports")
+devtools::use_package("ggplot2", "Imports")
 
 ## Write Code
 # Periodically lint the code

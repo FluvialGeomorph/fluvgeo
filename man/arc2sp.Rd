@@ -26,9 +26,11 @@ instructions at
 \code{ArcGIS Desktop} users.
 }
 \references{
-ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}
-arcgisbinding -
-\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
+\describe{
+  \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+  \item{\code{arcgisbinding}}{
+  \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+}
 }
 \seealso{
 The \code{\link{sp2arc}} function for saving data back to an ESRI

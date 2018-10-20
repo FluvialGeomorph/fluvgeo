@@ -9,7 +9,7 @@ sp2arc(sp_object, fc_path)
 \arguments{
 \item{sp_object}{\code{sp} object}
 
-\item{fc_path}{string; Path to the ArcGIS feature class.}
+\item{fc_path}{character; Path to the ArcGIS feature class.}
 }
 \value{
 Writes the \code{sp} object to an ArcGIS feature class specified
@@ -29,9 +29,11 @@ instructions at
 \code{ArcGIS Desktop} users.
 }
 \references{
-ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}
-arcgisbinding -
-\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
+\describe{
+  \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+  \item{\code{arcgisbinding}}{
+  \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+}
 }
 \seealso{
 The \code{\link{arc2sp}} function for loading data from and ESRI

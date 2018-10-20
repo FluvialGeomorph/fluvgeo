@@ -8,9 +8,7 @@ xs_regional_metrics(xs_points, stream, xs_number, bankfull_elevation,
   region)
 }
 \arguments{
-\item{xs_points}{\code{sp} object; The \code{sp} object
-containing the \code{xs_points} for the study
-area.}
+\item{xs_points}{character; a data frame of cross section points}
 
 \item{stream}{character; The name of the stream.}
 

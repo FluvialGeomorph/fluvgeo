@@ -22,9 +22,11 @@
 #' spatial dataset.
 #'
 #' @references
-#' \item{ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}}
-#' \item{\code{arcgisbinding} -
-#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+#' \describe{
+#'   \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+#'   \item{\code{arcgisbinding}}{
+#'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+#' }
 #'
 sp2arc <- function(sp_object, fc_path) {
   # Convert the sp object to an ArcGIS data object

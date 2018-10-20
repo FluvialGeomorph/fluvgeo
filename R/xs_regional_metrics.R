@@ -5,9 +5,7 @@
 #' bankfull elevation.
 #'
 #' @export
-#' @param xs_points           \code{sp} object; The \code{sp} object
-#'                            containing the \code{xs_points} for the study
-#'                            area.
+#' @param xs_points           character; a data frame of cross section points
 #' @param stream              character; The name of the stream.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
