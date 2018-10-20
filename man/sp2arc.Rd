@@ -19,3 +19,21 @@ Writes the \code{sp} object to an ArcGIS feature class specified
 Converts an \code{sp} object to an ArcGIS feature class in
     the specified geodatabase feature class.
 }
+\details{
+The \code{sp2arc} function requires the prior installation of the
+\code{arcgisbinding} package AND a licensed installation of ESRI
+\code{ArcGIS Desktop} or \code{ArcGIS Pro}. The \code{arcgisbinding}
+package can be installed from within \code{ArcGIS Pro} or by following the
+instructions at
+\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
+\code{ArcGIS Desktop} users.
+}
+\references{
+ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}
+arcgisbinding -
+\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
+}
+\seealso{
+The \code{\link{arc2sp}} function for loading data from and ESRI
+spatial dataset.
+}

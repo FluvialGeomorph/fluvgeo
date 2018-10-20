@@ -1,6 +1,6 @@
 context("xs_dimension")
 
-# Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fgm::sin_xs_points@data
 
 # Call the xs_dimensions function with test data

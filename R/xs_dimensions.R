@@ -42,6 +42,25 @@
 #'                       feet.}
 #'    }
 #'
+#' @seealso The \code{xs_dimensions} function calls the
+#' \code{\link{xs_regional_metrics}} function, which calls the
+#' \code{\link{xs_metrics}} function, which calls the
+#' \code{\link{xs_geometry}} function.
+#'
+#' @examples
+#' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+#' sin_xs_points_df <- fgm::sin_xs_points@data
+#'
+#' # Call the xs_dimensions function with test data
+#' streams <- c("Sinsinawa")
+#' regions <- c("Eastern United States", "IN Central Till Plain")
+#' bankfull_elevations = seq(103, 104, 0.1)
+#'
+#' sin <- xs_dimensions(xs_points = sin_xs_points_df,
+#'                      streams = streams,
+#'                      regions = regions,
+#'                      bankfull_elevations = bankfull_elevations)
+#'
 #' @importFrom dplyr bind_rows
 #' @importFrom assertthat assert_that
 #'

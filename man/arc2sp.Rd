@@ -16,3 +16,21 @@ The specified ArcGIS feature class as an \code{sp} object.
 Opens an ArcGIS feature class and converts it to the \code{sp}
     spatial data format.
 }
+\details{
+The \code{arc2sp} function requires the prior installation of the
+\code{arcgisbinding} package AND a licensed installation of ESRI
+\code{ArcGIS Desktop} or \code{ArcGIS Pro}. The \code{arcgisbinding}
+package can be installed from within \code{ArcGIS Pro} or by following the
+instructions at
+\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
+\code{ArcGIS Desktop} users.
+}
+\references{
+ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}
+arcgisbinding -
+\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
+}
+\seealso{
+The \code{\link{sp2arc}} function for saving data back to an ESRI
+spatial dataset.
+}

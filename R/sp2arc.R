@@ -5,10 +5,26 @@
 #'
 #' @export
 #' @param sp_object     \code{sp} object
-#' @param fc_path       string; Path to the ArcGIS feature class.
+#' @param fc_path       character; Path to the ArcGIS feature class.
 #'
 #' @return Writes the \code{sp} object to an ArcGIS feature class specified
 #'     by path.
+#'
+#' @details The \code{sp2arc} function requires the prior installation of the
+#' \code{arcgisbinding} package AND a licensed installation of ESRI
+#' \code{ArcGIS Desktop} or \code{ArcGIS Pro}. The \code{arcgisbinding}
+#' package can be installed from within \code{ArcGIS Pro} or by following the
+#' instructions at
+#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
+#' \code{ArcGIS Desktop} users.
+#'
+#' @seealso The \code{\link{arc2sp}} function for loading data from and ESRI
+#' spatial dataset.
+#'
+#' @references
+#' \item{ESRI ArcGIS Desktop, ArcGIS Pro - \url{https://pro.arcgis.com/}}
+#' \item{\code{arcgisbinding} -
+#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 #'
 sp2arc <- function(sp_object, fc_path) {
   # Convert the sp object to an ArcGIS data object

@@ -44,6 +44,23 @@
 #'                        feet.}
 #'    }
 #'
+#' @seealso
+#' The \code{xs_regional_metrics} function calls the \code{\link{xs_metrics}}
+#' function which calls the \code{\link{xs_geometry}} function. The
+#' \code{xs_regional_metrics} function is called by the
+#' \code{\link{xs_dimensions}} function.
+#'
+#' @examples
+#' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+#' sin_xs_points_df <- fgm::sin_xs_points@data
+#'
+#' # Call the xs_metrics function
+#' sin_4 <- xs_regional_metrics(xs_points = sin_xs_points_df,
+#'                              stream = "Sinsinawa",
+#'                              xs_number = 4,
+#'                              bankfull_elevation = 103.5,
+#'                              region = "Eastern United States")
+#'
 #' @importFrom RegionalCurve RHG
 #' @importFrom dplyr bind_rows
 #' @importFrom assertthat assert_that

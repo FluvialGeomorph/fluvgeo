@@ -44,6 +44,36 @@
 #'                         derived depth.}
 #'    }
 #'
+#' @details This function uses the function \code{Metrics::rmse} to calculate
+#' the root mean square error statistic and the function \code{Metrics::mae}
+#' to calculate the mean absolute error statistic.
+#'
+#' Add a description of how the goodness of fit calculation is made.
+#'
+#' @seealso The \code{xs_dims} parameter is created using the
+#' \code{\link{xs_dimensions}} function.
+#'
+#' @examples
+#' # Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+#' sin_xs_points_df <- fgm::sin_xs_points@data
+#'
+#' # Set variable values
+#' streams <- c("Sinsinawa")
+#' regions <- c("Eastern United States", "IN Central Till Plain")
+#' bankfull_elevations = seq(103, 104, 0.1)
+#'
+#' # Call the xs_dimensions function
+#' sin <- xs_dimensions(xs_points = sin_xs_points_df,
+#'                      streams = streams,
+#'                      regions = regions,
+#'                      bankfull_elevations = bankfull_elevations)
+#'
+#' # Call the build_gof_stats function
+#' sin_gof <- build_gof_stats(xs_dims = sin,
+#'                            streams = streams,
+#'                            regions = regions,
+#'                            bankfull_elevations = bankfull_elevations)
+#'
 #' @importFrom Metrics rmse mae
 #' @importFrom assertthat assert_that
 #'
@@ -82,7 +112,7 @@ build_gof_stats <- function(xs_dims, streams, regions, bankfull_elevations) {
   # Create a list to hold the cross section gof stats
   xs_stats <- list()
   f <- 1
-  # Iterage through streams
+  # Iterate through streams
   for (g in streams) {
     # Iterate through regions
     for (h in regions) {

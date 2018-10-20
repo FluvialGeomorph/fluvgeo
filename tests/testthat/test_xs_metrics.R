@@ -1,7 +1,6 @@
 context("xs_metrics")
 
-## Prepare the test data for known site
-# Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fgm::sin_xs_points@data
 
 # Call the xs_metrics function

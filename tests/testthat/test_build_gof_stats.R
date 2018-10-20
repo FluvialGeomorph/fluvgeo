@@ -3,11 +3,12 @@ context("build_gof_stats")
 # Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fgm::sin_xs_points@data
 
-# Call the xs_dimensions function with test data
+# Set variable values
 streams <- c("Sinsinawa")
 regions <- c("Eastern United States", "IN Central Till Plain")
 bankfull_elevations = seq(103, 104, 0.1)
 
+# Call the xs_dimensions function
 sin <- xs_dimensions(xs_points = sin_xs_points_df,
                      streams = streams,
                      regions = regions,
@@ -15,10 +16,9 @@ sin <- xs_dimensions(xs_points = sin_xs_points_df,
 
 # Call the build_gof_stats function
 sin_gof <- build_gof_stats(xs_dims = sin,
-                           streams = c("Sinsinawa"),
-                           regions = c("Eastern United States",
-                                       "IN Central Till Plain"),
-                           bankfull_elevations = seq(103, 104, 0.1))
+                           streams = streams,
+                           regions = regions,
+                           bankfull_elevations = bankfull_elevations)
 
 test_that("Check parameters", {
   expect_error(build_gof_stats(10, streams, regions,

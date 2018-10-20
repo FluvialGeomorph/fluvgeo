@@ -24,25 +24,28 @@
 #'                           elevation, units: NAVD88 feet.}
 #'    }
 #'
-#' @details The cross section points used as input to this function must represent
-#'       only one cross section. See the documentation for the example
-#'       \code{sin_xs_points} data frame for the specification of this input
-#'       \code{sp::SpatialPointsDataFrame} object.
+#' @details The cross section points used as input to this function must
+#'    represent only one cross section. See the documentation for the example
+#'    \code{sin_xs_points} data frame for the specification of this input
+#'    \code{sp::SpatialPointsDataFrame} object.
 #'
-#' @importFrom stats approxfun integrate
-#' @importFrom assertthat assert_that
+#' @seealso
+#' The \code{xs_geometry} function is called by the \code{\link{xs_metrics}}
+#' function, which is called by the \code{\link{xs_regional_metrics}}
+#' function, which is called by the \code{\link{xs_dimensions}} function.
 #'
 #' @examples
-#' # Extract the attribute data from the sin_xs_points SpatialPointsDataFrame
-#' #     object
+#' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 #' sin_xs_points_df <- sin_xs_points@@data
 #'
-#' # Subset the sin_xs_points data frame to contain only one cross section
-#' #     (Seq = 4).
+#' # Subset sin_xs_points to contain only one cross section (Seq = 4)
 #' sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]
 #'
 #' # Calculate hydraulic geometry for a single cross section
 #' xs_geometry(xs_points = sin_xs_points_4, detrend_elevation = 103.5)
+#'
+#' @importFrom stats approxfun integrate
+#' @importFrom assertthat assert_that
 #'
 xs_geometry <- function(xs_points, detrend_elevation) {
   # Check parameters

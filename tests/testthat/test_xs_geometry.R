@@ -1,14 +1,13 @@
 context("xs_geometry")
 
-## Prepare the test data for known site
-# Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fgm::sin_xs_points@data
 
 # Subset sin_xs_points_df to contain only one cross section (Seq = 4)
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4, ]
 
-sin_4 <- xs_geometry(xs_points = sin_xs_points_4,
-                     detrend_elevation =  103.5)
+# Calculate hydraulic geometry for a single cross section
+sin_4 <- xs_geometry(xs_points = sin_xs_points_4, detrend_elevation =  103.5)
 
 test_that("Check parameters", {
   expect_error(xs_geometry(3, 103.5))
