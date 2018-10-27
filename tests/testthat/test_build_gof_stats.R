@@ -1,6 +1,6 @@
 context("build_gof_stats")
 
-# Extract the attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
+# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fgm::sin_xs_points@data
 
 # Set variable values

@@ -16,7 +16,7 @@ This package contains a wide range of functions for performing
     streams).
 }
 \details{
-
+Place some other package details here.
 }
 \section{Installation}{
 

@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fgm::sin_xs_points@data
+#' sin_xs_points_df <- fgm::sin_xs_points@@data
 #'
 #' # Call the xs_plot function
 #' sin_4_plot <- xs_plot(xs_points = sin_xs_points_df,

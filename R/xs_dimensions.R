@@ -47,7 +47,7 @@
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fgm::sin_xs_points@data
+#' sin_xs_points_df <- fgm::sin_xs_points@@data
 #'
 #' # Call the xs_dimensions function with test data
 #' streams <- c("Sinsinawa")

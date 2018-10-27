@@ -1,4 +1,5 @@
 #' @details
+#' Place some other package details here.
 #'
 #' @section Installation:
 #' The functions \code{\link{arc2sp}} and \code{\link{sp2arc}} require the

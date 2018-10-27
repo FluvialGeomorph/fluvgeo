@@ -19,9 +19,9 @@ devtools::use_package("sp", "Imports")
 devtools::use_package("arcgisbinding", "Imports")
 devtools::use_package("dplyr", "Imports")
 devtools::use_package("assertthat", "Imports")
-devtools::use_package("purrr", "Imports")
 devtools::use_package("Metrics", "Imports")
 devtools::use_package("ggplot2", "Imports")
+devtools::use_package("reshape2", "Imports")
 
 ## Write Code
 # Periodically lint the code

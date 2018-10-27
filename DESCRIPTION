@@ -30,12 +30,13 @@ Suggests: testthat,
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-Imports: RegionalCurve,
+Imports: 
+    RegionalCurve,
     arcgisbinding,
     sp,
     dplyr,
     Metrics,
     assertthat,
-    purrr,
-    ggplot2
+    ggplot2,
+    reshape2
 RoxygenNote: 6.1.0
