@@ -15,13 +15,13 @@ devtools::use_build_ignore("create_package_steps.R")
 
 # Use packages needed by functions, vignettes, etc.
 devtools::use_package("RegionalCurve", "Imports")
-devtools::use_package("sp", "Imports")
 devtools::use_package("arcgisbinding", "Imports")
 devtools::use_package("dplyr", "Imports")
 devtools::use_package("assertthat", "Imports")
 devtools::use_package("Metrics", "Imports")
 devtools::use_package("ggplot2", "Imports")
 devtools::use_package("reshape2", "Imports")
+devtools::use_package("ggrepel", "Imports")
 
 ## Write Code
 # Periodically lint the code

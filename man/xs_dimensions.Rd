@@ -8,7 +8,7 @@
 xs_dimensions(xs_points, streams, regions, bankfull_elevations)
 }
 \arguments{
-\item{xs_points}{character; a data frame of cross section points}
+\item{xs_points}{data frame; a data frame of cross section points}
 
 \item{streams}{character vector; The stream names in the study
 area.}

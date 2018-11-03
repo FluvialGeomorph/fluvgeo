@@ -1,5 +1,10 @@
-#' @details
-#' Place some other package details here.
+#' @name fgm
+#'
+#' @title A Package for Fluvial Geomorphic Analysis
+#'
+#' @docType package
+#'
+#' @details Place some other package details here. And then some more.
 #'
 #' @section Installation:
 #' The functions \code{\link{arc2sp}} and \code{\link{sp2arc}} require the

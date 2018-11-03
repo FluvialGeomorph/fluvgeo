@@ -6,7 +6,7 @@
 #'     the input cross section.
 #'
 #' @export
-#' @param xs_points           character; a data frame of cross section points
+#' @param xs_points           data frame; a data frame of cross section points
 #' @param stream              character; The name of the stream.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.

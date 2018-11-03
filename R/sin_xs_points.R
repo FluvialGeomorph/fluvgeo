@@ -1,9 +1,11 @@
-#' Sinachwine Creek, IL stream cross section points
+#' @docType data
 #'
-#' A \code{sp::SpatialPointsDataFrame} object containing stream cross section
-#' points for two cross sections (Seq 4, 5). These points represent elevation
-#' values extracted from a LiDAR terrain surface along a transect perpendicular
-#' to the stream centerline.
+#' @title Sinachwine Creek, IL stream cross section points
+#'
+#' @description  A \code{sp::SpatialPointsDataFrame} object containing stream
+#' cross section points for two cross sections (Seq 4, 5). These points
+#' represent elevation values extracted from a LiDAR terrain surface along a
+#' transect perpendicular to the stream centerline.
 #'
 #' @format A \code{SpatialPointsDataFrame} with 1413 observations and 9
 #'     variables.
@@ -30,5 +32,9 @@
 #'                  vertical units used in this project are NADV88 feet.}
 #'     \item{Detrend_DEM_Z}{numeric; The detrended elevation of the point.}
 #' }
+#' @source This dataset was produced using the \code{FluvialGeomorph} ArcGIS
+#' toolbox.
+#'
+#' @keywords datasets
 #'
 "sin_xs_points"

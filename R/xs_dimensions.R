@@ -5,7 +5,7 @@
 #'     (area, width, depth) for a set of streams, regions, and detrended bankfull elevationsby cross section, xs type, and bankfull elevation.
 #'
 #' @export
-#' @param xs_points           character; a data frame of cross section points
+#' @param xs_points           data frame; a data frame of cross section points
 #' @param streams             character vector; The stream names in the study
 #'                            area.
 #' @param regions             character; The regions that a dimension will be

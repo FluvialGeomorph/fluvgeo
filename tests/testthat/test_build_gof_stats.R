@@ -24,28 +24,28 @@ test_that("Check parameters", {
   expect_error(build_gof_stats(10, streams, regions,
                                bankfull_elevations),
                info = "xs_dims not a data frame")
-  expect_error(build_gof_stats(sin[,-1], streams, regions,
-                               bankfull_elevations),
+  expect_error(build_gof_stats(sin[, -1],
+                               streams, regions, bankfull_elevations),
                info = "xs_dims is missing reach_name field")
-  expect_error(build_gof_stats(sin[,-2], streams, regions,
+  expect_error(build_gof_stats(sin[, -2], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing cross_section field")
-  expect_error(build_gof_stats(sin[,-3], streams, regions,
+  expect_error(build_gof_stats(sin[, -3], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing xs_type field")
-  expect_error(build_gof_stats(sin[,-4], streams, regions,
+  expect_error(build_gof_stats(sin[, -4], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing bankfull_elevation field")
-  expect_error(build_gof_stats(sin[,-5], streams, regions,
+  expect_error(build_gof_stats(sin[, -5], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing drainage_area field")
-  expect_error(build_gof_stats(sin[,-6], streams, regions,
+  expect_error(build_gof_stats(sin[, -6], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing xs_area field")
-  expect_error(build_gof_stats(sin[,-7], streams, regions,
+  expect_error(build_gof_stats(sin[, -7], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing xs_width field")
-  expect_error(build_gof_stats(sin[,-8], streams, regions,
+  expect_error(build_gof_stats(sin[, -8], streams, regions,
                                bankfull_elevations),
                info = "xs_dims is missing xs_depth field")
   expect_error(build_gof_stats(sin, 8, regions,

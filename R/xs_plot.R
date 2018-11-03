@@ -4,7 +4,7 @@
 #' section and displayes the specified bankfull elevation.
 #'
 #' @export
-#' @param xs_points           character; a data frame of cross section points
+#' @param xs_points           data frame; a data frame of cross section points
 #' @param stream              character; The name of the stream.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
@@ -17,6 +17,11 @@
 #' @details This function is used to plot the cross section profile from a
 #' \code{xs_points} data frame.
 #'
+#' @seealso The \code{xs_plot} function requires a \code{xs_points} dataframe.
+#' See the \code{\link{sin_xs_points}} package dataset for an example of this
+#' format of cross section data produced by the \code{FluvialGeomorph} ArcGIS
+#' toolbox.
+#'
 #' @examples
 #' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
 #' sin_xs_points_df <- fgm::sin_xs_points@@data
@@ -26,6 +31,7 @@
 #'                       stream = "Sinsinawa",
 #'                       xs_number = 4,
 #'                       bankfull_elevation = 103.5)
+#' # Print the graph
 #' sin_4_plot
 #'
 #' @importFrom assertthat assert_that

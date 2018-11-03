@@ -7,7 +7,7 @@
 xs_plot(xs_points, stream, xs_number, bankfull_elevation)
 }
 \arguments{
-\item{xs_points}{character; a data frame of cross section points}
+\item{xs_points}{data frame; a data frame of cross section points}
 
 \item{stream}{character; The name of the stream.}
 
@@ -38,6 +38,13 @@ sin_4_plot <- xs_plot(xs_points = sin_xs_points_df,
                       stream = "Sinsinawa",
                       xs_number = 4,
                       bankfull_elevation = 103.5)
+# Print the graph
 sin_4_plot
 
+}
+\seealso{
+The \code{xs_plot} function requires a \code{xs_points} dataframe.
+See the \code{\link{sin_xs_points}} package dataset for an example of this
+format of cross section data produced by the \code{FluvialGeomorph} ArcGIS
+toolbox.
 }

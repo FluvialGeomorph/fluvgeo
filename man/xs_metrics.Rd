@@ -7,7 +7,7 @@
 xs_metrics(xs_points, stream, xs_number, bankfull_elevation)
 }
 \arguments{
-\item{xs_points}{character; a data frame of cross section points}
+\item{xs_points}{data frame; a data frame of cross section points}
 
 \item{stream}{character; The name of the stream.}
 
