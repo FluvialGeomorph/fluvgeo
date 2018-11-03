@@ -6,7 +6,7 @@ sin_xs_points_df <- fgm::sin_xs_points@data
 # Set variable values
 streams <- "Sinsinawa"
 regions <- c("Eastern United States", "IN Central Till Plain")
-bankfull_elevations = seq(103, 104, 0.1)
+bankfull_elevations <- seq(103, 104, 0.1)
 
 # Call the xs_dimensions function
 sin <- xs_dimensions(xs_points = sin_xs_points_df,
@@ -62,4 +62,45 @@ test_that("Check the plot object", {
                "Drainage Area (square miles)")
   expect_equal(sin_reach_rhg_graph$labels$y,
                "")
+})
+
+test_that("Check the plot's layer geom with 'log_scale' TRUE", {
+  t <- reach_rhg_graph(xs_dims = sin,
+                       streams = streams,
+                       bf_elevation = 103.5,
+                       xs_trend = FALSE,
+                       log_scale = TRUE)
+  expect_equal(class(t$layers[[1]]$geom)[1],
+               "GeomLine")
+})
+
+test_that("Check the plot's layer geom with 'xs_trend' TRUE", {
+  t <- reach_rhg_graph(xs_dims = sin,
+                       streams = streams,
+                       bf_elevation = bankfull_elevations,
+                       xs_trend = TRUE,
+                       log_scale = FALSE)
+  expect_equal(class(t$layers[[1]]$geom)[1],
+            "GeomLine")
+})
+
+test_that("Check the plot's layer geom with 'log_scale' TRUE", {
+  t <- reach_rhg_graph(xs_dims = sin,
+                       streams = streams,
+                       bf_elevation = bankfull_elevations,
+                       xs_trend = FALSE,
+                       log_scale = TRUE)
+  expect_equal(class(t$layers[[1]]$geom)[1],
+               "GeomLine")
+})
+
+test_that("Check the plot's layer geom with 'log_scale' and
+          'xs_trend' both TRUE", {
+  t <- reach_rhg_graph(xs_dims = sin,
+                       streams = streams,
+                       bf_elevation = bankfull_elevations,
+                       xs_trend = TRUE,
+                       log_scale = TRUE)
+  expect_equal(class(t$layers[[1]]$geom)[1],
+               "GeomLine")
 })

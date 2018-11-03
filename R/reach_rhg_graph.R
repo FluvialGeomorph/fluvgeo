@@ -42,8 +42,9 @@
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot aes scale_color_brewer facet_grid as_labeller
-#' theme_bw theme labs geom_point geom_smooth scale_y_log10 scale_x_log10
+#' @importFrom ggplot2 ggplot aes_string scale_color_brewer facet_grid
+#' as_labeller theme_bw theme labs geom_point geom_smooth scale_y_log10
+#' scale_x_log10
 #' @importFrom ggrepel geom_text_repel
 #'
 reach_rhg_graph <- function(xs_dims, streams, bf_elevation, xs_trend = FALSE,
@@ -83,12 +84,13 @@ reach_rhg_graph <- function(xs_dims, streams, bf_elevation, xs_trend = FALSE,
   # bankfull elevation(s).
   xs_dims_graph <- data.frame()
   # Iterate through stream(s)
-  for ( i in 1:length(streams) ) {
+  for (i in seq_len(length(streams))) {
     # Filter to select only the current stream.
     xs_dims_stream <- xs_dims[xs_dims$reach_name == streams[i], ]
     # Filter by the respective bankfull elevation for the current stream.
-    xs_dims_stream_bankfull <- xs_dims_stream[xs_dims_stream$bankfull_elevation ==
-                                              bf_elevation[i], ]
+    xs_dims_stream_bankfull <- xs_dims_stream[
+                                      xs_dims_stream$bankfull_elevation ==
+                                      bf_elevation[i], ]
     # Append the current stream and bankfull records to the running total
     xs_dims_graph <- rbind(xs_dims_graph, xs_dims_stream_bankfull)
   }
@@ -122,7 +124,9 @@ reach_rhg_graph <- function(xs_dims, streams, bf_elevation, xs_trend = FALSE,
                   `xs_depth` = "Depth (feet)")
   # Define the base plot
   p <- ggplot(data = unique(xsd_regions_gather),
-              aes(x = drainage_area, y = measure, color = xs_type)) +
+              aes_string(x = 'drainage_area',
+                         y = 'measure',
+                         color = 'xs_type')) +
     scale_color_brewer(palette = "Set1", name = "Regional Curves") +
     facet_grid(facets = stats ~ .,
                scales = "free",
@@ -136,19 +140,22 @@ reach_rhg_graph <- function(xs_dims, streams, bf_elevation, xs_trend = FALSE,
   # Define cross section points
   xs_pts <- geom_point(inherit.aes = FALSE,
                        data = unique(xsd_dem_gather),
-                       aes(x = drainage_area, y = measure),
+                       aes_string(x = 'drainage_area',
+                                  y = 'measure'),
                        size = 1,
                        show.legend = FALSE)
   xs_labels <- geom_text_repel(inherit.aes = FALSE,
                                data = unique(xsd_dem_gather),
-                               aes(x = drainage_area, y = measure,
-                                   label = cross_section),
+                               aes_string(x = 'drainage_area',
+                                          y = 'measure',
+                                          label = 'cross_section'),
                                show.legend = FALSE,
                                size = 2)
   # Draw a smooth line through cross section points
   xs_trend_line <- geom_smooth(inherit.aes = FALSE,
                                data = unique(xsd_dem_gather),
-                               aes(x = drainage_area, y = measure))
+                               aes_string(x = 'drainage_area',
+                                         y = 'measure'))
   # Transform to log scales
   log_scale_y <- scale_y_log10()
   log_scale_x <- scale_x_log10()

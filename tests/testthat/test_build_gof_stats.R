@@ -6,7 +6,7 @@ sin_xs_points_df <- fgm::sin_xs_points@data
 # Set variable values
 streams <- c("Sinsinawa")
 regions <- c("Eastern United States", "IN Central Till Plain")
-bankfull_elevations = seq(103, 104, 0.1)
+bankfull_elevations <- seq(103, 104, 0.1)
 
 # Call the xs_dimensions function
 sin <- xs_dimensions(xs_points = sin_xs_points_df,

@@ -54,7 +54,7 @@
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot aes geom_line facet_grid as_labeller
+#' @importFrom ggplot2 ggplot aes_string geom_line facet_grid as_labeller
 #' theme_bw geom_vline scale_color_brewer theme unit element_text labs
 #'
 gof_graph <- function(gof_stats, stream, bankfull_elevation,
@@ -129,9 +129,9 @@ gof_graph <- function(gof_stats, stream, bankfull_elevation,
   }
   # Draw the plot
   q <- ggplot(data = gsg,
-              aes(x = bankfull_elevation,
-                  y = measure,
-                  color = region)) +
+              aes_string(x = 'bankfull_elevation',
+                         y = 'measure',
+                         color = 'region')) +
     geom_line(size = 0.75) +
     facet_grid(facets = stats ~ .,
                scales = "free",

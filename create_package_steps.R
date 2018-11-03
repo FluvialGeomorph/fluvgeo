@@ -96,6 +96,6 @@ devtools::use_appveyor()
 ## Check
 # Use package goodpractice to check package
 library(goodpractice)
-goodpractice::gp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Methods/fgm")
+goodpractice::gp("X:/Work/Office/Regional/ERDC/EMRRP_Sediment/Methods/fgm")
 
 
