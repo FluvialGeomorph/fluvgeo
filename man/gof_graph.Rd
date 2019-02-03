@@ -64,5 +64,5 @@ sin_gof_graph
 }
 \seealso{
 The \code{\link{build_gof_stats}} function for details on how to
-create a gof_stats data frame.
+create a \code{gof_stats} data frame.
 }

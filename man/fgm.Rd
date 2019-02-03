@@ -37,6 +37,13 @@ require ESRI \code{ArcGIS Desktop} or \code{ArcGIS Pro}.
   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 }
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://bitbucket.di2e.net/projects/MVREGIS/repos/fgm}
+}
+
+}
 \author{
 \strong{Maintainer}: Michael Dougherty \email{Michael.P.Dougherty@usace.army.mil}
 

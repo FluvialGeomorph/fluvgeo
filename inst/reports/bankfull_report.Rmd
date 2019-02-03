@@ -1,0 +1,140 @@
+---
+params:
+   xs_points: !r as.data.frame(0)
+   stream: "Test"
+   regions: "Eastern United States"
+   bankfull_elevations: !r seq(103, 104, 0.1)
+   bf_estimate: 103.5
+   stat: "MAE"
+   output_format: "html_document"
+---
+
+# Estimate Bankfull: `r params$stream` River
+The purpose of this analysis is to identify the bankfull elevation over a set of riffle cross sections for an ungaged stream reach by using regional hydraulic relationships.
+
+```{r, library, echo=FALSE}
+library(assertthat)
+library(dplyr)
+library(knitr)
+library(rmarkdown)
+library(kableExtra)
+library(Metrics)
+library(ggplot2)
+library(ggrepel)
+library(reshape2)
+```
+
+```{r, document_type, echo=FALSE}
+if (params$output_format == "html_document") {
+  options(knitr.table.format = "html")
+  format <- "html"
+}
+if (params$output_format == "pdf_document") {
+  options(knitr.table.format = "latex")
+  format <- "latex"
+}
+if (params$output_format == "word_document") {
+  options(knitr.table.format = "pandoc")
+  format <- "pandoc"
+}
+```
+
+```{r, calc_xs_dims, echo=FALSE}
+# Calculate cross section dimensions
+xs_dims <- xs_dimensions(xs_points = params$xs_points,
+                         streams = params$stream,
+                         regions = params$regions,
+                         bankfull_elevations = params$bankfull_elevations)
+
+# Calculate the gof stats
+gof_stats <- build_gof_stats(xs_dims = xs_dims,
+                             streams = params$stream,
+                             regions = params$regions,
+                             bankfull_elevations = params$bankfull_elevations)
+
+```
+
+## Bankfull Elevation Sensitivity Analysis
+To help inform the estimation of a bankfull elevation, this section contains a sensitivity analysis of a goodness of fit metric (i.e., mean average error) calculated using this stream reach's riffle cross sections as compared to estimated dimensions from regional relationships for several hydraulic geometry dimensions (i.e., bankfull cross sectional area, maximum bankfull depth, and bankfull width). The table below contains a summary of the goodness of fit statistics for the selected bankfull elevation for the selected analysis regions.
+
+```{r, gof_graph, results='asis', echo=FALSE, message=FALSE, fig.width=7, fig.height=6, fig.cap="Bankfull Elevation Goodness of Fit "}
+# Draw goodness of fit graph
+print(gof_graph(gof_stats = gof_stats,
+                stream = params$stream,
+                bankfull_elevation = params$bf_estimate,
+                stat = "MAE"))
+```
+
+```{r, gof_table, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
+# Subset the gof_stats data frame for the current bankfull elevation
+bf_stats <- gof_stats[gof_stats$bankfull_elevation == params$bf_estimate, ]
+# Select only the fields needed
+bf_stats <- bf_stats[, c("region", "bankfull_elevation", "mae_area",
+                         "mae_width", "mae_depth")]
+# Format the table
+k <- kable(x = bf_stats,
+           format = format,
+           digits = 2,
+           row.names = FALSE,
+           col.names = c("Regions", "Bankfull Elevation",
+                         "Area (MAE, sq feet)", "Width (MAE, feet)",
+                         "Depth (MAE, feet)"),
+           caption = paste0("Goodness of fit for all cross sections at ",
+                            "bankfull elevation ", params$bf_estimate,
+                            " (detrended feet) using Mean Average Error ",
+                            "(MAE)."),
+           booktabs = TRUE)
+ks <- kable_styling(kable_input = k,
+                    bootstrap_options = c("striped", "hover"),
+                    latex_options = c("striped", "scale_down"))
+print(ks)
+```
+
+The figure below displays the selected regional hydraulic geometry curves plotted with the values for each of the cross sections in the current reach.
+
+```{r, regional_curve_graph, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Regional Hydraulic Geometry Curves"}
+# Draw reach regional curves graph
+print(reach_rhg_graph(xs_dims = xs_dims,
+                      streams = params$stream,
+                      bf_elevation = params$bf_estimate))
+```
+
+## Cross Section Profiles
+This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
+
+```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=3}
+# Iterate through cross sections and create plot, calculate xs dimensions, and print RHG table
+xs_pts <- params$xs_points
+for (j in as.integer(levels(as.factor(xs_points$Seq)))) {
+    # Create the cross section plot
+    print(xs_plot(xs_points = xs_pts,
+                  stream = params$stream,
+                  xs_number = j,
+                  bankfull_elevation = params$bf_estimate))
+    # Calculate cross section geometry
+    xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
+    dims <- xs_dimensions(xs_points = xs_pts_j,
+                          streams = params$stream,
+                          regions = params$regions,
+                          bankfull_elevations = params$bf_estimate)
+    # Remove duplicate 'DEM derived cross section' records
+    dims_unique <- unique(dims)
+    # Sort by 'xs_type'
+    dims_sort <- dims_unique[order(dims_unique$xs_type), ]
+    # Create kable table to display cross section dimensions
+    p <- kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area",
+                                 "xs_width", "xs_depth")],
+               format = format,
+               digits = 2,
+               row.names = FALSE,
+               col.names = c("Cross Section Type", "Drainage Area",
+                             "Area", "Width", "Depth"),
+               booktabs = TRUE)
+    ps <- kable_styling(kable_input = p,
+                        bootstrap_options = c("striped", "hover"),
+                        latex_options = c("striped", "scale_down"))
+    print(ps)
+    # Insert vertical white space so that next figure is recognized
+    cat('\n')
+}
+```

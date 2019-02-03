@@ -2,6 +2,7 @@
 
 export(arc2sp)
 export(build_gof_stats)
+export(estimate_bankfull)
 export(gof_graph)
 export(reach_rhg_graph)
 export(sp2arc)

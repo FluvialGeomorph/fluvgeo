@@ -20,7 +20,7 @@
 #' @details Add a discussion of how to interpret the graph.
 #'
 #' @seealso The \code{\link{build_gof_stats}} function for details on how to
-#' create a gof_stats data frame.
+#' create a \code{gof_stats} data frame.
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame

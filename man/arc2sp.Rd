@@ -7,7 +7,7 @@
 arc2sp(fc_path)
 }
 \arguments{
-\item{fc_path}{string; Path to the ArcGIS geodatabase feature class.}
+\item{fc_path}{character; Path to the ArcGIS geodatabase feature class.}
 }
 \value{
 The specified ArcGIS feature class as an \code{sp} object.

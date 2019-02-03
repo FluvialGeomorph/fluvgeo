@@ -1,6 +1,6 @@
 Package: fgm
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -40,5 +40,6 @@ Imports:
     assertthat,
     ggplot2,
     reshape2,
-    ggrepel
-RoxygenNote: 6.1.0
+    ggrepel,
+    kableExtra
+RoxygenNote: 6.1.1

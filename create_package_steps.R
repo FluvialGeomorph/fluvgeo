@@ -3,6 +3,7 @@
 # https://www.rstudio.com/wp-content/uploads/2015/06/devtools-cheatsheet.pdf
 
 library(devtools)
+library(usethis)
 
 ## Package Structure
 # Ignore this file
@@ -14,14 +15,15 @@ devtools::use_build_ignore("create_package_steps.R")
 # Depends: R (>= 2.10)
 
 # Use packages needed by functions, vignettes, etc.
-devtools::use_package("RegionalCurve", "Imports")
-devtools::use_package("arcgisbinding", "Imports")
-devtools::use_package("dplyr", "Imports")
-devtools::use_package("assertthat", "Imports")
-devtools::use_package("Metrics", "Imports")
-devtools::use_package("ggplot2", "Imports")
-devtools::use_package("reshape2", "Imports")
-devtools::use_package("ggrepel", "Imports")
+usethis::use_package("RegionalCurve", "Imports")
+usethis::use_package("arcgisbinding", "Imports")
+usethis::use_package("dplyr", "Imports")
+usethis::use_package("assertthat", "Imports")
+usethis::use_package("Metrics", "Imports")
+usethis::use_package("ggplot2", "Imports")
+usethis::use_package("reshape2", "Imports")
+usethis::use_package("ggrepel", "Imports")
+usethis::use_package("kableExtra", "Imports")
 
 ## Write Code
 # Periodically lint the code

@@ -4,7 +4,7 @@
 #'     spatial data format.
 #'
 #' @export
-#' @param fc_path      string; Path to the ArcGIS geodatabase feature class.
+#' @param fc_path      character; Path to the ArcGIS geodatabase feature class.
 #'
 #' @return The specified ArcGIS feature class as an \code{sp} object.
 #'
