@@ -61,7 +61,7 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
                      elev_min, elev_max)
 
   # Define colors and labels. Inspired by palettes from
-  # https://wesandersonpalettes.tumblr.com/ using names from colors().
+  # https://www.tumblr.com/search/wes%20anderson%20palette using names from colors().
   cols <- c("Flood Prone"   = "coral3",
             "Bankfull"      = "darkslategray4",
             "Water Surface" = "cadetblue3")
@@ -78,8 +78,9 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
         legend.background = element_rect(fill = alpha('white', 0.6)),
         legend.title = element_blank(),
         panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
-  labs(x = "Kilometers",
-       y = "Elevation (NAVD88 feet)")
+  labs(title = unique(reach_xs_dims$ReachName),
+       x     = "Kilometers",
+       y     = "Elevation (NAVD88 feet)")
 
   # Draw cross section labels
   xs_line <- geom_line(inherit.aes = FALSE,
