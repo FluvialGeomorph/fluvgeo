@@ -18,7 +18,8 @@ Test data in ESRI ArcGIS file geodatabase format is stored in
 
 Convert a file geodatabase feature class to an sp object
 ```{r}
-sin_xs_points <- fgm::arc2sp("test.gdb/cross_section_points")
+sin_xs_points     <- fgm::arc2sp("test.gdb/cross_section_points")
+sin_xs_dimensions <- fgm::arc2sp("test.gdb/cross_section_dims")
 ```
 
 

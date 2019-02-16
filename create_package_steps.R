@@ -49,13 +49,15 @@ devtools::document()
 
 ## Add Data
 # Create the /data-raw folder and add to .Rbuildignore
-devtools::use_data_raw()
+usethis::use_data_raw()
 
 # Use the Create_package_data.Rmd file to process package data
 
 # Add the sin_xs_points sp object to the package
-devtools::use_data(sin_xs_points, overwrite = TRUE)
+usethis::use_data(sin_xs_points, overwrite = TRUE)
 
+# Add the sin_xs_dimensions sp object to the package
+usethis::use_data(sin_xs_dimensions, overwrite = TRUE)
 
 
 
