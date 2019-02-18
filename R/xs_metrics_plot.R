@@ -6,6 +6,7 @@
 #' @export
 #' @param xs_dimensions   data frame; a data frame of cross section
 #'                        dimensions.
+#' @param label_xs        boolean; Draw the cross section locations?
 #'
 #' @return A ggplot2 object.
 #'
@@ -29,7 +30,6 @@
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs
-#'
 #'
 xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
   # Gather data by metrics for plotting
