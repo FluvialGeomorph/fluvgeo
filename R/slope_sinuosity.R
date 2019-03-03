@@ -8,7 +8,8 @@
 #'                         cross section, flowline points, etc.)
 #' @param lead_lag         numeric; The number of features to lead/lag on
 #'                         either side of each feature that will be used to
-#'                         calculate the slope and sinuosity.
+#'                         calculate the slope and sinuosity. Must be an
+#'                         integer.
 #' @param use_smoothing    boolean; determines if smoothed elevation values
 #'                         are used to calculate gradient. values are:
 #'                         TRUE, FALSE (default)
@@ -30,9 +31,30 @@
 #' @importFrom dplyr lead lag
 #' @importFrom raster pointDistance
 #'
-slope_sinuosity <-function(channel_features, lead_lag,
+slope_sinuosity <-function(channel_features,
+                           lead_lag,
                            use_smoothing = TRUE,
                            loess_span = 0.05) {
+  # Check parameters
+  assert_that(is.data.frame(channel_features),
+              msg = "'channel_features' must be a data frame")
+  assert_that("ReachName" %in% colnames(channel_features),
+              msg = "Required field 'ReachName' missing from 'channel_features'")
+  assert_that("POINT_X" %in% colnames(channel_features),
+              msg = "Required field 'POINT_X' missing from 'channel_features'")
+  assert_that("POINT_Y" %in% colnames(channel_features),
+              msg = "Required field 'POINT_Y' missing from 'channel_features'")
+  assert_that("POINT_M" %in% colnames(channel_features),
+              msg = "Required field 'POINT_M' missing from 'channel_features'")
+  assert_that(as.integer(lead_lag) == lead_lag &&
+                length(lead_lag) == 1,
+              msg = "'lead_lag' must be an integer vector of length one")
+  assert_that(is.logical(use_smoothing) &&
+                length(use_smoothing) == 1,
+              msg = "'use_smoothing' must be logical vector of length one")
+  assert_that(is.numeric(loess_span) &&
+                length(loess_span) == 1,
+              msg = "'loess_span' must be numeric vector of length one")
 
   # Add new columns to hold calculated values
   channel_features$Z_smooth      <- 0

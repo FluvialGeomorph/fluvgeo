@@ -13,7 +13,8 @@ cross section, flowline points, etc.)}
 
 \item{lead_lag}{numeric; The number of features to lead/lag on
 either side of each feature that will be used to
-calculate the slope and sinuosity.}
+calculate the slope and sinuosity. Must be an
+integer.}
 
 \item{use_smoothing}{boolean; determines if smoothed elevation values
 are used to calculate gradient. values are:

@@ -1,6 +1,6 @@
 Package: fgm
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
