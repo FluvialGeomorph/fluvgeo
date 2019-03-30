@@ -36,16 +36,8 @@ slope_sinuosity <-function(channel_features,
                            use_smoothing = TRUE,
                            loess_span = 0.05) {
   # Check parameters
-  assert_that(is.data.frame(channel_features),
-              msg = "'channel_features' must be a data frame")
-  assert_that("ReachName" %in% colnames(channel_features),
-              msg = "Required field 'ReachName' missing from 'channel_features'")
-  assert_that("POINT_X" %in% colnames(channel_features),
-              msg = "Required field 'POINT_X' missing from 'channel_features'")
-  assert_that("POINT_Y" %in% colnames(channel_features),
-              msg = "Required field 'POINT_Y' missing from 'channel_features'")
-  assert_that("POINT_M" %in% colnames(channel_features),
-              msg = "Required field 'POINT_M' missing from 'channel_features'")
+  assert_that(check_data_structure(channel_features, "channel_feature"),
+              msg = "'channel_features' does not meet the data specification")
   assert_that(as.integer(lead_lag) == lead_lag &&
                 length(lead_lag) == 1,
               msg = "'lead_lag' must be an integer vector of length one")

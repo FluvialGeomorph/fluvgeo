@@ -1,0 +1,48 @@
+#' @title Plot the bend radius of curvature
+#'
+#' @description Produces a plot of the raduis of curvature for the specified
+#' loop and bend using a `bankline_points` data frame.
+#'
+#' @export
+#' @param bankline_points  data frame; a data frame of bankline points
+#' @param loop             numeric; the loop to plot
+#' @param bend             numeric; the bend to plot
+#' @param coord_system     character; a brief text description of the coordinate
+#'                         system. This gets added to the latitude and longitude
+#'                         as an indicator of units.
+#'
+#' @return a ggplot2 object
+#'
+#' @importFrom assertthat assert_that
+#' @importFrom conicfit CircleFitByTaubin
+#'
+bend_raduis_plot <- function(bankline_pts, loop, bend, coord_system) {
+  # Subset the first loop and bend
+  bend_pts <- bankline_pts[which(bankline_pts$loop == loop & bankline_pts$bend == bend), ]
+
+  # Convert to a matrix
+  bend_xy <- bend_pts[, c("POINT_X", "POINT_Y")]
+  bend_xy_m <- as.matrix(bend_xy)
+
+  # Calculate circle
+  center <- CircleFitByTaubin(bend_xy_m)
+
+  # Calculate circle
+  circle <- calculateCircle(center[1], center[2], center[3])
+  circle_df <- as.data.frame(circle)
+
+  # Plot the bend
+  ggplot(bend_xy, aes(x = POINT_X, y = POINT_Y)) +
+    geom_point() +
+    coord_fixed(ratio = 1) +
+    geom_point(aes(x = center[1], y = center[2]), colour="blue", size = 3) +
+    geom_point(data = circle_df, aes(x = V1, y = V2), colour="red",
+               inherit.aes = FALSE) +
+    theme_bw() +
+    labs(title = paste0("Loop: ", loop, " Bend: ", bend),
+         x = paste0("Longitude (", coord_system, ")"),
+         y = paste0("Latitude (", coord_system, ")")) +
+    annotate(geom = "text", x = center[1],
+             y = center[2] + (center[3] * 0.25),
+             label = paste0("Radius = ", round(center[3]), " m"))
+}
