@@ -16,16 +16,16 @@
 #' @importFrom assertthat assert_that
 #' @importFrom conicfit CircleFitByTaubin
 #'
-bend_raduis_plot <- function(bankline_pts, loop, bend, coord_system) {
-  # Subset the first loop and bend
-  bend_pts <- bankline_pts[which(bankline_pts$loop == loop & bankline_pts$bend == bend), ]
+bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
+  # Subset banlkine_points the for the input loop and bend
+  bend_pts <- bankline_points[which(bankline_points$loop == loop & bankline_points$bend == bend), ]
 
-  # Convert to a matrix
+  # Convert xy to a matrix for conicfit functions
   bend_xy <- bend_pts[, c("POINT_X", "POINT_Y")]
   bend_xy_m <- as.matrix(bend_xy)
 
-  # Calculate circle
-  center <- CircleFitByTaubin(bend_xy_m)
+  # Calculate circle center and radius
+  center <- conicfit::CircleFitByTaubin(bend_xy_m)
 
   # Calculate circle
   circle <- calculateCircle(center[1], center[2], center[3])
