@@ -28,17 +28,12 @@ meander_length <- function(bankline_points) {
                                        "v_POINT_X", "v_POINT_Y", "v_POINT_M")],
                          by = apex_points[c("loop")], FUN = mean)
 
-  # Add new columns to hold calculated values
-  loop_apex$downstream_x   <- 0
-  loop_apex$downstream_y   <- 0
-  loop_apex$meander_length <- 0
-
-  # Calculate coords of first record. Use as default to lag
+  # Calculate coords of last record. Use as default to lead
   # to prevent NAs being introduced at the end of the series.
   downstream_x_lag <- last(loop_apex$POINT_X)
   downstream_y_lag <- last(loop_apex$POINT_Y)
 
-  # Calculate downstream coordinates of the next loop
+  # Calculate coordinates of the second downstream loop
   loop_apex$downstream_x <- lead(x = loop_apex$POINT_X,
                              n = 2,
                              default = downstream_x_lag)
@@ -46,7 +41,7 @@ meander_length <- function(bankline_points) {
                              n = 2,
                              default = downstream_y_lag)
 
-  # Calculate valley_length (convert from meters to feet)
+  # Calculate meander length
   loop_apex$meander_length <- pointDistance(p1 = cbind(loop_apex$POINT_X,
                                                        loop_apex$POINT_Y),
                                             p2 = cbind(loop_apex$downstream_x,
