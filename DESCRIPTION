@@ -1,6 +1,6 @@
 Package: fgm
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.2
+Version: 0.1.4
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -28,18 +28,23 @@ Depends: R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat,
+    fgm,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat    
 VignetteBuilder: knitr
 Imports: 
-    RegionalCurve,
     arcgisbinding,
-    dplyr,
-    Metrics,
     assertthat,
+    conicfit,
+    dplyr,
     ggplot2,
-    reshape2,
     ggrepel,
-    kableExtra
+    kableExtra,
+    Metrics,
+    raster,
+    reshape2,
+    RegionalCurve,
+    rlang,
+    tidyr
 RoxygenNote: 6.1.1

@@ -4,7 +4,7 @@
 #' of the input stream reach.
 #'
 #' @export
-#' @param xs_dimensions   data frame; a data frame of cross section
+#' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
 #' @param features        data frame; a data frame of river features
 #' @param label_xs        boolean; Draw the cross section locations?
@@ -12,7 +12,7 @@
 #' @return A ggplot2 object.
 #'
 #' @seealso The \code{profile_plot} function requires a \code{xs_dimensions}
-#' dataframe. See the \code{\link{sin_xs_dimensions}} package dataset for an
+#' dataframe. See the \code{sin_xs_dimensions} package dataset for an
 #' example of this format of cross section data produced by the
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
@@ -21,16 +21,17 @@
 #' sin_xs_dims_df <- fgm::sin_xs_dimensions@@data
 #'
 #' # Call the xs_plot function
-#' sin_profile <- xs_profile_plot(xs_dimensions = sin_xs_dims_df)
+#' sin_profile <- xs_profile_plot(reach_xs_dims = sin_xs_dims_df)
 #'
 #' # Print the graph
 #' sin_profile
 #'
 #' @importFrom assertthat assert_that
+#' @importFrom rlang .data
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
-#' theme_bw theme element_rect element_blank element_line labs
+#' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
 xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
@@ -38,7 +39,9 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
   xs_dims <- gather(reach_xs_dims,
                     key = "water_levels",
                     value = "elevations",
-                    watersurface_elev, bankfull_elev, floodprone_elev)
+                    .data$watersurface_elev,
+                    .data$bankfull_elev,
+                    .data$floodprone_elev)
 
   # Determine min y value
   plot_min_y <- min(xs_dims$elevations)
@@ -58,7 +61,7 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
   xs_lines <- gather(reach_xs_dims,
                      key = "elevations",
                      value = "values",
-                     elev_min, elev_max)
+                     .data$elev_min, .data$elev_max)
 
   # Define colors and labels. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette using names from colors().
@@ -67,8 +70,9 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
             "Water Surface" = "cadetblue3")
 
   # Draw the graph
-  p <- ggplot(data = xs_dims,
-              aes(x = km_to_mouth, y = elevations, color = water_levels)) +
+  p <- ggplot(xs_dims, aes(x = .data$km_to_mouth,
+                           y = .data$elevations,
+                           color = .data$water_levels)) +
   geom_line(size = 2) +
   scale_color_manual(values = cols) +
   scale_x_reverse() +
@@ -85,20 +89,24 @@ xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
   # Draw cross section labels
   xs_line <- geom_line(inherit.aes = FALSE,
                        data = xs_lines,
-                       aes(x = km_to_mouth, y = values, group = Seq),
+                       aes(x = .data$km_to_mouth,
+                           y = .data$values,
+                           group = .data$Seq),
                        show.legend = FALSE)
   xs_labels <- geom_text_repel(inherit.aes = FALSE,
                                data = xs_lines[xs_lines$elevations == "elev_max",],
-                               aes(x = km_to_mouth, y = values, label = Seq),
+                               aes(x = .data$km_to_mouth,
+                                   y = .data$values,
+                                   label = .data$Seq),
                                size = 1.8)
 
   # Label river features
   if(!is.null(features)) {
      features <- geom_text_repel(inherit.aes = FALSE,
                                  data = features,
-                                 aes(x = km_to_mouth,
-                                     y = rep(plot_min_y - 0, length(Name)),
-                                     label = Name),
+                                 aes(x = .data$km_to_mouth,
+                                     y = rep(plot_min_y - 0, length(.data$Name)),
+                                     label = .data$Name),
                                  nudge_x = 0, angle = 90, size = 1.8,
                                  force = 0.01,
                                  segment.size = 0)

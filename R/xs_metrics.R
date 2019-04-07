@@ -37,6 +37,8 @@
 #'        \item{xs_depth}{numeric; The maximum depth at the specified
 #'                        detrended bankfull elevation, units: detrended
 #'                        feet.}
+#'        \item{discharge}{numeric; The estimated discharge at the specified
+#'                         drainage area.}
 #'        \item{fp_area}{numeric; The cross sectional area at the flood prone
 #'                       elevation, units: square feet.}
 #'        \item{fp_width}{numeric; The cross section width at the flood prone
@@ -134,13 +136,14 @@ xs_metrics <- function(xs_points, stream, xs_number,
   # Build data frame of results
   dims <- data.frame(stream, xs_number, xs_type, bankfull_elevation,
                      drainage_area, xs_dims$xs_area, xs_dims$xs_width,
-                     xs_dims$xs_depth, fp_dims$xs_area, fp_dims$xs_width,
+                     xs_dims$xs_depth, xs_dims$discharge,
+                     fp_dims$xs_area, fp_dims$xs_width,
                      fp_dims$xs_depth, xs_width_depth, xs_entrench,
-                     watersurface_elev, xs_dims$ground_elev,
-                     fp_dims$ground_elev, stringsAsFactors = FALSE)
+                     watersurface_elev, xs_dims$ground_elev, fp_dims$ground_elev,
+                     stringsAsFactors = FALSE)
   colnames(dims) <- c("reach_name", "cross_section", "xs_type",
                       "bankfull_elevation", "drainage_area",
-                      "xs_area", "xs_width", "xs_depth",
+                      "xs_area", "xs_width", "xs_depth", "discharge",
                       "fp_area", "fp_width", "fp_depth",
                       "xs_width_depth_ratio", "xs_entrenchment_ratio",
                       "watersurface_elev", "bankfull_elev",

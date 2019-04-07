@@ -4,14 +4,14 @@
 #' input stream reach.
 #'
 #' @export
-#' @param xs_dimensions   data frame; a data frame of cross section
+#' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
 #' @param label_xs        boolean; Draw the cross section locations?
 #'
 #' @return A ggplot2 object.
 #'
 #' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' dataframe. See the \code{\link{sin_xs_dimensions}} package dataset for an
+#' dataframe. See the \code{sin_xs_dimensions} package dataset for an
 #' example of this format of cross section data produced by the
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
@@ -20,12 +20,13 @@
 #' sin_xs_dims_df <- fgm::sin_xs_dimensions@@data
 #'
 #' # Call the xs_plot function
-#' sin_profile <- xs_metrics_plot(xs_dimensions = sin_xs_dims_df)
+#' sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
 #'
 #' # Print the graph
 #' sin_profile
 #'
 #' @importFrom assertthat assert_that
+#' @importFrom rlang .data
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
@@ -36,8 +37,10 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
   xs_dims <- gather(reach_xs_dims,
                     key = "metrics",
                     value = "values",
-                    xs_width_depth_ratio, xs_entrenchment_ratio,
-                    slope, sinuosity)
+                    .data$xs_width_depth_ratio,
+                    .data$xs_entrenchment_ratio,
+                    .data$slope,
+                    .data$sinuosity)
 
   # Set factor levels to control legend
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -59,8 +62,10 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
             "Sinuosity"          = "darkolivegreen")
 
   # Draw the graph
-  p <- ggplot(data = xs_dims,
-              aes(x = km_to_mouth, y = values, color = metrics, label = Seq)) +
+  p <- ggplot(xs_dims,
+              aes(x = .data$km_to_mouth,
+                  y = .data$values,
+                  color = .data$metrics, label = .data$Seq)) +
     geom_line(size = 2) +
     scale_color_manual(values = cols) +
     scale_x_reverse() +

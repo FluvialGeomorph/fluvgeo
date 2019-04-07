@@ -77,9 +77,11 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   # Create local variables
   xs_stations        <- xs_points$POINT_M * 3.28084   # Convert meters to ft
   xs_dem_elev        <- xs_points$DEM_Z               # Elevations in feet
+
   # Convert detrended elevation to actual elevation
   eg <- mean(xs_points$DEM_Z - xs_points$Detrend_DEM_Z)
   ae <- detrend_elevation + eg
+
   ## Calculate the cross sectional area under a proposed bankfull elevation
   # Approach: the area between two curves is equal to the integral of the
   # difference between the two curves.
@@ -94,14 +96,21 @@ xs_geometry <- function(xs_points, detrend_elevation) {
                        upper = max(xs_stations),
                        subdivisions = 100000,
                        stop.on.error = FALSE)
+
   # Calculate cross sectional width (cross section spacing * # of xs
   # depths > 0)
   d1 <- f2(xs_stations)
   xs_width <- mean(diff(xs_stations)) * length(d1[d1 > 0])
+
   # Calculate cross sectional max depth
   xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
+
+  # Set discharge (as a placeholder field for other functions)
+  discharge <- NA
+
   # Construct output table
-  xs_dims <- data.frame(xs_width, xs_depth, xs_area$value, ae)
-  colnames(xs_dims) <- c("xs_width", "xs_depth", "xs_area", "ground_elev")
+  xs_dims <- data.frame(xs_width, xs_depth, xs_area$value, discharge, ae)
+  colnames(xs_dims) <- c("xs_width", "xs_depth", "xs_area", "discharge",
+                         "ground_elev")
   return(xs_dims)
 }

@@ -23,7 +23,8 @@ hydraulic geometry.}
 }
 \value{
 A data frame of cross section hydraulic geometry dimensions (area,
-   width, depth) by cross section, xs type, and bankfull elevation.
+   width, depth, discharge) by cross section, xs type, and bankfull
+   elevation.
    \describe{
        \item{reach_name}{character; The name of the stream.}
        \item{cross_section}{numeric; The cross section unique identifier.
@@ -45,6 +46,8 @@ A data frame of cross section hydraulic geometry dimensions (area,
        \item{xs_depth}{numeric; The maximum depth at the specified
                       detrended bankfull elevation, units: detrended
                       feet.}
+       \item{discharge}{numeric; The estimated discharge at the specified
+                        drainage area.}
    }
 }
 \description{

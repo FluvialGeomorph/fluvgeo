@@ -1,3 +1,4 @@
+library(fgm)
 context("xs_plot")
 
 # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame

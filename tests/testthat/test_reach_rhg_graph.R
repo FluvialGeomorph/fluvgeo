@@ -1,3 +1,4 @@
+library(fgm)
 context("reach_rhg_graph")
 
 # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame

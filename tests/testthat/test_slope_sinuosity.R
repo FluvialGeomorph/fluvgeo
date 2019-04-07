@@ -1,3 +1,4 @@
+library(fgm)
 context("slope_sinuosity")
 
 # Extract attribute data from the fgm::sin_flowline_points SpatialPointsDataFrame

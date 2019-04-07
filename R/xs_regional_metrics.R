@@ -40,6 +40,8 @@
 #'        \item{xs_depth}{numeric; The maximum depth at the specified
 #'                        detrended bankfull elevation, units: detrended
 #'                        feet.}
+#'        \item{discharge}{numeric; The estimated discharge at the specified
+#'                         drainage area.}
 #'    }
 #'
 #' @seealso
@@ -118,14 +120,18 @@ xs_regional_metrics <- function(xs_points, stream, xs_number,
   rhg_depth   <- RHG(region = region,
                      drainageArea = drainage_area,
                      dimensionType = "depth")
+  rhg_discharge <- RHG(region = region,
+                       drainageArea = drainage_area,
+                       dimensionType = "discharge")
   # Build a data frame of RHG results
   rhg <- data.frame(stream, xs_number, region, bankfull_elevation,
                     drainage_area, rhg_xs_area, rhg_width, rhg_depth,
+                    rhg_discharge,
                     stringsAsFactors = FALSE)
   # Assign column names
   column_names <- c("reach_name", "cross_section", "xs_type",
                     "bankfull_elevation", "drainage_area", "xs_area",
-                    "xs_width", "xs_depth")
+                    "xs_width", "xs_depth", "discharge")
   # Assign column names to rhg data frame
   colnames(rhg) <- column_names
   # Build a data frame of xs geometry results

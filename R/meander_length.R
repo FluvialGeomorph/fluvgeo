@@ -9,7 +9,8 @@
 #' @return Returns a data frame of loops with the calculated meander length.
 #'
 #' @importFrom assertthat assert_that
-#' @importFrom dplyr lead lag
+#' @importFrom stats aggregate
+#' @importFrom dplyr last lead lag
 #' @importFrom raster pointDistance
 #'
 meander_length <- function(bankline_points) {
@@ -24,9 +25,10 @@ meander_length <- function(bankline_points) {
   apex_points <- loop_apex_points[with(loop_apex_points, order(loop)), ]
 
   # Aggregate multiple apex loop points into a single apex point feature
-  loop_apex <- aggregate(apex_points[c("POINT_X", "POINT_Y", "POINT_M", "DEM_Z",
-                                       "v_POINT_X", "v_POINT_Y", "v_POINT_M")],
-                         by = apex_points[c("loop")], FUN = mean)
+  loop_apex <- stats::aggregate(apex_points[c("POINT_X", "POINT_Y", "POINT_M",
+                                              "DEM_Z", "v_POINT_X", "v_POINT_Y",
+                                              "v_POINT_M")],
+                                by = apex_points[c("loop")], FUN = mean)
 
   # Calculate coords of last record. Use as default to lead
   # to prevent NAs being introduced at the end of the series.

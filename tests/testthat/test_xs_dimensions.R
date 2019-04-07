@@ -1,3 +1,4 @@
+library(fgm)
 context("xs_dimension")
 
 # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame

@@ -42,6 +42,8 @@ A data frame of hydraulic dimensions for the specified cross section
        \item{xs_depth}{numeric; The maximum depth at the specified
                        detrended bankfull elevation, units: detrended
                        feet.}
+       \item{discharge}{numeric; The estimated discharge at the specified
+                        drainage area.}
        \item{fp_area}{numeric; The cross sectional area at the flood prone
                       elevation, units: square feet.}
        \item{fp_width}{numeric; The cross section width at the flood prone

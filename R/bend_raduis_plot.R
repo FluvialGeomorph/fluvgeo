@@ -15,9 +15,12 @@
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom conicfit CircleFitByTaubin
+#' @importFrom conicfit calculateCircle
+#' @importFrom rlang .data
+#' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_bw labs annotate
 #'
 bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
-  # Subset banlkine_points the for the input loop and bend
+  # Subset bankline_points the for the input loop and bend
   bend_pts <- bankline_points[which(bankline_points$loop == loop & bankline_points$bend == bend), ]
 
   # Convert xy to a matrix for conicfit functions
@@ -28,15 +31,16 @@ bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
   center <- conicfit::CircleFitByTaubin(bend_xy_m)
 
   # Calculate circle
-  circle <- calculateCircle(center[1], center[2], center[3])
+  circle <- conicfit::calculateCircle(center[1], center[2], center[3])
   circle_df <- as.data.frame(circle)
 
   # Plot the bend
-  ggplot(bend_xy, aes(x = POINT_X, y = POINT_Y)) +
+  ggplot(bend_xy, aes(x = .data$POINT_X, y = .data$POINT_Y)) +
     geom_point() +
     coord_fixed(ratio = 1) +
     geom_point(aes(x = center[1], y = center[2]), colour="blue", size = 3) +
-    geom_point(data = circle_df, aes(x = V1, y = V2), colour="red",
+    geom_point(circle_df, aes(x = .data$V1, y = .data$V2),
+               colour="red",
                inherit.aes = FALSE) +
     theme_bw() +
     labs(title = paste0("Loop: ", loop, " Bend: ", bend),

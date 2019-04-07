@@ -7,12 +7,12 @@
 xs_profile_plot(reach_xs_dims, features = NULL, label_xs = TRUE)
 }
 \arguments{
+\item{reach_xs_dims}{data frame; a data frame of cross section
+dimensions.}
+
 \item{features}{data frame; a data frame of river features}
 
 \item{label_xs}{boolean; Draw the cross section locations?}
-
-\item{xs_dimensions}{data frame; a data frame of cross section
-dimensions.}
 }
 \value{
 A ggplot2 object.
@@ -26,7 +26,7 @@ of the input stream reach.
 sin_xs_dims_df <- fgm::sin_xs_dimensions@data
 
 # Call the xs_plot function
-sin_profile <- xs_profile_plot(xs_dimensions = sin_xs_dims_df)
+sin_profile <- xs_profile_plot(reach_xs_dims = sin_xs_dims_df)
 
 # Print the graph
 sin_profile
@@ -34,7 +34,7 @@ sin_profile
 }
 \seealso{
 The \code{profile_plot} function requires a \code{xs_dimensions}
-dataframe. See the \code{\link{sin_xs_dimensions}} package dataset for an
+dataframe. See the \code{sin_xs_dimensions} package dataset for an
 example of this format of cross section data produced by the
 \code{FluvialGeomorph} ArcGIS toolbox.
 }

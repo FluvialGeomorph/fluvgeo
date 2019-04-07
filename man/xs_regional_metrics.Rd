@@ -48,6 +48,8 @@ A data frame of hydraulic dimensions for the specified cross
        \item{xs_depth}{numeric; The maximum depth at the specified
                        detrended bankfull elevation, units: detrended
                        feet.}
+       \item{discharge}{numeric; The estimated discharge at the specified
+                        drainage area.}
    }
 }
 \description{

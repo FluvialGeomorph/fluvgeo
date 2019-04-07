@@ -44,7 +44,7 @@ sin_4_plot
 }
 \seealso{
 The \code{xs_plot} function requires a \code{xs_points} dataframe.
-See the \code{\link{sin_xs_points}} package dataset for an example of this
+See the \code{sin_xs_points} package dataset for an example of this
 format of cross section data produced by the \code{FluvialGeomorph} ArcGIS
 toolbox.
 }
