@@ -16,4 +16,14 @@ sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
                                  lead_lag = 1,
                                  loess_span = 5)
 
-test_that("Check", {})
+test_that("Check output data structures", {
+  assert_that(check_data_structure(sin_flowline_ss, "slope_sinuosity"),
+              msg = "'sin_flowline_ss' does not meet the data specification")
+  assert_that(check_data_structure(sin_riffle_ss, "slope_sinuosity"),
+              msg = "'sin_riffle_ss' does not meet the data specification")
+})
+
+test_that("Check that water flows downhill", {
+  assert_that(check_data_structure(sin_flowline_ss, "downhill"),
+              msg = "'sin_flowline_ss' does not flow downhill")
+})

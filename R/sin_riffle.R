@@ -1,6 +1,6 @@
 #' @docType data
 #'
-#' @title Sinachwine Creek, IL riffles
+#' @title Sinsinawa Creek, IL riffles
 #'
 #' @description  A \code{sp::SpatialLinesDataFrame} object containing stream
 #' riffles (Seq 1 - 10). These features represent the location of riffles

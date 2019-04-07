@@ -4,20 +4,20 @@
 \alias{check_data_structure}
 \title{Check the validity of an fgm data structure}
 \usage{
-check_data_structure(data_structure, data_type)
+check_data_structure(data_structure, data_type = c("channel_feature",
+  "bankline_points", "slope_sinuosity", "downhill"))
 }
 \arguments{
 \item{data_structure}{data frame; a data frame used by the fgm package}
 
 \item{data_type}{character; the types of data structures used by the
-fgm package. One of: 'channel_feature',
-'bankline_points'}
+fgm package.}
 }
 \value{
 Returns TRUE if the `data_structure` parameter matches the
 requirements. The function throws an error for data structures not matching
 the data type specification. Returns the string "Not a listed data structure"
-if the `data_type` parameter is not a listed package data type.
+if the `data_type` parameter is not an fgm package data type.
 }
 \description{
 Checks that the input data structure meets the requirements for

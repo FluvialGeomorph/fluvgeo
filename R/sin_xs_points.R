@@ -1,6 +1,6 @@
 #' @docType data
 #'
-#' @title Sinachwine Creek, IL stream cross section points
+#' @title Sinsinawa Creek, IL stream cross section points
 #'
 #' @description  A \code{sp::SpatialPointsDataFrame} object containing stream
 #' cross section points for two cross sections (Seq 4, 5). These points

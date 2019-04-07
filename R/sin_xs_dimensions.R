@@ -1,6 +1,6 @@
 #' @docType data
 #'
-#' @title Sinachwine Creek, IL cross section dimensions
+#' @title Sinsinawa Creek, IL cross section dimensions
 #'
 #' @description  A \code{sp::SpatialLinesDataFrame} object containing stream
 #' cross sections with calculated geomorphic dimensions (Seq 1 - 10).
