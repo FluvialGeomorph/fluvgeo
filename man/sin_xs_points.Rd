@@ -3,7 +3,7 @@
 \docType{data}
 \name{sin_xs_points}
 \alias{sin_xs_points}
-\title{Sinachwine Creek, IL stream cross section points}
+\title{Sinsinawa Creek, IL stream cross section points}
 \format{A \code{SpatialPointsDataFrame} with 1413 observations and 9
     variables.
 \describe{

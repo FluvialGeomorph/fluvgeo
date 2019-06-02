@@ -15,8 +15,10 @@
 #'
 meander_length <- function(bankline_points) {
   # Check parameters
+  assert_that(check_data_structure(bankline_points, "channel_feature"),
+              msg = "'bankline_points' does not meet the channel_feature data specification")
   assert_that(check_data_structure(bankline_points, "bankline_points"),
-              msg = "'channel_features' does not meet the data specification")
+              msg = "'bankline_points' does not meet the bankline_points data specification")
 
   # Select loop apex points
   loop_apex_points <- bankline_points[bankline_points$position == "apex", ]

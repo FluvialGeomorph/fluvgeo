@@ -3,7 +3,7 @@
 \docType{data}
 \name{sin_riffle}
 \alias{sin_riffle}
-\title{Sinachwine Creek, IL riffles}
+\title{Sinsinawa Creek, IL riffles}
 \format{A \code{SpatialLinesDataFrame} with 10 observations and 11
     variables.
 \describe{

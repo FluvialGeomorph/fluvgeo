@@ -3,7 +3,7 @@
 \docType{data}
 \name{sin_xs_dimensions}
 \alias{sin_xs_dimensions}
-\title{Sinachwine Creek, IL cross section dimensions}
+\title{Sinsinawa Creek, IL cross section dimensions}
 \format{A \code{SpatiallinesDataFrame} with 10 observations and 22
     variables.
 \describe{

@@ -57,7 +57,7 @@ estimate_bankfull <- function(xs_points, streams, regions, bankfull_elevations,
     if (output_format == "word_document") {extension <- ".docx"}
     if (output_format == "pdf_document")  {extension <- ".pdf"}
     output_file <- file.path(output_dir, paste0("bankfull_estimate_",
-                                                g, extension))
+                                                g, "_", bf_estimate, extension))
 
     # Subset xs_points for the current stream
     xs_pts <- xs_points[xs_points$ReachName == g, ]

@@ -21,10 +21,10 @@
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_flowline_points SpatialPointsDataFrame
-#' sin_flowline_points_df <- fgm::sin_flowline_points@data
+#' sin_flowline_points_df <- fgm::sin_flowline_points@@data
 #'
 #' # Extract data from the fgm::sin_riffle SpatialLinesDataFrame
-#' sin_riffle_df <- fgm::sin_riffle@data
+#' sin_riffle_df <- fgm::sin_riffle@@data
 #'
 #' # Call the slope_sinuosity function for a flowline
 #' sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
