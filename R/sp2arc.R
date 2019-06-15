@@ -28,6 +28,22 @@
 #'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 #' }
 #'
+#'@examples
+#' \dontest{
+#' library(arcgisbinding)
+#' arc.check_product()
+#'
+#' # Path to an ESRI geodatabase feature class to import
+#' fc_path_in <- file.path(getwd(), "data-raw/test.gdb/riffle")
+#' fc_sp <- arc2sp(fc_path = fc_path_in)
+#'
+#' ## Do some R operations here ##
+#'
+#' # Path to the ESRI geodatabase feature class to be saved
+#' fc_path_out <- file.path(getwd(), "data-raw/test.gdb/sp2arc_test")
+#' sp2arc(sp_object = fc_sp, fc_path = fc_path_out)
+#' }
+#'
 sp2arc <- function(sp_object, fc_path) {
   # Convert the sp object to an ArcGIS data object
   arcobj <- arcgisbinding::arc.sp2data(sp_object)

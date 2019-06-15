@@ -31,8 +31,9 @@
 #' library(arcgisbinding)
 #' arc.check_product()
 #'
-#' fcpath <- file.path(getwd(), "data-raw/test.gdb/riffle")
-#' fc_sp <- arc2sp(fc_path = fcpath)
+#' # Path to an ESRI geodatabase feature class
+#' fc_path_in <- file.path(getwd(), "data-raw/test.gdb/riffle")
+#' fc_sp <- arc2sp(fc_path = fc_path_in)
 #' }
 #'
 arc2sp <- function(fc_path) {
