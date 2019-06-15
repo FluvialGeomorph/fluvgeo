@@ -26,6 +26,15 @@
 #'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 #' }
 #'
+#' @examples
+#' \dontest{
+#' library(arcgisbinding)
+#' arc.check_product()
+#'
+#' fcpath <- file.path(getwd(), "data-raw/test.gdb/riffle")
+#' fc_sp <- arc2sp(fc_path = fcpath)
+#' }
+#'
 arc2sp <- function(fc_path) {
   # Open a connection to the specified ArcGIS feature class
   arcobj <- arcgisbinding::arc.open(fc_path)
