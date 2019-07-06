@@ -24,5 +24,5 @@ sin_xs_points       <- fgm::arc2sp("test.gdb/cross_section_points")
 sin_xs_dimensions   <- fgm::arc2sp("test.gdb/cross_section_dims")
 ```
 
-
+# Run the `usethis::use_data` in the `create_package_steps.R` for each dataset
 

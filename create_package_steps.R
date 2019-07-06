@@ -51,7 +51,7 @@ devtools::document()
 # Create the /data-raw folder and add to .Rbuildignore
 usethis::use_data_raw()
 
-# Use the Create_package_data.Rmd file to process package data
+# Use the data-raw/Create_package_data.Rmd file to process package data
 
 # Add the sin_flowline_points sp object to the package
 usethis::use_data(sin_flowline_points, overwrite = TRUE)
