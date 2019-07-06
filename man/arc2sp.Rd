@@ -25,6 +25,17 @@ instructions at
 \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
 \code{ArcGIS Desktop} users.
 }
+\examples{
+\dontest{
+library(arcgisbinding)
+arc.check_product()
+
+# Path to an ESRI geodatabase feature class
+fc_path_in <- file.path(getwd(), "data-raw/test.gdb/riffle")
+fc_sp <- arc2sp(fc_path = fc_path_in)
+}
+
+}
 \references{
 \describe{
   \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}

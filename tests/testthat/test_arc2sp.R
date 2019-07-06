@@ -13,13 +13,14 @@ load_libraries <- function() {
 
 load_data <- function() {
   # Path to an ESRI geodatabase feature class
-  fc_path_in <- file.path(getwd(), "data-raw/test.gdb/riffle")
+  fc_path_in <- paste(system.file("extdata", "test.gdb", package = "fgm"),
+                       "riffle", sep = "/")
 }
 
 test_that("arc2sp works!", {
   skip_if_no_arc()
   load_libraries()
-  in_fc_path <- load_data()
-  fc_sp <- arc2sp(fc_path = in_fc_path)
+  fc_path_in <- load_data()
+  fc_sp <- arc2sp(fc_path = fc_path_in)
   expect_equal(class(fc_sp)[1], "SpatialLinesDataFrame")
 })
