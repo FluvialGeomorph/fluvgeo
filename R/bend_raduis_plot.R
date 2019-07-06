@@ -39,7 +39,7 @@ bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
     geom_point() +
     coord_fixed(ratio = 1) +
     geom_point(aes(x = center[1], y = center[2]), colour="blue", size = 3) +
-    geom_point(circle_df, aes(x = .data$V1, y = .data$V2),
+    geom_point(circle_df, mapping = aes(x = .data$V1, y = .data$V2),
                colour="red",
                inherit.aes = FALSE) +
     theme_bw() +
