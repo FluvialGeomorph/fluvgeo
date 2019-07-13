@@ -68,9 +68,9 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
   cols <- c("Width Depth Ratio"  = "coral3",
             "Entrenchment Ratio" = "darkslategray4",
             "Slope"              = "darkgoldenrod4",
-            "Sinuosity"          = "darkolivegreen",
-            "Bend Radius"        = "firebrick4",
-            "Meander Length"     = "darkslateblue",
+            "Sinuosity"          = "mediumpurple4",
+            "Bend Radius"        = "indianred4",
+            "Meander Length"     = "darkolivegreen",
             "Meander Width"      = "plum4")
 
   # Draw the graph
