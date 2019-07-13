@@ -24,7 +24,7 @@ check_data_structure <-function(data_structure,
 
   switch(data_type,
          channel_feature = channel_feature_test(data_structure),
-         cross_section   = cross_section(data_structure),
+         cross_section   = cross_section_test(data_structure),
          bankline_points = bankline_points_test(data_structure),
          slope_sinuosity = slope_sinuosity_test(data_structure),
          downhill        = downhill_test(data_structure),
@@ -192,14 +192,23 @@ bankline_points_test <- function(bankline_points) {
   assert_that("position" %in% colnames(bankline_points) &
                 is.character(bankline_points$position),
               msg = paste("Numeric field 'position' missing from ", name))
-  assert_that("v_POINT_X" %in% colnames(bankline_points) &
-                is.numeric(bankline_points$v_POINT_X),
-              msg = paste("Numeric field 'v_POINT_X' missing from ", name))
-  assert_that("v_POINT_Y" %in% colnames(bankline_points) &
-                is.numeric(bankline_points$v_POINT_Y),
-              msg = paste("Numeric field 'v_POINT_Y' missing from ", name))
-  assert_that("v_POINT_M" %in% colnames(bankline_points) &
-                is.numeric(bankline_points$v_POINT_M),
-              msg = paste("Numeric field 'v_POINT_M' missing from ", name))
+  assert_that("bank_POINT_X" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_X),
+              msg = paste("Numeric field 'bank_POINT_X' missing from ", name))
+  assert_that("bank_POINT_Y" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_Y),
+              msg = paste("Numeric field 'bank_POINT_Y' missing from ", name))
+  assert_that("bank_POINT_M" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_M),
+              msg = paste("Numeric field 'bank_POINT_M' missing from ", name))
+  assert_that("valley_POINT_X" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_X),
+              msg = paste("Numeric field 'valley_POINT_X' missing from ", name))
+  assert_that("valley_POINT_Y" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_Y),
+              msg = paste("Numeric field 'valley_POINT_Y' missing from ", name))
+  assert_that("valley_POINT_M" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_M),
+              msg = paste("Numeric field 'valley_POINT_M' missing from ", name))
 }
 

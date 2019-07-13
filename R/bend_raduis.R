@@ -23,7 +23,7 @@ bend_radius <- function(bankline_points) {
   # Sort bankline_points by loop, bend, and POINT_M
   bankline_pts <- bankline_points[with(bankline_points, order(loop,
                                                               bend,
-                                                              POINT_M)), ]
+                                                              bank_POINT_M)), ]
 
   # Create a list to hold the bend dimensions
   bend_dims <- list()
@@ -47,7 +47,7 @@ bend_radius <- function(bankline_points) {
       bend_pts <- bank_pts[bank_pts$bend == b, ]
 
       # Convert xy to a matrix for conicfit functions
-      bend_xy <- bend_pts[, c("POINT_X", "POINT_Y")]
+      bend_xy <- bend_pts[, c("bank_POINT_X", "bank_POINT_Y")]
       bend_xy_m <- as.matrix(bend_xy)
 
       # Calculate circle center and radius
@@ -58,7 +58,7 @@ bend_radius <- function(bankline_points) {
                                           "bend" = b,
                                           "bend_POINT_X" = center[1],
                                           "bend_POINT_Y" = center[2],
-                                          "bend_radius" = center[3])
+                                          "bend_radius"  = center[3])
 
     }
   }
