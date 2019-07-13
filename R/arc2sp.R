@@ -27,7 +27,7 @@
 #' }
 #'
 #' @examples
-#' \dontest{
+#' \donttest{
 #' library(arcgisbinding)
 #' arc.check_product()
 #'

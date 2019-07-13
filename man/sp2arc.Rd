@@ -29,7 +29,7 @@ instructions at
 \code{ArcGIS Desktop} users.
 }
 \examples{
-\dontest{
+\donttest{
 library(arcgisbinding)
 arc.check_product()
 
