@@ -40,18 +40,27 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                     .data$xs_width_depth_ratio,
                     .data$xs_entrenchment_ratio,
                     .data$slope,
-                    .data$sinuosity)
+                    .data$sinuosity,
+                    .data$bend_radius,
+                    .data$meander_length,
+                    .data$meander_width)
 
   # Set factor levels to control legend
   xs_dims$metrics <- factor(xs_dims$metrics,
                             levels = c("xs_width_depth_ratio",
                                        "xs_entrenchment_ratio",
                                        "slope",
-                                       "sinuosity"),
+                                       "sinuosity",
+                                       "bend_radius",
+                                       "meander_length",
+                                       "meander_width"),
                             labels = c("Width Depth Ratio",
                                        "Entrenchment Ratio",
                                        "Slope",
-                                       "Sinuosity"))
+                                       "Sinuosity",
+                                       "Bend Radius",
+                                       "Meander Length",
+                                       "Meander Width"))
 
   # Define colors and labels. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette - Moonrise Kingdom
@@ -59,7 +68,10 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
   cols <- c("Width Depth Ratio"  = "coral3",
             "Entrenchment Ratio" = "darkslategray4",
             "Slope"              = "darkgoldenrod4",
-            "Sinuosity"          = "darkolivegreen")
+            "Sinuosity"          = "darkolivegreen",
+            "Bend Radius"        = "firebrick4",
+            "Meander Length"     = "darkslateblue",
+            "Meander Width"      = "plum4")
 
   # Draw the graph
   p <- ggplot(xs_dims,
