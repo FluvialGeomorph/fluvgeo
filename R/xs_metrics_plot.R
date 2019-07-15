@@ -78,7 +78,8 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
               aes(x = .data$km_to_mouth,
                   y = .data$values,
                   color = .data$metrics, label = .data$Seq)) +
-    geom_line(size = 2) +
+    geom_point(size = 2) +
+    geom_line(size = 1) +
     scale_color_manual(values = cols) +
     scale_x_reverse() +
     theme_bw() +
