@@ -9,11 +9,11 @@ sin_riffle_df <- fgm::sin_riffle@data
 
 # Call the slope_sinuosity function for a flowline
 sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
-                                   lead_lag = 1000)
+                                   lead_n = 1000, lag_n = 0)
 
 # Call the slope_sinuosity function for a cross section
 sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
-                                 lead_lag = 1,
+                                 lead_n = 1, lag_n = 0,
                                  loess_span = 5)
 
 test_that("Check output data structures", {

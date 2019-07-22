@@ -6,9 +6,11 @@
 #' @export
 #' @param channel_features data frame; a data frame of channel features (i.e.,
 #'                         cross section, flowline points, etc.)
-#' @param lead_lag         numeric; The number of features to lead/lag on
-#'                         either side of each feature that will be used to
-#'                         calculate the slope and sinuosity. Must be an
+#' @param lead_n           numeric; The number of features to lead (upstream)
+#'                         to calculate the slope and sinuosity. Must be an
+#'                         integer.
+#' @param lag_n            numeric; The number of features to lag (downstream)
+#'                         to calculate the slope and sinuosity. Must be an
 #'                         integer.
 #' @param use_smoothing    boolean; determines if smoothed elevation values
 #'                         are used to calculate gradient. values are:
@@ -16,8 +18,8 @@
 #' @param loess_span       numeric; the loess regression span parameter,
 #'                         defaults to 0.05
 #'
-#' @return A dataframe of dimensions representing the position of each feature
-#' within the channel.
+#' @return A dataframe of slope and sinuosity dimensions representing the
+#' position of each feature within the channel.
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_flowline_points SpatialPointsDataFrame
@@ -28,11 +30,11 @@
 #'
 #' # Call the slope_sinuosity function for a flowline
 #' sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
-#'                                    lead_lag = 1000)
+#'                                    lead_n = 1000, lag_n = 0)
 #'
 #' # Call the slope_sinuosity function for a cross section
 #' sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
-#'                                  lead_lag = 1,
+#'                                  lead_n = 1, lag_n = 0,
 #'                                  loess_span = 5)
 #'
 #' @importFrom assertthat assert_that
@@ -40,16 +42,18 @@
 #' @importFrom dplyr first last lead lag
 #' @importFrom raster pointDistance
 #'
-slope_sinuosity <-function(channel_features,
-                           lead_lag,
+slope_sinuosity <-function(channel_features, lead_n, lag_n,
                            use_smoothing = TRUE,
                            loess_span = 0.05) {
   # Check parameters
   assert_that(check_data_structure(channel_features, "channel_feature"),
               msg = "'channel_features' does not meet the data specification")
-  assert_that(as.integer(lead_lag) == lead_lag &&
-                length(lead_lag) == 1,
-              msg = "'lead_lag' must be an integer vector of length one")
+  assert_that(as.integer(lead_n) == lead_n &&
+                length(lead_n) == 1,
+              msg = "'lead_n' must be an integer vector of length one")
+  assert_that(as.integer(lag_n) == lag_n &&
+                length(lag_n) == 1,
+              msg = "'lag_n' must be an integer vector of length one")
   assert_that(is.logical(use_smoothing) &&
                 length(use_smoothing) == 1,
               msg = "'use_smoothing' must be logical vector of length one")
@@ -81,7 +85,6 @@ slope_sinuosity <-function(channel_features,
   # Iterate through reaches and calculate gradient and sinuosity
   reaches <- levels(as.factor(flowline_pts$ReachName))
   for (r in reaches) {
-    print(r)
     # Subset flowline_pts for the current reach
     fl_pts <- flowline_pts[flowline_pts$ReachName == r, ]
 
@@ -102,28 +105,28 @@ slope_sinuosity <-function(channel_features,
     # Calculate z values (already in feet)
     if (use_smoothing == TRUE) {
       fl_pts$upstream_z   <- lead(x = fl_pts$Z_smooth,
-                                  n = lead_lag,
+                                  n = lead_n,
                                   default = upstream_z_smooth_lead)
       fl_pts$downstream_z <- lag(x = fl_pts$Z_smooth,
-                                 n = lead_lag,
+                                 n = lag_n,
                                  default = downstream_z_smooth_lag)
     }
     if (use_smoothing == FALSE) {
       fl_pts$upstream_z   <- lead(x = fl_pts$Z,
-                                  n = lead_lag,
+                                  n = lead_n,
                                   default = upstream_z_lead)
       fl_pts$downstream_z <- lag(x = fl_pts$Z,
-                                 n = lead_lag,
+                                 n = lag_n,
                                  default = downstream_z_lag)
     }
 
     # Calculate m values (and convert from kilometers to feet: 1 km =
     # 3280.84 ft)
     fl_pts$upstream_m   <- lead(x = fl_pts$POINT_M,
-                                n = lead_lag,
+                                n = lead_n,
                                 default = upstream_m_lead) * 3280.48
     fl_pts$downstream_m <- lag(x = fl_pts$POINT_M,
-                               n = lead_lag,
+                               n = lag_n,
                                default = downstream_m_lag) * 3280.48
 
     # Calculate rise and run (in feet)
@@ -143,18 +146,18 @@ slope_sinuosity <-function(channel_features,
 
     # Calculate x values
     fl_pts$upstream_x   <- lead(x = fl_pts$POINT_X,
-                                n = lead_lag,
+                                n = lead_n,
                                 default = upstream_x_lead)
     fl_pts$downstream_x <- lag(x = fl_pts$POINT_X,
-                               n = lead_lag,
+                               n = lag_n,
                                default = downstream_x_lag)
 
     # Calculate y values
     fl_pts$upstream_y   <- lead(x = fl_pts$POINT_Y,
-                                n = lead_lag,
+                                n = lead_n,
                                 default = upstream_y_lead)
     fl_pts$downstream_y <- lag(x = fl_pts$POINT_Y,
-                               n = lead_lag,
+                               n = lag_n,
                                default = downstream_y_lag)
 
     # Calculate stream_length (in feet)

@@ -4,16 +4,19 @@
 \alias{slope_sinuosity}
 \title{Calculate slope and sinuosity}
 \usage{
-slope_sinuosity(channel_features, lead_lag, use_smoothing = TRUE,
+slope_sinuosity(channel_features, lead_n, lag_n, use_smoothing = TRUE,
   loess_span = 0.05)
 }
 \arguments{
 \item{channel_features}{data frame; a data frame of channel features (i.e.,
 cross section, flowline points, etc.)}
 
-\item{lead_lag}{numeric; The number of features to lead/lag on
-either side of each feature that will be used to
-calculate the slope and sinuosity. Must be an
+\item{lead_n}{numeric; The number of features to lead (upstream)
+to calculate the slope and sinuosity. Must be an
+integer.}
+
+\item{lag_n}{numeric; The number of features to lag (downstream)
+to calculate the slope and sinuosity. Must be an
 integer.}
 
 \item{use_smoothing}{boolean; determines if smoothed elevation values
@@ -24,8 +27,8 @@ TRUE, FALSE (default)}
 defaults to 0.05}
 }
 \value{
-A dataframe of dimensions representing the position of each feature
-within the channel.
+A dataframe of slope and sinuosity dimensions representing the
+position of each feature within the channel.
 }
 \description{
 Calculates the slope and sinuosity of the input channel
@@ -40,11 +43,11 @@ sin_riffle_df <- fgm::sin_riffle@data
 
 # Call the slope_sinuosity function for a flowline
 sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
-                                   lead_lag = 1000)
+                                   lead_n = 1000, lag_n = 0)
 
 # Call the slope_sinuosity function for a cross section
 sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
-                                 lead_lag = 1,
+                                 lead_n = 1, lag_n = 0,
                                  loess_span = 5)
 
 }
