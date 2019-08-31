@@ -40,7 +40,7 @@
 #' ## Do some R operations here ##
 #'
 #' # Path to the ESRI geodatabase feature class to be saved
-#' fc_path_out <- file.path(getwd(), "data-raw/test.gdb/sp2arc_test")
+#' fc_path_out <- file.path(getwd(), "inst/extdata/test.gdb/sp2arc_test")
 #' sp2arc(sp_object = fc_sp, fc_path = fc_path_out)
 #' }
 #'

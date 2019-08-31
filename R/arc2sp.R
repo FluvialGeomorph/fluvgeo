@@ -32,7 +32,7 @@
 #' arc.check_product()
 #'
 #' # Path to an ESRI geodatabase feature class
-#' fc_path_in <- file.path(getwd(), "data-raw/test.gdb/riffle")
+#' fc_path_in <- file.path(getwd(), "inst/extdata/test.gdb/riffle")
 #' fc_sp <- arc2sp(fc_path = fc_path_in)
 #' }
 #'
