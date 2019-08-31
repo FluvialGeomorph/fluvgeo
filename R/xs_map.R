@@ -18,8 +18,8 @@
 #' @importFrom arcgisbinding arc.open arc.raster
 #' @importFrom raster extent crop terrain hillShade
 #' @importFrom grDevices colorRampPalette
-#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_compass tm_scale_bar
-#' tm_layout
+#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
+#' tm_compass tm_scale_bar tm_layout
 #'
 xs_map <- function(xs_fc, xs_number, dem, banklines, extent_factor = 7) {
   # Subset xs_fc for the requested xs_number
