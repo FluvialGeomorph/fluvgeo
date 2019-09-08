@@ -1,0 +1,85 @@
+#' @title Calculate stream power for each cross section
+#'
+#' @description Calculates stream power for each cross section in the input
+#'   xs_dims data frame.
+#'
+#' @export
+#' @param xs_dims           data frame; A data frame of cross section dimensions
+#' @param discharge_method  character; The method for calculating discharge (Q).
+#'                          Must be one of: "model_measure", "regional_curve",
+#'                          "width_relationship".
+#' @param discharge_value   numeric; The discharge value (single value or vector)
+#'                          to use for the stream power calculation. Required
+#'                          if discharge_method = "model_measure".
+#' @param region            character; The regional curve name used to calculate
+#'                          discharge. Required if discharge_method =
+#'                          "regional_curve". This parameter is passed to the
+#'                          RegionalCurve::RHG function. See the RegionalCurve
+#'                          package for a list of regions with discharge
+#'                          relationships.
+#' @param drainage_area     numeric; The drainage area (single value or vector)
+#'                          used by the RegionalCurve::RHG function to calculate
+#'                          discharge. Required if discharge_method =
+#'                          "regional_curve".
+#' @param width_method      character; The name of the width relationship used
+#'                          to calculate discharge (Q) from width. Required if
+#'                          discharge_method = "width_relationship". Must be
+#'                          one of: <list goes here when implemented>
+#'
+#' @details
+#'   \strong{Stream Power Equations}
+#'   Stream power is the rate of energy dissipation against the bed and banks
+#'   of a river or stream per unit downstream length. It is given by the
+#'   equation:
+#'
+#'   \deqn{\Omega = \rho g Q S}
+#'
+#'   where \eqn{\Omega} is the stream power, \eqn{\rho} is the density of water
+#'   (assumes 1000 kg/m3), \eqn{g} is acceleration due to gravity (9.8 m/s2),
+#'   \eqn{Q} is discharge (m3/s), and \eqn{S} is the channel slope.
+#'
+#'   Unit stream power is stream power per unit channel width, and is given by
+#'   the equation:
+#'
+#'   \deqn{\omega = (\rho g Q S) / b}
+#'
+#'   where \eqn{\omega} is the unit stream power, and \eqn{b} is the width of
+#'   the channel (m).
+#'
+#'   \url{https://en.wikipedia.org/wiki/Stream_power}
+#'
+#'   \strong{Determining Discharge}
+#'   The \code{discharge_method} parameter specifies the source used for the
+#'   discharge factor in the stream power equations.
+#'
+#' @return Returns a data frame of cross sections with the calculated stream
+#'   power and unit stream power.
+#'
+#' @importFrom assertthat assert_that
+#'
+stream_power <- function(xs_dims,
+                         discharge_method = c("model_measure",
+                                              "regional_curve",
+                                              "width_relationship"),
+                         discharge_value = NULL,
+                         region = NULL,
+                         width_method = NULL) {
+  # Set variables
+  rho <- 1000
+  g <- 9.8
+  Q <- switch(discharge_method,
+              model_measure      = discharge_value,
+              regional_curve     = RegionalCurve::RHG(region,
+                                                      drainage_area,
+                                                      "discharge"),
+              width_relationship = 0,
+              stop("discharge_method parameter is not specified correctly"))
+
+  # Calculate stream power
+  xs_dims$stream_power       <- rho * g * Q * xs_dims$slope
+  xs_dims$stream_power_lane  <- Q * xs_dims$slope
+  xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope) / xs_dims$xs_width
+
+  return(xs_dims)
+}
+
