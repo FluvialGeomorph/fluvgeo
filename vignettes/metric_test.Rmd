@@ -1,0 +1,38 @@
+---
+title: "Metric Test"
+output: html_document
+---
+
+# Metric Test
+```{r libs}
+library(fgm)
+library(arcgisbinding)
+library(ggplot2)
+library(tidyr)
+
+# Checkout an ArcGIS license
+arc.check_product()
+```
+
+```{r import_data}
+sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+sen01_xs_dimensions_df <- sen01_xs_dimensions@data
+```
+
+```{r}
+xs_dims <- stream_power(sen01_xs_dimensions_df, 
+                        discharge_method = "model_measure", 
+                        discharge_value = 1000)
+```
+
+```{r}
+xs_dims <- stream_power(sen01_xs_dimensions_df, 
+                        discharge_method = "regional_curve", 
+                        region = "Illinois River",
+                        drainage_area = sen01_xs_dimensions_df$Watershed_Area_SqMile)
+```
+
+```{r}
+xs_dims <- stream_power(sen01_xs_dimensions_df, 
+                        discharge_method = "width_relationship")
+```

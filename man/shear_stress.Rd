@@ -7,13 +7,29 @@
 shear_stress(xs_dims)
 }
 \arguments{
-\item{xs_dims}{data frame; a data frame of cross section dimensions}
+\item{xs_dims}{data frame; A data frame of cross section dimensions.}
 }
 \value{
 Returns a data frame of cross sections with the calculated shear
 stress.
 }
 \description{
-Calculates the shear stress for each cross section in the
-input xs_dims data frame.
+Calculates shear stress for each cross section in the input
+  xs_dims data frame.
+}
+\details{
+\strong{Shear Stress Equations}
+  Shear stress is a measure of the force of friction from a fluid acting on
+  a body in the path of that fluid. In the case of open channel flow, it is
+  the force of moving water against the bed of the channel. Shear stress is
+  calculated as:
+
+  \deqn{\tau = \gamma D Sw}
+
+  where: \tau is the fluid shear stress (\eqn{N/m^2}), \gamma is the specific
+  gravity of water (\eqn{N/m^3}), \eqn{D} is average water depth (m),
+  \eqn{Sw} is the water surface slope (m/m).
+
+  \strong{Lane's Balance Equations}
+  Shear stress in the
 }

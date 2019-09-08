@@ -1,6 +1,6 @@
 Package: fgm
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.7
+Version: 0.1.9
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -22,8 +22,8 @@ Description: This package contains a wide range of functions for performing
     to perform a wide range of fluvial geomorphic analysis (e.g., extract 
     stream channel dimensions, help choose bankfull elevation for ungaged 
     streams).
-License: GPL-3
-URL: https://bitbucket.di2e.net/projects/MVREGIS/repos/fgm
+License: CC0
+URL: https://github.com/mpdougherty/fgm
 Depends: R (>= 2.10)
 Encoding: UTF-8
 LazyData: true

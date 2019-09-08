@@ -9,7 +9,8 @@ stream_power(xs_dims, discharge_method = c("model_measure",
   region = NULL, drainage_area = NULL, width_method = NULL)
 }
 \arguments{
-\item{xs_dims}{data frame; A data frame of cross section dimensions}
+\item{xs_dims}{data frame; A data frame of cross section
+dimensions.}
 
 \item{discharge_method}{character; The method for calculating discharge (Q).
 Must be one of: "model_measure", "regional_curve",

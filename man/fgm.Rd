@@ -40,7 +40,7 @@ require ESRI \code{ArcGIS Desktop} or \code{ArcGIS Pro}.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://bitbucket.di2e.net/projects/MVREGIS/repos/fgm}
+  \item \url{https://github.com/mpdougherty/fgm}
 }
 
 }

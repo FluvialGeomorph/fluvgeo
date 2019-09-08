@@ -1,5 +1,22 @@
+---
+output: github_document
+---
 <!-- rmarkdown v1 -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+library(RegionalCurve)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
 
 # fgm
 An R Package for Performing **F**luvial **G**eo**M**orphology Analysis <img src="man/figures/castle.png" align="right" />
@@ -8,7 +25,7 @@ An R Package for Performing **F**luvial **G**eo**M**orphology Analysis <img src=
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)
 [![Project Status: Active The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![packageversion](https://img.shields.io/badge/Package%20version-0.1.9-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2019--09--08-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
