@@ -4,7 +4,7 @@
 \alias{feature_extent}
 \title{Calculate expanded feature extent}
 \usage{
-feature_extent(feature, extent_factor)
+feature_extent(feature, extent_factor = 1)
 }
 \arguments{
 \item{feature}{sp::Spatial* feature; a feature class}

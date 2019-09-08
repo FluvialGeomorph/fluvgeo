@@ -6,7 +6,7 @@
 \usage{
 stream_power(xs_dims, discharge_method = c("model_measure",
   "regional_curve", "width_relationship"), discharge_value = NULL,
-  region = NULL, width_method = NULL)
+  region = NULL, drainage_area = NULL, width_method = NULL)
 }
 \arguments{
 \item{xs_dims}{data frame; A data frame of cross section dimensions}
@@ -26,19 +26,19 @@ RegionalCurve::RHG function. See the RegionalCurve
 package for a list of regions with discharge
 relationships.}
 
-\item{width_method}{character; The name of the width relationship used
-to calculate discharge (Q) from width. Required if
-discharge_method = "width_relationship". Must be
-one of: <list goes here when implemented>}
-
 \item{drainage_area}{numeric; The drainage area (single value or vector)
 used by the RegionalCurve::RHG function to calculate
 discharge. Required if discharge_method =
 "regional_curve".}
+
+\item{width_method}{character; The name of the width relationship used
+to calculate discharge (Q) from width. Required if
+discharge_method = "width_relationship". Must be
+one of: <list goes here when implemented>}
 }
 \value{
-Returns a data frame of cross sections with the calculated stream
-  power and unit stream power.
+Returns the input xs_dims data frame of cross sections with the
+  calculated stream power variables added.
 }
 \description{
 Calculates stream power for each cross section in the input
@@ -53,8 +53,8 @@ Calculates stream power for each cross section in the input
   \deqn{\Omega = \rho g Q S}
 
   where \eqn{\Omega} is the stream power, \eqn{\rho} is the density of water
-  (1000 kg/m3), \eqn{g} is acceleration due to gravity (9.8 m/s2), \eqn{Q} is
-  discharge (m3/s), and \eqn{S} is the channel slope.
+  (assumes 1000 kg/m3), \eqn{g} is acceleration due to gravity (9.8 m/s2),
+  \eqn{Q} is discharge (m3/s), and \eqn{S} is the channel slope.
 
   Unit stream power is stream power per unit channel width, and is given by
   the equation:
@@ -66,7 +66,22 @@ Calculates stream power for each cross section in the input
 
   \url{https://en.wikipedia.org/wiki/Stream_power}
 
+  \strong{Lane's Balance Equation}
+  Stream power in the Lane's Balance equation is simply represented by
+  discharge \eqn{Q} and slope \eqn{S}:
+
+  \deqn{\Omega = Q S}
+
   \strong{Determining Discharge}
   The \code{discharge_method} parameter specifies the source used for the
   discharge factor in the stream power equations.
+
+  \itemize{
+    \item \code{model_measure} Use this option to supply an estimate of
+    discharge from a hydraulic model or field measurement.
+    \item \code{regional_curve} Use this option to use an estimate of
+    discharge from a regional curve.
+    \item \code{width_relationship} Use this option to use an estimate of
+    discharge from a width relationship
+  }
 }
