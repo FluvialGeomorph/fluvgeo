@@ -54,10 +54,6 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
                                lables = metric@threshold_labels,
                                ordered_result = TRUE)
 
-  # Create the color palatte
-  colors <- brewer.pal(3, "RdYlBu")
-  names(colors) <- levels(xs_dims$metric_labels)
-
   # Draw the graph
   p <- ggplot(xs_dims,
               aes(x = .data$km_to_mouth,
@@ -65,7 +61,7 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
                   color = .data$metric_labels,
                   label = .data$Seq)) +
     geom_point(size = 4) +
-    scale_color_manual(values = colors,
+    scale_color_manual(values = fgm::metric_colors(metric),
                        drop = FALSE,
                        labels = metric@threshold_labels) +
     geom_hline(yintercept = metric_threshold_lines,
@@ -75,11 +71,9 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
     theme(legend.position = "right",
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
-    facet_grid(facets = metrics ~ .,
-               scales = "free") +
-    labs(title = unique(reach_xs_dims$ReachName),
+    labs(title = unique(metric@metric),
          x     = "Kilometers",
-         y     = "")
+         y     = metric@metric)
 
   # Draw cross section labels
   xs_labels <- geom_text_repel(size = 1.8, color = "black")

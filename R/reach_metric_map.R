@@ -16,6 +16,8 @@
 #' tm_scale_bar tm_layout
 #'
 reach_metric_map <- function(metric, flowline, xs_dimensions) {
+
+
   # Create the reach map
   metric_map <- tm_shape(shp = flowline,
                          bbox = bb(flowline, 1.1),
@@ -26,7 +28,7 @@ reach_metric_map <- function(metric, flowline, xs_dimensions) {
                   tm_symbols(col = metric@variable,
                              title.col = metric@metric,
                              size = 2,
-                             palette = "RdYlBu",
+                             palette = fgm::metric_colors(metric),
                              style = "fixed",
                              breaks = metric@threshold_breaks,
                              interval.closure = "left") +
@@ -39,3 +41,4 @@ reach_metric_map <- function(metric, flowline, xs_dimensions) {
                           frame.lwd = 3)
   return(metric_map)
 }
+
