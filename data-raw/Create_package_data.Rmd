@@ -3,25 +3,55 @@ title: "Create Test Data"
 output: html_document
 ---
 
-```{r}
+```{r library}
 library(fgm)
+library(usethis)
 library(arcgisbinding)
 arc.check_product()
 ```
 
 # Study Area
-Data for tests was taken from the Sinsinawa, IL study site. 
+Data for tests was taken from the Sinsinawa Creek, IL study area. 
 
 # ESRI File Geodatabase
 Test data in ESRI ArcGIS file geodatabase format is stored in 
-`fgm/inst/extdata/test.gdb`. 
+`fgm/inst/extdata/testing_data.gdb`
+`fgm/inst/extdata/testing_raster.gdb`
 
 Convert a file geodatabase feature class to an sp object
+```{r import}
+# Path to data
+data_path <- "Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Methods/fgm/inst/extdata/testing_data.gdb/"
+
+# Import geospatial datasets
+sin_flowline_sp                 <- fgm::arc2sp(paste0(data_path, "flowline"))
+sin_flowline_points_sp          <- fgm::arc2sp(paste0(data_path, "flowline_points"))
+sin_banklines_sp                <- fgm::arc2sp(paste0(data_path, "banklines"))
+sin_bankline_points_sp          <- fgm::arc2sp(paste0(data_path, "bankline_points"))
+sin_features_sp                 <- fgm::arc2sp(paste0(data_path, "features"))
+sin_loop_points_sp              <- fgm::arc2sp(paste0(data_path, "loop_points"))
+sin_riffle_channel_sp           <- fgm::arc2sp(paste0(data_path, "riffle_channel"))
+sin_riffle_channel_points_sp    <- fgm::arc2sp(paste0(data_path, "riffle_channel_points"))
+sin_riffle_floodplain_sp        <- fgm::arc2sp(paste0(data_path, "riffle_floodplain"))
+sin_riffle_floodplain_points_sp <- fgm::arc2sp(paste0(data_path, "riffle_floodplain_points"))
+sin_valleyline_sp               <- fgm::arc2sp(paste0(data_path, "valleyline"))
+sin_valleyline_points_sp        <- fgm::arc2sp(paste0(data_path, "valleyline_points"))
+```
+
 ```{r}
-sin_flowline_points <- fgm::arc2sp("test.gdb/flowline_points")
-sin_riffle          <- fgm::arc2sp("test.gdb/riffle")
-sin_xs_points       <- fgm::arc2sp("test.gdb/cross_section_points")
-sin_xs_dimensions   <- fgm::arc2sp("test.gdb/cross_section_dims")
+# convert to .rda files
+usethis::use_data(sin_flowline_sp, overwrite = TRUE)
+usethis::use_data(sin_flowline_points_sp, overwrite = TRUE)
+usethis::use_data(sin_banklines_sp, overwrite = TRUE)
+usethis::use_data(sin_bankline_points_sp, overwrite = TRUE)
+usethis::use_data(sin_features_sp, overwrite = TRUE)
+usethis::use_data(sin_loop_points_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_channel_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_channel_points_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_floodplain_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_floodplain_points_sp, overwrite = TRUE)
+usethis::use_data(sin_valleyline_sp, overwrite = TRUE)
+usethis::use_data(sin_valleyline_points_sp, overwrite = TRUE)
 ```
 
 # Run the `usethis::use_data` in the `create_package_steps.R` for each dataset
