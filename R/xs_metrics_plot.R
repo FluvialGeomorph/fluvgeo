@@ -41,9 +41,9 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                     .data$xs_entrenchment_ratio,
                     .data$slope,
                     .data$sinuosity,
-                    .data$bend_radius,
-                    .data$meander_length,
-                    .data$meander_width)
+                    .data$shear_stress,
+                    .data$stream_power,
+                    .data$rc_bfw_ratio)
 
   # Set factor levels to control legend
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -51,16 +51,16 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                                        "xs_entrenchment_ratio",
                                        "slope",
                                        "sinuosity",
-                                       "bend_radius",
-                                       "meander_length",
-                                       "meander_width"),
+                                       "shear_stress",
+                                       "stream_power",
+                                       "mbw_bfw_ratio"),
                             labels = c("Width Depth Ratio",
                                        "Entrenchment Ratio",
                                        "Slope",
                                        "Sinuosity",
-                                       "Bend Radius",
-                                       "Meander Length",
-                                       "Meander Width"))
+                                       "Shear Stress",
+                                       "Stream Power",
+                                       "RC to BFW"))
 
   # Define colors and labels. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette - Moonrise Kingdom
@@ -69,9 +69,9 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
             "Entrenchment Ratio" = "darkslategray4",
             "Slope"              = "darkgoldenrod4",
             "Sinuosity"          = "mediumpurple4",
-            "Bend Radius"        = "indianred4",
-            "Meander Length"     = "darkolivegreen",
-            "Meander Width"      = "plum4")
+            "Shear Stress"       = "indianred4",
+            "Stream Power"       = "darkolivegreen",
+            "RC to BFW"          = "plum4")
 
   # Draw the graph
   p <- ggplot(xs_dims,
