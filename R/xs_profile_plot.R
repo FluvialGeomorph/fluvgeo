@@ -7,7 +7,7 @@
 #' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
 #' @param features        data frame; a data frame of river features
-#' @param label_xs        boolean; Draw the cross section locations?
+#' @param label_xs        boolean; Draw the cross section labels?
 #'
 #' @return A ggplot2 object.
 #'
