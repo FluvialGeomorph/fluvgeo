@@ -10,19 +10,20 @@
 #'
 #' @return a tmap object
 #'
-#' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
-#' tm_scale_bar tm_layout
+#' @importFrom tmaptools bb get_projection read_osm
+#' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols
+#' tm_text tm_compass tm_scale_bar tm_layout
 #'
 reach_overview_map <- function(flowline, xs_dimensions) {
   # Create map extent in lat-long to pass to OpenStreetMap
-  map_bb <- bb(feature_extent(flowline),
-               current.projection = get_projection(flowline),
-               ext = 1.05,
-               projection = "longlat")
+  map_bb <- tmaptools::bb(fgm::feature_extent(flowline),
+                          current.projection = tmaptools::get_projection(flowline),
+                          ext = 1.05,
+                          projection = "longlat")
 
   # Create the reach map
-  reach_map <- tm_shape(read_osm(map_bb,
-                                 type = "bing")) +
+  reach_map <- tm_shape(tmaptools::read_osm(map_bb,
+                                   type = "bing")) +
                  tm_rgb() +
                tm_shape(shp = flowline,
                         name = "Flowline",
