@@ -15,9 +15,7 @@
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
 #' tm_scale_bar tm_layout
 #'
-reach_metric_map <- function(metric, flowline, xs_dimensions) {
-
-
+map_reach_metric <- function(metric, flowline, xs_dimensions) {
   # Create the reach map
   metric_map <- tm_shape(shp = flowline,
                          bbox = bb(flowline, 1.1),

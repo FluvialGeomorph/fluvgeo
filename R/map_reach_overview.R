@@ -14,7 +14,7 @@
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols
 #' tm_text tm_compass tm_scale_bar tm_layout
 #'
-reach_overview_map <- function(flowline, xs_dimensions) {
+map_reach_overview <- function(flowline, xs_dimensions) {
   # Create map extent in lat-long to pass to OpenStreetMap
   map_bb <- tmaptools::bb(fgm::feature_extent(flowline),
                           current.projection = tmaptools::get_projection(flowline),

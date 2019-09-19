@@ -21,7 +21,7 @@
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
 #'
-xs_map <- function(xs_fc, xs_number, dem, banklines, extent_factor = 7) {
+map_xs <- function(xs_fc, xs_number, dem, banklines, extent_factor = 7) {
   # Subset xs_fc for the requested xs_number
   xs_i <- xs_fc[xs_fc$Seq == xs_number, ]
 
