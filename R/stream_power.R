@@ -4,7 +4,8 @@
 #'   xs_dims data frame.
 #'
 #' @export
-#' @param xs_dims           data frame; A data frame of cross section dimensions
+#' @param xs_dims           data frame; A data frame of cross section
+#'                          dimensions.
 #' @param discharge_method  character; The method for calculating discharge (Q).
 #'                          Must be one of: "model_measure", "regional_curve",
 #'                          "width_relationship".
@@ -48,12 +49,27 @@
 #'
 #'   \url{https://en.wikipedia.org/wiki/Stream_power}
 #'
+#'   \strong{Lane's Balance Equation}
+#'   Stream power in the Lane's Balance equation is simply represented by
+#'   discharge \eqn{Q} and slope \eqn{S}:
+#'
+#'   \deqn{\Omega = Q S}
+#'
 #'   \strong{Determining Discharge}
 #'   The \code{discharge_method} parameter specifies the source used for the
 #'   discharge factor in the stream power equations.
 #'
-#' @return Returns a data frame of cross sections with the calculated stream
-#'   power and unit stream power.
+#'   \itemize{
+#'     \item \code{model_measure} Use this option to supply an estimate of
+#'     discharge from a hydraulic model or field measurement.
+#'     \item \code{regional_curve} Use this option to use an estimate of
+#'     discharge from a regional curve.
+#'     \item \code{width_relationship} Use this option to use an estimate of
+#'     discharge from a width relationship
+#'   }
+#'
+#' @return Returns the input xs_dims data frame of cross sections with the
+#'   calculated stream power variables added.
 #'
 #' @importFrom assertthat assert_that
 #'
@@ -63,6 +79,7 @@ stream_power <- function(xs_dims,
                                               "width_relationship"),
                          discharge_value = NULL,
                          region = NULL,
+                         drainage_area = NULL,
                          width_method = NULL) {
   # Set variables
   rho <- 1000
@@ -73,9 +90,9 @@ stream_power <- function(xs_dims,
                                                       drainage_area,
                                                       "discharge"),
               width_relationship = 0,
-              stop("discharge_method parameter is not specified correctly"))
+              stop("discharge_method parameter is specified incorrectly"))
 
-  # Calculate stream power
+  # Calculate stream power variables
   xs_dims$stream_power       <- rho * g * Q * xs_dims$slope
   xs_dims$stream_power_lane  <- Q * xs_dims$slope
   xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope) / xs_dims$xs_width
