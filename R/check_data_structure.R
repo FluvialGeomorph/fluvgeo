@@ -13,6 +13,7 @@
 #' the data type specification. Returns the string "Not an fgm package data
 #' structure" if the `data_type` parameter is not an fgm package data type.
 #'
+#' @importFrom rlang enquo eval_tidy
 #' @importFrom assertthat assert_that
 #'
 check_data_structure <-function(data_structure,
@@ -26,7 +27,7 @@ check_data_structure <-function(data_structure,
 
   switch(data_type,
          bankline_points = check_bankline_points(data_structure),
-         channel_feature = channel_feature_test(data_structure),
+         channel_feature = check_channel_feature(data_structure),
          cross_section   = cross_section_test(data_structure),
          downhill        = downhill_test(data_structure),
          flowline        = flowline_test(data_structure),
@@ -35,73 +36,7 @@ check_data_structure <-function(data_structure,
          stop("data_structure is not an fgm data structure"))
 }
 
-channel_feature_test <- function(channel_feature) {
-  name <- deparse(substitute(channel_feature))
 
-  assert_that(is.data.frame(channel_feature),
-              msg = paste(name, " must be a data frame"))
-  assert_that("ReachName" %in% colnames(channel_feature) &
-                is.character(channel_feature$ReachName),
-              msg = paste("Character field 'ReachName' missing from ", name))
-  assert_that("POINT_X" %in% colnames(channel_feature) &
-                is.numeric(channel_feature$POINT_X),
-              msg = paste("Numeric field 'POINT_X' missing from ", name))
-  assert_that("POINT_Y" %in% colnames(channel_feature) &
-                is.numeric(channel_feature$POINT_Y),
-              msg = paste("Numeric field 'POINT_Y' missing from ", name))
-  assert_that("POINT_M" %in% colnames(channel_feature) &
-                is.numeric(channel_feature$POINT_M),
-              msg = paste("Numeric field 'POINT_M' missing from ", name))
-}
-
-cross_section_test <- function(cross_section) {
-  name <- deparse(substitute(cross_section))
-
-  assert_that(is.data.frame(cross_section),
-              msg = paste(name, " must be a data frame"))
-  assert_that("bankfull_elevation" %in% colnames(cross_section) &
-                is.numeric(cross_section$bankfull_elevation),
-              msg = paste("Numeric field 'bankfull_elevation' missing from ", name))
-  assert_that("drainage_area" %in% colnames(cross_section) &
-                is.numeric(cross_section$drainage_area),
-              msg = paste("Numeric field 'drainage_area' missing from ", name))
-  assert_that("xs_area" %in% colnames(cross_section) &
-                is.numeric(cross_section$xs_area),
-              msg = paste("Numeric field 'xs_area' missing from ", name))
-  assert_that("xs_width" %in% colnames(cross_section) &
-                is.numeric(cross_section$xs_width),
-              msg = paste("Numeric field 'xs_width' missing from ", name))
-  assert_that("xs_depth" %in% colnames(cross_section) &
-                is.numeric(cross_section$xs_depth),
-              msg = paste("Numeric field 'xs_depth' missing from ", name))
-  assert_that("discharge" %in% colnames(cross_section) &
-                is.numeric(cross_section$discharge),
-              msg = paste("Numeric field 'discharge' missing from ", name))
-  assert_that("fp_area" %in% colnames(cross_section) &
-                is.numeric(cross_section$fp_area),
-              msg = paste("Numeric field 'fp_area' missing from ", name))
-  assert_that("fp_width" %in% colnames(cross_section) &
-                is.numeric(cross_section$fp_width),
-              msg = paste("Numeric field 'fp_width' missing from ", name))
-  assert_that("fp_depth" %in% colnames(cross_section) &
-                is.numeric(cross_section$fp_depth),
-              msg = paste("Numeric field 'fp_depth' missing from ", name))
-  assert_that("xs_width_depth_ratio" %in% colnames(cross_section) &
-                is.numeric(cross_section$xs_width_depth_ratio),
-              msg = paste("Numeric field 'xs_width_depth_ratio' missing from ", name))
-  assert_that("xs_entrenchment_ratio" %in% colnames(cross_section) &
-                is.numeric(cross_section$xs_entrenchment_ratio),
-              msg = paste("Numeric field 'xs_entrenchment_ratio' missing from ", name))
-  assert_that("watersurface_elev" %in% colnames(cross_section) &
-                is.numeric(cross_section$watersurface_elev),
-              msg = paste("Numeric field 'watersurface_elev' missing from ", name))
-  assert_that("bankfull_elev" %in% colnames(cross_section) &
-                is.numeric(cross_section$bankfull_elev),
-              msg = paste("Numeric field 'bankfull_elev' missing from ", name))
-  assert_that("floodprone_elev" %in% colnames(cross_section) &
-                is.numeric(cross_section$floodprone_elev),
-              msg = paste("Numeric field 'floodprone_elev' missing from ", name))
-}
 
 downhill_test <- function(downhill_feature) {
   # This test assumes that features (e.g. flowline, cross section sequences,
