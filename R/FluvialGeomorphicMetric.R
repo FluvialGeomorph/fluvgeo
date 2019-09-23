@@ -15,13 +15,3 @@ setClass(Class = "FluvialGeomorphicMetric",
                       variable = "character",
                       source = "character"))
 
-width_depth_ratio <- new(Class = "FluvialGeomorphicMetric",
-                         metric = "Width Depth Ratio",
-                         definition = "bankfull width / bankfull depth",
-                         variable = "xs_width_depth_ratio",
-                         threshold_breaks = c(0, 10, 20, 60),
-                         threshold_labels = c("incised",
-                                              "stable",
-                                              "overwidening"),
-                         source = "Dunn & Leopold, 1978")
-
