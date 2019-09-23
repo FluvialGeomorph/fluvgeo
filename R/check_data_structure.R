@@ -29,7 +29,7 @@ check_data_structure <-function(data_structure,
          bankline_points = check_bankline_points(data_structure),
          channel_feature = check_channel_feature(data_structure),
          cross_section   = cross_section_test(data_structure),
-         downhill        = downhill_test(data_structure),
+         downhill        = check_downhill(data_structure),
          flowline        = flowline_test(data_structure),
          flowline_points = flowline_points_test(data_structure),
          slope_sinuosity = slope_sinuosity_test(data_structure),
@@ -38,29 +38,6 @@ check_data_structure <-function(data_structure,
 
 
 
-downhill_test <- function(downhill_feature) {
-  # This test assumes that features (e.g. flowline, cross section sequences,
-  # banklines, centerline) are digitized from the bottom of the reach to the
-  # top of the reach (not in the direction of flow).
-  name <- deparse(substitute(downhill_feature))
-
-  # If features oriented from downstream to upstream: m_min_z < m_max_z
-  m_min <- min(downhill_feature$POINT_M)
-  m_max <- max(downhill_feature$POINT_M)
-  m_min_z <- downhill_feature[downhill_feature$POINT_M == m_min, ]$Z
-  m_max_z <- downhill_feature[downhill_feature$POINT_M == m_max, ]$Z
-
-  assert_that(is.data.frame(downhill_feature),
-              msg = paste(name, "must be a data frame"))
-  assert_that("POINT_M" %in% colnames(downhill_feature) &
-                is.numeric(downhill_feature$POINT_M),
-              msg = paste("Numeric field 'POINT_M' missing from", name))
-  assert_that("Z" %in% colnames(downhill_feature) &
-                is.numeric(downhill_feature$Z),
-              msg = paste("Numeric field 'Z' missing from", name))
-  assert_that(m_min_z < m_max_z,
-              msg = paste("Water doesn't flow downhill in", name))
-}
 
 flowline_test <- function(flowline) {
   name <- deparse(substitute(flowline))
