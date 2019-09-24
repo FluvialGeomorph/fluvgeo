@@ -30,31 +30,12 @@ check_data_structure <-function(data_structure,
          channel_feature = check_channel_feature(data_structure),
          cross_section   = cross_section_test(data_structure),
          downhill        = check_downhill(data_structure),
-         flowline        = flowline_test(data_structure),
+         flowline        = check_flowline(data_structure),
          flowline_points = flowline_points_test(data_structure),
          slope_sinuosity = slope_sinuosity_test(data_structure),
          stop("data_structure is not an fgm data structure"))
 }
 
-
-
-
-flowline_test <- function(flowline) {
-  name <- deparse(substitute(flowline))
-
-  assert_that(class(flowline) == "SpatialLinesDataFrame")
-  assert_that(is.data.frame(flowline@data),
-              msg = paste(name, "must be a data frame"))
-  assert_that("ReachName" %in% colnames(flowline@data) &
-                is.character(flowline@data$ReachName),
-              msg = paste("Character field 'ReachName' missing from ", name))
-  assert_that("from_measure" %in% colnames(flowline@data) &
-                is.numeric(flowline@data$from_measure),
-              msg = paste("Numeric field 'from_measure' missing from ", name))
-  assert_that("to_measure" %in% colnames(flowline@data) &
-                is.numeric(flowline@data$to_measure),
-              msg = paste("Numeric field 'to_measure' missing from ", name))
-}
 
 flowline_points_test <- function(flowline_points) {
   name <- deparse(substitute(flowline_points))
@@ -128,7 +109,3 @@ slope_sinuosity_test <- function(slope_sinuosity_df) {
                 is.numeric(slope_sinuosity_df$slope),
               msg = paste("Numeric field 'slope' missing from ", name))
 }
-
-
-
-
