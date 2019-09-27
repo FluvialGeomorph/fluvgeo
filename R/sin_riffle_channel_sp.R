@@ -3,8 +3,9 @@
 #' @title Sinsinawa Creek, IL riffles
 #'
 #' @description  A \code{sp::SpatialLinesDataFrame} object containing stream
-#' riffles (Seq 1 - 10). These features represent the location of riffles
-#' delineated as lines running perpendicular to the stream centerline.
+#' riffles at the channel extent(Seq 1 - 10). These features represent the
+#' location of riffles delineated as lines running perpendicular to the stream
+#' centerline.
 #'
 #' @format A \code{SpatialLinesDataFrame} with 10 observations and 11
 #'     variables.
@@ -38,4 +39,4 @@
 #'
 #' @keywords datasets
 #'
-"sin_riffle"
+"sin_riffle_channel_sp"

@@ -1,18 +1,19 @@
 #' @docType data
 #'
-#' @title Sinsinawa Creek, IL stream flowline points
+#' @title Sinsinawa Creek, IL stream channel cross section points
 #'
 #' @description  A \code{sp::SpatialPointsDataFrame} object containing stream
-#' flowline points for Sinsinawa Creek, IL. These points represent elevation
-#' values extracted from a LiDAR terrain surface along the flowline of the
-#' stream.
+#' cross section points for two cross sections (Seq 4, 5). These points
+#' represent elevation values extracted from a LiDAR terrain surface along a
+#' transect perpendicular to the stream centerline.
 #'
 #' @format A \code{SpatialPointsDataFrame} with 1413 observations and 9
 #'     variables.
 #' \describe{
 #'     \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
 #'                     identifier for each point in the dataset.}
-#'     \item{ReachName}{character; The name of the stream. }
+#'     \item{Seq}{numeric; The cross section unique identifier. Seq is only
+#'                unique within a reach.}
 #'     \item{POINT_X}{numeric; The longitude or easting of the point.
 #'                    Coordinate system units can be determined by checking the
 #'                    \code{sin_xs_points@@proj4string}.}
@@ -23,12 +24,17 @@
 #'                    the upstream end of the reach. Coordinate system units
 #'                    can be determined by checking the
 #'                    \code{sin_xs_points@@proj4string}.}
-#'     \item{Z}{numeric; The elevation of the point. By convention, the
+#'     \item{Watershed_Area_SqMile}{numeric; The area of the watershed upstream
+#'                    from this cross section in square miles.}
+#'     \item{km_to_mouth}{numeric; Distance downstream from this cross section
+#'                    to the end of the reach.}
+#'     \item{DEM_Z}{numeric; The elevation of the point. By convention, the
 #'                  vertical units used in this project are NADV88 feet.}
+#'     \item{Detrend_DEM_Z}{numeric; The detrended elevation of the point.}
 #' }
 #' @source This dataset was produced using the \code{FluvialGeomorph} ArcGIS
 #' toolbox.
 #'
 #' @keywords datasets
 #'
-"sin_flowline_points"
+"sin_riffle_channel_points_sp"
