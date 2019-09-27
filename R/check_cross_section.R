@@ -42,19 +42,14 @@ check_cross_section <- function(cross_section,
                   is.numeric(cross_section@data$Seq),
                 msg = paste("Numeric field 'Seq' missing from", name))
 
-    # Check the ReachName is not empty
-    assert_that(nchar(unique(cross_section$ReachName[1])) > 0,
+    # Check the field `ReachName` is not empty
+    assert_that(nchar(unique(cross_section@data$ReachName[1])) > 0,
                 msg = paste("Field `ReachName` is empty in", name))
 
-    # Check for missing ids
-    assert_that(length(unique(cross_section$Seq)) ==
-                  max(cross_section$Seq),
-                msg = paste("Check for missing `Seq` values in", name))
-
-    # Check for duplicate ids
-    assert_that(length(unique(cross_section$Seq)) ==
-                  length(cross_section$Seq),
-                msg = paste("Check for duplicate `Seq` values in", name))
+    # Check for duplicate or missing `Seq` values
+    assert_that(length(unique(cross_section@data$Seq)) ==
+                  length(min(cross_section@data$Seq):max(cross_section@data$Seq)),
+                msg = paste("Check for duplicate or missing `Seq` values in", name))
 
   }
   # Step: watershed_area
