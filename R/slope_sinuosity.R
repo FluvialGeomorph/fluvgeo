@@ -4,8 +4,10 @@
 #' features.
 #'
 #' @export
-#' @param channel_features data frame; a data frame of channel features (i.e.,
-#'                         cross section, flowline points, etc.)
+#' @param channel_features Spatial*DataFrame; an `fgm` data structure of
+#'                         channel features (i.e., cross section, flowline
+#'                         points, etc.) Must have the following fields:
+#'                         `ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`
 #' @param lead_n           numeric; The number of features to lead (upstream)
 #'                         to calculate the slope and sinuosity. Must be an
 #'                         integer.
@@ -22,18 +24,19 @@
 #' position of each feature within the channel.
 #'
 #' @examples
-#' # Extract attribute data from the fgm::sin_flowline_points SpatialPointsDataFrame
-#' sin_flowline_points_df <- fgm::sin_flowline_points@@data
+#' # Extract attribute data from the fgm::sin_flowline_points_sp
+#' # SpatialPointsDataFrame
+#' sin_flowline_points_df <- fgm::sin_flowline_points_sp@@data
 #'
-#' # Extract data from the fgm::sin_riffle SpatialLinesDataFrame
-#' sin_riffle_df <- fgm::sin_riffle@@data
+#' # Extract data from the fgm::sin_riffle_channel_sp SpatialLinesDataFrame
+#' sin_rifflechannel_df <- fgm::sin_riffle_channel_sp@@data
 #'
 #' # Call the slope_sinuosity function for a flowline
 #' sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
 #'                                    lead_n = 1000, lag_n = 0)
 #'
 #' # Call the slope_sinuosity function for a cross section
-#' sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
+#' sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_df,
 #'                                  lead_n = 1, lag_n = 0,
 #'                                  loess_span = 5)
 #'
@@ -45,9 +48,28 @@
 slope_sinuosity <-function(channel_features, lead_n, lag_n,
                            use_smoothing = TRUE,
                            loess_span = 0.05) {
+  name <- deparse(substitute(channel_features))
+
+  # Check data structure
+  assert_that(is.data.frame(channel_features@data),
+              msg = paste(name, " must be a data frame"))
+  assert_that("ReachName" %in% colnames(channel_features@data) &
+                is.character(channel_features@data$ReachName),
+              msg = paste("Character field 'ReachName' missing from", name))
+  assert_that("POINT_X" %in% colnames(channel_features@data) &
+                is.numeric(channel_features@data$POINT_X),
+              msg = paste("Numeric field 'bank_POINT_X' missing from ", name))
+  assert_that("POINT_Y" %in% colnames(channel_features@data) &
+                is.numeric(channel_features@data$POINT_Y),
+              msg = paste("Numeric field 'bank_POINT_Y' missing from ", name))
+  assert_that("POINT_M" %in% colnames(channel_features@data) &
+                is.numeric(channel_features@data$POINT_M),
+              msg = paste("Numeric field 'bank_POINT_M' missing from ", name))
+  assert_that("Z" %in% colnames(channel_features@data) &
+                is.numeric(channel_features@data$Z),
+              msg = paste("Numeric field 'Z' missing from ", name))
+
   # Check parameters
-  assert_that(check_data_structure(channel_features, "channel_feature"),
-              msg = "'channel_features' does not meet the data specification")
   assert_that(as.integer(lead_n) == lead_n &&
                 length(lead_n) == 1,
               msg = "'lead_n' must be an integer vector of length one")
@@ -60,6 +82,9 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   assert_that(is.numeric(loess_span) &&
                 length(loess_span) == 1,
               msg = "'loess_span' must be numeric vector of length one")
+
+  # Convert Spatial*DataFrame to a data frame
+  channel_features <- channel_features@data
 
   # Add new columns to hold calculated values
   channel_features$Z_smooth      <- 0
