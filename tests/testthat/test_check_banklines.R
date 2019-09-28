@@ -1,7 +1,7 @@
 library(fgm)
 context("check_banklines")
 
-test_that("check banklins", {
+test_that("check banklines", {
   expect_true(check_banklines(fgm::sin_banklines_sp))
 })
 
