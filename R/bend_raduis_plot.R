@@ -4,7 +4,8 @@
 #' loop and bend using a `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  data frame; a data frame of bankline points
+#' @param bankline_points  SpatialPointsDataFrame; an fgm `bankline_points`
+#'                         data structure
 #' @param loop             numeric; the loop to plot
 #' @param bend             numeric; the bend to plot
 #' @param coord_system     character; a brief text description of the coordinate
@@ -13,18 +14,25 @@
 #'
 #' @return a ggplot2 object
 #'
-#' @importFrom assertthat assert_that
+#' @importFrom testthat expect_true
 #' @importFrom conicfit CircleFitByTaubin
 #' @importFrom conicfit calculateCircle
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot aes geom_point coord_fixed theme_bw labs annotate
 #'
 bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
+  # Check parameters
+  expect_true(check_bankline_points(bankline_points))
+
+  # Convert Spatial*DataFrame to a data frame
+  bankline_points <- bankline_points@data
+
   # Subset bankline_points the for the input loop and bend
-  bend_pts <- bankline_points[which(bankline_points$loop == loop & bankline_points$bend == bend), ]
+  bend_pts <- bankline_points[which(bankline_points$loop ==
+                                      loop & bankline_points$bend == bend), ]
 
   # Convert xy to a matrix for conicfit functions
-  bend_xy <- bend_pts[, c("POINT_X", "POINT_Y")]
+  bend_xy <- bend_pts[, c("bank_POINT_X", "bank_POINT_Y")]
   bend_xy_m <- as.matrix(bend_xy)
 
   # Calculate circle center and radius
@@ -35,7 +43,7 @@ bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
   circle_df <- as.data.frame(circle)
 
   # Plot the bend
-  ggplot(bend_xy, aes(x = .data$POINT_X, y = .data$POINT_Y)) +
+  ggplot(bend_xy, aes(x = .data$bank_POINT_X, y = .data$bank_POINT_Y)) +
     geom_point() +
     coord_fixed(ratio = 1) +
     geom_point(aes(x = center[1], y = center[2]), colour="blue", size = 3) +
