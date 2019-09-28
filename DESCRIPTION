@@ -30,8 +30,7 @@ LazyData: true
 Suggests: 
     fgm,
     knitr,
-    rmarkdown,
-    testthat    
+    rmarkdown
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
@@ -46,5 +45,6 @@ Imports:
     reshape2,
     RegionalCurve,
     rlang,
-    tidyr
+    tidyr,
+    testthat
 RoxygenNote: 6.1.1
