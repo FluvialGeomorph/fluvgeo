@@ -17,25 +17,19 @@
 #' @importFrom assertthat assert_that
 #'
 check_data_structure <-function(data_structure,
-                                data_type = c("bankline_points",
-                                              "cross_section",
-                                              "cross_section_points",
-                                              "downhill",
-                                              "flowline",
-                                              "flowline_points",
+                                data_type = c("downhill",
                                               "slope_sinuosity",
                                               "xs_dims")) {
 
   switch(data_type,
-         bankline_points      = check_bankline_points(data_structure),
-         cross_section        = check_cross_section(data_structure),
-         cross_section_points = check_cross_section_points(data_structure),
          downhill             = check_downhill(data_structure),
-         flowline             = check_flowline(data_structure),
-         flowline_points      = flowline_points_test(data_structure),
          slope_sinuosity      = slope_sinuosity_test(data_structure),
          xs_dims              = check_xs_dims(data_structure),
          stop("data_structure is not an fgm data structure"))
+}
+
+downhill <- function(data_structure) {
+  TRUE
 }
 
 slope_sinuosity_test <- function(slope_sinuosity_df) {
@@ -85,4 +79,8 @@ slope_sinuosity_test <- function(slope_sinuosity_df) {
   assert_that("slope" %in% colnames(slope_sinuosity_df) &
                 is.numeric(slope_sinuosity_df$slope),
               msg = paste("Numeric field 'slope' missing from", name))
+}
+
+xs_dims <- function(data_structure) {
+  TRUE
 }
