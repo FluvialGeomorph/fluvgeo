@@ -5,16 +5,33 @@
 #'
 #' @export
 #' @param flowline            SpatialLinesDataFrame; a flowline feature class
-#' @param xs_dimensions       SpatialLinesDataFrame; a cross section dimensions
-#'                            feature class
+#' @param cross_section       SpatialLinesDataFrame; a cross section feature
+#'                            class
 #'
 #' @return a tmap object
+#'
+#' @examples
+#' # Use the fgm::sin_flowline_sp SpatialLinesDataFrame
+#' sin_flowline_sp <- fgm::sin_flowline_sp
+#'
+#' # Use the fgm::sin_riffle_floodplain_sp SpatialLinesDataFrame
+#' sin_riffle_channel_sp <- fgm::sin_riffle_channel_sp
+#'
+#' # Create the map
+#' sin_map <- map_reach_overview(sin_flowline_sp, sin_riffle_channel_sp)
+#'
+#' # Print the map
+#' print(sin_map)
 #'
 #' @importFrom tmaptools bb get_projection read_osm
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols
 #' tm_text tm_compass tm_scale_bar tm_layout
 #'
-map_reach_overview <- function(flowline, xs_dimensions) {
+map_reach_overview <- function(flowline, cross_section) {
+  # Check data structure
+  check_flowline(flowline, step = "create_flowline")
+  check_cross_section(cross_section, step = "assign_ids")
+
   # Create map extent in lat-long to pass to OpenStreetMap
   map_bb <- tmaptools::bb(fgm::feature_extent(flowline),
                           current.projection = tmaptools::get_projection(flowline),
@@ -31,7 +48,7 @@ map_reach_overview <- function(flowline, xs_dimensions) {
                         bbox = feature_extent(flowline, 1.05),
                         is.master = TRUE) +
                  tm_lines(col = "blue", lwd = 3) +
-               tm_shape(shp = xs_dimensions,
+               tm_shape(shp = cross_section,
                         name = "Cross Sections") +
                  tm_symbols(col = "white",
                             size = 1.0) +
