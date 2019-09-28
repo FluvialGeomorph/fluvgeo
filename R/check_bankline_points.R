@@ -4,8 +4,8 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param bankline_points   data frame; a `bankline_points` data structure used
-#'                          by the fgm package.
+#' @param bankline_points   SpatialPointsDataFrame; a `bankline_points` data
+#'                          structure used by the fgm package.
 #'
 #' @return Returns TRUE if the `bankline_points` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

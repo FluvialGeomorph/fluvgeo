@@ -4,8 +4,8 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param flowline          data frame; a `flowline` data structure used
-#'                          by the fgm package.
+#' @param flowline        SpatialLinesDataFrame: a `flowline` data structure
+#'                        used by the fgm package.
 #' @param step            character; last completed processing step. One of
 #'                        "create_flowline", "profile_points"
 #'

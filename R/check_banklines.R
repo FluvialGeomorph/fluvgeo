@@ -4,8 +4,8 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param banklines   data frame; a `banklines` data structure used
-#'                          by the fgm package.
+#' @param banklines   SpatialLinesDataFrame; a `banklines` data structure used
+#'                    by the fgm package.
 #'
 #' @return Returns TRUE if the `banklines` data structure matches the
 #' requirements. The function throws an error for a data structure not matching
@@ -15,7 +15,7 @@
 #' @importFrom assertthat assert_that
 #'
 check_banklines <- function(banklines) {
-  name <- deparse(substitute(bankline_points))
+  name <- deparse(substitute(banklines))
 
   assert_that(class(banklines)[1] == "SpatialLinesDataFrame",
               msg = paste(name, " must be a SpatialLinesDataFrame"))

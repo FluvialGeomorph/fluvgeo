@@ -4,8 +4,8 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param loop_points   data frame; a `loop_points` data structure used
-#'                        by the fgm package.
+#' @param loop_points   SpatialPointsDataFrame; a `loop_points` data structure
+#'                      used by the fgm package.
 #'
 #' @details Cross section feature classes evolve as different steps are
 #' performed on them. The `step` parameter allows a `loop_points` data

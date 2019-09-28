@@ -4,8 +4,8 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param cross_section   data frame; a `cross_section` data structure used
-#'                        by the fgm package.
+#' @param cross_section   SpatialLinesDataFrame: a `cross_section` data
+#'                        structure used by the fgm package.
 #' @param step            character; last completed processing step. One of
 #'                        "assign_ids", "watershed_area", "river_position",
 #'                        "station_points", "loop_bend"
