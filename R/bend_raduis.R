@@ -4,7 +4,8 @@
 #' `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  data frame; a data frame of bankline points
+#' @param bankline_points  SpatialPointsDataFrame; an fgm bankline_points data
+#'                         structure
 #'
 #' @return Returns a data frame of bends with the calculated raduis of
 #' curvature.
@@ -14,8 +15,10 @@
 #'
 bend_radius <- function(bankline_points) {
   # Check parameters
-  assert_that(check_data_structure(bankline_points, "bankline_points"),
-              msg = "'channel_features' does not meet the data specification")
+  expect_true(check_bankline_points(bankline_points))
+
+  # Convert Spatial*DataFrame to a data frame
+  bankline_points <- bankline_points@data
 
   # Remove bankline_points not assigned to loops
   bankline_points <- bankline_points[!is.na(bankline_points$loop), ]
