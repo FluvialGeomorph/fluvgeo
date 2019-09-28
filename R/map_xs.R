@@ -4,7 +4,7 @@
 #' section.
 #'
 #' @export
-#' @param xs_fc               SpatialLinesDataFrame; a cross section lines
+#' @param cross_section       SpatialLinesDataFrame; a cross section lines
 #'                            feature class
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
@@ -21,9 +21,15 @@
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
 #'
-map_xs <- function(xs_fc, xs_number, dem, banklines, extent_factor = 7) {
-  # Subset xs_fc for the requested xs_number
-  xs_i <- xs_fc[xs_fc$Seq == xs_number, ]
+map_xs <- function(cross_section, xs_number, dem, banklines,
+                   extent_factor = 7) {
+
+  # Check data structure
+  check_cross_section(cross_section, step = "assign_ids")
+  check_banklines(banklines)
+
+  # Subset cross_section for the requested xs_number
+  xs_i <- cross_section[cross_section$Seq == xs_number, ]
 
   # Calculate the map extent for the current cross section
   map_extent <- fgm::feature_extent(feature = xs_i,
@@ -62,7 +68,7 @@ map_xs <- function(xs_fc, xs_number, dem, banklines, extent_factor = 7) {
                         alpha = 0.8,
                         title = "Elevation (NAVD88, ft)",
                         legend.show = TRUE) +
-            tm_shape(shp = xs_fc,
+            tm_shape(shp = cross_section,
                      name = "Cross Section") +
               tm_lines(col = "black", lwd = 5) +
               tm_text(text = "Seq",
