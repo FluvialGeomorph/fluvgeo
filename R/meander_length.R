@@ -4,7 +4,8 @@
 #' input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  data frame; a data frame of bankline points
+#' @param bankline_points  SpatialPointsDataFrame; an fgm bankline_points data
+#'                         structure
 #'
 #' @return Returns a data frame of loops with the calculated meander length.
 #'
@@ -15,8 +16,10 @@
 #'
 meander_length <- function(bankline_points) {
   # Check parameters
-  assert_that(check_data_structure(bankline_points, "bankline_points"),
-              msg = "'bankline_points' does not meet the bankline_points data specification")
+  expect_true(check_bankline_points(bankline_points))
+
+  # Convert Spatial*DataFrame to a data frame
+  bankline_points <- bankline_points@data
 
   # Select loop apex points
   loop_apex_points <- bankline_points[bankline_points$position == "apex", ]
