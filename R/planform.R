@@ -5,19 +5,22 @@
 #' input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  data frame; a data frame of bankline points
+#' @param bankline_points   SpatialPointsDataFrame; a `bankline_points` data
+#'                          structure used by the fgm package.
 #'
 #' @return Returns a data frame of bends with the calculated planform
 #' dimensions.
 #'
-#' @importFrom assertthat assert_that
+#' @examples
+#' pf <- planform(fgm::sin_bankline_points_sp)
+#'
+#' @importFrom testthat expect_true
 #' @importFrom dplyr lead lag
 #' @importFrom raster pointDistance
 #'
 planform <- function(bankline_points) {
   # Check parameters
-  assert_that(check_data_structure(bankline_points, "bankline_points"),
-              msg = "'bankline_points' does not meet the data specification")
+  expect_true(check_bankline_points(bankline_points))
 
   # Calculate the bend radius of curvature
   bends <- bend_radius(bankline_points)
