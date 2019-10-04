@@ -4,8 +4,8 @@
 \alias{check_data_structure}
 \title{Check the validity of an fgm data structure}
 \usage{
-check_data_structure(data_structure, data_type = c("channel_feature",
-  "bankline_points", "cross_section", "slope_sinuosity", "downhill"))
+check_data_structure(data_structure, data_type = c("downhill",
+  "slope_sinuosity", "xs_dims"))
 }
 \arguments{
 \item{data_structure}{data frame; a data frame used by the fgm package}

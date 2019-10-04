@@ -8,8 +8,10 @@ slope_sinuosity(channel_features, lead_n, lag_n, use_smoothing = TRUE,
   loess_span = 0.05)
 }
 \arguments{
-\item{channel_features}{data frame; a data frame of channel features (i.e.,
-cross section, flowline points, etc.)}
+\item{channel_features}{Spatial*DataFrame; an `fgm` data structure of
+channel features (i.e., cross section, flowline
+points, etc.) Must have the following fields:
+`ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`}
 
 \item{lead_n}{numeric; The number of features to lead (upstream)
 to calculate the slope and sinuosity. Must be an
@@ -35,18 +37,19 @@ Calculates the slope and sinuosity of the input channel
 features.
 }
 \examples{
-# Extract attribute data from the fgm::sin_flowline_points SpatialPointsDataFrame
-sin_flowline_points_df <- fgm::sin_flowline_points@data
+# Extract attribute data from the fgm::sin_flowline_points_sp
+# SpatialPointsDataFrame
+sin_flowline_points_df <- fgm::sin_flowline_points_sp@data
 
-# Extract data from the fgm::sin_riffle SpatialLinesDataFrame
-sin_riffle_df <- fgm::sin_riffle@data
+# Extract data from the fgm::sin_riffle_channel_sp SpatialLinesDataFrame
+sin_rifflechannel_df <- fgm::sin_riffle_channel_sp@data
 
 # Call the slope_sinuosity function for a flowline
 sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
                                    lead_n = 1000, lag_n = 0)
 
 # Call the slope_sinuosity function for a cross section
-sin_riffle_ss <- slope_sinuosity(sin_riffle_df,
+sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_df,
                                  lead_n = 1, lag_n = 0,
                                  loess_span = 5)
 

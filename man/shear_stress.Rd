@@ -4,10 +4,13 @@
 \alias{shear_stress}
 \title{Calculate shear stress for each cross section}
 \usage{
-shear_stress(xs_dims)
+shear_stress(xs_dims, specific_gravity = 1)
 }
 \arguments{
-\item{xs_dims}{data frame; A data frame of cross section dimensions.}
+\item{xs_dims}{data frame; A data frame of cross section
+dimensions.}
+
+\item{specific_gravity}{numeric; specific gravity of water}
 }
 \value{
 Returns a data frame of cross sections with the calculated shear
@@ -26,9 +29,9 @@ Calculates shear stress for each cross section in the input
 
   \deqn{\tau = \gamma D Sw}
 
-  where: \tau is the fluid shear stress (\eqn{N/m^2}), \gamma is the specific
-  gravity of water (\eqn{N/m^3}), \eqn{D} is average water depth (m),
-  \eqn{Sw} is the water surface slope (m/m).
+  where: \eqn{\tau} is the fluid shear stress (\eqn{N/m^2}), \eqn{\gamma}
+  is the specific gravity of water (\eqn{N/m^3}), \eqn{D} is average water
+  depth (m), \eqn{Sw} is the water surface slope (m/m).
 
   \strong{Lane's Balance Equations}
   Shear stress in the

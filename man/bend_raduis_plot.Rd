@@ -7,7 +7,8 @@
 bend_raduis_plot(bankline_points, loop, bend, coord_system)
 }
 \arguments{
-\item{bankline_points}{data frame; a data frame of bankline points}
+\item{bankline_points}{SpatialPointsDataFrame; an fgm `bankline_points`
+data structure}
 
 \item{loop}{numeric; the loop to plot}
 

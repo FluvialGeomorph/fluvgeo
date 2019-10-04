@@ -7,7 +7,8 @@
 bend_radius(bankline_points)
 }
 \arguments{
-\item{bankline_points}{data frame; a data frame of bankline points}
+\item{bankline_points}{SpatialPointsDataFrame; an fgm bankline_points data
+structure}
 }
 \value{
 Returns a data frame of bends with the calculated raduis of
