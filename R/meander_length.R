@@ -9,7 +9,10 @@
 #'
 #' @return Returns a data frame of loops with the calculated meander length.
 #'
-#' @importFrom assertthat assert_that
+#' @examples
+#' meander_length(fgm::sin_bankline_points_sp)
+#'
+#' @importFrom testthat expect_true
 #' @importFrom stats aggregate
 #' @importFrom dplyr last lead lag
 #' @importFrom raster pointDistance
