@@ -1,4 +1,5 @@
 library(fgm)
+context("metric_colors")
 
 # Define metric objects
 wdr3 <- new(Class = "FluvialGeomorphicMetric",
@@ -34,13 +35,8 @@ test_that("check vector length", {
 })
 
 test_that("check color names", {
-  expect_true(metric_colors(wdr3)[1] %in% colors())
-  expect_true(metric_colors(wdr3)[2] %in% colors())
-  expect_true(metric_colors(wdr3)[3] %in% colors())
-  expect_true(metric_colors(metric_4)[1] %in% colors())
-  expect_true(metric_colors(metric_4)[2] %in% colors())
-  expect_true(metric_colors(metric_4)[3] %in% colors())
-  expect_true(metric_colors(metric_4)[4] %in% colors())
+  expect_true(all(metric_colors(wdr3) %in% colors()))
+  expect_true(all(metric_colors(metric_4) %in% colors()))
 })
 
 test_that("check error message", {
