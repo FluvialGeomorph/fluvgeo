@@ -1,8 +1,8 @@
 library(fgm)
 context("xs_dimension")
 
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+# Extract attribute data from SpatialPointsDataFrame
+sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
 
 # Call the xs_dimensions function with test data
 streams <- c("Sinsinawa")
@@ -78,18 +78,14 @@ test_that("Check that fields are of the correct data type", {
 })
 
 test_that("Check output dimensionality", {
-  expect_equal(length(sin$reach_name),                    88,
-               label = "number of reach_name records")
   expect_equal(length(unique(sin$reach_name)),            1,
                label = "number of reaches")
-  expect_equal(length(unique(sin$cross_section)),         2,
+  expect_equal(length(unique(sin$cross_section)),         10,
                label = "number of cross sections")
   expect_equal(length(unique(sin$xs_type)),               3,
                label = "number of xs types")
   expect_equal(length(unique(sin$bankfull_elevation)),    11,
                label = "number of bankfull elevations")
-  expect_equal(length(unique(sin$drainage_area)),         2,
+  expect_equal(length(unique(sin$drainage_area)),         10,
                label = "number of drainage areas")
-  expect_equal(length(unique(sin$xs_area)),               26,
-               label = "number of unique xs_area records")
 })
