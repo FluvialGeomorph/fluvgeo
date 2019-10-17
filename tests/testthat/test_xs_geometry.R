@@ -2,7 +2,7 @@ library(fgm)
 context("xs_geometry")
 
 # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
 
 # Subset sin_xs_points_df to contain only one cross section (Seq = 4)
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4, ]
@@ -41,10 +41,10 @@ test_that("Check that output fields are of the correct data type", {
 })
 
 test_that("Check dimensions from known stream", {
-  expect_equal(sin_4$xs_width,    104.0971, tolerance = 1e-2)
-  expect_equal(sin_4$xs_depth,    3.4677,   tolerance = 1e-2)
-  expect_equal(sin_4$xs_area,     274.3170, tolerance = 1e-2)
-  expect_equal(sin_4$ground_elev, 645.8760, tolerance = 1e-2)
+  expect_equal(sin_4$xs_width,    93.3, tolerance = 1e-2)
+  expect_equal(sin_4$xs_depth,    3.52, tolerance = 1e-2)
+  expect_equal(sin_4$xs_area,     259.4, tolerance = 1e-2)
+  expect_equal(sin_4$ground_elev, 645.7, tolerance = 1e-2)
 })
 
 test_that("Dimensions the same between runs", {
