@@ -10,7 +10,7 @@
 #' @return Returns a data frame of bends with the calculated raduis of
 #' curvature.
 #'
-#' @importFrom assertthat assert_that
+#' @importFrom testthat expect_true
 #' @importFrom conicfit CircleFitByTaubin
 #'
 bend_radius <- function(bankline_points) {
