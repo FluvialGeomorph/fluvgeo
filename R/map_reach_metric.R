@@ -16,6 +16,9 @@
 #' tm_scale_bar tm_layout
 #'
 map_reach_metric <- function(metric, flowline, xs_dimensions) {
+  # Check data structure
+  check_flowline(flowline, step = "create_flowline")
+
   # Create the reach map
   metric_map <- tm_shape(shp = flowline,
                          bbox = bb(flowline, 1.1),
