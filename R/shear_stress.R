@@ -27,6 +27,18 @@
 #' @return Returns a data frame of cross sections with the calculated shear
 #' stress.
 #'
+#' @examples
+#' # Calculate cross section dimensions
+#' xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
+#'                                     xs_points = fgm::sin_riffle_channel_points_sp,
+#'                                     bankfull_elevation = 103,
+#'                                     lead_n = 1,
+#'                                     use_smoothing = TRUE,
+#'                                     loess_span = 0.5)
+#'
+#' # Calculate shear stress
+#' xs_dims_ss <- shear_stress(xs_dims)
+#'
 #' @importFrom assertthat assert_that
 #'
 shear_stress <- function(xs_dims, specific_gravity = 1) {
