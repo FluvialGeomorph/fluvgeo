@@ -17,3 +17,7 @@ Returns a data frame of loops with the calculated meander length.
 Calculates the meander length (wavelength) for each loop in the
 input `bankline_points` data frame.
 }
+\examples{
+meander_length(fgm::sin_bankline_points_sp)
+
+}

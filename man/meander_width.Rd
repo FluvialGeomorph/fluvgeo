@@ -17,3 +17,7 @@ Returns a data frame of loops with the calculated meander width.
 Calculates the meander width (channel belt width) for each loop
 in the input `bankline_points` data frame.
 }
+\examples{
+meander_width(fgm::sin_bankline_points_sp)
+
+}

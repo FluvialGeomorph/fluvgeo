@@ -7,7 +7,8 @@
 planform(bankline_points)
 }
 \arguments{
-\item{bankline_points}{data frame; a data frame of bankline points}
+\item{bankline_points}{SpatialPointsDataFrame; a `bankline_points` data
+structure used by the fgm package.}
 }
 \value{
 Returns a data frame of bends with the calculated planform
@@ -17,4 +18,8 @@ dimensions.
 Calculates planform dimensions (bend radius of curvature,
 meander wavelength, and meander belt width) for each bend and loop in the
 input `bankline_points` data frame.
+}
+\examples{
+pf <- planform(fgm::sin_bankline_points_sp)
+
 }

@@ -36,3 +36,16 @@ Calculates shear stress for each cross section in the input
   \strong{Lane's Balance Equations}
   Shear stress in the
 }
+\examples{
+# Calculate cross section dimensions
+xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
+                                    xs_points = fgm::sin_riffle_channel_points_sp,
+                                    bankfull_elevation = 103,
+                                    lead_n = 1,
+                                    use_smoothing = TRUE,
+                                    loess_span = 0.5)
+
+# Calculate shear stress
+xs_dims_ss <- shear_stress(xs_dims)
+
+}

@@ -86,3 +86,19 @@ Calculates stream power for each cross section in the input
     discharge from a width relationship
   }
 }
+\examples{
+# Calculate cross section dimensions
+xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
+                             xs_points = fgm::sin_riffle_channel_points_sp,
+                             bankfull_elevation = 103,
+                             lead_n = 1,
+                             use_smoothing = TRUE,
+                             loess_span = 0.5)
+
+# Calculate stream power
+xs_dims_sp <- stream_power(xs_dims,
+                           discharge_method = "regional_curve",
+                           region = "Illinois River",
+                           drainage_area = 41)
+
+}

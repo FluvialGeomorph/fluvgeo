@@ -30,8 +30,9 @@ This function is used to plot the cross section profile from a
 \code{xs_points} data frame.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+# Extract attribute data from the fgm::sin_riffle_channel_points_sp
+# SpatialPointsDataFrame
+sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
 
 # Call the xs_plot function
 sin_4_plot <- xs_plot(xs_points = sin_xs_points_df,

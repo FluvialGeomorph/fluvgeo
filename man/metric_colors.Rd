@@ -17,3 +17,19 @@ a vector of colors
 Returns a vector of colors based on the number of threshold
   breaks in the input `FluvialGeomorphicMetric`` object.
 }
+\examples{
+# Define metric objects
+wdr3 <- new(Class = "FluvialGeomorphicMetric",
+           metric = "Width Depth Ratio",
+           definition = "bankfull width / bankfull depth",
+           variable = "xs_width_depth_ratio",
+           threshold_breaks = c(0, 10, 20, Inf),
+           threshold_labels = c("Incised",
+                                "Stable",
+                                "Overwidened"),
+           source = "Dunn & Leopold, 1978")
+
+# Get a set of colors for a `FluvialGeomorphicMetric` object
+cols <- metric_colors(wdr3)
+
+}
