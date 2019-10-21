@@ -19,8 +19,8 @@
 #' @param loess_span          numeric; the loess regression span parameter,
 #'                            defaults to 0.05
 #'
-#' @return A new cross section feature class with the hydraulic geometry
-#'      dimensions added to the attribute table
+#' @return A new cross section data frame with the hydraulic geometry
+#'      dimensions added.
 #'
 #' @examples
 #' # Calculate cross section dimensions
