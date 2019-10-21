@@ -31,7 +31,7 @@
 #'                                     use_smoothing = TRUE,
 #'                                     loess_span = 0.5)
 #'
-#' @importFrom dplyr bind_rows append select
+#' @importFrom dplyr bind_rows select
 #'
 cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
                                      lead_n, use_smoothing, loess_span) {
