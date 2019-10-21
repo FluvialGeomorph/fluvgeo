@@ -71,6 +71,21 @@
 #' @return Returns the input xs_dims data frame of cross sections with the
 #'   calculated stream power variables added.
 #'
+#' @examples
+#' # Calculate cross section dimensions
+#' xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
+#'                              xs_points = fgm::sin_riffle_channel_points_sp,
+#'                              bankfull_elevation = 103,
+#'                              lead_n = 1,
+#'                              use_smoothing = TRUE,
+#'                              loess_span = 0.5)
+#'
+#' # Calculate stream power
+#' xs_dims_sp <- stream_power(xs_dims,
+#'                            discharge_method = "regional_curve",
+#'                            region = "Illinois River",
+#'                            drainage_area = 41)
+#'
 #' @importFrom assertthat assert_that
 #'
 stream_power <- function(xs_dims,
@@ -81,10 +96,31 @@ stream_power <- function(xs_dims,
                          region = NULL,
                          drainage_area = NULL,
                          width_method = NULL) {
+
+
+  # Check input parameters
+  assert_that(is.data.frame(xs_dims),
+              msg = "xs_dims must be a data frame")
+  if(discharge_method == "model_measure" &
+     is.null(discharge_value)) {
+    stop(paste("If discharge_method = 'model_measure', parameter",
+               "discharge_value must be specified."))
+  }
+  if(discharge_method == "regional_curve" &
+     any(is.null(region), is.null(drainage_area))) {
+    stop(paste("If discharge_method = 'regional_curve', parameters region and",
+               "drainage_area must be specified."))
+  }
+  if(discharge_method == "width_relationship" &
+     is.null(width_method)) {
+    stop(paste("If discharge_method = 'width_relationship', parameter",
+               "width_method must be specified."))
+  }
+
   # Set variables
-  rho <- 1000
-  g <- 9.8
-  Q <- switch(discharge_method,
+  rho <- 1000                                    # density of water
+  g <- 9.8                                       # acceleration due to gravity
+  Q <- switch(discharge_method,                  # discharge
               model_measure      = discharge_value,
               regional_curve     = RegionalCurve::RHG(region,
                                                       drainage_area,
