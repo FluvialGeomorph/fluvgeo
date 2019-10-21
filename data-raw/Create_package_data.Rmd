@@ -34,6 +34,8 @@ sin_riffle_channel_sp           <- fgm::arc2sp(paste0(data_path, "riffle_channel
 sin_riffle_channel_points_sp    <- fgm::arc2sp(paste0(data_path, "riffle_channel_points"))
 sin_riffle_floodplain_sp        <- fgm::arc2sp(paste0(data_path, "riffle_floodplain"))
 sin_riffle_floodplain_points_sp <- fgm::arc2sp(paste0(data_path, "riffle_floodplain_points"))
+sin_riffle_floodplain_dims_sp   <- fgm::arc2sp(paste0(data_path, "riffle_floodplain_dims"))
+sin_riffle_floodplain_dims_planform_sp <- fgm::arc2sp(paste0(data_path, "riffle_floodplain_dims_planform"))
 sin_valleyline_sp               <- fgm::arc2sp(paste0(data_path, "valleyline"))
 sin_valleyline_points_sp        <- fgm::arc2sp(paste0(data_path, "valleyline_points"))
 ```
@@ -50,6 +52,8 @@ usethis::use_data(sin_riffle_channel_sp, overwrite = TRUE)
 usethis::use_data(sin_riffle_channel_points_sp, overwrite = TRUE)
 usethis::use_data(sin_riffle_floodplain_sp, overwrite = TRUE)
 usethis::use_data(sin_riffle_floodplain_points_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_floodplain_dims_sp, overwrite = TRUE)
+usethis::use_data(sin_riffle_floodplain_dims_planform_sp, overwrite = TRUE)
 usethis::use_data(sin_valleyline_sp, overwrite = TRUE)
 usethis::use_data(sin_valleyline_points_sp, overwrite = TRUE)
 ```
