@@ -30,6 +30,7 @@ test_that("Check that output fields exist by name", {
   expect_true("xs_width"    %in% colnames(sin_4))
   expect_true("xs_depth"    %in% colnames(sin_4))
   expect_true("xs_area"     %in% colnames(sin_4))
+  expect_true("discharge"   %in% colnames(sin_4))
   expect_true("ground_elev" %in% colnames(sin_4))
 })
 
@@ -37,6 +38,7 @@ test_that("Check that output fields are of the correct data type", {
   expect_true(is.numeric(sin_4$xs_width))
   expect_true(is.numeric(sin_4$xs_depth))
   expect_true(is.numeric(sin_4$xs_area))
+  expect_true(is.numeric(sin_4$discharge))
   expect_true(is.numeric(sin_4$ground_elev))
 })
 
@@ -44,6 +46,7 @@ test_that("Check dimensions from known stream", {
   expect_equal(sin_4$xs_width,    93.3, tolerance = 1e-2)
   expect_equal(sin_4$xs_depth,    3.52, tolerance = 1e-2)
   expect_equal(sin_4$xs_area,     259.4, tolerance = 1e-2)
+  expect_equal(sin_4$discharge,     0.0, tolerance = 1e-2)
   expect_equal(sin_4$ground_elev, 645.7, tolerance = 1e-2)
 })
 
@@ -51,5 +54,6 @@ test_that("Dimensions the same between runs", {
   expect_equal(sin_4$xs_width,    sin_4_2$xs_width, tolerance = 1e-10)
   expect_equal(sin_4$xs_depth,    sin_4_2$xs_depth,   tolerance = 1e-10)
   expect_equal(sin_4$xs_area,     sin_4_2$xs_area, tolerance = 1e-10)
+  expect_equal(sin_4$discharge,   sin_4_2$discharge, tolerance = 1e-10)
   expect_equal(sin_4$ground_elev, sin_4_2$ground_elev, tolerance = 1e-10)
 })

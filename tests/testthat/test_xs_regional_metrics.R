@@ -77,6 +77,7 @@ test_that("Check that fields exist by name", {
   expect_true("xs_area"               %in% colnames(sin_4))
   expect_true("xs_width"              %in% colnames(sin_4))
   expect_true("xs_depth"              %in% colnames(sin_4))
+  expect_true("discharge"             %in% colnames(sin_4))
 })
 
 test_that("Check that fields are of the correct data type", {
@@ -88,6 +89,7 @@ test_that("Check that fields are of the correct data type", {
   expect_true(is.numeric(sin_4$xs_area))
   expect_true(is.numeric(sin_4$xs_width))
   expect_true(is.numeric(sin_4$xs_depth))
+  expect_true(is.numeric(sin_4$discharge))
 })
 
 # Select from sin_4 the "DEM derived cross section"
@@ -98,10 +100,11 @@ test_that("Check dimensions from known stream", {
   expect_equal(sin_4_xs$cross_section,         4,        tolerance = 1e-2)
   expect_match(sin_4_xs$xs_type,               "DEM derived cross section")
   expect_equal(sin_4_xs$bankfull_elevation,    103.5,    tolerance = 1e-2)
-  expect_equal(sin_4_xs$drainage_area,         40.27062, tolerance = 1e-2)
-  expect_equal(sin_4_xs$xs_area,               274.3170, tolerance = 1e-2)
-  expect_equal(sin_4_xs$xs_width,              104.0971, tolerance = 1e-2)
-  expect_equal(sin_4_xs$xs_depth,              3.467705, tolerance = 1e-2)
+  expect_equal(sin_4_xs$drainage_area,         40.27, tolerance = 1e-2)
+  expect_equal(sin_4_xs$xs_area,               259.45, tolerance = 1e-2)
+  expect_equal(sin_4_xs$xs_width,              93.32, tolerance = 1e-2)
+  expect_equal(sin_4_xs$xs_depth,              3.53, tolerance = 1e-2)
+  expect_equal(sin_4_xs$discharge,             0.0, tolerance = 1e-2)
 })
 
 # Select from sin_4 the regional cross section
@@ -112,8 +115,9 @@ test_that("Check dimensions for region", {
   expect_equal(sin_4_region$cross_section,         4,        tolerance = 1e-2)
   expect_match(sin_4_region$xs_type,               "Eastern United States")
   expect_equal(sin_4_region$bankfull_elevation,    103.5,    tolerance = 1e-2)
-  expect_equal(sin_4_region$drainage_area,         40.27062, tolerance = 1e-2)
-  expect_equal(sin_4_region$xs_area,               263.8711, tolerance = 1e-2)
-  expect_equal(sin_4_region$xs_width,              60.76679, tolerance = 1e-2)
-  expect_equal(sin_4_region$xs_depth,              4.488049, tolerance = 1e-2)
+  expect_equal(sin_4_region$drainage_area,         40.27, tolerance = 1e-2)
+  expect_equal(sin_4_region$xs_area,               263.87, tolerance = 1e-2)
+  expect_equal(sin_4_region$xs_width,              60.76, tolerance = 1e-2)
+  expect_equal(sin_4_region$xs_depth,              4.48, tolerance = 1e-2)
+  expect_equal(is.na(sin_4_region$discharge),      is.na(NA), tolerance = 1e-2)
 })

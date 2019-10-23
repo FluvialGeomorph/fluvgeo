@@ -64,6 +64,7 @@ test_that("Check that fields exist by name", {
   expect_true("xs_area"               %in% colnames(sin))
   expect_true("xs_width"              %in% colnames(sin))
   expect_true("xs_depth"              %in% colnames(sin))
+  expect_true("discharge"             %in% colnames(sin))
 })
 
 test_that("Check that fields are of the correct data type", {
@@ -75,6 +76,7 @@ test_that("Check that fields are of the correct data type", {
   expect_true(is.numeric(sin$xs_area))
   expect_true(is.numeric(sin$xs_width))
   expect_true(is.numeric(sin$xs_depth))
+  expect_true(is.numeric(sin$discharge))
 })
 
 test_that("Check output dimensionality", {

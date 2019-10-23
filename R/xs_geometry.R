@@ -20,6 +20,7 @@
 #'                        detrended elevation, units: feet.}
 #'        \item{xs_area}{numeric; The cross sectional area at the specified
 #'                       detrended elevation, units: square feet.}
+#'
 #'        \item{ground_elev}{numeric; The ground elevation of the detrended
 #'                           elevation, units: NAVD88 feet.}
 #'    }
@@ -106,7 +107,7 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
 
   # Set discharge (as a placeholder field for other functions)
-  discharge <- NA
+  discharge <- 0
 
   # Construct output table
   xs_dims <- data.frame(xs_width, xs_depth, xs_area$value, discharge, ae)
