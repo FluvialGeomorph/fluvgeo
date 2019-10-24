@@ -1,13 +1,14 @@
 library(fgm)
 context("shear_stress")
 
+# Calculate cross section dimensions
 xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
                                     xs_points = fgm::sin_riffle_channel_points_sp,
                                     bankfull_elevation = 103,
                                     lead_n = 1,
                                     use_smoothing = TRUE,
                                     loess_span = 0.5)
-
+# Calculate shear stress
 xs_dims_ss <- shear_stress(xs_dims)
 
 test_that("check fields exist by name", {
@@ -66,7 +67,7 @@ test_that("check field data type", {
   expect_true(is.numeric(xs_dims_ss$xs_area))
   expect_true(is.numeric(xs_dims_ss$xs_width))
   expect_true(is.numeric(xs_dims_ss$xs_depth))
-
+  expect_true(is.numeric(xs_dims_ss$discharge))
   expect_true(is.numeric(xs_dims_ss$fp_area))
   expect_true(is.numeric(xs_dims_ss$fp_width))
   expect_true(is.numeric(xs_dims_ss$fp_depth))
@@ -76,4 +77,8 @@ test_that("check field data type", {
   expect_true(is.numeric(xs_dims_ss$bankfull_elev))
   expect_true(is.numeric(xs_dims_ss$floodprone_elev))
   expect_true(is.numeric(xs_dims_ss$shear_stress))
+})
+
+test_that("check data structure", {
+  expect_true(check_cross_section_dimensions(xs_dims_ss, "shear_stress"))
 })
