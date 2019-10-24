@@ -4,19 +4,32 @@
 #'   xs_dims data frame.
 #'
 #' @export
-#' @param xs_dims           data frame; A data frame of cross section
-#'                          dimensions.
+#' @param xs_dimensions   SpatialLinesDataFrame; A `cross_section_dimensions`
+#'                        fgm data structure.
 #'
 #' @return Returns the input xs_dims data frame of cross sections with the
 #'   calculated metric ratio variables added.
 #'
-xs_metric_ratios <- function(xs_dims) {
+#' @examples
+#' # Calculate cross section planform dimensions
+#' xs_dims_plan <- planform_dimensions(fgm::sin_riffle_floodplain_dims_sp,
+#'                                     fgm::sin_bankline_points_sp)
+#'
+#' # Calculate cross section metric ratios
+#' xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
+#'
+#'
+xs_metric_ratios <- function(xs_dimensions) {
+  # Check parameters
+  check_cross_section_dimensions(xs_dimensions, "planform")
 
   # Radius of curvature to bankfull width ratio
-  xs_dims$rc_bfw_ratio <- (xs_dims$bend_radius * 3.28084) / xs_dims$xs_width
+  xs_dimensions$rc_bfw_ratio <- (xs_dimensions$bend_radius * 3.28084) /
+                                 xs_dimensions$xs_width
 
   # Meander belt width to bankfull width ratio
-  xs_dims$mbw_bfw_ratio <- xs_dims$meander_width / xs_dims$xs_width
+  xs_dimensions$mbw_bfw_ratio <- xs_dimensions$meander_width /
+                                 xs_dimensions$xs_width
 
-  return(xs_dims)
+  return(xs_dimensions)
 }
