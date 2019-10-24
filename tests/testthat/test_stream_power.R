@@ -1,14 +1,18 @@
 library(fgm)
 context("stream_power")
 
+# Calculate cross section dimensions
 xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
                                     xs_points = fgm::sin_riffle_channel_points_sp,
                                     bankfull_elevation = 103,
                                     lead_n = 1,
                                     use_smoothing = TRUE,
                                     loess_span = 0.5)
+# Calculate shear stress
+xs_dims_ss <- shear_stress(xs_dims)
 
-xs_dims_sp <- stream_power(xs_dims,
+# Calculate stream power
+xs_dims_sp <- stream_power(xs_dims_ss,
                            discharge_method = "regional_curve",
                            region = "Illinois River",
                            drainage_area = 41)
@@ -85,4 +89,8 @@ test_that("check required parameters", {
   expect_error(stream_power(xs_dims, discharge_method = "regional_curve",
                             region = "Illinois River"))
   expect_error(stream_power(xs_dims, discharge_method = "width_relationship"))
+})
+
+test_that("check data structure", {
+  expect_true(check_cross_section_dimensions(xs_dims_sp, "stream_power"))
 })
