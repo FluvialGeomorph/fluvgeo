@@ -1,6 +1,7 @@
 library(fgm)
 context("cross_section_dimensions")
 
+# Calculate cross section dimensions
 xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
                                     xs_points = fgm::sin_riffle_channel_points_sp,
                                     bankfull_elevation = 103,
@@ -72,4 +73,8 @@ test_that("check field data type", {
   expect_true(is.numeric(xs_dims$watersurface_elev))
   expect_true(is.numeric(xs_dims$bankfull_elev))
   expect_true(is.numeric(xs_dims$floodprone_elev))
+})
+
+test_that("check data structure", {
+  expect_true(check_cross_section_dimensions(xs_dims, "cross_section_dimensions"))
 })
