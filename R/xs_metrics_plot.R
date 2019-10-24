@@ -16,14 +16,14 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract data from the fgm::sin_xs_dimensions SpatialPointsDataFrame
-#' sin_xs_dims_df <- fgm::sin_xs_dimensions@@data
+#' # Extract cross section dimension data
+#' sin_xs_dims_df <- fgm::sin_riffle_floodplain_dims_planform_sp@@data
 #'
-#' # Call the xs_plot function
-#' sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
+#' # Call the xs_metrics_plot function
+#' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
 #'
 #' # Print the graph
-#' sin_profile
+#' print(sin_metrics)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -33,6 +33,9 @@
 #' theme_bw theme labs
 #'
 xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
+  # Check parameters
+  check_cross_section_dimensions(reach_xs_dims, "metric_ratios")
+
   # Gather data by metrics for plotting
   xs_dims <- gather(reach_xs_dims,
                     key = "metrics",
@@ -53,7 +56,7 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                                        "sinuosity",
                                        "shear_stress",
                                        "stream_power",
-                                       "mbw_bfw_ratio"),
+                                       "rc_bfw_ratio"),
                             labels = c("Width Depth Ratio",
                                        "Entrenchment Ratio",
                                        "Slope",
