@@ -2,11 +2,11 @@ library(fgm)
 context("reach_rhg_graph")
 
 # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
 
 # Set variable values
 streams <- "Sinsinawa"
-regions <- c("Eastern United States", "IN Central Till Plain")
+regions <- c("Illinois River", "IN Central Till Plain")
 bankfull_elevations <- seq(103, 104, 0.1)
 
 # Call the xs_dimensions function

@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fgm::sin_xs_points@@data
+#' sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@@data
 #'
 #' # Set variable values
 #' streams <- "Sinsinawa"
