@@ -12,13 +12,10 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
                                 "Overwidened"),
            source = "Dunn & Leopold, 1978")
 
-# Use the fgm::sin_flowline_sp SpatialLinesDataFrame
-sin_flowline_sp <- fgm::sin_flowline_sp
-
-# Use the fgm::sin_xs_dimensions_sp SpatialLinesDataFrame
-sin_xs_dimensions_sp <- fgm::sin_xs_dimensions_sp
-
-wdr_map <- map_reach_metric(wdr, sin_flowline_sp, sin_xs_dimensions_sp)
+# Create the reach metric map
+wdr_map <- map_reach_metric(wdr,
+                            fgm::sin_flowline_sp,
+                            fgm::sin_riffle_floodplain_dims_planform_sp)
 
 test_that("check map_reach_metric", {
   expect_true("tmap" %in% class(wdr_map))
