@@ -27,6 +27,10 @@ xs_metric_ratios <- function(xs_dimensions) {
   xs_dimensions$rc_bfw_ratio <- (xs_dimensions$bend_radius * 3.28084) /
                                  xs_dimensions$xs_width
 
+  # Radius of curvature to bankfull width ratio <= 10
+  xs_dimensions$rc_bfw_ratio_10 <- xs_dimensions$rc_bfw_ratio
+  xs_dimensions$rc_bfw_ratio_10[xs_dimensions$rc_bfw_ratio > 10] <- 10
+
   # Meander belt width to bankfull width ratio
   xs_dimensions$mbw_bfw_ratio <- xs_dimensions$meander_width /
                                  xs_dimensions$xs_width
