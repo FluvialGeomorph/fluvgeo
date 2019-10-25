@@ -11,17 +11,24 @@ load_libraries <- function() {
   arc.check_product()
 }
 
+delete_shapefile <- function(file_with_path) {
+  shapefile_list <- list.files(dirname(file_with_path),
+                               pattern = tools::file_path_sans_ext(basename(file_with_path)),
+                                                  full.names = TRUE)
+  file.remove(shapefile_list)
+}
+
 # sp object
 fc <- fgm::sin_flowline_sp
 
 # Create a path to a temp file
 temp_file <- tempfile("flowline", fileext = ".shp")
-# Delete it if it already exists from a previous run
-if(file.exists(temp_file)) {file.remove(temp_file)}
 
-test_that("sp2arc works!", {
+test_that("check if sp2arc works", {
   skip_if_no_arc()
   load_libraries()
   sp2arc(fc, temp_file)
   expect_true(file.exists(temp_file))
+  delete_shapefile(temp_file)
 })
+
