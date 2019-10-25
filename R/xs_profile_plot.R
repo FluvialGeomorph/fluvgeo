@@ -4,10 +4,10 @@
 #' of the input stream reach.
 #'
 #' @export
-#' @param reach_xs_dims   data frame; a data frame of cross section
-#'                        dimensions.
-#' @param features        data frame; a data frame of river features
-#' @param label_xs        boolean; Draw the cross section labels?
+#' @param reach_xs_dims_sp SpatialPointsDataFrame of cross section
+#'                         dimensions.
+#' @param features_sp      SpatialPointsDataFrame of infrastructure features
+#' @param label_xs         logical; Draw the cross section labels?
 #'
 #' @return A ggplot2 object.
 #'
@@ -17,16 +17,13 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract data from spatial features
-#' reach_xs_dims_df <- fgm::sin_riffle_floodplain_dims_planform_sp@@data
-#' sin_features_df <- fgm::sin_features_sp@@data
-#'
 #' # Create cross section profile plot
-#' sin_xs_profile_plot <- xs_profile_plot(reach_xs_dims = reach_xs_dims_df,
-#'                                        features = sin_features_df,
-#'                                        label_xs = TRUE)
+#' profile_plot <- xs_profile_plot(reach_xs_dims_sp = fgm::sin_riffle_floodplain_dims_planform_sp,
+#'                                 features_sp = fgm::sin_features_sp,
+#'                                 label_xs = TRUE)
+#'
 #' # Print the plot
-#' print(sin_xs_profile_plot)
+#' print(profile_plot)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -36,11 +33,16 @@
 #' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
-xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
+xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
+                            label_xs = TRUE) {
   # Check parameters
-  check_cross_section_dimensions(reach_xs_dims, "cross_section_dimensions")
-  check_features(features)
+  check_cross_section_dimensions(reach_xs_dims_sp, "cross_section_dimensions")
+  check_features(features_sp)
   assert_that(is.logical(label_xs), msg = "label_xs must be logical")
+
+  # Convert to data frames for ggplot
+  reach_xs_dims <- reach_xs_dims_sp@data
+  features      <- features_sp@data
 
   # Gather data by water levels for plotting
   xs_dims <- gather(reach_xs_dims,
