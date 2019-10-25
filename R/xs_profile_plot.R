@@ -17,14 +17,16 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract data from the fgm::sin_xs_dimensions SpatialPointsDataFrame
-#' sin_xs_dims_df <- fgm::sin_xs_dimensions@@data
+#' # Extract data from spatial features
+#' reach_xs_dims_df <- fgm::sin_riffle_floodplain_dims_planform_sp@@data
+#' sin_features_df <- fgm::sin_features_sp@@data
 #'
-#' # Call the xs_plot function
-#' sin_profile <- xs_profile_plot(reach_xs_dims = sin_xs_dims_df)
-#'
-#' # Print the graph
-#' sin_profile
+#' # Create cross section profile plot
+#' sin_xs_profile_plot <- xs_profile_plot(reach_xs_dims = reach_xs_dims_df,
+#'                                        features = sin_features_df,
+#'                                        label_xs = TRUE)
+#' # Print the plot
+#' print(sin_xs_profile_plot)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -35,6 +37,11 @@
 #'
 #'
 xs_profile_plot <- function(reach_xs_dims, features = NULL, label_xs = TRUE) {
+  # Check parameters
+  check_cross_section_dimensions(reach_xs_dims, "cross_section_dimensions")
+  check_features(features)
+  assert_that(is.logical(label_xs), msg = "label_xs must be logical")
+
   # Gather data by water levels for plotting
   xs_dims <- gather(reach_xs_dims,
                     key = "water_levels",
