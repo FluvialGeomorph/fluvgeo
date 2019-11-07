@@ -58,5 +58,4 @@ usethis::use_data(sin_valleyline_sp, overwrite = TRUE)
 usethis::use_data(sin_valleyline_points_sp, overwrite = TRUE)
 ```
 
-# Run the `usethis::use_data` in the `create_package_steps.R` for each dataset
 
