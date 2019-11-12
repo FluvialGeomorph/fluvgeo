@@ -4,13 +4,13 @@
 #' input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fgm bankline_points data
+#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo bankline_points data
 #'                         structure
 #'
 #' @return Returns a data frame of loops with the calculated meander length.
 #'
 #' @examples
-#' meander_length(fgm::sin_bankline_points_sp)
+#' meander_length(fluvgeo::sin_bankline_points_sp)
 #'
 #' @importFrom testthat expect_true
 #' @importFrom stats aggregate

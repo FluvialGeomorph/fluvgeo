@@ -1,7 +1,7 @@
-library(fgm)
+library(fluvgeo)
 context("meander_width")
 
-mw <- meander_width(fgm::sin_bankline_points_sp)
+mw <- meander_width(fluvgeo::sin_bankline_points_sp)
 
 test_that("check meander_length output data structure", {
   expect_true(is.data.frame(mw))
@@ -39,5 +39,5 @@ test_that("check meander_length output data structure", {
 
 test_that("check output", {
   expect_equal(length(mw$loop),
-               length(unique(na.omit(fgm::sin_bankline_points_sp$loop))) )
+               length(unique(na.omit(fluvgeo::sin_bankline_points_sp$loop))) )
 })

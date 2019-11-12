@@ -1,4 +1,4 @@
-#' @name fgm
+#' @name fluvgeo
 #'
 #' @title A Package for Fluvial Geomorphic Analysis
 #'

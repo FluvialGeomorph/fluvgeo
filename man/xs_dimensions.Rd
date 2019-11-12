@@ -55,8 +55,8 @@ Calculates a data frame of hydraulic geometry dimensions
     (area, width, depth) for a set of streams, regions, and detrended bankfull elevationsby cross section, xs type, and bankfull elevation.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
 
 # Call the xs_dimensions function with test data
 streams <- c("Sinsinawa")

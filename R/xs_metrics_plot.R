@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' # Extract cross section dimension data
-#' sin_xs_dims_df <- fgm::sin_riffle_floodplain_dims_planform_sp@@data
+#' sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@@data
 #'
 #' # Call the xs_metrics_plot function
 #' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
@@ -46,7 +46,7 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                     .data$sinuosity,
                     .data$shear_stress,
                     .data$stream_power,
-                    .data$rc_bfw_ratio)
+                    .data$rc_bfw_ratio_10)
 
   # Set factor levels to control legend
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -56,7 +56,7 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                                        "sinuosity",
                                        "shear_stress",
                                        "stream_power",
-                                       "rc_bfw_ratio"),
+                                       "rc_bfw_ratio_10"),
                             labels = c("Width Depth Ratio",
                                        "Entrenchment Ratio",
                                        "Slope",

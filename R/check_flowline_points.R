@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `flowline_points` data structure
+#' @title Check the validity of an `fluvgeo` `flowline_points` data structure
 #'
 #' @description Checks that the input data structure `flowline_points` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param flowline_points   SpatialPointsDataFrame; a `flowline_points` data
-#'                          structure used by the fgm package.
+#'                          structure used by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `flowline_points` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

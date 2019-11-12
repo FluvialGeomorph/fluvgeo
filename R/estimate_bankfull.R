@@ -25,8 +25,8 @@
 #' @return A report written to the file system in the output fromat requested.
 #'
 #' @examples
-#' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fgm::sin_xs_points@@data
+#' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+#' sin_xs_points_df <- fluvgeo::sin_xs_points@@data
 #'
 #' # Set variable values
 #' streams <- c("Sinsinawa")
@@ -64,7 +64,7 @@ estimate_bankfull <- function(xs_points, streams, regions, bankfull_elevations,
 
     # Render the report for the current stream
     rmarkdown::render(input = system.file("reports", "bankfull_report.Rmd",
-                                          package = "fgm"),
+                                          package = "fluvgeo"),
                       output_format = output_format,
                       output_options = list(self_contained = TRUE),
                       params = list(xs_points = xs_pts,

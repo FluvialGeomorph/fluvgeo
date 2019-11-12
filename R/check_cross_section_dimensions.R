@@ -1,4 +1,4 @@
-#' @title Check the validity of an `fgm` `cross_section_dimension` data
+#' @title Check the validity of an `fluvgeo` `cross_section_dimension` data
 #' structure
 #'
 #' @description Checks that the input data structure `cross_section_dimension`
@@ -7,7 +7,7 @@
 #' @export
 #' @param cross_section_dimensions   a data frame or SpatialLinesDataFrame: a
 #'                                   `cross_section_dimension` data structure
-#'                                   used by the fgm package.
+#'                                   used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "cross_section_dimensions", "shear_stress,
 #'                        "stream_power", "planform", "metric_ratios"
@@ -24,8 +24,8 @@
 #'
 #' @examples
 #' # Step: cross_section_dimensions
-#' xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
-#'                                     xs_points = fgm::sin_riffle_channel_points_sp,
+#' xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+#'                                     xs_points = fluvgeo::sin_riffle_channel_points_sp,
 #'                                     bankfull_elevation = 103,
 #'                                     lead_n = 1,
 #'                                     use_smoothing = TRUE,
@@ -47,8 +47,8 @@
 #' check_cross_section_dimensions(xs_dims_sp, "stream_power")
 #'
 #' # Step: planform
-#' xs_dims_plan <- planform_dimensions(fgm::sin_riffle_floodplain_dims_sp,
-#'                                     fgm::sin_bankline_points_sp)
+#' xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
+#'                                     fluvgeo::sin_bankline_points_sp)
 #'
 #' check_cross_section_dimensions(xs_dims_plan, "planform")
 #'

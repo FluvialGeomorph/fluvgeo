@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_loop_points.R
 \name{check_loop_points}
 \alias{check_loop_points}
-\title{Check the validity of an `fgm` `loop_points` data structure}
+\title{Check the validity of an `fluvgeo` `loop_points` data structure}
 \usage{
 check_loop_points(loop_points)
 }
 \arguments{
 \item{loop_points}{SpatialPointsDataFrame; a `loop_points` data structure
-used by the fgm package.}
+used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `loop_points` data structure matches the

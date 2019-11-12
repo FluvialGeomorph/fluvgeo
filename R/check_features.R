@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `features` data structure
+#' @title Check the validity of an `fluvgeo` `features` data structure
 #'
 #' @description Checks that the input data structure `features` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param features   SpatialPointsDataFrame; a `features` data structure used
-#'                   by the fgm package.
+#'                   by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `features` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

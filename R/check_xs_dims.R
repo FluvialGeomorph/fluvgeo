@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `xs_dims` data structure
+#' @title Check the validity of an `fluvgeo` `xs_dims` data structure
 #'
 #' @description Checks that the input data structure `xs_dims` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param xs_dims   data frame; a `xs_dims` data structure used
-#'                          by the fgm package.
+#'                          by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `xs_dims` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

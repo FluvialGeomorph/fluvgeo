@@ -1,9 +1,9 @@
-library(fgm)
+library(fluvgeo)
 context("cross_section_dimensions")
 
 # Calculate cross section dimensions
-xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
-                                    xs_points = fgm::sin_riffle_channel_points_sp,
+xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+                                    xs_points = fluvgeo::sin_riffle_channel_points_sp,
                                     bankfull_elevation = 103,
                                     lead_n = 1,
                                     use_smoothing = TRUE,

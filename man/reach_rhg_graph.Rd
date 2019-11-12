@@ -31,8 +31,8 @@ Produces a regional hydraulic geometry graph for the specified
 streams.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
 
 # Set variable values
 streams <- "Sinsinawa"

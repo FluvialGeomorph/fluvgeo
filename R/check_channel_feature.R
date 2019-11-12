@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `channel_feature` data structure
+#' @title Check the validity of an `fluvgeo` `channel_feature` data structure
 #'
 #' @description Checks that the input data structure `channel_feature` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param channel_feature   data frame; a `channel_feature` data structure used
-#'                          by the fgm package.
+#'                          by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `channel_feature` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

@@ -1,8 +1,8 @@
-library(fgm)
+library(fluvgeo)
 library(dplyr)
 context("planform")
 
-pf <- planform(fgm::sin_bankline_points_sp)
+pf <- planform(fluvgeo::sin_bankline_points_sp)
 
 test_that("check data structure", {
   expect_true(is.data.frame(pf))

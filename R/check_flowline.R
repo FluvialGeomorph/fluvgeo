@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `flowline` data structure
+#' @title Check the validity of an `fluvgeo` `flowline` data structure
 #'
 #' @description Checks that the input data structure `flowline` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param flowline        SpatialLinesDataFrame: a `flowline` data structure
-#'                        used by the fgm package.
+#'                        used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "create_flowline", "profile_points"
 #'

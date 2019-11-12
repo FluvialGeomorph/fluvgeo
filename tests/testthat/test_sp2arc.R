@@ -1,4 +1,4 @@
-library(fgm)
+library(fluvgeo)
 context("sp2arc")
 
 skip_if_no_arc <- function() {
@@ -19,7 +19,7 @@ delete_shapefile <- function(file_with_path) {
 }
 
 # sp object
-fc <- fgm::sin_flowline_sp
+fc <- fluvgeo::sin_flowline_sp
 
 # Create a path to a temp file
 temp_file <- tempfile("flowline", fileext = ".shp")

@@ -32,7 +32,7 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
   xs_i <- cross_section[cross_section$Seq == xs_number, ]
 
   # Calculate the map extent for the current cross section
-  map_extent <- fgm::feature_extent(feature = xs_i,
+  map_extent <- fluvgeo::feature_extent(feature = xs_i,
                                     extent_factor = extent_factor)
 
   # Clip the dem to the cross section map extent

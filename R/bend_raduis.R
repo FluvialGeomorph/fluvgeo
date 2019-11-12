@@ -4,7 +4,7 @@
 #' `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fgm bankline_points data
+#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo bankline_points data
 #'                         structure
 #'
 #' @return Returns a data frame of bends with the calculated raduis of

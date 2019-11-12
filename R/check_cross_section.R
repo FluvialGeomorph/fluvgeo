@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `cross_section` data structure
+#' @title Check the validity of an `fluvgeo` `cross_section` data structure
 #'
 #' @description Checks that the input data structure `cross_section` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param cross_section   SpatialLinesDataFrame: a `cross_section` data
-#'                        structure used by the fgm package.
+#'                        structure used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "assign_ids", "watershed_area", "river_position",
 #'                        "station_points", "loop_bend"

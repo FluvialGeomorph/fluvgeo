@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_flowline_points.R
 \name{check_flowline_points}
 \alias{check_flowline_points}
-\title{Check the validity of an `fgm` `flowline_points` data structure}
+\title{Check the validity of an `fluvgeo` `flowline_points` data structure}
 \usage{
 check_flowline_points(flowline_points)
 }
 \arguments{
 \item{flowline_points}{SpatialPointsDataFrame; a `flowline_points` data
-structure used by the fgm package.}
+structure used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `flowline_points` data structure matches the

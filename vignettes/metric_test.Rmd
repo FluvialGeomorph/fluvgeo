@@ -5,7 +5,7 @@ output: html_document
 
 # Metric Test
 ```{r libs}
-library(fgm)
+library(fluvgeo)
 library(arcgisbinding)
 library(ggplot2)
 library(tidyr)
@@ -15,12 +15,14 @@ arc.check_product()
 ```
 
 ```{r import_data}
-sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+sen01_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
 sen01_xs_dimensions_df <- sen01_xs_dimensions@data
 ```
 
+
+## Stream Power
 ```{r}
-xs_dims <- stream_power(sen01_xs_dimensions_df, 
+xs_dims <- stream_power(sen01_xs_dimensions, 
                         discharge_method = "model_measure", 
                         discharge_value = 1000)
 ```
@@ -36,3 +38,11 @@ xs_dims <- stream_power(sen01_xs_dimensions_df,
 xs_dims <- stream_power(sen01_xs_dimensions_df, 
                         discharge_method = "width_relationship")
 ```
+
+
+## Shear Stress
+```{r}
+xs_dims <- shear_stress(xs_dims)
+```
+
+

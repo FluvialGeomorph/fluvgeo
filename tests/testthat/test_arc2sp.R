@@ -1,4 +1,4 @@
-library(fgm)
+library(fluvgeo)
 context("arc2sp")
 
 skip_if_no_arc <- function() {
@@ -11,7 +11,7 @@ load_libraries <- function() {
   arc.check_product()
 }
 
-fc_path <- file.path(system.file("extdata", "testing_data.gdb", package = "fgm"),
+fc_path <- file.path(system.file("extdata", "testing_data.gdb", package = "fluvgeo"),
                      "riffle_channel")
 
 test_that("arc2sp works!", {

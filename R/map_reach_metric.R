@@ -25,8 +25,8 @@
 #'
 #' # Create the reach metric map
 #' wdr_map <- map_reach_metric(wdr,
-#'                             fgm::sin_flowline_sp,
-#'                             fgm::sin_riffle_floodplain_dims_planform_sp)
+#'                             fluvgeo::sin_flowline_sp,
+#'                             fluvgeo::sin_riffle_floodplain_dims_planform_sp)
 #' print(wdr_map)
 #'
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
@@ -46,7 +46,7 @@ map_reach_metric <- function(metric, flowline, xs_dimensions) {
                   tm_symbols(col = metric@variable,
                              title.col = metric@metric,
                              size = 2,
-                             palette = fgm::metric_colors(metric),
+                             palette = fluvgeo::metric_colors(metric),
                              style = "fixed",
                              breaks = metric@threshold_breaks,
                              interval.closure = "left") +

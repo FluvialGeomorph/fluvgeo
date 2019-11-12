@@ -4,7 +4,7 @@
 #' loop and bend using a `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fgm `bankline_points`
+#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo `bankline_points`
 #'                         data structure
 #' @param loop             numeric; the loop to plot
 #' @param bend             numeric; the bend to plot

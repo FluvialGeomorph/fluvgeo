@@ -24,8 +24,8 @@
 #'
 #' @examples
 #' # Calculate cross section dimensions
-#' xs_dims <- cross_section_dimensions(xs = fgm::sin_riffle_channel_sp,
-#'                                     xs_points = fgm::sin_riffle_channel_points_sp,
+#' xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+#'                                     xs_points = fluvgeo::sin_riffle_channel_points_sp,
 #'                                     bankfull_elevation = 103,
 #'                                     lead_n = 1,
 #'                                     use_smoothing = TRUE,
@@ -51,7 +51,7 @@ cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
     xs_reach <- xs[xs@data$ReachName == g, ]
 
     # Calculate slope and sinuosity for xs_reach
-    xs_reach_ss <- fgm::slope_sinuosity(xs_reach,
+    xs_reach_ss <- fluvgeo::slope_sinuosity(xs_reach,
                                         lead_n = lead_n, lag_n = 0,
                                         use_smoothing = use_smoothing,
                                         loess_span = loess_span)
@@ -63,7 +63,7 @@ cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
       # Subset for the current stream and convert to data frame
       xs_pts <- xs_points@data[xs_points@data$ReachName == g, ]
       # Calculate xs dimensions
-      dims <- fgm::xs_metrics(xs_points = xs_pts,
+      dims <- fluvgeo::xs_metrics(xs_points = xs_pts,
                               stream = g,
                               xs_number = i,
                               bankfull_elevation = bankfull_elevation)

@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_xs_dims.R
 \name{check_xs_dims}
 \alias{check_xs_dims}
-\title{Check the validity of an `fgm` `xs_dims` data structure}
+\title{Check the validity of an `fluvgeo` `xs_dims` data structure}
 \usage{
 check_xs_dims(xs_dims)
 }
 \arguments{
 \item{xs_dims}{data frame; a `xs_dims` data structure used
-by the fgm package.}
+by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `xs_dims` data structure matches the

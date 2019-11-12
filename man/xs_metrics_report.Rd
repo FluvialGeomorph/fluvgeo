@@ -4,15 +4,20 @@
 \alias{xs_metrics_report}
 \title{Cross Section Metrics Report}
 \usage{
-xs_metrics_report(xs_points, xs_dims_planform, dem, banklines,
+xs_metrics_report(xs_points, xs_dims_planform, flowline, dem, banklines,
   extent_factor, streams, regions, features, label_xs, output_dir,
   output_format)
 }
 \arguments{
-\item{xs_points}{data frame; a data frame of cross section points}
+\item{xs_points}{data frame; a data frame of a cross section points
+data struture}
 
-\item{xs_dims_planform}{data frame; a data frame of cross section
-planform dimensions}
+\item{xs_dims_planform}{SpatialLinesDataFrame; a
+SpatialLinesDataFrame of a cross section planform
+dimensions data structure}
+
+\item{flowline}{SpatialLinesDataFrame; a SpatialLinesDataFrame of
+a flowline data structure}
 
 \item{dem}{character; path to a dem raster}
 
@@ -28,7 +33,8 @@ area.}
 calculated for. See the regional_curves$region
 field for a complete list.}
 
-\item{features}{data frame; a data frame of river features}
+\item{features}{SpatialPointsDataFrame; a
+SpatialPointsDataFrame of river features}
 
 \item{label_xs}{boolean; Draw the cross section labels?}
 
@@ -45,9 +51,9 @@ A report written to the file system in the output fromat requested.
 Produces the cross section metrics report.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
-sin_xs_dims_planform_df <- fgm::sin_xs_dims_planform@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_xs_points@data
+sin_xs_dims_planform_df <- fluvgeo::sin_xs_dims_planform@data
 
 # Set variable values
 streams <- c("Sinsinawa")
@@ -55,8 +61,8 @@ regions <- c("Eastern United States", "IN Central Till Plain")
 output_dir <- Sys.getenv("HOME")
 output_format <- "html_document"
 
-# Call the estimate_bankfull function with test data
-estimate_bankfull(xs_points = sin_xs_points_df,
+# Call the  function with test data
+xs_metrics_report(xs_points = sin_xs_points_df,
                   xs_dims_planform = sin_xs_dims_planform_df,
                   streams = streams,
                   regions = regions,

@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `loop_points` data structure
+#' @title Check the validity of an `fluvgeo` `loop_points` data structure
 #'
 #' @description Checks that the input data structure `loop_points` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param loop_points   SpatialPointsDataFrame; a `loop_points` data structure
-#'                      used by the fgm package.
+#'                      used by the fluvgeo package.
 #'
 #' @details Cross section feature classes evolve as different steps are
 #' performed on them. The `step` parameter allows a `loop_points` data

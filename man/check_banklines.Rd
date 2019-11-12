@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_banklines.R
 \name{check_banklines}
 \alias{check_banklines}
-\title{Check the validity of an `fgm` `banklines` data structure}
+\title{Check the validity of an `fluvgeo` `banklines` data structure}
 \usage{
 check_banklines(banklines)
 }
 \arguments{
 \item{banklines}{SpatialLinesDataFrame; a `banklines` data structure used
-by the fgm package.}
+by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `banklines` data structure matches the

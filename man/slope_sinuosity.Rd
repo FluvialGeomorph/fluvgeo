@@ -8,7 +8,7 @@ slope_sinuosity(channel_features, lead_n, lag_n, use_smoothing = TRUE,
   loess_span = 0.05)
 }
 \arguments{
-\item{channel_features}{Spatial*DataFrame; an `fgm` data structure of
+\item{channel_features}{Spatial*DataFrame; an `fluvgeo` data structure of
 channel features (i.e., cross section, flowline
 points, etc.) Must have the following fields:
 `ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`}
@@ -37,12 +37,12 @@ Calculates the slope and sinuosity of the input channel
 features.
 }
 \examples{
-# Extract attribute data from the fgm::sin_flowline_points_sp
+# Extract attribute data from the fluvgeo::sin_flowline_points_sp
 # SpatialPointsDataFrame
-sin_flowline_points_df <- fgm::sin_flowline_points_sp@data
+sin_flowline_points_df <- fluvgeo::sin_flowline_points_sp@data
 
-# Extract data from the fgm::sin_riffle_channel_sp SpatialLinesDataFrame
-sin_rifflechannel_df <- fgm::sin_riffle_channel_sp@data
+# Extract data from the fluvgeo::sin_riffle_channel_sp SpatialLinesDataFrame
+sin_rifflechannel_df <- fluvgeo::sin_riffle_channel_sp@data
 
 # Call the slope_sinuosity function for a flowline
 sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,

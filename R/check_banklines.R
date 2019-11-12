@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `banklines` data structure
+#' @title Check the validity of an `fluvgeo` `banklines` data structure
 #'
 #' @description Checks that the input data structure `banklines` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param banklines   SpatialLinesDataFrame; a `banklines` data structure used
-#'                    by the fgm package.
+#'                    by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `banklines` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

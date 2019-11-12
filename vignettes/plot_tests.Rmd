@@ -26,10 +26,10 @@ arc.check_product()
 # XS Profile Plot
 ```{r}
 # Import xs dimensions feature class
-sen_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/03_SenachwineCreekMainstem/SenachwineCreekMainstem.gdb/riffle_dims_104")
+sen_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/03_SenachwineCreekMainstem/SenachwineCreekMainstem.gdb/riffle_dims_104")
 
 # Import infrastructure feature class
-sen_infrastructure <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/03_SenachwineCreekMainstem/SenachwineCreekMainstem.gdb/infrastructure")
+sen_infrastructure <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/03_SenachwineCreekMainstem/SenachwineCreekMainstem.gdb/infrastructure")
 
 # Convert to a dataframe
 sen_xs_dims <- sen_xs_dimensions@data
@@ -43,7 +43,7 @@ xs_profile_plot(sen_xs_dims, sen_infra, label_xs = TRUE)
 
 ```{r}
 # Import xs dimensions feature class
-sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+sen01_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
 
 # Convert to a dataframe
 sen01_xs_dims <- sen01_xs_dimensions@data
@@ -51,7 +51,7 @@ sen01_xs_dims <- sen01_xs_dimensions@data
 
 ```{r}
 # Import xs features feature class
-sen01_features <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/features")
+sen01_features <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/features")
 
 # Convert to a dataframe
 sen01_feat <- sen01_features@data
@@ -73,7 +73,7 @@ xs_metrics_plot(sen01_xs_dims, label_xs = TRUE)
 # Planform 
 ```{r}
 # Import bankline points feature class
-bankline_points_fc <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/bankline_points")
+bankline_points_fc <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/bankline_points")
 
 # Convert to a dataframe
 bankline_pts <- bankline_points_fc@data
@@ -107,21 +107,21 @@ bends_planform <- planform(bankline_pts)
 ## Lower Senachwine Creek
 ```{r}
 # Import xs dimensions feature class
-sen01_xs_points <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_points")
+sen01_xs_points <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_points")
 
 # Convert to a dataframe
 sen01_xs_pts <- sen01_xs_points@data
 
 # Import xs dimensions feature class
-sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+sen01_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
 
 # Import bankline points feature class
-banklines <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
+banklines <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
 
 dem_path <- "Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/dem"
 
 # Import xs features feature class
-sen01_features <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/features")
+sen01_features <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/features")
 
 # Convert to a dataframe
 sen01_feat <- sen01_features@data
@@ -145,24 +145,24 @@ xs_metrics_report(xs_points = sen01_xs_pts[sen01_xs_pts$Seq > 0, ],
 ## Campbell Creek
 ```{r}
 # Import xs dimensions feature class
-cam_xs_points <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/riffle_points")
+cam_xs_points <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/riffle_points")
 
 # Convert to a dataframe
 cam_xs_pts <- cam_xs_points@data
 
 # Import xs dimensions feature class
-cam_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/riffle_dims_planform")
+cam_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/riffle_dims_planform")
 
 # convert tot data frame
 cam_xs_dimensions_df <- cam_xs_dimensions@data
 
 # Import bankline points feature class
-cam_banklines <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/banklines")
+cam_banklines <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/banklines")
 
 cam_dem_path <- "Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/dem_hydro"
 
 # Import xs features feature class
-cam_features <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/features")
+cam_features <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/CampbellsCreek/CampbellCreek.gdb/features")
 
 # Convert to a dataframe
 cam_feat <- cam_features@data
@@ -214,10 +214,10 @@ estimate_bankfull(xs_points = sen01_xs_pts,
 
 ```{r}
 # Import bankline points feature class
-banklines <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
+banklines <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
 
 # Import xs dimensions feature class
-sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+sen01_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
 ```
 
 ```{r}
@@ -324,10 +324,10 @@ tm_layout(main.title = paste("Cross Section", i),
 
 ```{r}
 dem_path <- "Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/dem"
-banklines <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
-sen01_xs_dimensions <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
+banklines <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/banklines")
+sen01_xs_dimensions <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/riffle_channel_dims_planform")
 sen01_xs_dimensions_df <- sen01_xs_dimensions@data
-sen01_flowline <- fgm::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/flowline")
+sen01_flowline <- fluvgeo::arc2sp("Z:/Work/Office/Regional/ERDC/EMRRP_Sediment/Senachwine/Data/Watershed/01_LowerSenachwineCreek/LowerSenachwineCreek.gdb/flowline")
 ```
 
 ```{r results}
@@ -340,17 +340,37 @@ xs_map(xs_fc = sen01_xs_dimensions,
 ```
 
 ```{r}
-width_depth_ratio <- new(Class = "FluvialGeomorphicMetric",
-                         metric = "Width Depth Ratio",
-                         definition = "bankfull width / bankfull depth",
-                         variable = "xs_width_depth_ratio",
-                         threshold_breaks = c(0, 10, 20, Inf),
-                         threshold_labels = c("Incised",
-                                              "Stable",
-                                              "Overwidened"),
-                         source = "Dunn & Leopold, 1978")
+# Define metric objects
+wdr3 <- new(Class = "FluvialGeomorphicMetric",
+            metric = "Width Depth Ratio",
+            definition = "bankfull width / bankfull depth",
+            variable = "xs_width_depth_ratio",
+            threshold_breaks = c(0, 10, 20, Inf),
+            threshold_labels = c("Incised",
+                                 "Stable",
+                                 "Overwidened"),
+            source = "Dunn & Leopold, 1978")
 
+rc_bfw <- new(Class = "FluvialGeomorphicMetric",
+              metric = "Radius of Curvature to Bankfull Width Ratio",
+              definition = "radius of curvature / bankfull width",
+              variable = "rc_bfw_ratio",
+              threshold_breaks = c(0, 1.6, 2.0, Inf),
+              threshold_labels = c("Unstable",
+                                   "Relatively Stable",
+                                   "Stable"),
+              source = "Haring, personal communication")
 
+wdr4 <- new(Class = "FluvialGeomorphicMetric",
+            metric = "Width Depth Ratio",
+            definition = "bankfull width / bankfull depth",
+            variable = "xs_width_depth_ratio",
+            threshold_breaks = c(0, 5, 10, 20, Inf),
+            threshold_labels = c("Incised",
+                                 "Sorta Stable",
+                                 "Stable",
+                                 "Overwidened"),
+            source = "Dunn & Leopold, 1978")
 ```
 
 ```{r}
@@ -364,10 +384,11 @@ reach_overview_map(flowline, xs_dimensions)
 
 
 ```{r reach_metric_map, fig.width=6}
-reach_metric_map(width_depth_ratio, flowline, xs_dimensions)
+reach_metric_map(wdr4, flowline, xs_dimensions)
 ```
 
 ```{r xs_metric_plot, fig.width=6}
-xs_metric_plot(width_depth_ratio, sen01_xs_dimensions_df)
+xs_metric_plot(wdr4, sen01_xs_dimensions_df)
 ```
+
 

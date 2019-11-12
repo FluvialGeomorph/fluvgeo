@@ -1,8 +1,8 @@
-library(fgm)
+library(fluvgeo)
 context("estimate_bankfull")
 
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_xs_points@data
 
 # Set variable values
 streams <- c("Sinsinawa")

@@ -1,7 +1,7 @@
-library(fgm)
+library(fluvgeo)
 context("bend_radius")
 
-br <- bend_radius(fgm::sin_bankline_points_sp)
+br <- bend_radius(fluvgeo::sin_bankline_points_sp)
 
 test_that("check bend_radius data structure", {
   expect_true(is.data.frame(br))

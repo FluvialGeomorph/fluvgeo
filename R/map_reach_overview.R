@@ -11,11 +11,11 @@
 #' @return a tmap object
 #'
 #' @examples
-#' # Use the fgm::sin_flowline_sp SpatialLinesDataFrame
-#' sin_flowline_sp <- fgm::sin_flowline_sp
+#' # Use the fluvgeo::sin_flowline_sp SpatialLinesDataFrame
+#' sin_flowline_sp <- fluvgeo::sin_flowline_sp
 #'
-#' # Use the fgm::sin_riffle_floodplain_sp SpatialLinesDataFrame
-#' sin_riffle_channel_sp <- fgm::sin_riffle_channel_sp
+#' # Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
+#' sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
 #'
 #' # Create the map
 #' sin_map <- map_reach_overview(sin_flowline_sp, sin_riffle_channel_sp)
@@ -33,7 +33,7 @@ map_reach_overview <- function(flowline, cross_section) {
   check_cross_section(cross_section, step = "assign_ids")
 
   # Create map extent in lat-long to pass to OpenStreetMap
-  map_bb <- tmaptools::bb(fgm::feature_extent(flowline),
+  map_bb <- tmaptools::bb(fluvgeo::feature_extent(flowline),
                           current.projection = tmaptools::get_projection(flowline),
                           ext = 1.05,
                           projection = "longlat")

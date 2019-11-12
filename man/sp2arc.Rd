@@ -35,7 +35,7 @@ library(arcgisbinding)
 arc.check_product()
 
 # An `sp` object
-fc_sp <- fgm::sin_flowline_sp
+fc_sp <- fluvgeo::sin_flowline_sp
 
 # Create a path to a shapefile in a temporary directory
 temp_file <- tempfile("flowline", fileext = ".shp")

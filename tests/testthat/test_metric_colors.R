@@ -1,4 +1,4 @@
-library(fgm)
+library(fluvgeo)
 context("metric_colors")
 
 # Define metric objects

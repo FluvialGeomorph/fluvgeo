@@ -4,11 +4,11 @@
 \alias{xs_metric_ratios}
 \title{Calculate metric ratios for each cross section}
 \usage{
-xs_metric_ratios(xs_dims)
+xs_metric_ratios(xs_dimensions)
 }
 \arguments{
-\item{xs_dims}{data frame; A data frame of cross section
-dimensions.}
+\item{xs_dimensions}{SpatialLinesDataFrame; A `cross_section_dimensions`
+fluvgeo data structure.}
 }
 \value{
 Returns the input xs_dims data frame of cross sections with the
@@ -17,4 +17,14 @@ Returns the input xs_dims data frame of cross sections with the
 \description{
 Calculates metric ratios for each cross section in the input
   xs_dims data frame.
+}
+\examples{
+# Calculate cross section planform dimensions
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
+                                    fluvgeo::sin_bankline_points_sp)
+
+# Calculate cross section metric ratios
+xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
+
+
 }

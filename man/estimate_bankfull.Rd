@@ -41,8 +41,8 @@ A report written to the file system in the output fromat requested.
 Produces the bankfull estimate report.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_xs_points@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_xs_points@data
 
 # Set variable values
 streams <- c("Sinsinawa")

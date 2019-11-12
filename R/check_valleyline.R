@@ -1,11 +1,11 @@
-#' @title Check the validity of an `fgm` `valleyline` data structure
+#' @title Check the validity of an `fluvgeo` `valleyline` data structure
 #'
 #' @description Checks that the input data structure `valleyline` meets
 #' the requirements for this data structure.
 #'
 #' @export
 #' @param valleyline   SpatialLinesDataFrame: a `valleyline` data structure
-#'                     used by the fgm package.
+#'                     used by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `valleyline` data structure matches the
 #' requirements. The function throws an error for a data structure not matching

@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_valleyline.R
 \name{check_valleyline}
 \alias{check_valleyline}
-\title{Check the validity of an `fgm` `valleyline` data structure}
+\title{Check the validity of an `fluvgeo` `valleyline` data structure}
 \usage{
 check_valleyline(valleyline)
 }
 \arguments{
 \item{valleyline}{SpatialLinesDataFrame: a `valleyline` data structure
-used by the fgm package.}
+used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `valleyline` data structure matches the

@@ -1,4 +1,4 @@
 library(testthat)
-library(fgm)
+library(fluvgeo)
 
-test_check("fgm")
+test_check("fluvgeo")

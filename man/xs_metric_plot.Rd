@@ -23,8 +23,8 @@ Produces a longitudinal plot of cross section metrics for the
 input stream reach.
 }
 \examples{
-# Extract data from the fgm::sin_xs_dimensions SpatialPointsDataFrame
-sin_xs_dims_df <- fgm::sin_xs_dimensions@data
+# Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
+sin_xs_dims_df <- fluvgeo::sin_xs_dimensions@data
 
 # Call the xs_plot function
 sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)

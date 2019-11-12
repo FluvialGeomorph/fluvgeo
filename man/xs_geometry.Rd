@@ -24,6 +24,7 @@ A data frame of hydraulic dimensions at the specified detrended
                        detrended elevation, units: feet.}
        \item{xs_area}{numeric; The cross sectional area at the specified
                       detrended elevation, units: square feet.}
+
        \item{ground_elev}{numeric; The ground elevation of the detrended
                           elevation, units: NAVD88 feet.}
    }
@@ -40,8 +41,8 @@ The cross section points used as input to this function must
    \code{sp::SpatialPointsDataFrame} object.
 }
 \examples{
-# Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@data
+# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
 
 # Subset sin_xs_points to contain only one cross section (Seq = 4)
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]

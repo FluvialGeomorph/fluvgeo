@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_valleyline_points.R
 \name{check_valleyline_points}
 \alias{check_valleyline_points}
-\title{Check the validity of an `fgm` `valleyline_points` data structure}
+\title{Check the validity of an `fluvgeo` `valleyline_points` data structure}
 \usage{
 check_valleyline_points(valleyline_points)
 }
 \arguments{
 \item{valleyline_points}{SpatialPointsDataFrame: a `valleyline_points`
-data structure used by the fgm package.}
+data structure used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `valleyline_points` data structure matches the

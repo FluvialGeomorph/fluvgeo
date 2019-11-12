@@ -18,8 +18,8 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract data from the fgm::sin_xs_dimensions SpatialPointsDataFrame
-#' sin_xs_dims_df <- fgm::sin_xs_dimensions@@data
+#' # Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
+#' sin_xs_dims_df <- fluvgeo::sin_xs_dimensions@@data
 #'
 #' # Call the xs_plot function
 #' sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
@@ -61,7 +61,7 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
                   color = .data$metric_labels,
                   label = .data$Seq)) +
     geom_point(size = 4) +
-    scale_color_manual(values = fgm::metric_colors(metric),
+    scale_color_manual(values = fluvgeo::metric_colors(metric),
                        drop = FALSE,
                        labels = metric@threshold_labels) +
     geom_hline(yintercept = metric_threshold_lines,

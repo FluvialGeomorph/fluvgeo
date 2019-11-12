@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_channel_feature.R
 \name{check_channel_feature}
 \alias{check_channel_feature}
-\title{Check the validity of an `fgm` `channel_feature` data structure}
+\title{Check the validity of an `fluvgeo` `channel_feature` data structure}
 \usage{
 check_channel_feature(channel_feature)
 }
 \arguments{
 \item{channel_feature}{data frame; a `channel_feature` data structure used
-by the fgm package.}
+by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `channel_feature` data structure matches the

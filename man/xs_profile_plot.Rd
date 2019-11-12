@@ -4,15 +4,15 @@
 \alias{xs_profile_plot}
 \title{Plot stream longitudinal profile}
 \usage{
-xs_profile_plot(reach_xs_dims, features = NULL, label_xs = TRUE)
+xs_profile_plot(reach_xs_dims_sp, features_sp = NULL, label_xs = TRUE)
 }
 \arguments{
-\item{reach_xs_dims}{data frame; a data frame of cross section
+\item{reach_xs_dims_sp}{SpatialPointsDataFrame of cross section
 dimensions.}
 
-\item{features}{data frame; a data frame of river features}
+\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
-\item{label_xs}{boolean; Draw the cross section labels?}
+\item{label_xs}{logical; Draw the cross section labels?}
 }
 \value{
 A ggplot2 object.
@@ -22,14 +22,13 @@ Produces a longitudinal profile plot for the cross sections
 of the input stream reach.
 }
 \examples{
-# Extract data from the fgm::sin_xs_dimensions SpatialPointsDataFrame
-sin_xs_dims_df <- fgm::sin_xs_dimensions@data
+# Create cross section profile plot
+profile_plot <- xs_profile_plot(reach_xs_dims_sp = fluvgeo::sin_riffle_floodplain_dims_planform_sp,
+                                features_sp = fluvgeo::sin_features_sp,
+                                label_xs = TRUE)
 
-# Call the xs_plot function
-sin_profile <- xs_profile_plot(reach_xs_dims = sin_xs_dims_df)
-
-# Print the graph
-sin_profile
+# Print the plot
+print(profile_plot)
 
 }
 \seealso{

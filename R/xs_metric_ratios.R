@@ -5,15 +5,15 @@
 #'
 #' @export
 #' @param xs_dimensions   SpatialLinesDataFrame; A `cross_section_dimensions`
-#'                        fgm data structure.
+#'                        fluvgeo data structure.
 #'
 #' @return Returns the input xs_dims data frame of cross sections with the
 #'   calculated metric ratio variables added.
 #'
 #' @examples
 #' # Calculate cross section planform dimensions
-#' xs_dims_plan <- planform_dimensions(fgm::sin_riffle_floodplain_dims_sp,
-#'                                     fgm::sin_bankline_points_sp)
+#' xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
+#'                                     fluvgeo::sin_bankline_points_sp)
 #'
 #' # Calculate cross section metric ratios
 #' xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)

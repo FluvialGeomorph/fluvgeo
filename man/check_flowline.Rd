@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_flowline.R
 \name{check_flowline}
 \alias{check_flowline}
-\title{Check the validity of an `fgm` `flowline` data structure}
+\title{Check the validity of an `fluvgeo` `flowline` data structure}
 \usage{
 check_flowline(flowline, step = c("create_flowline", "profile_points"))
 }
 \arguments{
 \item{flowline}{SpatialLinesDataFrame: a `flowline` data structure
-used by the fgm package.}
+used by the fluvgeo package.}
 
 \item{step}{character; last completed processing step. One of
 "create_flowline", "profile_points"}

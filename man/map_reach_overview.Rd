@@ -20,11 +20,11 @@ Produces a reach overview map displaying cross section
 locations over an aerial image.
 }
 \examples{
-# Use the fgm::sin_flowline_sp SpatialLinesDataFrame
-sin_flowline_sp <- fgm::sin_flowline_sp
+# Use the fluvgeo::sin_flowline_sp SpatialLinesDataFrame
+sin_flowline_sp <- fluvgeo::sin_flowline_sp
 
-# Use the fgm::sin_riffle_floodplain_sp SpatialLinesDataFrame
-sin_riffle_channel_sp <- fgm::sin_riffle_channel_sp
+# Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
+sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
 
 # Create the map
 sin_map <- map_reach_overview(sin_flowline_sp, sin_riffle_channel_sp)

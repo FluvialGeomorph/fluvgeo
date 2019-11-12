@@ -105,7 +105,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=3}
 # Iterate through cross sections and create plot, calculate xs dimensions, and print RHG table
 xs_pts <- params$xs_points
-for (j in as.integer(levels(as.factor(xs_points$Seq)))) {
+for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
     # Create the cross section plot
     print(xs_plot(xs_points = xs_pts,
                   stream = params$stream,

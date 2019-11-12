@@ -1,4 +1,4 @@
-library(fgm)
+library(fluvgeo)
 context("map_xs")
 
 skip_if_no_arc <- function() {
@@ -11,15 +11,15 @@ load_libraries <- function() {
   arc.check_product()
 }
 
-# Use the fgm::sin_riffle_floodplain_sp SpatialLinesDataFrame
-sin_riffle_channel_sp <- fgm::sin_riffle_channel_sp
+# Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
+sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
 
 # Use the DEM in the `testing_raster.gdb`
-gdb_path <- system.file("extdata", "testing_raster.gdb", package = "fgm")
+gdb_path <- system.file("extdata", "testing_raster.gdb", package = "fluvgeo")
 dem_path <- file.path(gdb_path, "dem_1m")
 
-# Use the fgm::sin_banklines_sp SpatialLinesDataFrame
-sin_banklines_sp <- fgm::sin_banklines_sp
+# Use the fluvgeo::sin_banklines_sp SpatialLinesDataFrame
+sin_banklines_sp <- fluvgeo::sin_banklines_sp
 
 test_that("check map_xs", {
   skip_if_no_arc()

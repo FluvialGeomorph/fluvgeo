@@ -2,13 +2,13 @@
 % Please edit documentation in R/check_features.R
 \name{check_features}
 \alias{check_features}
-\title{Check the validity of an `fgm` `features` data structure}
+\title{Check the validity of an `fluvgeo` `features` data structure}
 \usage{
 check_features(features)
 }
 \arguments{
 \item{features}{SpatialPointsDataFrame; a `features` data structure used
-by the fgm package.}
+by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `features` data structure matches the

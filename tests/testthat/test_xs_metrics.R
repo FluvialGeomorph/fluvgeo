@@ -1,9 +1,9 @@
-library(fgm)
+library(fluvgeo)
 context("xs_metrics")
 
-# Extract attribute data from the fgm::sin_riffle_floodplain_points_sp
+# Extract attribute data from the fluvgeo::sin_riffle_floodplain_points_sp
 # SpatialPointsDataFrame
-sin_xs_points_df <- fgm::sin_riffle_floodplain_points_sp@data
+sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
 
 # Call the xs_metrics function
 sin_4 <- xs_metrics(xs_points = sin_xs_points_df,

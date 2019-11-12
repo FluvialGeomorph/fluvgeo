@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_cross_section_points.R
 \name{check_cross_section_points}
 \alias{check_cross_section_points}
-\title{Check the validity of an `fgm` `cross_section_points` data structure}
+\title{Check the validity of an `fluvgeo` `cross_section_points` data structure}
 \usage{
 check_cross_section_points(xs_points, step = c("station_points",
   "loop_bend"))
@@ -12,7 +12,7 @@ check_cross_section_points(xs_points, step = c("station_points",
 "station_points", "loop_bend"}
 
 \item{cross_section_points}{SpatialPointsDataFrame; a `cross_section_points`
-data structure used by the fgm package.}
+data structure used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `cross_section_points` data structure matches the

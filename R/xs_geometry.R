@@ -36,8 +36,8 @@
 #' function, which is called by the \code{\link{xs_dimensions}} function.
 #'
 #' @examples
-#' # Extract attribute data from the fgm::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fgm::sin_riffle_channel_points_sp@@data
+#' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+#' sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@@data
 #'
 #' # Subset sin_xs_points to contain only one cross section (Seq = 4)
 #' sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]

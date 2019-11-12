@@ -1,4 +1,4 @@
-library(fgm)
+library(fluvgeo)
 context("map_reach_metric")
 
 # Define geomorphic metric
@@ -14,8 +14,8 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
 
 # Create the reach metric map
 wdr_map <- map_reach_metric(wdr,
-                            fgm::sin_flowline_sp,
-                            fgm::sin_riffle_floodplain_dims_planform_sp)
+                            fluvgeo::sin_flowline_sp,
+                            fluvgeo::sin_riffle_floodplain_dims_planform_sp)
 
 test_that("check map_reach_metric", {
   expect_true("tmap" %in% class(wdr_map))

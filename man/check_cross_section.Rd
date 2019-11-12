@@ -2,14 +2,14 @@
 % Please edit documentation in R/check_cross_section.R
 \name{check_cross_section}
 \alias{check_cross_section}
-\title{Check the validity of an `fgm` `cross_section` data structure}
+\title{Check the validity of an `fluvgeo` `cross_section` data structure}
 \usage{
 check_cross_section(cross_section, step = c("assign_ids",
   "watershed_area", "river_position", "station_points", "loop_bend"))
 }
 \arguments{
 \item{cross_section}{SpatialLinesDataFrame: a `cross_section` data
-structure used by the fgm package.}
+structure used by the fluvgeo package.}
 
 \item{step}{character; last completed processing step. One of
 "assign_ids", "watershed_area", "river_position",
