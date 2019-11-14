@@ -4,6 +4,9 @@ context("xs_metrics_report")
 # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
 sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
 
+# Get a cross section planform dimensions feature class
+sin_xs_dims_planform <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+
 # Set variable values
 dem <- system.file("extdata", "dem_1m.tif", package = "fluvgeo")
 extent_factor <- 2
@@ -14,7 +17,7 @@ output_format <- "html_document"
 
 # Create the xs Metrics Report
 xs_metrics_report(xs_points = sin_xs_points_df,
-                  xs_dims_planform = fluvgeo::sin_riffle_floodplain_dims_planform_sp,
+                  xs_dims_planform = sin_xs_dims_planform,
                   flowline = fluvgeo::sin_flowline_sp,
                   dem = dem,
                   banklines = fluvgeo::sin_banklines_sp,
