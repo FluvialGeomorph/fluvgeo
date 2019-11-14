@@ -43,7 +43,7 @@ check_cross_section <- function(cross_section,
                 msg = paste("Numeric field 'Seq' missing from", name))
 
     # Check the field `ReachName` is not empty
-    assert_that(nchar(unique(cross_section@data$ReachName[1])) > 0,
+    assert_that(nchar(unique(cross_section@data$ReachName)[1]) > 0,
                 msg = paste("Field `ReachName` is empty in", name))
 
     # Check for duplicate or missing `Seq` values
