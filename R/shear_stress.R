@@ -43,7 +43,7 @@
 #'
 shear_stress <- function(xs_dims, specific_gravity = 1) {
   # Calculate shear stress variables
-  xs_dims$shear_stress <- specific_gravity * xs_dims$xs_depth * xs_dims$slope
+  xs_dims$shear_stress <- specific_gravity * (xs_dims$xs_depth * 0.3048) * xs_dims$slope
 
   return(xs_dims)
 }
