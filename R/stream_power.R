@@ -131,7 +131,8 @@ stream_power <- function(xs_dims,
   # Calculate stream power variables
   xs_dims$stream_power       <- rho * g * Q * xs_dims$slope
   xs_dims$stream_power_lane  <- Q * xs_dims$slope
-  xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope) / xs_dims$xs_width
+  xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope) /
+                                (xs_dims$xs_width * 0.3048)
 
   return(xs_dims)
 }
