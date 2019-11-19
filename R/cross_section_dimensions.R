@@ -18,6 +18,8 @@
 #'                            TRUE, FALSE (default)
 #' @param loess_span          numeric; the loess regression span parameter,
 #'                            defaults to 0.05
+#' @param vert_units	        character; The vertical units. One of: "m"
+#'                            (meter), "ft" (foot), "us-ft" (us survey foot)
 #'
 #' @return A new cross section data frame with the hydraulic geometry
 #'      dimensions added.
@@ -34,7 +36,8 @@
 #' @importFrom dplyr bind_rows select
 #'
 cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
-                                     lead_n, use_smoothing, loess_span) {
+                                     lead_n, use_smoothing, loess_span,
+                                     vert_units) {
   # Check inputs
   check_cross_section(xs, "station_points")
   check_cross_section_points(xs_points, "station_points")
@@ -52,9 +55,10 @@ cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
 
     # Calculate slope and sinuosity for xs_reach
     xs_reach_ss <- fluvgeo::slope_sinuosity(xs_reach,
-                                        lead_n = lead_n, lag_n = 0,
-                                        use_smoothing = use_smoothing,
-                                        loess_span = loess_span)
+                                            lead_n = lead_n, lag_n = 0,
+                                            use_smoothing = use_smoothing,
+                                            loess_span = loess_span,
+                                            vert_units = vert_units)
     xs_geoms_ss[[g]] <- xs_reach_ss
     message("slope and sinuosity complete")
 
