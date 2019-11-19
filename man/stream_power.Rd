@@ -4,9 +4,14 @@
 \alias{stream_power}
 \title{Calculate stream power for each cross section}
 \usage{
-stream_power(xs_dims, discharge_method = c("model_measure",
-  "regional_curve", "width_relationship"), discharge_value = NULL,
-  region = NULL, drainage_area = NULL, width_method = NULL)
+stream_power(
+  xs_dims,
+  discharge_method = c("model_measure", "regional_curve", "width_relationship"),
+  discharge_value = NULL,
+  region = NULL,
+  drainage_area = NULL,
+  width_method = NULL
+)
 }
 \arguments{
 \item{xs_dims}{data frame; A data frame of cross section

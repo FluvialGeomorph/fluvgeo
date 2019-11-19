@@ -5,9 +5,11 @@
 \title{Check the validity of an `fluvgeo` `cross_section_dimension` data
 structure}
 \usage{
-check_cross_section_dimensions(cross_section_dimensions,
-  step = c("cross_section_dimensions", "shear_stress", "stream_power",
-  "planform", "metric_ratios"))
+check_cross_section_dimensions(
+  cross_section_dimensions,
+  step = c("cross_section_dimensions", "shear_stress", "stream_power", "planform",
+    "metric_ratios")
+)
 }
 \arguments{
 \item{cross_section_dimensions}{a data frame or SpatialLinesDataFrame: a

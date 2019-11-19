@@ -4,8 +4,7 @@
 \alias{xs_regional_metrics}
 \title{Calculate cross section and regional hydraulic geometry metrics}
 \usage{
-xs_regional_metrics(xs_points, stream, xs_number, bankfull_elevation,
-  region)
+xs_regional_metrics(xs_points, stream, xs_number, bankfull_elevation, region)
 }
 \arguments{
 \item{xs_points}{data frame; a data frame of cross section points}

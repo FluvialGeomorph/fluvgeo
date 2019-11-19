@@ -4,8 +4,13 @@
 \alias{reach_rhg_graph}
 \title{Plot a reach regional hydraulic geometry graph}
 \usage{
-reach_rhg_graph(xs_dims, streams, bf_elevation, xs_trend = FALSE,
-  log_scale = FALSE)
+reach_rhg_graph(
+  xs_dims,
+  streams,
+  bf_elevation,
+  xs_trend = FALSE,
+  log_scale = FALSE
+)
 }
 \arguments{
 \item{xs_dims}{data frame; a data frame of cross section dimensions}

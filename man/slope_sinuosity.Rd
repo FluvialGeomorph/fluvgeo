@@ -4,8 +4,14 @@
 \alias{slope_sinuosity}
 \title{Calculate slope and sinuosity}
 \usage{
-slope_sinuosity(channel_features, lead_n, lag_n, use_smoothing = TRUE,
-  loess_span = 0.05)
+slope_sinuosity(
+  channel_features,
+  lead_n,
+  lag_n,
+  use_smoothing = TRUE,
+  loess_span = 0.05,
+  vert_units
+)
 }
 \arguments{
 \item{channel_features}{Spatial*DataFrame; an `fluvgeo` data structure of
@@ -27,6 +33,9 @@ TRUE, FALSE (default)}
 
 \item{loess_span}{numeric; the loess regression span parameter,
 defaults to 0.05}
+
+\item{vert_units}{character; The vertical units. One of: "m" (meter),
+"ft" (foot), "us-ft" (us survey foot)}
 }
 \value{
 A dataframe of slope and sinuosity dimensions representing the

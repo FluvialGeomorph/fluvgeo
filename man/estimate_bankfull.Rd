@@ -4,8 +4,16 @@
 \alias{estimate_bankfull}
 \title{Estimate bankfull report}
 \usage{
-estimate_bankfull(xs_points, streams, regions, bankfull_elevations,
-  bf_estimate, stat, output_dir, output_format)
+estimate_bankfull(
+  xs_points,
+  streams,
+  regions,
+  bankfull_elevations,
+  bf_estimate,
+  stat,
+  output_dir,
+  output_format
+)
 }
 \arguments{
 \item{xs_points}{data frame; a data frame of cross section points}

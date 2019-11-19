@@ -4,8 +4,15 @@
 \alias{cross_section_dimensions}
 \title{Calculate cross section dimensions}
 \usage{
-cross_section_dimensions(xs, xs_points, bankfull_elevation, lead_n,
-  use_smoothing, loess_span)
+cross_section_dimensions(
+  xs,
+  xs_points,
+  bankfull_elevation,
+  lead_n,
+  use_smoothing,
+  loess_span,
+  vert_units
+)
 }
 \arguments{
 \item{xs}{SpatialLinesDataFrame; the full path to a
@@ -27,6 +34,9 @@ TRUE, FALSE (default)}
 
 \item{loess_span}{numeric; the loess regression span parameter,
 defaults to 0.05}
+
+\item{vert_units}{character; The vertical units. One of: "m"
+(meter), "ft" (foot), "us-ft" (us survey foot)}
 }
 \value{
 A new cross section data frame with the hydraulic geometry

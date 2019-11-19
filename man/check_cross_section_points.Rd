@@ -4,8 +4,7 @@
 \alias{check_cross_section_points}
 \title{Check the validity of an `fluvgeo` `cross_section_points` data structure}
 \usage{
-check_cross_section_points(xs_points, step = c("station_points",
-  "loop_bend"))
+check_cross_section_points(xs_points, step = c("station_points", "loop_bend"))
 }
 \arguments{
 \item{step}{character; last completed processing step. One of

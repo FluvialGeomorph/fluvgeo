@@ -4,8 +4,11 @@
 \alias{check_cross_section}
 \title{Check the validity of an `fluvgeo` `cross_section` data structure}
 \usage{
-check_cross_section(cross_section, step = c("assign_ids",
-  "watershed_area", "river_position", "station_points", "loop_bend"))
+check_cross_section(
+  cross_section,
+  step = c("assign_ids", "watershed_area", "river_position", "station_points",
+    "loop_bend")
+)
 }
 \arguments{
 \item{cross_section}{SpatialLinesDataFrame: a `cross_section` data
