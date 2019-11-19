@@ -19,6 +19,8 @@
 #'                         TRUE, FALSE (default)
 #' @param loess_span       numeric; the loess regression span parameter,
 #'                         defaults to 0.05
+#' @param vert_units       character; The vertical units. One of: "m" (meter),
+#'                         "ft" (foot), "us-ft" (us survey foot)
 #'
 #' @return A dataframe of slope and sinuosity dimensions representing the
 #' position of each feature within the channel.
@@ -44,10 +46,12 @@
 #' @importFrom stats loess predict
 #' @importFrom dplyr first last lead lag
 #' @importFrom raster pointDistance
+#' @importFrom sp proj4string
 #'
 slope_sinuosity <-function(channel_features, lead_n, lag_n,
                            use_smoothing = TRUE,
-                           loess_span = 0.05) {
+                           loess_span = 0.05,
+                           vert_units) {
   name <- deparse(substitute(channel_features))
 
   # Check data structure
@@ -82,6 +86,26 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   assert_that(is.numeric(loess_span) &&
                 length(loess_span) == 1,
               msg = "'loess_span' must be numeric vector of length one")
+
+  # Set the unit conversion factors
+  ## If horizontal units = meter, use meter to feet conversion factor
+  if(any(grep("units=m", sp::proj4string(channel_features))) == 1) {
+    horiz_con_factor <- 3.28084
+  }
+  ## If horizontal units = feet, set conversion factor to 1
+  if(any(grep("units=us-ft", sp::proj4string(channel_features))) == 1) {
+    horiz_con_factor <- 1
+  }
+  ## If horizontal units = us survey feet, set conversion factor to 0.999...
+  if(any(grep("units=ft", sp::proj4string(channel_features))) == 1) {
+    horiz_con_factor <- 0.999998000004
+  }
+  ## If vertical units = meter, use meter to feet conversion factor
+  if(vert_units == "m") vert_con_factor <- 3.28084
+  ## If vertical units = feet, set conversion factor to 1
+  if(vert_units == "ft") vert_con_factor <- 1
+  ## If vertical units = us survey feet, set conversion factor to 0.999...
+  if(vert_units == "us-ft") vert_con_factor <- 0.999998000004
 
   # Convert Spatial*DataFrame to a data frame
   channel_features <- channel_features@data
@@ -145,8 +169,8 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                                  default = downstream_z_lag)
     }
 
-    # Calculate m values (and convert from kilometers to feet: 1 km =
-    # 3280.84 ft)
+    # Calculate m values (and convert m from kilometers to feet: 1 km =
+    # 3280.84 ft). M will always be in kilometers
     fl_pts$upstream_m   <- lead(x = fl_pts$POINT_M,
                                 n = lead_n,
                                 default = upstream_m_lead) * 3280.48
@@ -185,15 +209,15 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                                n = lag_n,
                                default = downstream_y_lag)
 
-    # Calculate stream_length (in feet)
+    # Calculate stream_length (units feet)
     fl_pts$stream_length <- fl_pts$upstream_m - fl_pts$downstream_m
 
-    # Calculate valley_length (convert from meters to feet)
+    # Calculate valley_length and convert units to feet
     fl_pts$valley_length <- pointDistance(p1 = cbind(fl_pts$upstream_x,
                                                      fl_pts$upstream_y),
                                           p2 = cbind(fl_pts$downstream_x,
                                                      fl_pts$downstream_y),
-                                          lonlat = FALSE) * 3.28084
+                                          lonlat = FALSE) * horiz_con_factor
 
     # Calculate sinuosity stream_length / valley_length
     fl_pts$sinuosity <- fl_pts$stream_length / fl_pts$valley_length
