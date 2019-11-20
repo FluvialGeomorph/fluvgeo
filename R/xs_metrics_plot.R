@@ -45,7 +45,7 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                     .data$slope,
                     .data$sinuosity,
                     .data$shear_stress,
-                    .data$stream_power,
+                    .data$unit_stream_power,
                     .data$rc_bfw_ratio_10)
 
   # Set factor levels to control legend
@@ -55,14 +55,14 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
                                        "slope",
                                        "sinuosity",
                                        "shear_stress",
-                                       "stream_power",
+                                       "unit_stream_power",
                                        "rc_bfw_ratio_10"),
                             labels = c("Width Depth Ratio",
                                        "Entrenchment Ratio",
                                        "Slope",
                                        "Sinuosity",
                                        "Shear Stress",
-                                       "Stream Power",
+                                       "Unit Stream Power",
                                        "RC to BFW"))
 
   # Define colors and labels. Inspired by palettes from
@@ -73,7 +73,7 @@ xs_metrics_plot <- function(reach_xs_dims, label_xs = TRUE) {
             "Slope"              = "darkgoldenrod4",
             "Sinuosity"          = "mediumpurple4",
             "Shear Stress"       = "indianred4",
-            "Stream Power"       = "darkolivegreen",
+            "Unit Stream Power"  = "darkolivegreen",
             "RC to BFW"          = "plum4")
 
   # Draw the graph
