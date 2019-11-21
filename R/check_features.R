@@ -33,7 +33,7 @@ check_features <- function(features) {
               msg = paste("Field `Name` is empty in", name))
 
   # Check that all `km_to_mouth` values are greater than zero
-  assert_that(all(features@data$km_to_mouth > 0),
+  assert_that(all(features@data$km_to_mouth >= 0),
               msg = paste("Confirm that all features in", name,
                           "have a value for the `km_to_mouth` field. "))
 
