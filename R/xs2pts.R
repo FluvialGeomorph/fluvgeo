@@ -10,7 +10,14 @@
 #' @return Returns a sp::SpatialPointsDataFrame of cross section lines converted
 #' to points.
 #'
-#' @importFrom assertthat assert_that
+#' @examples
+#' # Retrieve a cross section data structure
+#' xs_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+#'
+#' # Call the xs2pts function for a cross section
+#' xs_pts <- xs2pts(xs_sp)
+#'
+#' @importFrom sp SpatialPointsDataFrame
 #'
 xs2pts <- function(xs_sp) {
   coords      <- xs_sp@data[, c("POINT_X", "POINT_Y")]

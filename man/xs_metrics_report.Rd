@@ -13,7 +13,6 @@ xs_metrics_report(
   extent_factor,
   streams,
   regions,
-  bf_estimatte,
   features,
   label_xs,
   output_dir,
