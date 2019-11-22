@@ -16,7 +16,7 @@
 #' @return a tmap object
 #'
 #' @importFrom arcgisbinding arc.open arc.raster
-#' @importFrom raster extent crop terrain hillShade
+#' @importFrom raster extent raster crop resample terrain hillShade
 #' @importFrom grDevices colorRampPalette
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
@@ -33,15 +33,23 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
 
   # Calculate the map extent for the current cross section
   map_extent <- fluvgeo::feature_extent(feature = xs_i,
-                                    extent_factor = extent_factor)
+                                        extent_factor = extent_factor)
 
   # Clip the dem to the cross section map extent
   dem_arc <- arcgisbinding::arc.open(dem)
   dem_i <- raster::crop(as.raster(arc.raster(dem_arc)), map_extent)
 
+  # Resample the dem
+  dem_i_rs <- raster::raster(ncols = 500, nrows = 500,
+                             ext = raster::extent(dem_i),
+                             crs = dem_i@crs)
+  dem_i_rs <- raster::resample(dem_i, dem_i_rs, method = "bilinear")
+
+  #dem_i_a <- aggregate(dem_i, fact = 2)
+
   # Create a hillshade from dem_i
-  slp <- raster::terrain(dem_i, opt = "slope", unit = "radians")
-  asp <- raster::terrain(dem_i, opt = "aspect", unit = "radians")
+  slp <- raster::terrain(dem_i_rs, opt = "slope", unit = "radians")
+  asp <- raster::terrain(dem_i_rs, opt = "aspect", unit = "radians")
   hill <- raster::hillShade(slope = slp, aspect = asp)
 
   # Create a topo color ramp
@@ -58,7 +66,7 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
               tm_raster(style = "cont",
                         palette = grey(0:100/100),
                         legend.show = FALSE) +
-            tm_shape(shp = dem_i,
+            tm_shape(shp = dem_i_rs,
                      name = "Elevation",
                      unit = "ft",
                      is.master = TRUE) +
