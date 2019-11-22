@@ -29,6 +29,5 @@ test_that("check data structure", {
 })
 
 test_that("check number of records", {
-  assert_that(length(pf$bend_num) == length(dplyr::count(pf, loop, bend)$loop),
-              msg = "incorrect number of bends")
+  expect_that(length(pf$bend_num), equals(length(dplyr::count(pf, loop, bend)$loop)))
 })
