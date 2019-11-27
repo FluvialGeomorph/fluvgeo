@@ -63,8 +63,8 @@ check_bankline_points <- function(bankline_points) {
               msg = paste("Field `ReachName` is empty in", name))
 
   # Check that the `bank` field is populated
-  assert_that(all(unique(bankline_points@data$bank) ==
-                    c("right descending", "left descending")),
+  assert_that(all(unique(bankline_points@data$bank) %in%
+                   c("right descending", "left descending")),
               msg = paste("Field `bank` in", name, "must contain a `right
                           descending` bank and a `left descending` bank."))
 
