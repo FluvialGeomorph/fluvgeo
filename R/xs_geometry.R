@@ -106,6 +106,9 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   # Calculate cross sectional max depth
   xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
 
+  # Check for missing max depth (-Inf). If so, set to zero
+  if(is.infinite(xs_depth)) xs_depth <- 0
+
   # Set discharge (as a placeholder field for other functions)
   discharge <- 0
 

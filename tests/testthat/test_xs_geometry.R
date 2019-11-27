@@ -12,6 +12,11 @@ sin_4 <- xs_geometry(xs_points = sin_xs_points_4, detrend_elevation =  103.5)
 
 sin_4_2 <- xs_geometry(xs_points = sin_xs_points_4, detrend_elevation =  103.5)
 
+# Create cross section with zero width, depth, and area
+sin_4_99 <- xs_geometry(xs_points = sin_xs_points_4,
+                         detrend_elevation =  99.0)
+
+
 test_that("Check parameters", {
   expect_error(xs_geometry(3, 103.5))
   expect_error(xs_geometry(sin_xs_points_4[,-2], 103))
@@ -56,4 +61,10 @@ test_that("Dimensions the same between runs", {
   expect_equal(sin_4$xs_area,     sin_4_2$xs_area, tolerance = 1e-10)
   expect_equal(sin_4$discharge,   sin_4_2$discharge, tolerance = 1e-10)
   expect_equal(sin_4$ground_elev, sin_4_2$ground_elev, tolerance = 1e-10)
+})
+
+test_that("dimensions are zero for low detrend elevations", {
+  expect_equal(sin_4_99$xs_width, 0)
+  expect_equal(sin_4_99$xs_depth, 0)
+  expect_equal(sin_4_99$xs_area, 0)
 })
