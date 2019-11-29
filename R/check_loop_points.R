@@ -41,45 +41,78 @@ check_loop_points <- function(loop_points) {
               msg = paste("Character field 'position' missing from", name))
 
   # ReachName is not empty
-  assert_that(nchar(unique(loop_points$ReachName[1])) > 0,
+  assert_that(nchar(unique(loop_points$ReachName)[1]) > 0,
               msg = paste("Field `ReachName` is empty in", name))
-
-  # Bends must have one and only one start and end loop point
-  for(l in unique(loop_points$loop)) {
-    # subset for current loop and exclude apex points
-    cl <- loop_points[loop_points$loop == l & loop_points$position != "apex", ]
-    for(b in unique(cl$bends)) {
-      # subset for current bend
-      cl_b <- cl[cl$bend == b, ]
-      # check that there is one and only one start loop point
-      assert_that(length(cl_b[cl_b$position == "start", ]$position) == 1,
-                  msg = paste("loop:", l, "bend:", b,
-                              "Must have one and only one start loop point"))
-      # check that there is one and only one end loop point
-      assert_that(length(cl_b[cl_b$position == "end", ]$position) == 1,
-                  msg = paste("loop:", l, "bend:", b,
-                              "Must have one and only one end loop point"))
-    }
-  }
 
   # Check for duplicate or missing loops
   assert_that(length(unique(loop_points$loop)) ==
                 length(min(loop_points$loop):max(loop_points$loop)),
-              msg = paste("Check for duplicate or missing `loop` values in", name))
+              msg = paste("Check for duplicate or missing `loop` values in",
+                          name))
+
+  assert_that(all(unique(loop_points$loop) %in%
+                                 min(loop_points$loop):max(loop_points$loop)
+                 ),
+              msg = paste("Check for duplicate or missing `loop` values in",
+                          name))
 
   # Apex bend value must be set to zero
   assert_that(all(loop_points[loop_points$position == "apex", ]$bend) == 0,
               msg = paste("Field `bend` must be set to zero for apex points in",
                           name))
 
-  # Every loop must have one and only apex point
-  assert_that(length(unique(loop_points$loop)) ==
-                length(loop_points[loop_points$position == "apex", ]$loop),
-              msg = paste("Every loop must have one and only one apex point in",
-                          name))
-
   # Position can only be one of "start", "end", of "apex"
-  assert_that(all(unique(loop_points$position) == c("start", "end",  "apex" )),
+  assert_that(all(unique(loop_points$position) %in%
+                                               c("start", "end",  "apex" )),
               msg = paste("Field `position` must contain only values:",
                           "`start`, `end`, and `apex` in", name))
+
+  # Print a diagnostic report of loops and bends
+  print("Diagnostic report of loop points (count of records)")
+
+  ## Iterate through loops
+  for(l in sort(unique(loop_points@data$loop))) {
+    print(paste("Loop", l))
+    ## Subset for the current loop
+    loop_pts <- loop_points@data[loop_points@data$loop == l, ]
+
+    ## Check apex points
+    apex_length <- length(loop_pts[loop_pts$position == "apex", ]$bend)
+    print(paste("    Apex:", apex_length))
+    assert_that(apex_length == 1,
+                msg = paste("Loop", l, "must have one and only one apex point"))
+
+    ## Remove apex points (bend == 0) before moving to bend iterator
+    loop_pts_start_end <- loop_pts[loop_pts$bend != 0, ]
+
+    ## Iterate through bends
+    for (b in sort(unique(loop_pts_start_end$bend))) {
+      print(paste("        Bend", b))
+      # Subset for the current bend
+      bend_pts <- loop_pts_start_end[loop_pts_start_end$bend == b, ]
+
+      ## Check for at least one bend per loop
+      ## #Compute summary statistics for minimum number of bends per loop
+      lb_min <- aggregate(bend ~ loop, data = bend_pts, min)
+      assert_that(all(lb_min$bend) == 1,
+                  msg = paste("Loop", l, "must have at least one bend"))
+
+      ## Check for bend start point
+      start_length <- length(bend_pts[bend_pts$position == "start", ]$position)
+      print(paste("            Start:", start_length))
+      assert_that(start_length == 1,
+                  msg = paste("Loop", l, "Bend", b,
+                              "must have one and only one start point"))
+
+      ## Check for bend end point
+      end_length <- length(bend_pts[bend_pts$position == "end", ]$position)
+      print(paste("            End:", end_length))
+      assert_that(end_length == 1,
+                  msg = paste("Loop", l, "Bend", b,
+                              "must have one and only one end point"))
+    }
+  }
+
+  # Return TRUE if all assertions are met
+  TRUE
 }
