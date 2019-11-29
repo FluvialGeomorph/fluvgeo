@@ -34,14 +34,14 @@ bend_radius <- function(bankline_points) {
 
   # Iterate through each loop
   for (l in unique(bankline_pts$loop)) {
-    # print(paste0("Loop: ", l))
+    print(paste0("Loop: ", l))
 
     # Subset bankline_points for the current loop
     bank_pts <- bankline_pts[bankline_pts$loop == l, ]
 
     # Iterate through each bend
     for (b in unique(bank_pts$bend)) {
-      # print(paste0("Bend: ", b))
+      print(paste0("    Bend: ", b))
 
       # Increment bend counter
       bend_num <- bend_num + 1
@@ -65,6 +65,6 @@ bend_radius <- function(bankline_points) {
 
     }
   }
-  # Append the list of bend dimensions into a single data frame
+  # Append the list of bend dimension data frames into a single data frame
   bend_dimensions <- dplyr::bind_rows(bend_dims)
 }
