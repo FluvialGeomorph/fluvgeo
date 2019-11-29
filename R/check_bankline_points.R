@@ -59,7 +59,7 @@ check_bankline_points <- function(bankline_points) {
               msg = paste("Numeric field 'valley_POINT_M' missing from ", name))
 
   # Check that the `ReachName` field is populated
-  assert_that(nchar(unique(bankline_points@data$ReachName[1])) > 0,
+  assert_that(nchar(unique(bankline_points@data$ReachName)[1]) > 0,
               msg = paste("Field `ReachName` is empty in", name))
 
   # Check that the `bank` field is populated
@@ -68,7 +68,7 @@ check_bankline_points <- function(bankline_points) {
               msg = paste("Field `bank` in", name, "must contain a `right
                           descending` bank and a `left descending` bank."))
 
-  # Check each bankline digitized from the downstream end to the upstream end
+  # Check each bankline is digitized from the downstream end to the upstream end
   ## Right descending bank
   bp_r <- bankline_points[bankline_points@data$bank == "right descending", ]
 
@@ -98,6 +98,51 @@ check_bankline_points <- function(bankline_points) {
   assert_that(l_m_min_z < l_m_max_z,
               msg = paste("Left descending bank in", name,
                           "is not digitized in the upstream direction."))
+
+  # Print a diagnostic report of loops and bends
+  print("Diagnostic report of loop points (count of records)")
+
+  # Iterate through loops
+  for(l in sort(unique(na.omit(bankline_points@data$loop)))) {
+    print(paste("Loop", l))
+    ## Subset for the current loop
+    bl_pts_loop <- bankline_points@data[bankline_points@data$loop == l, ]
+
+    ## Get a vector of banks for the loop
+    loop_bank <- na.omit(unique(bl_pts_loop$bank))
+    print(paste("    bank:", loop_bank))
+
+    ## Subset points without loop and bend assignments
+    bl_pts_lb <- na.omit(bl_pts_loop)
+
+    ## Iterate through bends
+    for (b in sort(unique(bl_pts_lb$bend))) {
+      print(paste("        Bend", b))
+      ## Subset for the current bend
+      bend_pts <- bl_pts_lb[bl_pts_lb$bend == b, ]
+
+      ## Check if bend == 0
+      assert_that(b != 0,
+                  msg = paste("Check Loop", l, "for bend start and end points",
+                              "located along a bankline."))
+
+      ## Get a vector of banks for the bend
+      bend_bank <- unique(bend_pts$bank)
+      print(paste("            bank:", bend_bank))
+
+      ## Check that all bend points are located on the same bank
+      assert_that(length(bend_bank) == 1,
+                msg = paste("Loop", l, "Bend", b,
+                            "points must all be located on the same bank."))
+
+      ## Check that all bend points are located on the same bank as the loop
+      assert_that(all(loop_bank == bend_bank),
+                  msg = paste("Loop", l, "Bend", b,
+                              "points are not located on the same bank as",
+                              "points in the loop."))
+
+    }
+  }
 
   # Return TRUE if all assertions are met
   TRUE
