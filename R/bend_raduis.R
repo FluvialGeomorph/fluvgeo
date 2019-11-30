@@ -32,15 +32,17 @@ bend_radius <- function(bankline_points) {
   bend_dims <- list()
   bend_num <- 0
 
+  print("Calculate the bend radius of curvature")
+
   # Iterate through each loop
-  for (l in unique(bankline_pts$loop)) {
+  for (l in sort(unique(bankline_pts$loop))) {
     print(paste0("Loop: ", l))
 
     # Subset bankline_points for the current loop
     bank_pts <- bankline_pts[bankline_pts$loop == l, ]
 
     # Iterate through each bend
-    for (b in unique(bank_pts$bend)) {
+    for (b in sort(unique(bank_pts[bank_pts$position != "apex", ]$bend))) {
       print(paste0("    Bend: ", b))
 
       # Increment bend counter
@@ -55,6 +57,10 @@ bend_radius <- function(bankline_points) {
 
       # Calculate circle center and radius
       center <- conicfit::CircleFitByTaubin(bend_xy_m)
+
+      print(paste("        bend_POINT_X", round(center[1], 2)))
+      print(paste("        bend_POINT_Y", round(center[2], 2)))
+      print(paste("        bend_radius",  round(center[3], 2)))
 
       bend_dims[[bend_num]] <- data.frame("bend_num" = bend_num,
                                           "loop" = l,
