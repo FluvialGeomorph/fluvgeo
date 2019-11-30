@@ -100,7 +100,10 @@ check_bankline_points <- function(bankline_points) {
                           "is not digitized in the upstream direction."))
 
   # Print a diagnostic report of loops and bends
-  print("Diagnostic report of loop points (count of records)")
+  print("Diagnostic report of bankline points")
+
+  # Create a variable to hold the bank of the last loop
+  last_loop_bank <- ""
 
   # Iterate through loops
   for(l in sort(unique(na.omit(bankline_points@data$loop)))) {
@@ -108,25 +111,65 @@ check_bankline_points <- function(bankline_points) {
     ## Subset for the current loop
     bl_pts_loop <- bankline_points@data[bankline_points@data$loop == l, ]
 
-    ## Get a vector of banks for the loop
-    loop_bank <- na.omit(unique(bl_pts_loop$bank))
-    print(paste("    bank:", loop_bank))
-
     ## Subset points without loop and bend assignments
     bl_pts_lb <- na.omit(bl_pts_loop)
 
+    ## Check for apex point
+    apex <- length(bl_pts_lb[bl_pts_lb$position == "apex", ]$position) > 0
+
+    assert_that(apex == TRUE,
+                msg = paste("Loop", l, "is missing an apex point.",
+                            "Reminder: All points for a given loop must be",
+                            "located along the same bankline."))
+
+    ## Calculate apex point mean bank_POINT_M position
+    apex_m <- mean(bl_pts_lb[bl_pts_lb$position == "apex", ]$bank_POINT_M)
+
+    ## Get a vector of banks for the loop
+    loop_bank <- na.omit(unique(bl_pts_loop$bank))
+    print(paste("    Apex:", apex, "  Route-M:", round(apex_m, 2)))
+    print(paste("    last loop bank:", last_loop_bank))
+    print(paste("    current loop bank:", loop_bank))
+
+    min_loop_m <- 0
+    max_loop_m <- 0
+    min_last_bend_m <- 0
+    max_last_bend_m <- 0
+
     ## Iterate through bends
-    for (b in sort(unique(bl_pts_lb$bend))) {
+    for (b in sort(unique(bl_pts_lb[bl_pts_lb$position != "apex", ]$bend))) {
       print(paste("        Bend", b))
       ## Subset for the current bend
       bend_pts <- bl_pts_lb[bl_pts_lb$bend == b, ]
 
-      ## Check if bend == 0
-      assert_that(b != 0,
-                  msg = paste("Check Loop", l, "for bend start and end points",
-                              "located along the same bankline. All points",
-                              "for a given loop must be located along the same",
-                              "bankline."))
+      ## Check for start and end points
+      start <- length(bend_pts[bend_pts$position == "start", ]$position) > 0
+      end   <- length(bend_pts[bend_pts$position == "end",   ]$position) > 0
+
+      ## Throw errors if start or end points are missing
+      assert_that(start == TRUE,
+                  msg = paste("Loop", l, "Bend", b, "is missing a start point.",
+                              "Reminder: All points for a given loop must be",
+                              "located along the same bankline."))
+
+      assert_that(end == TRUE,
+                  msg = paste("Loop", l, "Bend", b, "is missing an end point.",
+                              "Reminder: All points for a given loop must be",
+                              "located along the same bankline."))
+
+      ## Calculate start and end point mean bank_POINT_M position
+      start_m <- mean(bend_pts[bend_pts$position == "start", ]$bank_POINT_M)
+      end_m   <- mean(bend_pts[bend_pts$position == "end",   ]$bank_POINT_M)
+
+      print(paste("            Start:", start, "Route-M:", round(start_m, 2)))
+      print(paste("            End:",     end, "  Route-M:", round(end_m, 2)))
+
+      ## Check that the end point is upstream of the start point
+      assert_that(start_m < end_m,
+                  msg = (paste("The Loop", l, "Bend", b, "start point is",
+                               "upstream of the end point. Reminder: loop",
+                               "points are delineated beginning at the",
+                               "downstream end of the reach.")))
 
       ## Get a vector of banks for the bend
       bend_bank <- unique(bend_pts$bank)
@@ -135,18 +178,79 @@ check_bankline_points <- function(bankline_points) {
       ## Check that all bend points are located on the same bank
       assert_that(length(bend_bank) == 1,
                 msg = paste("Loop", l, "Bend", b,
-                            "points must all be located on the same bank. All",
-                            "points for a given loop must be located along the",
-                            "same bankline"))
+                            "points must all be located on the same bank.",
+                            "Reminder: All points for a given loop must be",
+                            "located along the same bankline."))
 
       ## Check that all bend points are located on the same bank as the loop
       assert_that(all(loop_bank == bend_bank),
                   msg = paste("Loop", l, "Bend", b,
                               "points are not located on the same bank as",
-                              "points in the loop. All points for a given loop",
-                              "must be located along the same bankline."))
+                              "other points in the loop.",
+                              "Reminder: All points for a given loop must be",
+                              "located along the same bankline."))
+
+      ## Update min and max loop and bend m-values
+      if(b == 1) {
+        min_loop_m      <- start_m
+        max_loop_m      <- end_m
+        min_last_bend_m <- min_loop_m
+        max_last_bend_m <- max_loop_m
+      }
+
+      if(b > 1) {
+        min_last_bend_m <- min_loop_m
+        max_last_bend_m <- max_loop_m
+        min_loop_m      <- min(c(min_loop_m, start_m))
+        max_loop_m      <- max(c(max_loop_m, end_m))
+      }
+
+      print(paste("            min_loop_m:", round(min_loop_m, 2)))
+      print(paste("            max_loop_m:", round(max_loop_m, 2)))
+      print(paste("            min_last_bend_m:", round(min_last_bend_m, 2)))
+      print(paste("            max_last_bend_m:", round(max_last_bend_m, 2)))
+
+      ## Check if current bend start is upstream of last bend end
+      if(b > 1) {
+        assert_that(start_m >= max_last_bend_m,
+                    msg = (paste("Loop", l, "Bend", b,
+                                 "is not upstream of bend", b-1,
+                                 "Reminder: Bends should be delineated in an",
+                                 "upstream direction and must not overlap.")))
+
+        print(paste("            ** Bend", b, "is upstream of Bend", b-1))
+      }
 
     }
+    ## Check if apex is within the loop
+    assert_that(min_loop_m <= apex_m & apex_m <= max_loop_m,
+                msg = (paste("The Loop", l, "apex point is not located within",
+                             "the loop. Reminder: Verify that the apex point",
+                             "is located between the downstream-most bend",
+                             "and the upstream-most bend end points.")))
+
+    print(paste("    ** The Loop", l, "apex point is located within the loop."))
+
+    ## Check if all points in loop are on the same bank
+    assert_that(length(loop_bank) == 1,
+                msg = paste("Loop", l,
+                            "points must all be located on the same bank.",
+                            "Reminder: All points for a given loop must be",
+                            "located along the same bankline."))
+
+    ## Check bank of last loop does not match bank of current loop
+    if(l > 1) {
+      assert_that(loop_bank != last_loop_bank,
+                  msg = paste("Loop", l, "points are located on the same bank",
+                              "as the previous loop. Reminder: Loop points",
+                              "must alternate banks from one loop to the next."))
+
+      print(paste("    ** Loop", l, "points are located on the opposite bank from",
+                  "Loop", l-1))
+    }
+
+    ## Update the last_loop_bank to the current loop_bank value
+    last_loop_bank <- loop_bank
   }
 
   # Return TRUE if all assertions are met
