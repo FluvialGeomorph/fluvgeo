@@ -124,7 +124,9 @@ check_bankline_points <- function(bankline_points) {
       ## Check if bend == 0
       assert_that(b != 0,
                   msg = paste("Check Loop", l, "for bend start and end points",
-                              "located along a bankline."))
+                              "located along the same bankline. All points",
+                              "for a given loop must be located along the same",
+                              "bankline."))
 
       ## Get a vector of banks for the bend
       bend_bank <- unique(bend_pts$bank)
@@ -133,13 +135,16 @@ check_bankline_points <- function(bankline_points) {
       ## Check that all bend points are located on the same bank
       assert_that(length(bend_bank) == 1,
                 msg = paste("Loop", l, "Bend", b,
-                            "points must all be located on the same bank."))
+                            "points must all be located on the same bank. All",
+                            "points for a given loop must be located along the",
+                            "same bankline"))
 
       ## Check that all bend points are located on the same bank as the loop
       assert_that(all(loop_bank == bend_bank),
                   msg = paste("Loop", l, "Bend", b,
                               "points are not located on the same bank as",
-                              "points in the loop."))
+                              "points in the loop. All points for a given loop",
+                              "must be located along the same bankline."))
 
     }
   }
