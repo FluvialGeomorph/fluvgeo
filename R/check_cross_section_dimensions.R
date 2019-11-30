@@ -217,7 +217,7 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
                 msg = paste("Numeric field 'meander_width' missing from", name))
 
     # Check the field `ReachName` is not empty
-    assert_that(nchar(unique(cross_section_dimensions$ReachName[1])) > 0,
+    assert_that(nchar(unique(cross_section_dimensions$ReachName)[1]) > 0,
                 msg = paste("Field `ReachName` is empty in", name))
   }
 

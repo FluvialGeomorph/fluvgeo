@@ -83,7 +83,7 @@ check_loop_points <- function(loop_points) {
                 msg = paste("Loop", l, "must have one and only one apex point"))
 
     ## Remove apex points (bend == 0) before moving to bend iterator
-    loop_pts_start_end <- loop_pts[loop_pts$bend != 0, ]
+    loop_pts_start_end <- loop_pts[loop_pts$position != "apex", ]
 
     ## Iterate through bends
     for (b in sort(unique(loop_pts_start_end$bend))) {

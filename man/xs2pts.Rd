@@ -18,3 +18,11 @@ to points.
 Converts a `fluvgeo` cross section data structure from lines
 to points.
 }
+\examples{
+# Retrieve a cross section data structure
+xs_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+
+# Call the xs2pts function for a cross section
+xs_pts <- xs2pts(xs_sp)
+
+}
