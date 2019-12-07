@@ -55,8 +55,8 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                      "Entrenchment Ratio",
                      "Slope",
                      "Sinuosity",
-                     "Shear Stress",
-                     "Unit Stream Power",
+                     "Shear Stress (N/m^2)",
+                     "Unit Stream Power (kg/m/s)",
                      "RC to BFW")
 
   # Create a metrics variable to control which facet receives feature labels
@@ -82,18 +82,18 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
   # Set factor levels to control labelling
   xs_dims$metrics <- factor(xs_dims$metrics,
                             levels = metrics_levels,
-                            labels = metrics_levels)
+                            labels = metrics_labels)
 
   # Define metric colors by `metrics_labels`. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette - Moonrise Kingdom
   # using names from colors().
-  metrics_cols <- c("Width Depth Ratio"  = "coral3",
-                    "Entrenchment Ratio" = "darkslategray4",
-                    "Slope"              = "darkgoldenrod4",
-                    "Sinuosity"          = "mediumpurple4",
-                    "Shear Stress"       = "indianred4",
-                    "Unit Stream Power"  = "darkolivegreen",
-                    "RC to BFW"          = "plum4")
+  metrics_cols <- c("Width Depth Ratio"           = "coral3",
+                    "Entrenchment Ratio"          = "darkslategray4",
+                    "Slope"                       = "darkgoldenrod4",
+                    "Sinuosity"                   = "mediumpurple4",
+                    "Shear Stress (N/m^2)"        = "indianred4",
+                    "Unit Stream Power (kg/m/s)"  = "darkolivegreen",
+                    "RC to BFW"                   = "plum4")
 
   # Draw the graph
   p <- ggplot(xs_dims,
@@ -101,7 +101,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                   y = .data$values,
                   color = .data$metrics,
                   label = .data$Seq)) +
-    geom_point(size = 2) +
+    geom_point(size = 3) +
     geom_line(size = 1) +
     scale_color_manual(values = metrics_cols) +
     scale_x_reverse() +
@@ -109,7 +109,8 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
     theme(legend.position = "none",
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
-    facet_grid(rows =  vars(.data$metrics),
+    facet_grid(rows = vars(.data$metrics),
+               labeller = label_wrap_gen(width = 15),
                scales = "free") +
     labs(title = unique(reach_xs_dims$ReachName),
          x     = "Kilometers",
