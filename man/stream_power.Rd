@@ -58,9 +58,9 @@ Calculates stream power for each cross section in the input
 
   \deqn{\Omega = \rho g Q S}
 
-  where \eqn{\Omega} is the stream power, \eqn{\rho} is the density of water
-  (assumes 1000 kg/m3), \eqn{g} is acceleration due to gravity (9.8 m/s2),
-  \eqn{Q} is discharge (m3/s), and \eqn{S} is the channel slope.
+  where \eqn{\Omega} is the stream power (kg/m/sec), \eqn{\rho} is the density of water
+  (assumes 1000 kg/m^3), \eqn{g} is acceleration due to gravity (9.8 m/s2),
+  \eqn{Q} is discharge (m^3/s), and \eqn{S} is the channel slope (m/m).
 
   Unit stream power is stream power per unit channel width, and is given by
   the equation:
@@ -76,7 +76,7 @@ Calculates stream power for each cross section in the input
   Stream power in the Lane's Balance equation is simply represented by
   discharge \eqn{Q} and slope \eqn{S}:
 
-  \deqn{\Omega = Q S}
+  \deqn{\omega = Q S}
 
   \strong{Determining Discharge}
   The \code{discharge_method} parameter specifies the source used for the
