@@ -5,8 +5,8 @@ context("xs_metrics_plot")
 sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@data
 
 # Call the xs_metrics_plot function
-sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
-
+sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df,
+                               features_sp = fluvgeo::sin_features_sp)
 
 test_that("check xs metrics plot", {
   expect_true("ggplot" %in% class(sin_metrics))

@@ -4,11 +4,13 @@
 \alias{xs_metrics_plot}
 \title{Plot cross section metrics}
 \usage{
-xs_metrics_plot(reach_xs_dims, label_xs = TRUE)
+xs_metrics_plot(reach_xs_dims, features_sp, label_xs = TRUE)
 }
 \arguments{
 \item{reach_xs_dims}{data frame; a data frame of cross section
 dimensions.}
+
+\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
 \item{label_xs}{boolean; Draw the cross section locations?}
 }
