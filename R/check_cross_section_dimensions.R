@@ -171,6 +171,9 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("shear_stress" %in% names(cross_section_dimensions) &
                   is.numeric(cross_section_dimensions$shear_stress),
                 msg = paste("Numeric field 'shear_stress' missing from", name))
+    assert_that("shear_stress_imperial" %in% names(cross_section_dimensions) &
+                  is.numeric(cross_section_dimensions$shear_stress_imperial),
+                msg = paste("Numeric field 'shear_stress_imperial' missing from", name))
   }
 
   # Step: stream_power

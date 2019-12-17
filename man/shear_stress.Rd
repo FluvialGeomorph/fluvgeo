@@ -10,7 +10,7 @@ shear_stress(xs_dims, specific_gravity = 1)
 \item{xs_dims}{data frame; A data frame of cross section
 dimensions.}
 
-\item{specific_gravity}{numeric; specific gravity of water}
+\item{specific_gravity}{numeric; specific gravity of water (units N/m^3)}
 }
 \value{
 Returns a data frame of cross sections with the calculated shear
@@ -29,9 +29,10 @@ Calculates shear stress for each cross section in the input
 
   \deqn{\tau = \gamma D Sw}
 
-  where: \eqn{\tau} is the fluid shear stress (\eqn{N/m^2}), \eqn{\gamma}
-  is the specific gravity of water (\eqn{N/m^3}), \eqn{D} is average water
-  depth (m), \eqn{Sw} is the water surface slope (m/m).
+  where: \eqn{\tau} is the fluid shear stress (\eqn{N/m^2, lb/ft^2}),
+  \eqn{\gamma} is the specific gravity of water (\eqn{N/m^3, lb/ft^3}),
+  \eqn{D} is average water depth (m, ft), \eqn{Sw} is the water surface
+  slope (m/m, ft/ft).
 
   \strong{Lane's Balance Equations}
   Shear stress in the

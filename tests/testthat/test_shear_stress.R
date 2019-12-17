@@ -44,6 +44,7 @@ test_that("check fields exist by name", {
   expect_true("bankfull_elev"         %in% colnames(xs_dims_ss))
   expect_true("floodprone_elev"       %in% colnames(xs_dims_ss))
   expect_true("shear_stress"          %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_imperial" %in% colnames(xs_dims_ss))
 })
 
 test_that("check field data type", {
@@ -78,6 +79,7 @@ test_that("check field data type", {
   expect_true(is.numeric(xs_dims_ss$bankfull_elev))
   expect_true(is.numeric(xs_dims_ss$floodprone_elev))
   expect_true(is.numeric(xs_dims_ss$shear_stress))
+  expect_true(is.numeric(xs_dims_ss$shear_stress_imperial))
 })
 
 test_that("check data structure", {
