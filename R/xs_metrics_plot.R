@@ -46,7 +46,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                      "xs_entrenchment_ratio",
                      "slope",
                      "sinuosity",
-                     "shear_stress",
+                     "shear_stress_imperial",
                      "unit_stream_power",
                      "rc_bfw_ratio_10")
 
@@ -55,7 +55,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                      "Entrenchment Ratio",
                      "Slope",
                      "Sinuosity",
-                     "Shear Stress (N/m^2)",
+                     "Shear Stress (lb/ft^2)",
                      "Unit Stream Power (kg/m/s)",
                      "RC to BFW")
 
@@ -75,7 +75,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                     .data$xs_entrenchment_ratio,
                     .data$slope,
                     .data$sinuosity,
-                    .data$shear_stress,
+                    .data$shear_stress_imperial,
                     .data$unit_stream_power,
                     .data$rc_bfw_ratio_10)
 
@@ -91,7 +91,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                     "Entrenchment Ratio"          = "darkslategray4",
                     "Slope"                       = "darkgoldenrod4",
                     "Sinuosity"                   = "mediumpurple4",
-                    "Shear Stress (N/m^2)"        = "indianred4",
+                    "Shear Stress (lb/ft^2)"      = "indianred4",
                     "Unit Stream Power (kg/m/s)"  = "darkolivegreen",
                     "RC to BFW"                   = "plum4")
 
