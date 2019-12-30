@@ -117,16 +117,23 @@ stream_power <- function(xs_dims,
                "width_method must be specified."))
   }
 
-  # Set variables
-  rho <- 1000                                    # density of water
-  g <- 9.8                                       # acceleration due to gravity
+  # Density of water (kg/m^3)
+  rho <- 1000
+
+  # Acceleration due to gravity (m/sec)
+  g <- 9.8
+
+  # Discharge
   Q <- switch(discharge_method,                  # discharge
               model_measure      = discharge_value,
               regional_curve     = RegionalCurve::RHG(region,
-                                                      drainage_area,
+                                                      xs_dims$drainage_area,
                                                       "discharge"),
               width_relationship = 0,
               stop("discharge_method parameter is specified incorrectly"))
+
+  # Set discharge
+  xs_dims$discharge <- Q
 
   # Calculate stream power variables
   xs_dims$stream_power       <- rho * g * Q * xs_dims$slope
