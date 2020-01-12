@@ -120,7 +120,7 @@ stream_power <- function(xs_dims,
   # Density of water (kg/m^3)
   rho <- 1000
 
-  # Acceleration due to gravity (m/sec)
+  # Acceleration due to gravity (m/sec^2)
   g <- 9.8
 
   # Discharge
