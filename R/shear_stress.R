@@ -95,7 +95,7 @@
 shear_stress <- function(xs_dims, water_density = 1000) {
   # Convert xs_depth (calculated as max. depth) to mean_depth
   # mean_depth = xs_area * xs_width
-  xs_dims$mean_depth <- xs_dims$xs_area * xs_dims$xs_width
+  xs_dims$xs_mean_depth <- xs_dims$xs_area / xs_dims$xs_width
 
   # Convert water_density from kg/m^3 to slugs/ft^3
   # 1 kg/m^3 = 0.00194032 slugs/ft^3
@@ -106,11 +106,11 @@ shear_stress <- function(xs_dims, water_density = 1000) {
   specific_weight <- water_density_slug * 32.174
 
   # Calculate shear stress variables
-  xs_dims$shear_stress_density <- water_density * (xs_dims$xs_depth * 0.3048) * xs_dims$slope
+  xs_dims$shear_stress_density <- water_density * (xs_dims$xs_mean_depth * 0.3048) * xs_dims$slope
 
-  xs_dims$shear_stress_weight <- specific_weight * xs_dims$xs_depth * xs_dims$slope
+  xs_dims$shear_stress_weight <- specific_weight * xs_dims$xs_mean_depth * xs_dims$slope
 
-  xs_dims$shear_stress_lane <- xs_dims$xs_depth * xs_dims$slope
+  xs_dims$shear_stress_lane <- xs_dims$xs_mean_depth * xs_dims$slope
 
   return(xs_dims)
 }
