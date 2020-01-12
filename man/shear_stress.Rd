@@ -4,17 +4,26 @@
 \alias{shear_stress}
 \title{Calculate shear stress for each cross section}
 \usage{
-shear_stress(xs_dims, specific_gravity = 1)
+shear_stress(xs_dims, water_density = 1000)
 }
 \arguments{
 \item{xs_dims}{data frame; A data frame of cross section
 dimensions.}
 
-\item{specific_gravity}{numeric; specific gravity of water (units N/m^3)}
+\item{water_density}{numeric; density of water (units kg/m^3)}
 }
 \value{
 Returns a data frame of cross sections with the calculated shear
 stress.
+
+\itemize{
+    \item \code{shear_stress_density} Shear stress calculated using the
+    density of water typically of the form "1000 D Sw". Units: \eqn{kg/m^2}
+    \item \code{shear_stress_weight} Shear stress calculated using the
+    specific weight of water. Units: \eqn{lb/ft^2}
+    \item \code{shear_stress_lane} Shear stress calculated using just mean
+    depth and water surface slope. Units:
+  }
 }
 \description{
 Calculates shear stress for each cross section in the input
@@ -24,18 +33,57 @@ Calculates shear stress for each cross section in the input
 \strong{Shear Stress Equations}
   Shear stress is a measure of the force of friction from a fluid acting on
   a body in the path of that fluid. In the case of open channel flow, it is
-  the force of moving water against the bed of the channel. Shear stress is
-  calculated as:
+  the force of moving water against the bed of the channel. Generalized
+  shear stress or tractive force is commonly defined using the following
+
+  \strong{Density of Water}
+  This functional form of the equation defines the \eqn{\gamma} term as the
+  density of water.
 
   \deqn{\tau = \gamma D Sw}
 
-  where: \eqn{\tau} is the fluid shear stress (\eqn{N/m^2, lb/ft^2}),
-  \eqn{\gamma} is the specific gravity of water (\eqn{N/m^3, lb/ft^3}),
-  \eqn{D} is average water depth (m, ft), \eqn{Sw} is the water surface
-  slope (m/m, ft/ft).
+  where:
+  \eqn{\tau} is the fluid shear stress (\eqn{kg/m^2}),
+  \eqn{\gamma} is the density of water (\eqn{kg/m^3}),
+  \eqn{D} is mean water depth (m),
+  \eqn{Sw} is the water surface slope (dimensionless: m/m).
 
-  \strong{Lane's Balance Equations}
-  Shear stress in the
+
+  \strong{Specific Weight of Water}
+  This functional form of the equation defines the \eqn{\gamma} term as the
+  specific weight of water
+
+  \deqn{\tau = \gamma D Sw}
+
+  where:
+  \eqn{\tau} is the fluid shear stress (\eqn{lb/ft^2}),
+  \eqn{\gamma} is the specific weight of water (\eqn{lb/ft^2}),
+  \eqn{D} is mean water depth (ft),
+  \eqn{Sw} is the water surface slope (dimensionless: ft/ft).
+
+  where:
+  \eqn{\gamma = \rho a_{g}}
+
+  \eqn{\rho} is the density of water (\eqn{slugs/ft^3}),
+  \eqn{a_{g}} is the acceleration of gravity (\eqn{ft/sec^2})
+
+
+  \strong{Lane's Balance Version}
+  This functional form of the equation ignores absolute values and simply
+  focuses on the variables that are changing:
+
+  \deqn{\tau = D Sw}
+
+  \eqn{D} is mean water depth (m),
+  \eqn{Sw} is the water surface slope (dimensionless: m/m).
+
+
+  \strong{Typical Values}
+  \itemize{
+    \item Density of water at \eqn{4^{\circ} C (39^{\circ} F)} = \eqn{1000 kg/m^3}
+    or \eqn{1.940 slugs/ft^3}
+    \item Acceleration of gravity = \eqn{9.807 m/s^2, 32.174 ft/s^2}
+  }
 }
 \examples{
 # Calculate cross section dimensions
