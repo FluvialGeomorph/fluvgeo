@@ -121,19 +121,28 @@ xs_metrics <- function(xs_points, stream, xs_number,
                           xs_points$Seq == xs_number, ])
   # Determine drainage area
   drainage_area <- unique(xs$Watershed_Area_SqMile)
+
   # Calculate cross section geometry at bankfull
   xs_dims <- xs_geometry(xs, bankfull_elevation)
+
   # Calculate cross section geometry at flood-prone
   fp_elevation <- bankfull_elevation + (bankfull_elevation - 100)
   fp_dims <- xs_geometry(xs, fp_elevation)
+
   # Calculate width-depth ratio
-  xs_width_depth <- xs_dims$xs_width / xs_dims$xs_depth
+  # Use mean_depth instead of max_depth (xs_depth)
+  # mean_depth = xs_area / xs_width
+  xs_width_depth <- xs_dims$xs_width / (xs_dims$xs_area / xs_dims$xs_width)
+
   # Calculate entrenchment ratio
   xs_entrench <- fp_dims$xs_width / xs_dims$xs_width
+
   # Calculate Water surface elevation
   watersurface_elev <- xs[xs$Detrend_DEM_Z == min(xs$Detrend_DEM_Z), ]$DEM_Z
+
   # Define type of cross section
   xs_type <- c("DEM derived cross section")
+
   # Build data frame of results
   dims <- data.frame(stream, xs_number, xs_type, bankfull_elevation,
                      drainage_area, xs_dims$xs_area, xs_dims$xs_width,
