@@ -81,7 +81,7 @@ Calculates shear stress for each cross section in the input
   \strong{Typical Values}
   \itemize{
     \item Density of water at \eqn{4^{\circ} C (39^{\circ} F)} = \eqn{1000 kg/m^3}
-    or \eqn{1.940 slugs/ft^3}
+    or \eqn{1.94032 slugs/ft^3}
     \item Acceleration of gravity = \eqn{9.807 m/s^2, 32.174 ft/s^2}
   }
 }
