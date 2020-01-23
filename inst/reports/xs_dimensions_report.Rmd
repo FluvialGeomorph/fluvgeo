@@ -5,10 +5,10 @@ params:
    flowline:                              # sp object
    dem: !r.as.raster(0)                   # path to raster
    banklines:                             # sp object
-   extent_factor: 10
+   extent_factor: 1
    stream: "Test"
    regions: "Eastern United States"
-   bf_estimate: 103.53
+   bf_estimate: 101
    features:                              # sp object
    label_xs: TRUE
    output_format: "html_document"
@@ -69,8 +69,9 @@ print(xs_profile_plot(reach_xs_dims = params$xs_dims_planform,
 ```
 
 ## Cross Section Metrics
-```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Cross Section Metrics Plot", warning=FALSE}
+```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Cross Section Metrics Plot. ", warning=FALSE}
 print(xs_metrics_plot(reach_xs_dims = params$xs_dims_planform@data, 
+                      features_sp = params$features,
                       label_xs = params$label_xs))
 ```
 
@@ -173,13 +174,8 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
                       col.names = c("Cross Section Type", "Drainage Area", 
                                     "Area", "Width", "Depth"),
                       booktabs = T)
-    ts <- kableExtra::kable_styling(t, 
-                                    bootstrap_options = c("striped", "condensed"),
-                                    latex_options = c("striped", "hold_position"), 
-                                    full_width = F, 
-                                    position = "left")
     # Use knitr print function to ensure table is drawn properly
-    knitr:::print.knitr_kable(ts)
+    knitr:::print.knitr_kable(t)
     # Insert vertical white space so that next figure in loop is recognized
     cat('\n')
     # Must set chunk option`results='asis'` to ensure table is drawn properly
