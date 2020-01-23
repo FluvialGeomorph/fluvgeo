@@ -31,7 +31,7 @@
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
-#' theme_bw theme labs vars
+#' theme_bw theme labs vars label_wrap_gen
 #'
 xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
   # Check parameters
@@ -46,7 +46,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                      "xs_entrenchment_ratio",
                      "slope",
                      "sinuosity",
-                     "shear_stress_imperial",
+                     "shear_stress_weight",
                      "unit_stream_power",
                      "rc_bfw_ratio_10")
 
@@ -75,7 +75,7 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                     .data$xs_entrenchment_ratio,
                     .data$slope,
                     .data$sinuosity,
-                    .data$shear_stress_imperial,
+                    .data$shear_stress_weight,
                     .data$unit_stream_power,
                     .data$rc_bfw_ratio_10)
 
