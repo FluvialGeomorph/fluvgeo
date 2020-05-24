@@ -4,7 +4,8 @@
 \name{sin_riffle_channel_points_sp}
 \alias{sin_riffle_channel_points_sp}
 \title{Sinsinawa Creek, IL stream channel cross section points}
-\format{A \code{SpatialPointsDataFrame} with 1413 observations and 9
+\format{
+A \code{SpatialPointsDataFrame} with 1413 observations and 9
     variables.
 \describe{
     \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
@@ -28,7 +29,8 @@
     \item{DEM_Z}{numeric; The elevation of the point. By convention, the
                  vertical units used in this project are NADV88 feet.}
     \item{Detrend_DEM_Z}{numeric; The detrended elevation of the point.}
-}}
+}
+}
 \source{
 This dataset was produced using the \code{FluvialGeomorph} ArcGIS
 toolbox.

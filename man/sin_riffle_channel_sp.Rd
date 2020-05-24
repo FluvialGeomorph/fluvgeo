@@ -4,7 +4,8 @@
 \name{sin_riffle_channel_sp}
 \alias{sin_riffle_channel_sp}
 \title{Sinsinawa Creek, IL riffles}
-\format{A \code{SpatialLinesDataFrame} with 10 observations and 11
+\format{
+A \code{SpatialLinesDataFrame} with 10 observations and 11
     variables.
 \describe{
     \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
@@ -30,7 +31,8 @@
                  vertical units used in this project are NADV88 feet.}
     \item{km_to_mouth}{numeric; Distance downstream from this cross section
                    to the end of the reach.}
-}}
+}
+}
 \source{
 This dataset was produced using the \code{FluvialGeomorph} ArcGIS
 toolbox.

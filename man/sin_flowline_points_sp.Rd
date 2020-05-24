@@ -4,7 +4,8 @@
 \name{sin_flowline_points_sp}
 \alias{sin_flowline_points_sp}
 \title{Sinsinawa Creek, IL stream flowline points}
-\format{A \code{SpatialPointsDataFrame} with 1413 observations and 9
+\format{
+A \code{SpatialPointsDataFrame} with 1413 observations and 9
     variables.
 \describe{
     \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
@@ -22,7 +23,8 @@
                    \code{sin_xs_points@proj4string}.}
     \item{Z}{numeric; The elevation of the point. By convention, the
                  vertical units used in this project are NADV88 feet.}
-}}
+}
+}
 \source{
 This dataset was produced using the \code{FluvialGeomorph} ArcGIS
 toolbox.

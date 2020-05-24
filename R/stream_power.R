@@ -124,7 +124,7 @@ stream_power <- function(xs_dims,
   g <- 9.8
 
   # Discharge
-  Q <- switch(discharge_method,                  # discharge
+  Q <- switch(discharge_method,
               model_measure      = discharge_value,
               regional_curve     = RegionalCurve::RHG(region,
                                                       xs_dims$drainage_area,

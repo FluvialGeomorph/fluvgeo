@@ -12,8 +12,8 @@
 #' @return A ggplot2 object.
 #'
 #' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' dataframe. See the \code{sin_xs_dimensions} package dataset for an
-#' example of this format of cross section data produced by the
+#' SpatialPointsDataFrame. See the \code{sin_xs_dimensions} package dataset for
+#' an example of this format of cross section data produced by the
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples

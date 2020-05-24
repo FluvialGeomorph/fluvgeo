@@ -1,14 +1,17 @@
 <!-- rmarkdown v1 -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+
+
+
 # fluvgeo
 An R Package for Performing **Fluv**ial **Geo**mrphology Analysis <img src="man/figures/castle.png" align="right" />
 
 ## Package Status
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)
 [![Project Status: Active The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.19-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2019--11--30-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.1.24-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--05--24-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
@@ -38,5 +41,5 @@ To install the `fluvgeo` package, install from GitHub using the `devtools` packa
 
 ```r
 library(devtools)
-install_github(repo = "mpdougherty/fluvgeo", build_vignettes = TRUE)
+install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRUE)
 ```
