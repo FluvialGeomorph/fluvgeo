@@ -17,28 +17,32 @@
 #' @details This function is used to plot the cross section profile from a
 #' series of \code{xs_points} data frames representing multiple surveys.
 #'
-#' @seealso The \code{xs_compre_plot} function requires a \code{xs_points} dataframe.
-#' See the \code{sin_xs_points} package dataset for an example of this
-#' format of cross section data produced by the \code{FluvialGeomorph} ArcGIS
-#' toolbox.
+#' @seealso The \code{xs_compre_plot} function requires a \code{xs_points}
+#' dataframe. See the \code{sin_xs_points} package dataset for an example of
+#' this format of cross section data produced by the \code{FluvialGeomorph}
+#' ArcGIS toolbox.
 #'
 #' @importFrom purrr map
 #' @importFrom dplyr filter bind_rows
+#' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot
 #'
 xs_compare_plot <- function(stream, xs_number, xs_pts_list) {
+  #print(paste("Stream: ", stream, " XS number: ", xs_number))
+
   # Function to extract a data frame from an sp object data slot
   get_sp_data <- function(sp_obj){return(sp_obj@data)}
 
   # Extract data frames (for ggplot2) from the sp objects
   xs_pts_df <- purrr::map(xs_pts_list, get_sp_data)
+  #print(xs_pts_df)
 
   # Filter for the current reach and xs_number
-  xs_pts_list <- purrr::map(xs_pts_df,
-                            ~filter(.x, ReachName == stream & Seq == xs_number))
+  xs_current <- purrr::map(xs_pts_df,
+                    ~dplyr::filter(.x, ReachName == stream & Seq == xs_number))
 
   # Combine surveys
-  xs_pts <- dplyr::bind_rows(xs_pts_list, .id = "Survey")
+  xs_pts <- dplyr::bind_rows(xs_current, .id = "Survey")
 
   # Define survey factor levels
   xs_pts$Survey <- factor(xs_pts$Survey)
@@ -52,7 +56,9 @@ xs_compare_plot <- function(stream, xs_number, xs_pts_list) {
 
   # Draw the graph
   p <- ggplot(data = xs_pts,
-              aes(POINT_M * 3.28084, DEM_Z, color = Survey)) +
+              aes(x = .data$POINT_M * 3.28084,
+                  y = .data$DEM_Z,
+                  color = Survey)) +
     geom_line(size = 1.25) +
     scale_y_continuous(minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
