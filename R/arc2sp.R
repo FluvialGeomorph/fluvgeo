@@ -41,6 +41,15 @@
 #' }
 #'
 arc2sp <- function(fc_path) {
+  # Check if fc parent folder exists
+  stopifnot(file.exists(dirname(fc_path)))
+
+  # arcgisbinding prone to crashing if not warmed up first with an easy example
+  warmup <- arc.data2sp(
+              arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp",
+                                     package="arcgisbinding")),
+                         'ozone'))
+
   # Open a connection to the specified ArcGIS feature class
   arcobj <- arcgisbinding::arc.open(fc_path)
   # Select the ArcGIS data

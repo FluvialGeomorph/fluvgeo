@@ -11,12 +11,27 @@ load_libraries <- function() {
   arc.check_product()
 }
 
-fc_path <- file.path(system.file("extdata", "testing_data.gdb", package = "fluvgeo"),
-                     "riffle_channel")
+fc_path <- file.path(system.file("extdata", "testing_data.gdb",
+                                 package = "fluvgeo"), "riffle_channel")
+
+double_backslash_path <- gsub("/", "\\\\", fc_path)
+
+bad_path <- file.path("c:", "bogus", "path")
 
 test_that("arc2sp works!", {
   skip_if_no_arc()
   load_libraries()
   fc_sp <- arc2sp(fc_path = fc_path)
   expect_equal(class(fc_sp)[1], "SpatialLinesDataFrame")
+})
+test_that("double backslash path", {
+  skip_if_no_arc()
+  load_libraries()
+  fc_sp <- arc2sp(fc_path = double_backslash_path)
+  expect_equal(class(fc_sp)[1], "SpatialLinesDataFrame")
+})
+test_that("bad path", {
+  skip_if_no_arc()
+  load_libraries()
+  expect_error(arc2sp(fc_path = bad_path))
 })
