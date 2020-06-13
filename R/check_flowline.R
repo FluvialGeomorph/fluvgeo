@@ -36,7 +36,7 @@ check_flowline <- function(flowline,
               msg = paste("Field `ReachName` is empty in", name))
 
   # Check that there is only one flowline
-  assert_that(length(flowline@data$OBJECTID) == 1,
+  assert_that(length(flowline@data$ReachName) == 1,
               msg = paste("Flowline", name, "can only have one record"))
   }
 
