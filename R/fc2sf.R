@@ -11,5 +11,5 @@
 fc2sf <- function(fc_path) {
   gdb <- dirname(fc_path)
   fc <- basename(fc_path)
-  fc_sf <- sf::st_read(gdb, fc)
+  fc_sf <- sf::st_read(gdb, fc, stringsAsFactors = FALSE)
 }
