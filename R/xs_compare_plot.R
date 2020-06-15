@@ -6,7 +6,7 @@
 #' @export
 #' @param stream              character; The name of the stream.
 #' @param xs_number           integer; The cross section `Seq` number.
-#' @param xs_pts_list         list; a list of SpatialPointsDataFrames of cross
+#' @param xs_pts_sf_list      list; a list of `sf` objects of cross
 #'                            section points, one for each survey time period
 #'                            to be graphed. Survey list items must be tagged
 #'                            with the survey label to be used in the graph
@@ -22,20 +22,15 @@
 #' this format of cross section data produced by the \code{FluvialGeomorph}
 #' ArcGIS toolbox.
 #'
+#' @importFrom sf st_drop_geometry
 #' @importFrom purrr map
 #' @importFrom dplyr filter bind_rows
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot
 #'
-xs_compare_plot <- function(stream, xs_number, xs_pts_list) {
-  #print(paste("Stream: ", stream, " XS number: ", xs_number))
-
-  # Function to extract a data frame from an sp object data slot
-  get_sp_data <- function(sp_obj){return(sp_obj@data)}
-
-  # Extract data frames (for ggplot2) from the sp objects
-  xs_pts_df <- purrr::map(xs_pts_list, get_sp_data)
-  #print(xs_pts_df)
+xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
+  # Extract data frames (for ggplot2) from the sf objects
+  xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
   # Filter for the current reach and xs_number
   xs_current <- purrr::map(xs_pts_df,
