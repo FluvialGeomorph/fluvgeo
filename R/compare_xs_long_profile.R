@@ -5,12 +5,12 @@
 #'
 #' @export
 #' @param stream              character; The name of the stream.
-#' @param xs_pts_list         list; a list of SpatialPointsDataFrames of cross
+#' @param xs_pts_sf_list      list; a list of `sf` objects of cross
 #'                            section points, one for each survey time period
 #'                            to be graphed. Survey list items must be tagged
 #'                            with the survey label to be used in the graph
 #'                            legend.
-#' @param features_sp         SpatialPointsDataFrame of infrastructure features.
+#' @param features_sf         `sf` object` of infrastructure features.
 #' @param profile_units       character; the units of the longitudinal profile.
 #'                            One of "kilometers", "meters", "miles", or "feet"
 #' @param label_xs            logical; Draw the cross section labels?
@@ -33,20 +33,17 @@
 #' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
-compare_xs_long_profile <- function(stream, xs_pts_list, features_sp = NULL,
+compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
                                     profile_units = "feet", label_xs = TRUE) {
   # Check parameters
-  check_features(features_sp)
+  #check_features(features_sp)
   assert_that(is.logical(label_xs), msg = "label_xs must be logical")
 
-  # Function to extract a data frame from an sp object data slot
-  get_sp_data <- function(sp_obj){return(sp_obj@data)}
-
   # Extract data frames (for ggplot2) from the sp objects
-  xs_pts_df <- purrr::map(xs_pts_list, get_sp_data)
+  xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
   # Convert features_sp to data frame for ggplot2
-  features <- features_sp@data
+  features <- sf::st_drop_geometry(features_sf)
 
   # Filter for the current reach
   stream_current <- purrr::map(xs_pts_df, ~filter(.x, ReachName == stream))
