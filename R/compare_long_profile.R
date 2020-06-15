@@ -4,20 +4,20 @@
 #'
 #' @export
 #' @param stream               character; The name of the stream.
-#' @param flowline_pts_sp_list list; a list of flowline_points
-#'                             SpatialPointsDataFrames, one for each survey time
+#' @param flowline_pts_sf_list list; a list of flowline_points
+#'                             `sf` objects`, one for each survey time
 #'                             period to be graphed. Survey list items must be
 #'                             tagged with the survey label to be used in the
 #'                             graph legend.
-#' @param features_sp          SpatialPointsDataFrame of infrastructure features.
+#' @param features_sf          `sf` data frame of infrastructure features.
 #' @param profile_units        character; the units of the longitudinal profile.
 #'                             One of "kilometers", "meters", "miles", or "feet"
 #'
 #' @return A ggplot2 object.
 #'
 #' @seealso The \code{compare_long_profile} function requires a
-#' \code{flowline_points} SpatialPointsDataFrames. See the
-#' \code{sin_flowline_points_sp} package dataset for an example of this format
+#' \code{flowline_points} `sf` object. See the
+#' \code{sin_flowline_points_sf} package dataset for an example of this format
 #' of cross section data produced by the \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @importFrom dplyr filter bind_rows
@@ -27,16 +27,14 @@
 #' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
-compare_long_profile <- function(stream, flowline_pts_sp_list,
-                                 features_sp = NULL, profile_units = "feet") {
-  # Function to extract a data frame from an sp object data slot
-  get_sp_data <- function(sp_obj){return(sp_obj@data)}
+compare_long_profile <- function(stream, flowline_pts_sf_list,
+                                 features_sf = NULL, profile_units = "feet") {
+  # Extract data frames (for ggplot2) from the sf objects
+  flowline_pts_df <- purrr::map(flowline_pts_sf_list,
+                                sf::st_drop_geometry)
 
-  # Extract data frames (for ggplot2) from the sp objects
-  flowline_pts_df <- purrr::map(flowline_pts_sp_list, get_sp_data)
-
-  # Convert features_sp to data frame for ggplot2
-  features <- features_sp@data
+  # Convert features_sf to data frame for ggplot2
+  features <- sf::st_drop_geometry(features_sf)
 
   # Filter for the current reach
   flowline_current <- purrr::map(flowline_pts_df,
