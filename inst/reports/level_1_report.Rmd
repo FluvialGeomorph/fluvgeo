@@ -1,0 +1,65 @@
+---
+title: "FluvialGeomorph Level 1 Report"
+params:
+  cross_section_sf: ""
+  features_sf: ""
+  flowline_points_sf_list: ""
+  flowline_sf: ""
+  output_format: ""
+  profile_units: ""
+  stream: ""
+  xs_points_sf_list: ""
+---
+
+```{r library, eval=TRUE, include=FALSE}
+library(sf)
+library(dplyr)
+library(purrr)
+library(knitr)
+library(rmarkdown)
+library(ggplot2)
+library(ggrepel)
+library(tmap)
+```
+
+## Study Area Overview
+```{r overview, echo=FALSE, warning=FALSE, fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+# Convert sf to sp
+flowline_sp      <- sf::as_Spatial(params$flowline_sf)
+cross_section_sp <- sf::as_Spatial(params$cross_section_sf)
+
+print(fluvgeo::map_reach_overview(flowline = flowline_sp, 
+                                  cross_section = cross_section_sp))
+```
+
+## Longitudinal Profile
+```{r long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="Longitudinal Profile Plot"}
+print(fluvgeo::compare_long_profile(stream = params$stream,
+                                    flowline_pts_sf_list = flowline_pts_sf_list,
+                                    features_sf = params$features_sf,
+                                    profile_units = params$profile_units))
+```
+
+```{r xs_long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="XS Longitudinal Profile Plot"}
+print(compare_xs_long_profile(stream = params$stream,
+                              xs_pts_sf_list = params$xs_points_sf_list,
+                              features_sf = params$features_sf,
+                              profile_units = params$profile_units))
+```
+
+## Cross Section Profiles
+
+```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=5}
+# Iterate through cross sections
+for(i in unique(params$cross_section_sf$Seq)) {
+  print(fluvgeo::xs_compare_plot(stream = stream,
+                                 xs_number = i,
+                                 xs_pts_sf_list = xs_pts_sf_list))
+  # Insert vertical white space so that next figure in loop is recognized
+  cat('\n')
+  # Must set chunk option`results='asis'` to ensure table is drawn properly
+}
+```
+
+Version: 0.1.25
+
