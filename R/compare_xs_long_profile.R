@@ -39,10 +39,10 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
   #check_features(features_sp)
   assert_that(is.logical(label_xs), msg = "label_xs must be logical")
 
-  # Extract data frames (for ggplot2) from the sp objects
+  # Extract data frames (for ggplot2) from the sf objects
   xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
-  # Convert features_sp to data frame for ggplot2
+  # Convert features_sf to data frame for ggplot2
   features <- sf::st_drop_geometry(features_sf)
 
   # Filter for the current reach
