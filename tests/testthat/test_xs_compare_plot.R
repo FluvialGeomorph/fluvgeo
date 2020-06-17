@@ -2,10 +2,13 @@ library(purrr)
 library(fluvgeo)
 
 stream <- "Cole Creek R1"
-xs_number <- 40
-xs_points_1 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2004_R1.gdb\\xs_50_points"
-xs_points_2 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2010_R1.gdb\\xs_50_points"
-xs_points_3 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\xs_50_points"
+xs_number <- 1
+xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
+xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
+xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2004"
 survey_name_2 <- "2010"
@@ -26,6 +29,11 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-print(fluvgeo::xs_compare_plot(stream = stream,
-                               xs_number = xs_number,
-                               xs_pts_sf_list = xs_pts_sf_list))
+p <- fluvgeo::xs_compare_plot(stream = stream,
+                              xs_number = xs_number,
+                              xs_pts_sf_list = xs_pts_sf_list)
+
+test_that("xs_compareplot exists", {
+  expect_true("ggplot" %in% class(p))
+  expect_error(print(p), NA)
+})
