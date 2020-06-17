@@ -27,10 +27,14 @@
 #' of cross section data produced by the \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @importFrom assertthat assert_that
+#' @importFrom purrr map
+#' @importFrom sf st_drop_geometry
+#' @importFrom tidyr gather
+#' @importFrom dplyr bind_rows group_by summarize
 #' @importFrom rlang .data
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
-#' theme_bw alpha theme element_rect element_blank element_line labs
+#' @importFrom ggplot2 ggplot aes geom_line scale_color_manual theme_bw alpha
+#' theme element_rect element_blank element_line labs geom_text
 #'
 #'
 compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
@@ -55,17 +59,19 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
   xs_pts$Survey <- factor(xs_pts$Survey)
 
   # Find the lowest elevation for each cross section
-  xs_pts_survey_seq_grouped <- group_by(xs_pts, Survey, Seq, km_to_mouth)
-  xs_pts_seq <- summarize(xs_pts_survey_seq_grouped, dem_z_min = min(DEM_Z))
+  xs_pts_survey_seq_grouped <- dplyr::group_by(xs_pts, Survey, Seq, km_to_mouth)
+  xs_pts_seq <- dplyr::summarize(xs_pts_survey_seq_grouped,
+                                 dem_z_min = min(DEM_Z))
 
   # Create xs graphing data
-  xs_lines_grouped <- group_by(xs_pts, Seq, km_to_mouth)
-  xs_lines_min_max <- summarize(xs_lines_grouped, line_top    = min(DEM_Z) - 0.25,
-                                                  line_bottom = min(DEM_Z) - 1.5)
-  xs_lines <- gather(xs_lines_min_max,
-                     key = "elevations",
-                     value = "values",
-                     .data$line_top, .data$line_bottom)
+  xs_lines_grouped <- dplyr::group_by(xs_pts, Seq, km_to_mouth)
+  xs_lines_min_max <- dplyr::summarize(xs_lines_grouped,
+                                       line_top = min(DEM_Z) - 0.25,
+                                       line_bottom = min(DEM_Z) - 1.5)
+  xs_lines <- tidyr::gather(xs_lines_min_max,
+                            key = "elevations",
+                            value = "values",
+                            .data$line_top, .data$line_bottom)
 
   # Determine min y value
   plot_min_y <- min(xs_pts$DEM_Z)
@@ -88,7 +94,6 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
   geom_line(size = 1.0) +
   geom_point(size = 1.25) +
   scale_color_manual(values = cols) +
-  #scale_x_reverse() +
   theme_bw() +
   theme(legend.position = c(.1, .9),
         legend.background = element_rect(fill = alpha('white', 0.6)),
