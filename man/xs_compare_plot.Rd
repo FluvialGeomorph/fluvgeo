@@ -4,14 +4,14 @@
 \alias{xs_compare_plot}
 \title{Overplot multiple cross section profile surveys}
 \usage{
-xs_compare_plot(stream, xs_number, xs_pts_list)
+xs_compare_plot(stream, xs_number, xs_pts_sf_list)
 }
 \arguments{
 \item{stream}{character; The name of the stream.}
 
 \item{xs_number}{integer; The cross section `Seq` number.}
 
-\item{xs_pts_list}{list; a list of SpatialPointsDataFrames of cross
+\item{xs_pts_sf_list}{list; a list of `sf` objects of cross
 section points, one for each survey time period
 to be graphed. Survey list items must be tagged
 with the survey label to be used in the graph

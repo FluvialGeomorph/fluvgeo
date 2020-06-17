@@ -6,21 +6,21 @@
 \usage{
 compare_long_profile(
   stream,
-  flowline_pts_list,
-  features_sp = NULL,
+  flowline_pts_sf_list,
+  features_sf = NULL,
   profile_units = "feet"
 )
 }
 \arguments{
 \item{stream}{character; The name of the stream.}
 
-\item{flowline_pts_list}{list; a list of flowline_points
-SpatialPointsDataFrames, one for each survey time
+\item{flowline_pts_sf_list}{list; a list of flowline_points
+`sf` objects`, one for each survey time
 period to be graphed. Survey list items must be
 tagged with the survey label to be used in the
 graph legend.}
 
-\item{features_sp}{SpatialPointsDataFrame of infrastructure features.}
+\item{features_sf}{`sf` data frame of infrastructure features.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}
@@ -33,7 +33,7 @@ Compare stream longitudinal profiles from multiple surveys.
 }
 \seealso{
 The \code{compare_long_profile} function requires a
-\code{flowline_points} SpatialPointsDataFrames. See the
-\code{sin_flowline_points_sp} package dataset for an example of this format
+\code{flowline_points} `sf` object. See the
+\code{sin_flowline_points_sf} package dataset for an example of this format
 of cross section data produced by the \code{FluvialGeomorph} ArcGIS toolbox.
 }

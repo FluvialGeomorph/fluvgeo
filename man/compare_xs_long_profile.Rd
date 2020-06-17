@@ -6,8 +6,8 @@
 \usage{
 compare_xs_long_profile(
   stream,
-  xs_pts_list,
-  features_sp = NULL,
+  xs_pts_sf_list,
+  features_sf = NULL,
   profile_units = "feet",
   label_xs = TRUE
 )
@@ -15,13 +15,13 @@ compare_xs_long_profile(
 \arguments{
 \item{stream}{character; The name of the stream.}
 
-\item{xs_pts_list}{list; a list of SpatialPointsDataFrames of cross
+\item{xs_pts_sf_list}{list; a list of `sf` objects of cross
 section points, one for each survey time period
 to be graphed. Survey list items must be tagged
 with the survey label to be used in the graph
 legend.}
 
-\item{features_sp}{SpatialPointsDataFrame of infrastructure features.}
+\item{features_sf}{`sf` object` of infrastructure features.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}

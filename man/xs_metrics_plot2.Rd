@@ -4,11 +4,13 @@
 \alias{xs_metrics_plot2}
 \title{Plot cross section metrics}
 \usage{
-xs_metrics_plot2(reach_xs_dims, label_xs = TRUE)
+xs_metrics_plot2(reach_xs_dims, features_sp, label_xs = TRUE)
 }
 \arguments{
 \item{reach_xs_dims}{data frame; a data frame of cross section
 dimensions.}
+
+\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
 \item{label_xs}{boolean; Draw the cross section locations?}
 }
@@ -20,14 +22,14 @@ Produces a longitudinal plot of cross section metrics for the
 input stream reach.
 }
 \examples{
-# Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
-sin_xs_dims_df <- fluvgeo::sin_xs_dimensions@data
+# Extract cross section dimension data
+sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@data
 
-# Call the xs_plot function
-sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
+# Call the xs_metrics_plot function
+sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
 
 # Print the graph
-sin_profile
+print(sin_metrics)
 
 }
 \seealso{
