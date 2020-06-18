@@ -25,8 +25,10 @@ library(tmap)
 ## Study Area Overview
 ```{r overview, echo=FALSE, warning=FALSE, fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
 # Convert sf to sp
+## drop z and m since `sp` can't handle m
+cross_section_sf_zm <- sf::st_zm(cross_section_sf, what = "ZM")
 flowline_sp      <- sf::as_Spatial(params$flowline_sf)
-cross_section_sp <- sf::as_Spatial(params$cross_section_sf)
+cross_section_sp <- sf::as_Spatial(cross_section_sf_zm)
 
 print(fluvgeo::map_reach_overview(flowline = flowline_sp, 
                                   cross_section = cross_section_sp))
