@@ -1,24 +1,34 @@
+library(fluvgeo)
+context("arc2sp")
 
 stream <- "Cole Creek R1"
-flowline_fc <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\flowline"
-cross_section_fc <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\xs_50"
-flowline_points_1 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2004_R1.gdb\\flowline_points"
-flowline_points_2 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2010_R1.gdb\\flowline_points"
-flowline_points_3 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\flowline_points"
+flowline_fc      <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                              package = "fluvgeo"), "flowline")
+cross_section_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                              package = "fluvgeo"), "xs_250_25")
+flowline_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+                               package = "fluvgeo"), "flowline_points")
+flowline_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                               package = "fluvgeo"), "flowline_points")
+flowline_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                               package = "fluvgeo"), "flowline_points")
 flowline_points_4 <- NULL
-xs_points_1 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2004_R1.gdb\\xs_50_points"
-xs_points_2 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2010_R1.gdb\\xs_50_points"
-xs_points_3 <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\xs_50_points"
+xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+                         package = "fluvgeo"), "xs_250_25_points")
+xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                         package = "fluvgeo"), "xs_250_25_points")
+xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                         package = "fluvgeo"), "xs_250_25_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2004"
 survey_name_2 <- "2010"
 survey_name_3 <- "2016"
 survey_name_4 <- NULL
-features_fc <- "D:\\Workspace\\EMRRP_Sediment\\PapillionCreek_NE\\Reaches\\02_Cole_Creek\\y2016_R1.gdb\\features"
+features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"), "features")
 profile_units <- "feet"
-output_dir <- "D:/Workspace/EMRRP_Sediment/PapillionCreek_NE/Reaches/02_Cole_Creek"
+output_dir <- tempdir()
 output_format <- "word_document"
-
 
 fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         flowline_points_1, flowline_points_2,
@@ -28,3 +38,8 @@ fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         survey_name_3, survey_name_4,
                         features_fc, profile_units,
                         output_dir, output_format)
+
+test_that("report completed", {
+  expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report.docx")
+  expect_true(file.exists(expected_report))
+})
