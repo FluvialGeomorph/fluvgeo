@@ -78,7 +78,7 @@ the longitudinal profile graphs. One of "feet",
 the report.}
 
 \item{output_format}{character; The file format of the report. One of
-"html", "word", "pdf".}
+"html_document", "word_document", "pdf_document".}
 }
 \value{
 Produces a FluvialGeomorph Level 1 Report in the `output_dir` in the
