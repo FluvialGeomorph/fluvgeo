@@ -27,6 +27,7 @@
 #' # Print the graph
 #' sin_profile
 #'
+#' @importFrom utils head tail
 #' @importFrom rlang parse_expr .data
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
