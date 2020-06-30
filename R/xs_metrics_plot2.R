@@ -43,22 +43,22 @@ xs_metrics_plot2 <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
   features <- features_sp@data
 
   # Define `metrics` factor levels
-  metrics_levels = c("xs_width_depth_ratio",
-                     "xs_entrenchment_ratio",
-                     "slope",
-                     "sinuosity",
-                     "shear_stress_imperial",
-                     "unit_stream_power",
-                     "rc_bfw_ratio_10")
+  metrics_levels <- c("xs_width_depth_ratio",
+                      "xs_entrenchment_ratio",
+                      "slope",
+                      "sinuosity",
+                      "shear_stress_imperial",
+                      "unit_stream_power",
+                      "rc_bfw_ratio_10")
 
   # Define `metrics` factor labels
-  metrics_labels = c("Width Depth Ratio",
-                     "Entrenchment Ratio",
-                     "Slope",
-                     "Sinuosity",
-                     "Shear Stress (lb/ft^2)",
-                     "Unit Stream Power (kg/m/s)",
-                     "RC to BFW")
+  metrics_labels <- c("Width Depth Ratio",
+                      "Entrenchment Ratio",
+                      "Slope",
+                      "Sinuosity",
+                      "Shear Stress (lb/ft^2)",
+                      "Unit Stream Power (kg/m/s)",
+                      "RC to BFW")
 
   # Create a metrics variable to control which facet receives feature labels
   features$metrics <- factor(rep("rc_bfw_ratio_10", length(features$Name)),
