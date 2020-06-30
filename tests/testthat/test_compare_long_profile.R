@@ -28,7 +28,7 @@ flowline_points_paths <- setNames(flowline_points_paths, survey_names)
 # Eliminate empty surveys
 flowline_points_paths <- purrr::discard(flowline_points_paths, is.null)
 
-# Convert list of survey paths to list of sp objects
+# Convert list of survey paths to list of sf objects
 flowline_pts_sf_list <- purrr::map(flowline_points_paths, fluvgeo::fc2sf)
 
 # Convert features_fc to an sp object

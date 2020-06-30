@@ -13,7 +13,7 @@ extent_factor <- 2
 streams <- c("Sinsinawa")
 regions <- c("Eastern United States", "IN Central Till Plain")
 output_dir <- Sys.getenv("HOME")
-output_format <- "html_document"
+output_format <- "word_document"
 
 # Create the xs Metrics Report
 xs_metrics_report(xs_points = sin_xs_points_df,
@@ -31,6 +31,6 @@ xs_metrics_report(xs_points = sin_xs_points_df,
 
 test_that("check report exists", {
   expect_true(file.exists(file.path(output_dir,
-                                    "xs_dimensions_Sinsinawa_104.html")))
+                                    "xs_dimensions_Sinsinawa_103.html")))
 })
 
