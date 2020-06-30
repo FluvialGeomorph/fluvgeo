@@ -29,7 +29,8 @@ Depends: R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    knitr
+    knitr,
+    kableExtra
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
@@ -40,7 +41,7 @@ Imports:
     ggplot2,
     ggrepel,
     grDevices,
-    kableExtra,
+
     methods,
     Metrics,
     purrr,
