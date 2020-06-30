@@ -40,6 +40,8 @@
 #' fc_sp <- arc2sp(fc_path = fc_path_in)
 #' }
 #'
+#' @importFrom arcgisbinding arc.data2sp arc.select arc.open
+#'
 arc2sp <- function(fc_path) {
   # Check if fc parent folder exists
   stopifnot(file.exists(dirname(fc_path)))
