@@ -28,22 +28,31 @@ Depends: R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    knitr,
-    rmarkdown
+    knitr
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
     assertthat,
     conicfit,
     dplyr,
+    facetscales,
     ggplot2,
     ggrepel,
+    grDevices,
     kableExtra,
     Metrics,
+    purrr,
     raster,
-    reshape2,
     RegionalCurve,
+    reshape2,
     rlang,
+    rmarkdown,
+    scales,
+    sf,
+    sp,
+    stats,
+    testthat,
     tidyr,
-    testthat
+    tmap,
+    tmaptools
 RoxygenNote: 7.1.0
