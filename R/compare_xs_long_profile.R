@@ -59,15 +59,18 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
   xs_pts$Survey <- factor(xs_pts$Survey)
 
   # Find the lowest elevation for each cross section
-  xs_pts_survey_seq_grouped <- dplyr::group_by(xs_pts, Survey, Seq, km_to_mouth)
+  xs_pts_survey_seq_grouped <- dplyr::group_by(xs_pts, .data$Survey,
+                                                       .data$Seq,
+                                                       .data$km_to_mouth)
   xs_pts_seq <- dplyr::summarize(xs_pts_survey_seq_grouped,
                                  dem_z_min = min(DEM_Z))
 
   # Create xs graphing data
-  xs_lines_grouped <- dplyr::group_by(xs_pts, Seq, km_to_mouth)
+  xs_lines_grouped <- dplyr::group_by(xs_pts, .data$Seq,
+                                              .data$km_to_mouth)
   xs_lines_min_max <- dplyr::summarize(xs_lines_grouped,
-                                       line_top = min(DEM_Z) - 0.25,
-                                       line_bottom = min(DEM_Z) - 1.5)
+                                       line_top = min(.data$DEM_Z) - 0.25,
+                                       line_bottom = min(.data$DEM_Z) - 1.5)
   xs_lines <- tidyr::gather(xs_lines_min_max,
                             key = "elevations",
                             value = "values",
