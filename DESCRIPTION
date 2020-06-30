@@ -22,7 +22,7 @@ Description: This package contains a wide range of functions for performing
     to perform a wide range of fluvial geomorphic analysis (e.g., extract 
     stream channel dimensions, help choose bankfull elevation for ungaged 
     streams).
-License: CC0
+License: file LICENSE
 URL: https://github.com/mpdougherty/fluvgeo
 Depends: R (>= 2.10)
 Encoding: UTF-8
@@ -55,4 +55,4 @@ Imports:
     tidyr,
     tmap,
     tmaptools
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
