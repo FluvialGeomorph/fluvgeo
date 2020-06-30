@@ -16,8 +16,8 @@
 #' @return a tmap object
 #'
 #' @importFrom arcgisbinding arc.open arc.raster
-#' @importFrom raster extent raster crop resample terrain hillShade
-#' @importFrom grDevices colorRampPalette
+#' @importFrom raster extent as.raster raster crop resample terrain hillShade
+#' @importFrom grDevices colorRampPalette grey
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
 #'
