@@ -1,6 +1,4 @@
 # This script records the steps used to create the package
-# This script follows the steps in the cheatsheet below
-# https://www.rstudio.com/wp-content/uploads/2015/06/devtools-cheatsheet.pdf
 
 library(devtools)
 library(usethis)
@@ -33,7 +31,7 @@ devtools::lint()
 
 ## Test
 # Create the testing infrastructure
-devtools::use_testthat()
+usethis::use_testthat()
 
 
 # Run the tests
@@ -62,7 +60,7 @@ devtools::document()
 
 ## Teach
 # Create the vignette infrastructure
-devtools::use_vignette()
+usethis::use_vignette()
 
 # Build the vignette (re-run after each set of edits)
 devtools::build_vignettes()
@@ -77,9 +75,9 @@ devtools::check()
 ## Continuous Integration
 # https://bookdown.org/rdpeng/RProgDA/continuous-integration.html
 # Use travis to test on Linux
-devtools::use_travis()
+usethis::use_travis()
 # Use AppVeyor to test on Windows
-devtools::use_appveyor()
+usethis::use_appveyor()
 
 # Check status of Travis CI builds
 # https://travis-ci.org/mpdougherty/RegionalCurve
@@ -94,6 +92,6 @@ devtools::use_appveyor()
 ## Check
 # Use package goodpractice to check package
 library(goodpractice)
-goodpractice::gp("X:/Work/Office/Regional/ERDC/EMRRP_Sediment/Methods/fluvgeo")
+goodpractice::gp("D:\\Workspace\\EMRRP_Sediment\\Methods\\fluvgeo")
 
 
