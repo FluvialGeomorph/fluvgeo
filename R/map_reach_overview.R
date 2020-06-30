@@ -23,7 +23,8 @@
 #' # Print the map
 #' print(sin_map)
 #'
-#' @importFrom tmaptools bb get_projection read_osm
+#' @importFrom sf st_crs
+#' @importFrom tmaptools bb read_osm
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols
 #' tm_text tm_compass tm_scale_bar tm_layout
 #'
@@ -34,14 +35,20 @@ map_reach_overview <- function(flowline, cross_section) {
 
   # Create map extent in lat-long to pass to OpenStreetMap
   map_bb <- tmaptools::bb(fluvgeo::feature_extent(flowline),
-                          current.projection = tmaptools::get_projection(flowline),
+                          current.projection = sf::st_crs(flowline),
                           ext = 1.05,
-                          projection = "longlat")
+                          projection = 4326)                     # longlat WGS84
+
+  # Get basemap tiles {mapmisc}
+  #basemap_tiles <- mapmisc::openmap(flowline)
+  ## read_osm
+  #basemap_tiles <- tmaptools::read_osm(flowline)
 
   # Create the reach map
-  reach_map <- tm_shape(tmaptools::read_osm(map_bb,
-                                   type = "bing")) +
-                 tm_rgb() +
+  reach_map <- # tm_shape(tmaptools::read_osm(map_bb, type = "bing"),
+               #          projection = sf::st_crs(flowline)) +
+               # tm_shape(basemap_tiles) +
+               #   tm_raster() +
                tm_shape(shp = flowline,
                         name = "Flowline",
                         unit = "mi",
