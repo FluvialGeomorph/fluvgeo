@@ -243,10 +243,11 @@ check_bankline_points <- function(bankline_points) {
       assert_that(loop_bank != last_loop_bank,
                   msg = paste("Loop", l, "points are located on the same bank",
                               "as the previous loop. Reminder: Loop points",
-                              "must alternate banks from one loop to the next."))
+                              "must alternate banks from one loop to the",
+                              "next."))
 
-      print(paste("    ** Loop", l, "points are located on the opposite bank from",
-                  "Loop", l-1))
+      print(paste("    ** Loop", l, "points are located on the opposite bank",
+                  "from Loop", l-1))
     }
 
     ## Update the last_loop_bank to the current loop_bank value
