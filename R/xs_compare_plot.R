@@ -53,7 +53,7 @@ xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
   p <- ggplot(data = xs_pts,
               aes(x = .data$POINT_M * 3.28084,
                   y = .data$DEM_Z,
-                  color = Survey)) +
+                  color = .data$Survey)) +
     geom_line(size = 1.25) +
     scale_y_continuous(minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
