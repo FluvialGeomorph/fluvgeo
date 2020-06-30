@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^create_package_steps\.R$
 ^data-raw$
+^README.Rmd
