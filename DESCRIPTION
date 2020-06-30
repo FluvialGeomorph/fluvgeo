@@ -24,6 +24,7 @@ Description: This package contains a wide range of functions for performing
     streams).
 License: file LICENSE
 URL: https://github.com/mpdougherty/fluvgeo
+BugReports: https://github.com/FluvialGeomorph/fluvgeo/issues
 Depends: R (>= 2.10)
 Encoding: UTF-8
 LazyData: true
@@ -40,6 +41,7 @@ Imports:
     ggrepel,
     grDevices,
     kableExtra,
+    methods,
     Metrics,
     purrr,
     raster,
