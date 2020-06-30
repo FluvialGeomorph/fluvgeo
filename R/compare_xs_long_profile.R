@@ -63,7 +63,7 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
                                                        .data$Seq,
                                                        .data$km_to_mouth)
   xs_pts_seq <- dplyr::summarize(xs_pts_survey_seq_grouped,
-                                 dem_z_min = min(DEM_Z))
+                                 dem_z_min = min(.data$DEM_Z))
 
   # Create xs graphing data
   xs_lines_grouped <- dplyr::group_by(xs_pts, .data$Seq,
