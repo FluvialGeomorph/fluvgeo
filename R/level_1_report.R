@@ -42,6 +42,7 @@
 #' @return Produces a FluvialGeomorph Level 1 Report in the `output_dir` in the
 #' requested file format.
 #'
+#' @importFrom stats setNames
 #' @importFrom purrr discard map
 #' @importFrom rmarkdown render
 #'
@@ -61,8 +62,8 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
 
   # Name the survey paths list by their survey names
   survey_names <- c(survey_name_1, survey_name_2, survey_name_3, survey_name_4)
-  flowline_points_paths <- setNames(flowline_points_paths, survey_names)
-  xs_points_paths       <- setNames(xs_points_paths,       survey_names)
+  flowline_points_paths <- stats::setNames(flowline_points_paths, survey_names)
+  xs_points_paths       <- stats::setNames(xs_points_paths,       survey_names)
 
   # Eliminate empty surveys
   flowline_points_paths <- purrr::discard(flowline_points_paths, is.null)
