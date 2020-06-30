@@ -4,8 +4,8 @@
 #' meets the requirements for this data structure.
 #'
 #' @export
-#' @param cross_section_points   SpatialPointsDataFrame; a `cross_section_points`
-#'                               data structure used by the fluvgeo package.
+#' @param xs_points       SpatialPointsDataFrame; a `cross_section_points`
+#'                        data structure used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "station_points", "loop_bend"
 #'
