@@ -54,5 +54,6 @@ Imports:
     testthat,
     tidyr,
     tmap,
-    tmaptools
+    tmaptools,
+    utils
 RoxygenNote: 7.1.1
