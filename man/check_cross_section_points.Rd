@@ -7,11 +7,11 @@
 check_cross_section_points(xs_points, step = c("station_points", "loop_bend"))
 }
 \arguments{
+\item{xs_points}{SpatialPointsDataFrame; a `cross_section_points`
+data structure used by the fluvgeo package.}
+
 \item{step}{character; last completed processing step. One of
 "station_points", "loop_bend"}
-
-\item{cross_section_points}{SpatialPointsDataFrame; a `cross_section_points`
-data structure used by the fluvgeo package.}
 }
 \value{
 Returns TRUE if the `cross_section_points` data structure matches the
