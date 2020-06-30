@@ -1,25 +1,10 @@
 ---
 output: github_document
 ---
-<!-- rmarkdown v1 -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-library(dplyr)
-library(tidyr)
-library(knitr)
-library(kableExtra)
-library(RegionalCurve)
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-```
-
-
 # fluvgeo
-An R Package for Performing **Fluv**ial **Geo**mrphology Analysis <img src="man/figures/castle.png" align="right" />
+An `R` Package for Performing **Fluv**ial **Geo**mrphology Analysis <img src="man/figures/castle.png" align="right" />
 
 ## Package Status
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)
@@ -30,20 +15,19 @@ An R Package for Performing **Fluv**ial **Geo**mrphology Analysis <img src="man/
 
 ## Description
 This package contains a wide range of functions for performing fluvial 
-geomorphic analysis. This package is designed for use with the FluvialGeomorph 
-Python package. The FluvialGeomorph package contains an ArcGIS toolbox that can 
-be used to extract spatial data from high-resolution terrain data. 
-FluvialGeomorph uses functions in this package to perform a wide range of 
-fluvial geomorphic analysis:
+geomorphic analysis. This `R` package is designed for use with the [FluvialGeomorph 
+ArcGIS toolbox](https://github.com/FluvialGeomorph/FluvialGeomorph). The FluvialGeomorph ArcGIS toolbox contains an tools that can be used to extract spatial data from high-resolution terrain data. The FluvialGeomorph ArcGIS toolbox depends on functions in this package to perform a wide range of fluvial geomorphic analysis:
 
-* derive synthetic stream channel dimensions
-* derive stream planform dimensions
-* help choose a bankfull elevation for ungaged streams
+* Calculate stream channel dimensions
+* Calculate stream planform dimensions
+* Produce reports of stream channel and planform dimensions
+* Tools for choosing a bankfull elevation for ungaged streams
 
 ## Funding
-Funding for development and maintenance of `fluvgeo` was provided by the US Army 
-Corps of Engineers (USACE) [Ecosystem Management and Restoration
-Research Program (EMRRP)](https://emrrp.el.erdc.dren.mil). <img src="man/figures/EMRRP_logo_300.png" align="right" />
+Funding for development and maintenance of `fluvgeo` was provided by the US Army Corps of Engineers (USACE):
+
+* [Ecosystem Management and Restoration Research Program (EMRRP)](https://emrrp.el.erdc.dren.mil). 
+<img src="man/figures/EMRRP_logo_300.png" align="right" />
 
 ## Authors
 * Michael Dougherty, Geographer, U.S. Army Corps of Engineers
@@ -54,6 +38,8 @@ Research Program (EMRRP)](https://emrrp.el.erdc.dren.mil). <img src="man/figures
 To install the `fluvgeo` package, install from GitHub using the `devtools` package:
 
 ```r
-library(devtools)
-install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRUE)
+devtools::install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRUE)
 ```
+
+## Bug Reports
+If you find any bugs using `fluvgeo`, plase open an [issue](https://github.com/FluvialGeomorph/fluvgeo/issues). 
