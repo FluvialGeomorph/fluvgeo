@@ -59,5 +59,5 @@ devtools::install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRU
 
 ## Bug Reports
 
-If you find any bugs using `fluvgeo`, plase open an
+If you find any bugs using `fluvgeo`, please open an
 [issue](https://github.com/FluvialGeomorph/fluvgeo/issues).
