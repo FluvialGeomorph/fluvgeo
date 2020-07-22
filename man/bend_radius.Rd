@@ -7,8 +7,8 @@
 bend_radius(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; an fluvgeo bankline_points data
-structure}
+\item{bankline_points}{SpatialPointsDataFrame; an fluvgeo bankline_points
+data structure}
 }
 \value{
 Returns a data frame of bends with the calculated raduis of

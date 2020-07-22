@@ -41,6 +41,7 @@ require ESRI \code{ArcGIS Desktop} or \code{ArcGIS Pro}.
 Useful links:
 \itemize{
   \item \url{https://github.com/mpdougherty/fluvgeo}
+  \item Report bugs at \url{https://github.com/FluvialGeomorph/fluvgeo/issues}
 }
 
 }
