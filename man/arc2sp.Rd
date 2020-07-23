@@ -32,8 +32,8 @@ library(arcgisbinding)
 arc.check_product()
 
 # Path to an ESRI geodatabase feature class
-fc_path <- file.path(system.file("extdata", "testing_data.gdb",
-                     package = "fluvgeo"), "riffle_channel")
+fc_path_in <- file.path(system.file("extdata", "testing_data.gdb",
+                        package = "fluvgeo"), "riffle_channel")
 
 # Convert the ArcGIS polyline feature class to an `sp` object
 fc_sp <- arc2sp(fc_path = fc_path_in)
