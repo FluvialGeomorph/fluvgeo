@@ -62,13 +62,13 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
               msg = paste("Character field 'ReachName' missing from", name))
   assert_that("POINT_X" %in% colnames(channel_features@data) &
                 is.numeric(channel_features@data$POINT_X),
-              msg = paste("Numeric field 'bank_POINT_X' missing from ", name))
+              msg = paste("Numeric field 'POINT_X' missing from ", name))
   assert_that("POINT_Y" %in% colnames(channel_features@data) &
                 is.numeric(channel_features@data$POINT_Y),
-              msg = paste("Numeric field 'bank_POINT_Y' missing from ", name))
+              msg = paste("Numeric field 'POINT_Y' missing from ", name))
   assert_that("POINT_M" %in% colnames(channel_features@data) &
                 is.numeric(channel_features@data$POINT_M),
-              msg = paste("Numeric field 'bank_POINT_M' missing from ", name))
+              msg = paste("Numeric field 'POINT_M' missing from ", name))
   assert_that("Z" %in% colnames(channel_features@data) &
                 is.numeric(channel_features@data$Z),
               msg = paste("Numeric field 'Z' missing from ", name))
