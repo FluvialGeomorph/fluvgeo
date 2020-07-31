@@ -52,8 +52,10 @@ print(compare_xs_long_profile(stream = params$stream,
 ## Cross Section Profiles
 
 ```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=5}
+cross_section <- dplyr::arrange(params$cross_section_sf, desc(Seq))
+
 # Iterate through cross sections
-for(i in unique(params$cross_section_sf$Seq)) {
+for(i in unique(cross_section$Seq)) {
   print(fluvgeo::xs_compare_plot(stream = stream,
                                  xs_number = i,
                                  xs_pts_sf_list = xs_pts_sf_list))

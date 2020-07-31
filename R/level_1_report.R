@@ -88,7 +88,6 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
                         "profile_units" = profile_units,
                         "output_format" = output_format)
 
-
   report_template <- system.file("reports", "level_1_report.Rmd",
                                  package = "fluvgeo")
 
