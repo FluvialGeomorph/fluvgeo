@@ -38,6 +38,7 @@ sin_riffle_floodplain_dims_sp   <- fluvgeo::arc2sp(paste0(data_path, "riffle_flo
 sin_riffle_floodplain_dims_planform_sp <- fluvgeo::arc2sp(paste0(data_path, "riffle_floodplain_dims_planform"))
 sin_valleyline_sp               <- fluvgeo::arc2sp(paste0(data_path, "valleyline"))
 sin_valleyline_points_sp        <- fluvgeo::arc2sp(paste0(data_path, "valleyline_points"))
+sin_gradient_sp                 <- fluvgeo::arc2sp(paste0(data_path, "gradient_1"))
 ```
 
 ```{r}
@@ -56,6 +57,7 @@ usethis::use_data(sin_riffle_floodplain_dims_sp, overwrite = TRUE)
 usethis::use_data(sin_riffle_floodplain_dims_planform_sp, overwrite = TRUE)
 usethis::use_data(sin_valleyline_sp, overwrite = TRUE)
 usethis::use_data(sin_valleyline_points_sp, overwrite = TRUE)
+usethis::use_data(sin_gradient_sp, overwrite = TRUE)
 ```
 
 
