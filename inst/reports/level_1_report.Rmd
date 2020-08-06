@@ -52,7 +52,7 @@ print(compare_xs_long_profile(stream = params$stream,
 ## Cross Section Profiles
 
 ```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=5}
-cross_section <- dplyr::arrange(params$cross_section_sf, desc(Seq))
+cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
 
 # Iterate through cross sections
 for(i in unique(cross_section$Seq)) {
@@ -65,5 +65,5 @@ for(i in unique(cross_section$Seq)) {
 }
 ```
 
-Version: 0.1.25
+Version: 0.1.27
 
