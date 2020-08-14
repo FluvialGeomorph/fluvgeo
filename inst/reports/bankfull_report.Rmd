@@ -12,7 +12,7 @@ params:
 # Estimate Bankfull: `r params$stream` River
 The purpose of this analysis is to identify the bankfull elevation over a set of riffle cross sections for an ungaged stream reach by using regional hydraulic relationships.
 
-```{r, library, echo=FALSE}
+```{r, library, echo=FALSE, message=FALSE}
 library(assertthat)
 library(dplyr)
 library(knitr)
