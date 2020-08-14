@@ -63,7 +63,8 @@ estimate_bankfull <- function(xs_points, streams, regions, bankfull_elevations,
     xs_pts <- xs_points[xs_points$ReachName == g, ]
 
     # Render the report for the current stream
-    rmarkdown::render(input = system.file("reports", "bankfull_report.Rmd",
+    rmarkdown::render(input = system.file("reports",
+                                          "estimate_bankfull_report.Rmd",
                                           package = "fluvgeo"),
                       output_format = output_format,
                       output_options = list(self_contained = TRUE),
