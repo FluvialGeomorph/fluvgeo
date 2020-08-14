@@ -2,7 +2,7 @@ library(fluvgeo)
 context("estimate_bankfull")
 
 # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_xs_points@data
+sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
 
 # Set variable values
 streams <- c("Sinsinawa")
@@ -26,7 +26,7 @@ estimate_bankfull(xs_points = sin_xs_points_df,
 # Can be tested on all systems
 test_that("The output html report exists", {
   output_file <- file.path(output_dir, paste0("bankfull_estimate_",
-                                              "Sinsinawa.html"))
+                                              "Sinsinawa_103.5.html"))
   expect_true(file.exists(output_file))
   #file.remove(output_file)
 })
