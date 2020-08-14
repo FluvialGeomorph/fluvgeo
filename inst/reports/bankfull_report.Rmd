@@ -1,4 +1,5 @@
 ---
+title: "FluvialGeomorph Estimate Bankfull Report"
 params:
    xs_points: !r as.data.frame(0)
    stream: "Test"
