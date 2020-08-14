@@ -42,16 +42,16 @@ if (params$output_format == "word_document") {
 
 ```{r, calc_xs_dims, echo=FALSE}
 # Calculate cross section dimensions
-xs_dims <- xs_dimensions(xs_points = params$xs_points,
-                         streams = params$stream,
-                         regions = params$regions,
-                         bankfull_elevations = params$bankfull_elevations)
+xs_dims <- fluvegeo::xs_dimensions(xs_points = params$xs_points,
+                               streams = params$stream,
+                               regions = params$regions,
+                               bankfull_elevations = params$bankfull_elevations)
 
 # Calculate the gof stats
-gof_stats <- build_gof_stats(xs_dims = xs_dims,
-                             streams = params$stream,
-                             regions = params$regions,
-                             bankfull_elevations = params$bankfull_elevations)
+gof_stats <- fluvgeo::build_gof_stats(xs_dims = xs_dims,
+                               streams = params$stream,
+                               regions = params$regions,
+                               bankfull_elevations = params$bankfull_elevations)
 
 ```
 
@@ -60,10 +60,10 @@ To help inform the estimation of a bankfull elevation, this section contains a s
 
 ```{r, gof_graph, results='asis', echo=FALSE, message=FALSE, fig.width=7, fig.height=6, fig.cap="Bankfull Elevation Goodness of Fit "}
 # Draw goodness of fit graph
-print(gof_graph(gof_stats = gof_stats,
-                stream = params$stream,
-                bankfull_elevation = params$bf_estimate,
-                stat = "MAE"))
+print(fluvgeo::gof_graph(gof_stats = gof_stats,
+                         stream = params$stream,
+                         bankfull_elevation = params$bf_estimate,
+                         stat = "MAE"))
 ```
 
 ```{r, gof_table, results='asis', echo=FALSE, message=FALSE, warning=FALSE}
@@ -73,21 +73,21 @@ bf_stats <- gof_stats[gof_stats$bankfull_elevation == params$bf_estimate, ]
 bf_stats <- bf_stats[, c("region", "bankfull_elevation", "mae_area",
                          "mae_width", "mae_depth")]
 # Format the table
-k <- kable(x = bf_stats,
-           format = format,
-           digits = 2,
-           row.names = FALSE,
-           col.names = c("Regions", "Bankfull Elevation",
-                         "Area (MAE, sq feet)", "Width (MAE, feet)",
-                         "Depth (MAE, feet)"),
-           caption = paste0("Goodness of fit for all cross sections at ",
-                            "bankfull elevation ", params$bf_estimate,
-                            " (detrended feet) using Mean Average Error ",
-                            "(MAE)."),
-           booktabs = TRUE)
-ks <- kable_styling(kable_input = k,
-                    bootstrap_options = c("striped", "hover"),
-                    latex_options = c("striped", "scale_down"))
+k <- knitr::kable(x = bf_stats,
+                  format = format,
+                  digits = 2,
+                  row.names = FALSE,
+                  col.names = c("Regions", "Bankfull Elevation",
+                                "Area (MAE, sq feet)", "Width (MAE, feet)",
+                                "Depth (MAE, feet)"),
+                  caption = paste0("Goodness of fit for all cross sections at ",
+                                   "bankfull elevation ", params$bf_estimate,
+                                   " (detrended ft) using Mean Average Error ",
+                                   "(MAE)."),
+                  booktabs = TRUE)
+ks <- kableExtra::kable_styling(kable_input = k,
+                                bootstrap_options = c("striped", "hover"),
+                                latex_options = c("striped", "scale_down"))
 print(ks)
 ```
 
@@ -95,9 +95,9 @@ The figure below displays the selected regional hydraulic geometry curves plotte
 
 ```{r, regional_curve_graph, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Regional Hydraulic Geometry Curves"}
 # Draw reach regional curves graph
-print(reach_rhg_graph(xs_dims = xs_dims,
-                      streams = params$stream,
-                      bf_elevation = params$bf_estimate))
+print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
+                               streams = params$stream,
+                               bf_elevation = params$bf_estimate))
 ```
 
 ## Cross Section Profiles
@@ -108,32 +108,32 @@ This section displays cross section profile graphs for each riffle cross section
 xs_pts <- params$xs_points
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
     # Create the cross section plot
-    print(xs_plot(xs_points = xs_pts,
-                  stream = params$stream,
-                  xs_number = j,
-                  bankfull_elevation = params$bf_estimate))
+    print(fluvgeo::xs_plot(xs_points = xs_pts,
+                           stream = params$stream,
+                           xs_number = j,
+                           bankfull_elevation = params$bf_estimate))
     # Calculate cross section geometry
     xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
-    dims <- xs_dimensions(xs_points = xs_pts_j,
-                          streams = params$stream,
-                          regions = params$regions,
-                          bankfull_elevations = params$bf_estimate)
+    dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
+                                   streams = params$stream,
+                                   regions = params$regions,
+                                   bankfull_elevations = params$bf_estimate)
     # Remove duplicate 'DEM derived cross section' records
     dims_unique <- unique(dims)
     # Sort by 'xs_type'
     dims_sort <- dims_unique[order(dims_unique$xs_type), ]
     # Create kable table to display cross section dimensions
-    p <- kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area",
-                                 "xs_width", "xs_depth")],
-               format = format,
-               digits = 2,
-               row.names = FALSE,
-               col.names = c("Cross Section Type", "Drainage Area",
-                             "Area", "Width", "Depth"),
-               booktabs = TRUE)
-    ps <- kable_styling(kable_input = p,
-                        bootstrap_options = c("striped", "hover"),
-                        latex_options = c("striped", "scale_down"))
+    p <- knitr::kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area",
+                                        "xs_width", "xs_depth")],
+                      format = format,
+                      digits = 2,
+                      row.names = FALSE,
+                      col.names = c("Cross Section Type", "Drainage Area",
+                                    "Area", "Width", "Depth"),
+                      booktabs = TRUE)
+    ps <- kableExtra::kable_styling(kable_input = p,
+                                    bootstrap_options = c("striped", "hover"),
+                                    latex_options = c("striped", "scale_down"))
     print(ps)
     # Insert vertical white space so that next figure is recognized
     cat('\n')
