@@ -80,7 +80,7 @@ xs_plot <- function(xs_points, stream, xs_number, bankfull_elevation) {
   eg <- mean(xs$DEM_Z - xs$Detrend_DEM_Z)
   # Draw the graph
   p <- ggplot(data = xs,
-              aes(xs$POINT_M * 3.28084, xs$Detrend_DEM_Z, label = xs$Seq)) +
+              aes(POINT_M * 3.28084, Detrend_DEM_Z, label = Seq)) +
     scale_y_continuous(sec.axis = sec_axis(~. + eg,
                                            name = "Elevation (NAVD88 feet)")) +
     geom_line() +
