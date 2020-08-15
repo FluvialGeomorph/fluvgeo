@@ -27,6 +27,13 @@ xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
 xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
 
 
+# sf
+xs_dims_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                    package = "fluvgeo"),
+                        "riffle_floodplain_dims")
+xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
+
+
 test_that("check cross_section_dimension step", {
   expect_true(check_cross_section_dimensions(xs_dims, "cross_section_dimensions"))
 })
@@ -45,4 +52,11 @@ test_that("check planform step", {
 
 test_that("check mertic_ratio step", {
   expect_true(check_cross_section_dimensions(xs_dims_ratios, "metric_ratio"))
+})
+
+
+# sf
+
+test_that("check stream_power step, sf", {
+  expect_true(check_cross_section_dimensions(xs_dims_sf, "stream_power"))
 })
