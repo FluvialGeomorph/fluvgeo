@@ -8,6 +8,8 @@
 #'                        dimensions.
 #' @param features_sf     SimpleFeatures data frame of infrastructure features.
 #' @param label_xs        logical; Draw the cross section locations?
+#' @param profile_units   character; the units of the longitudinal profile.
+#'                        One of "kilometers", "meters", "miles", or "feet"
 #'
 #' @return A ggplot2 object.
 #'
@@ -24,10 +26,20 @@
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars
 #'
-xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
+xs_metrics_plot_2 <- function(xs_dims_sf,
+                              features_sf,
+                              label_xs = TRUE,
+                              profile_units = "kilometers") {
   # Check parameters
   check_cross_section_dimensions(xs_dims_sf, "stream_power")
   check_features(features_sf)
+
+  # Calculate a unit conversion coefficient from kilometers to other units
+  unit_coef <- switch(profile_units,
+                      "kilometers" = 1,
+                      "meters"     = 1000,
+                      "miles"      = 0.621371,
+                      "feet"       = 3280.84)
 
   # Define `metrics` factor levels
   metrics_levels <- c("xs_width_depth_ratio",
@@ -83,7 +95,7 @@ xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
 
   # Draw the graph
   p <- ggplot(xs_dims,
-              aes(x = .data$km_to_mouth,
+              aes(x = .data$km_to_mouth * unit_coef,
                   y = .data$values,
                   color = .data$metrics,
                   label = .data$Seq)) +
@@ -99,11 +111,11 @@ xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
                labeller = label_wrap_gen(width = 15),
                scales = "free") +
     labs(title = unique(xs_dims$ReachName),
-         x     = "Kilometers",
+         x     = profile_units,
          y     = "") +
     geom_text_repel(inherit.aes = FALSE,
                     data = features_sf,
-                    aes(x = .data$km_to_mouth,
+                    aes(x = .data$km_to_mouth * unit_coef,
                         y = rep(plot_min_y - 0, length(.data$Name)),
                         label = .data$Name),
                     nudge_x = 0, angle = 90, size = 3,

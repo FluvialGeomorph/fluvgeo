@@ -15,7 +15,8 @@ features_sf  <- fluvgeo::fc2sf(features_fc)
 
 # Call the xs_metrics_plot function
 level_2_metrics <- xs_metrics_plot_2(xs_dims_sf = xs_dims_sf,
-                                     features_sf = features_sf)
+                                     features_sf = features_sf,
+                                     profile_units = "miles")
 
 print(level_2_metrics)
 
