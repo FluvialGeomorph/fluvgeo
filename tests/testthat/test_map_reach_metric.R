@@ -12,12 +12,45 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
                                 "Overwidened"),
            source = "Dunn & Leopold, 1978")
 
-# Create the reach metric map
-wdr_map <- map_reach_metric(wdr,
-                            fluvgeo::sin_flowline_sp,
-                            fluvgeo::sin_riffle_floodplain_dims_planform_sp)
+# sp
+# Get feature class test data in sp format
+flowline_sp      <- fluvgeo::sin_flowline_sp
+xs_dimensions_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
 
-test_that("check map_reach_metric", {
-  expect_true("tmap" %in% class(wdr_map))
-  expect_error(print(wdr_map), NA)
+# Create the reach metric map
+wdr_map_sp <- map_reach_metric(wdr,
+                               flowline = flowline_sp,
+                               xs_dimensions = xs_dimensions_sp)
+
+# sf
+# Get feature class test data in sf format
+flowline_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                        package = "fluvgeo"),
+                            "flowline")
+xs_dimensions_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                     package = "fluvgeo"),
+                             "riffle_floodplain_dims_planform")
+
+# Convert feature classes to an sf objects
+flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
+xs_dimensions_sf <- fluvgeo::fc2sf(xs_dimensions_fc)
+
+# Create the reach metric map using sp input
+wdr_map_sp <- map_reach_metric(wdr,
+                               flowline = flowline_sp,
+                               xs_dimensions = xs_dimensions_sp)
+
+# Create the reach metric map using sf input
+wdr_map_sf <- map_reach_metric(wdr,
+                               flowline = flowline_sf,
+                               xs_dimensions = xs_dimensions_sf)
+
+test_that("check map_reach_metric using sp input", {
+  expect_true("tmap" %in% class(wdr_map_sp))
+  expect_error(print(wdr_map_sp), NA)
+})
+
+test_that("check map_reach_metric using sf input", {
+  expect_true("tmap" %in% class(wdr_map_sf))
+  expect_error(print(wdr_map_sf), NA)
 })
