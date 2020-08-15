@@ -7,7 +7,7 @@
 #' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
 #' @param features_sp     SpatialPointsDataFrame of infrastructure features
-#' @param label_xs        boolean; Draw the cross section locations?
+#' @param label_xs        logical; Draw the cross section locations?
 #'
 #' @return A ggplot2 object.
 #'

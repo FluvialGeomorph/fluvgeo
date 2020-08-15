@@ -12,7 +12,7 @@ dimensions.}
 
 \item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
-\item{label_xs}{boolean; Draw the cross section locations?}
+\item{label_xs}{logical; Draw the cross section locations?}
 }
 \value{
 A ggplot2 object.

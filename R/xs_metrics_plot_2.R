@@ -21,26 +21,22 @@
 #' @importFrom rlang .data
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom facetscales facet_grid_sc
+#' @importFrom facetscales facet_grid
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars
 #'
 xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
   # Check parameters
   check_cross_section_dimensions(xs_dims_sf, "stream_power")
-  check_features(features_sp)
-
-  # Convert to data frames for ggplot
-  features <- features_sp@data
+  check_features(features_sf)
 
   # Define `metrics` factor levels
   metrics_levels <- c("xs_width_depth_ratio",
                       "xs_entrenchment_ratio",
                       "slope",
                       "sinuosity",
-                      "shear_stress_imperial",
-                      "unit_stream_power",
-                      "rc_bfw_ratio_10")
+                      "shear_stress_weight",
+                      "unit_stream_power")
 
   # Define `metrics` factor labels
   metrics_labels <- c("Width Depth Ratio",
@@ -48,55 +44,43 @@ xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
                       "Slope",
                       "Sinuosity",
                       "Shear Stress (lb/ft^2)",
-                      "Unit Stream Power (kg/m/s)",
-                      "RC to BFW")
+                      "Unit Stream Power (kg/m/s)")
 
   # Create a metrics variable to control which facet receives feature labels
-  features$metrics <- factor(rep("rc_bfw_ratio_10", length(features$Name)),
-                             levels = metrics_levels,
-                             labels = metrics_labels)
+  features_sf$metrics <- factor(rep("unit_stream_power",
+                                    length(features_sf$Name)),
+                                levels = metrics_levels,
+                                labels = metrics_labels)
 
   # Determine min y value
-  plot_min_y <- min(reach_xs_dims$rc_bfw_ratio_10)
+  plot_min_y <- min(na.omit(xs_dims_sf$unit_stream_power))
 
   # Gather data by metrics for plotting
-  xs_dims <- gather(reach_xs_dims,
+  xs_dims <- gather(xs_dims_sf,
                     key = "metrics",
                     value = "values",
+                    na.rm = TRUE,
                     .data$xs_width_depth_ratio,
                     .data$xs_entrenchment_ratio,
                     .data$slope,
                     .data$sinuosity,
-                    .data$shear_stress_imperial,
-                    .data$unit_stream_power,
-                    .data$rc_bfw_ratio_10)
+                    .data$shear_stress_weight,
+                    .data$unit_stream_power)
 
-  # Set factor levels to control labelling
+  # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
                             levels = metrics_levels,
                             labels = metrics_labels)
 
   # Define metric colors by `metrics_labels`. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette - Moonrise Kingdom
-  # using names from colors().
+  # using names from `colors()`.
   metrics_cols <- c("Width Depth Ratio"           = "coral3",
                     "Entrenchment Ratio"          = "darkslategray4",
                     "Slope"                       = "darkgoldenrod4",
                     "Sinuosity"                   = "mediumpurple4",
                     "Shear Stress (lb/ft^2)"      = "indianred4",
-                    "Unit Stream Power (kg/m/s)"  = "darkolivegreen",
-                    "RC to BFW"                   = "plum4")
-
-  # Define the scales
-  scales_y <- list(
-    xs_width_depth_ratio = 0,
-    xs_entrenchment_ratio = 0,
-    slope = 0,
-    sinuosity = 0,
-    shear_stress_imperial = 0,
-    unit_stream_power = 0,
-    rc_bfw_ratio_10 = 0
-  )
+                    "Unit Stream Power (kg/m/s)"  = "darkolivegreen")
 
   # Draw the graph
   p <- ggplot(xs_dims,
@@ -107,7 +91,7 @@ xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
     geom_point(size = 3) +
     geom_line(size = 1) +
     scale_color_manual(values = metrics_cols) +
-    scale_x_reverse() +
+    # scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -115,20 +99,20 @@ xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
     facet_grid(rows = vars(.data$metrics),
                labeller = label_wrap_gen(width = 15),
                scales = "free") +
-    labs(title = unique(reach_xs_dims$ReachName),
+    labs(title = unique(xs_dims$ReachName),
          x     = "Kilometers",
          y     = "") +
     geom_text_repel(inherit.aes = FALSE,
-                    data = features,
+                    data = features_sf,
                     aes(x = .data$km_to_mouth,
                         y = rep(plot_min_y - 0, length(.data$Name)),
                         label = .data$Name),
-                    nudge_x = 0, angle = 90, size = 1.8,
+                    nudge_x = 0, angle = 90, size = 3,
                     force = 0.01,
                     segment.size = 0)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 1.8, color = "black")
+  xs_labels <- geom_text_repel(size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
