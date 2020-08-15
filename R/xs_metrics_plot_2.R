@@ -1,30 +1,21 @@
-#' @title Plot cross section metrics
+#' @title Plot Level 2 Cross Section Metrics
 #'
 #' @description Produces a longitudinal plot of cross section metrics for the
 #' input stream reach.
 #'
 #' @export
-#' @param reach_xs_dims   data frame; a data frame of cross section
+#' @param xs_dims_sf      SimpleFeatures data frame of Level 1 cross section
 #'                        dimensions.
-#' @param features_sp     SpatialPointsDataFrame of infrastructure features
-#' @param label_xs        boolean; Draw the cross section locations?
+#' @param features_sf     SimpleFeatures data frame of infrastructure features.
+#' @param label_xs        logical; Draw the cross section locations?
 #'
 #' @return A ggplot2 object.
 #'
 #' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' dataframe. See the \code{sin_xs_dimensions} package dataset for an
-#' example of this format of cross section data produced by the
-#' \code{FluvialGeomorph} ArcGIS toolbox.
+#' SimpleFeatures data frame.
 #'
 #' @examples
-#' # Extract cross section dimension data
-#' sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@@data
 #'
-#' # Call the xs_metrics_plot function
-#' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
-#'
-#' # Print the graph
-#' print(sin_metrics)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -34,9 +25,9 @@
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars
 #'
-xs_metrics_plot2 <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
+xs_metrics_plot_2 <- function(xs_dims_sf, features_sf, label_xs = TRUE) {
   # Check parameters
-  check_cross_section_dimensions(reach_xs_dims, "metric_ratios")
+  check_cross_section_dimensions(xs_dims_sf, "stream_power")
   check_features(features_sp)
 
   # Convert to data frames for ggplot
