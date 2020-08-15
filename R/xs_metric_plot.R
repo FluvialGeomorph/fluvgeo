@@ -8,7 +8,9 @@
 #'                        metric to be mapped
 #' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
-#' @param label_xs        boolean; Draw the cross section locations?
+#' @param label_xs        logical; Draw the cross section locations?
+#' @param profile_units   character; the units of the longitudinal profile.
+#'                        One of "kilometers", "meters", "miles", or "feet"
 #'
 #' @return A ggplot2 object.
 #'
@@ -35,9 +37,19 @@
 #' theme_bw theme labs
 #' @importFrom scales rescale
 #'
-xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
+xs_metric_plot <- function(metric,
+                           reach_xs_dims,
+                           label_xs = TRUE,
+                           profile_units = "kilometers") {
   # Convert the metric variable into an expression
   metric_string <- rlang::parse_expr(paste0(".data$", metric@variable))
+
+  # Calculate a unit conversion coefficient from kilometers to other units
+  unit_coef <- switch(profile_units,
+                      "kilometers" = 1,
+                      "meters"     = 1000,
+                      "miles"      = 0.621371,
+                      "feet"       = 3280.84)
 
   # Gather data by metrics for plotting
   xs_dims <- gather(reach_xs_dims,
@@ -57,7 +69,7 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
 
   # Draw the graph
   p <- ggplot(xs_dims,
-              aes(x = .data$km_to_mouth,
+              aes(x = .data$km_to_mouth * unit_coef,
                   y = .data$values,
                   color = .data$metric_labels,
                   label = .data$Seq)) +
@@ -67,17 +79,17 @@ xs_metric_plot <- function(metric, reach_xs_dims, label_xs = TRUE) {
                        labels = metric@threshold_labels) +
     geom_hline(yintercept = metric_threshold_lines,
                color = "red") +
-    scale_x_reverse() +
+    # scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "right",
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
     labs(title = unique(metric@metric),
-         x     = "Kilometers",
+         x     = profile_units,
          y     = metric@metric)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 1.8, color = "black")
+  xs_labels <- geom_text_repel(size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
