@@ -8,6 +8,8 @@
 #'                         dimensions.
 #' @param features_sp      SpatialPointsDataFrame of infrastructure features
 #' @param label_xs         logical; Draw the cross section labels?
+#' @param profile_units    character; the units of the longitudinal profile.
+#'                         One of "kilometers", "meters", "miles", or "feet"
 #'
 #' @return A ggplot2 object.
 #'
@@ -33,12 +35,25 @@
 #' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
-xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
-                            label_xs = TRUE) {
+xs_profile_plot <- function(reach_xs_dims_sp,
+                            features_sp = NULL,
+                            label_xs = TRUE,
+                            profile_units = "kilometers") {
   # Check parameters
   check_cross_section_dimensions(reach_xs_dims_sp, "cross_section_dimensions")
   check_features(features_sp)
-  assert_that(is.logical(label_xs), msg = "label_xs must be logical")
+  assert_that(is.logical(label_xs),
+              msg = "label_xs must be logical")
+  assert_that(profile_units %in% c("kilometers", "meters", "miles", "feet"),
+              msg = 'profile units must be one of "kilometers", "meters",
+                    "miles", "feet"')
+
+  # Calculate a unit conversion coefficient from kilometers to other units
+  unit_coef <- switch(profile_units,
+                      "kilometers" = 1,
+                      "meters"     = 1000,
+                      "miles"      = 0.621371,
+                      "feet"       = 3280.84)
 
   # Convert to data frames for ggplot
   reach_xs_dims <- reach_xs_dims_sp@data
@@ -80,7 +95,7 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
             "Water Surface" = "cadetblue3")
 
   # Draw the graph
-  p <- ggplot(xs_dims, aes(x = .data$km_to_mouth,
+  p <- ggplot(xs_dims, aes(x = .data$km_to_mouth * unit_coef,
                            y = .data$elevations,
                            color = .data$water_levels)) +
   geom_line(size = 2) +
@@ -93,19 +108,19 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
         legend.title = element_blank(),
         panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
   labs(title = unique(reach_xs_dims$ReachName),
-       x     = "Kilometers",
+       x     = profile_units,
        y     = "Elevation (NAVD88 feet)")
 
   # Draw cross section labels
   xs_line <- geom_line(inherit.aes = FALSE,
                        data = xs_lines,
-                       aes(x = .data$km_to_mouth,
+                       aes(x = .data$km_to_mouth * unit_coef,
                            y = .data$values,
                            group = .data$Seq),
                        show.legend = FALSE)
   xs_labels <- geom_text_repel(inherit.aes = FALSE,
                                data = xs_lines[xs_lines$elevations == "elev_max",],
-                               aes(x = .data$km_to_mouth,
+                               aes(x = .data$km_to_mouth * unit_coef,
                                    y = .data$values,
                                    label = .data$Seq),
                                size = 3)
@@ -114,7 +129,7 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
   if(!is.null(features)) {
      features <- geom_text_repel(inherit.aes = FALSE,
                                  data = features,
-                                 aes(x = .data$km_to_mouth,
+                                 aes(x = .data$km_to_mouth * unit_coef,
                                      y = rep(plot_min_y - 0, length(.data$Name)),
                                      label = .data$Name),
                                  nudge_x = 0, angle = 90, size = 3,
