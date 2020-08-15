@@ -17,23 +17,31 @@
 check_features <- function(features) {
   name <- deparse(substitute(features))
 
-  assert_that(class(features)[1] == "SpatialPointsDataFrame",
-              msg = paste(name, " must be a SpatialPointsDataFrame"))
-  assert_that(is.data.frame(features@data),
+  if(class(features)[1] == "SpatialPointsDataFrame") {
+    features_df <- features@data
+  }
+  if(class(features)[1] == "sf") {
+    features_df <- features
+  }
+
+  assert_that((class(features)[1] == "SpatialPointsDataFrame" |
+               class(features)[1] == "sf"),
+              msg = paste(name, " must be 'SpatialPointsDataFrame' or 'sf'"))
+  assert_that(is.data.frame(features_df),
               msg = paste(name, " must be a data frame"))
-  assert_that("Name" %in% colnames(features@data) &
-                is.character(features@data$Name),
+  assert_that("Name" %in% colnames(features_df) &
+                is.character(features_df$Name) ,
               msg = paste("Character field 'Name' missing from", name))
-  assert_that("km_to_mouth" %in% colnames(features@data) &
-                is.numeric(features@data$km_to_mouth),
+  assert_that("km_to_mouth" %in% colnames(features_df) &
+                is.numeric(features_df$km_to_mouth),
               msg = paste("Numeric field 'km_to_mouth' missing from", name))
 
   # Check the field `Name` is not empty
-  assert_that(nchar(unique(features@data$Name[1])) > 0,
+  assert_that(nchar(unique(features_df$Name[1])) > 0,
               msg = paste("Field `Name` is empty in", name))
 
   # Check that all `km_to_mouth` values are greater than zero
-  assert_that(all(features@data$km_to_mouth >= 0),
+  assert_that(all(features_df$km_to_mouth >= 0),
               msg = paste("Confirm that all features in", name,
                           "have a value for the `km_to_mouth` field. "))
 
