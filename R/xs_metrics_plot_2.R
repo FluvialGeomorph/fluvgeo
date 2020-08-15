@@ -21,7 +21,6 @@
 #' @importFrom rlang .data
 #' @importFrom tidyr gather
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom facetscales facet_grid
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars
 #'

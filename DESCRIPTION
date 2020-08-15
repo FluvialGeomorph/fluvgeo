@@ -37,7 +37,6 @@ Imports:
     assertthat,
     conicfit,
     dplyr,
-    facetscales,
     ggplot2,
     ggrepel,
     grDevices,
