@@ -73,7 +73,7 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
   flowline_pts_sf_list <- purrr::map(flowline_points_paths, fluvgeo::fc2sf)
   xs_pts_sf_list       <- purrr::map(xs_points_paths,       fluvgeo::fc2sf)
 
-  # Convert features_fc to an sf object
+  # Convert feature classes to an sf objects
   flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
   cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
   features_sf      <- fluvgeo::fc2sf(features_fc)
