@@ -73,7 +73,8 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
                      .data$elev_min, .data$elev_max)
 
   # Define colors and labels. Inspired by palettes from
-  # https://www.tumblr.com/search/wes%20anderson%20palette using names from colors().
+  # https://www.tumblr.com/search/wes%20anderson%20palette using names
+  # from colors().
   cols <- c("Flood Prone"   = "coral3",
             "Bankfull"      = "darkslategray4",
             "Water Surface" = "cadetblue3")
@@ -84,10 +85,10 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
                            color = .data$water_levels)) +
   geom_line(size = 2) +
   scale_color_manual(values = cols) +
-  scale_x_reverse() +
+  # scale_x_reverse() +
   theme_bw() +
-  theme(legend.position = c(.99, .99),
-        legend.justification = c("right", "top"),
+  theme(legend.position = c(.01, .99),
+        legend.justification = c("left", "top"),
         legend.background = element_rect(fill = alpha('white', 0.6)),
         legend.title = element_blank(),
         panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
@@ -107,7 +108,7 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
                                aes(x = .data$km_to_mouth,
                                    y = .data$values,
                                    label = .data$Seq),
-                               size = 1.8)
+                               size = 3)
 
   # Label river features
   if(!is.null(features)) {
@@ -116,7 +117,7 @@ xs_profile_plot <- function(reach_xs_dims_sp, features_sp = NULL,
                                  aes(x = .data$km_to_mouth,
                                      y = rep(plot_min_y - 0, length(.data$Name)),
                                      label = .data$Name),
-                                 nudge_x = 0, angle = 90, size = 1.8,
+                                 nudge_x = 0, angle = 90, size = 3,
                                  force = 0.01,
                                  segment.size = 0)
   }
