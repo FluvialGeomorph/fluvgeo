@@ -4,7 +4,12 @@
 \alias{xs_metrics_plot_2}
 \title{Plot Level 2 Cross Section Metrics}
 \usage{
-xs_metrics_plot_2(xs_dims_sf, features_sf, label_xs = TRUE)
+xs_metrics_plot_2(
+  xs_dims_sf,
+  features_sf,
+  label_xs = TRUE,
+  profile_units = "kilometers"
+)
 }
 \arguments{
 \item{xs_dims_sf}{SimpleFeatures data frame of Level 1 cross section
@@ -13,6 +18,9 @@ dimensions.}
 \item{features_sf}{SimpleFeatures data frame of infrastructure features.}
 
 \item{label_xs}{logical; Draw the cross section locations?}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet"}
 }
 \value{
 A ggplot2 object.

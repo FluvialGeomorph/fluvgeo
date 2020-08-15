@@ -4,7 +4,12 @@
 \alias{xs_profile_plot}
 \title{Plot stream longitudinal profile}
 \usage{
-xs_profile_plot(reach_xs_dims_sp, features_sp = NULL, label_xs = TRUE)
+xs_profile_plot(
+  reach_xs_dims_sp,
+  features_sp = NULL,
+  label_xs = TRUE,
+  profile_units = "kilometers"
+)
 }
 \arguments{
 \item{reach_xs_dims_sp}{SpatialPointsDataFrame of cross section
@@ -13,6 +18,9 @@ dimensions.}
 \item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
 \item{label_xs}{logical; Draw the cross section labels?}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet"}
 }
 \value{
 A ggplot2 object.

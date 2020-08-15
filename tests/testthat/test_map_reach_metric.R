@@ -39,11 +39,13 @@ xs_dimensions_sf <- fluvgeo::fc2sf(xs_dimensions_fc)
 wdr_map_sp <- map_reach_metric(wdr,
                                flowline = flowline_sp,
                                xs_dimensions = xs_dimensions_sp)
+print(wdr_map_sp)
 
 # Create the reach metric map using sf input
 wdr_map_sf <- map_reach_metric(wdr,
                                flowline = flowline_sf,
                                xs_dimensions = xs_dimensions_sf)
+print(wdr_map_sf)
 
 test_that("check map_reach_metric using sp input", {
   expect_true("tmap" %in% class(wdr_map_sp))

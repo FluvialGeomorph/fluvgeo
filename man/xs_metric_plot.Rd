@@ -4,7 +4,12 @@
 \alias{xs_metric_plot}
 \title{Plot cross section metrics}
 \usage{
-xs_metric_plot(metric, reach_xs_dims, label_xs = TRUE)
+xs_metric_plot(
+  metric,
+  reach_xs_dims,
+  label_xs = TRUE,
+  profile_units = "kilometers"
+)
 }
 \arguments{
 \item{metric}{FluvialGeomorphicMetric object; the fluvial geomorphic
@@ -13,7 +18,10 @@ metric to be mapped}
 \item{reach_xs_dims}{data frame; a data frame of cross section
 dimensions.}
 
-\item{label_xs}{boolean; Draw the cross section locations?}
+\item{label_xs}{logical; Draw the cross section locations?}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet"}
 }
 \value{
 A ggplot2 object.

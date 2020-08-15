@@ -52,7 +52,7 @@ compare_long_profile <- function(stream, flowline_pts_sf_list,
   # Define colors
   cols <- c("coral3", "darkslategray4", "darkolivegreen", "mediumpurple4")
 
-  # Calculate a unit conversion coeficient from kilometers to other units
+  # Calculate a unit conversion coefficient from kilometers to other units
   unit_coef <- switch(profile_units,
                       "kilometers" = 1,
                       "meters"     = 1000,
