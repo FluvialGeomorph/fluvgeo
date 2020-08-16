@@ -22,7 +22,7 @@
 #' tm_compass tm_scale_bar tm_layout
 #'
 map_xs <- function(cross_section, xs_number, dem, banklines,
-                   extent_factor = 7) {
+                   extent_factor = 1) {
 
   # Check data structure
   check_cross_section(cross_section, step = "assign_ids")
