@@ -82,8 +82,10 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
               tm_text(text = "Seq",
                       col = "black",
                       remove.overlap = FALSE,
-                      along.lines = TRUE,
-                      overwrite.lines = TRUE) +
+                      shadow = TRUE,
+                      #along.lines = TRUE,                # appears to be broken
+                      #overwrite.lines = TRUE             # appears to be broken
+                      ) +
             tm_shape(shp = banklines,
                      name = "Banklines") +
               tm_lines(col = "blue", lwd = 1,
