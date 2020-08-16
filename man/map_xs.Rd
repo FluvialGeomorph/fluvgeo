@@ -4,7 +4,7 @@
 \alias{map_xs}
 \title{Cross section location map}
 \usage{
-map_xs(cross_section, xs_number, dem, banklines, extent_factor = 7)
+map_xs(cross_section, xs_number, dem, banklines, extent_factor = 1)
 }
 \arguments{
 \item{cross_section}{SpatialLinesDataFrame; a cross section lines

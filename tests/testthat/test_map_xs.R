@@ -35,7 +35,7 @@ banklines_sf <- fluvgeo::fc2sf(banklines_fc)
 
 # Set other parameters
 xs_number <- 1
-extent_factor <- 10
+extent_factor <- 1
 
 # sf
 test_that("check map_xs with sf inputs", {
