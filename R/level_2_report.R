@@ -23,8 +23,10 @@
 #' @param extent_factor      numeric; The extent factor used to control the
 #'                           extent of cross section site maps.
 #' @param label_xs           logical; Label cross sections?
-#' @param output_dir         character; The path to the folder in which to write the
-#'                           the report.
+#' @param profile_units      character; the units of the longitudinal profile.
+#'                           One of "kilometers", "meters", "miles", or "feet"
+#' @param output_dir         character; The path to the folder in which to
+#'                           write the report.
 #' @param output_format      character; The file format of the report. One of
 #'                           "html_document", "word_document", "pdf_document".
 #'
@@ -36,7 +38,7 @@
 level_2_report <- function(stream, flowline_fc, xs_fc, xs_points_fc,
                            xs_dims_fc, dem, banklines_fc, features_fc,
                            bf_estimate, regions, extent_factor, label_xs,
-                           output_dir, output_format) {
+                           profile_units, output_dir, output_format) {
 
   # Convert feature classes to an sf objects
   flowline_sf  <- fluvgeo::fc2sf(flowline_fc)
@@ -59,6 +61,7 @@ level_2_report <- function(stream, flowline_fc, xs_fc, xs_points_fc,
                         "regions" = regions,
                         "extent_factor" = extent_factor,
                         "label_xs" = label_xs,
+                        "profile_units" = profile_units,
                         "output_format" = output_format)
 
   # Define the report to use

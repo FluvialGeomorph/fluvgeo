@@ -7,6 +7,7 @@
 level_2_report(
   stream,
   flowline_fc,
+  xs_fc,
   xs_points_fc,
   xs_dims_fc,
   dem,
@@ -16,6 +17,7 @@ level_2_report(
   regions,
   extent_factor,
   label_xs,
+  profile_units,
   output_dir,
   output_format
 )
@@ -26,6 +28,9 @@ match a stream name in `ReachName` field in the
 other parameters.}
 
 \item{flowline_fc}{character; The path to a `flowline` feature class.}
+
+\item{xs_fc}{character; The path to the cross section feature
+class.}
 
 \item{xs_points_fc}{character; The path to a `xs_points` feature
 class for the first time period.}
@@ -50,8 +55,11 @@ extent of cross section site maps.}
 
 \item{label_xs}{logical; Label cross sections?}
 
-\item{output_dir}{character; The path to the folder in which to write the
-the report.}
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet"}
+
+\item{output_dir}{character; The path to the folder in which to
+write the report.}
 
 \item{output_format}{character; The file format of the report. One of
 "html_document", "word_document", "pdf_document".}

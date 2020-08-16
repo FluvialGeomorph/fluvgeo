@@ -1,5 +1,5 @@
 library(fluvgeo)
-context("arc2sp")
+context("level_1_report")
 
 stream <- "Cole Creek R1"
 flowline_fc      <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
