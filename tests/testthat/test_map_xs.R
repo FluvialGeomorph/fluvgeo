@@ -1,43 +1,55 @@
 library(fluvgeo)
-library(arcgisbinding)
-library(tmap)
-arc.check_product()
 context("map_xs")
 
+# The `map_xs` function needs `arcgisbinding` to read a file geodatabase raster.
+# No other means currently exist to read file geodatabase rasters into R.
+
+# Helper functions
 skip_if_no_arc <- function() {
-  skip_if_not_installed("arcgisbinding")
+  testthat::skip_if_not_installed("arcgisbinding")
 }
 
 load_libraries <- function() {
   library(sp)
+  library(sf)
+  library(tmap)
   library(arcgisbinding)
-  arc.check_product()
+  arcgisbinding::arc.check_product()
 }
 
-# Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
-sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
+# sf
+# Get feature class test data
+xs_fc        <- file.path(system.file("extdata", "testing_data.gdb",
+                                      package = "fluvgeo"),
+                          "riffle_channel")
+banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                      package = "fluvgeo"),
+                          "banklines")
+dem          <- file.path(system.file("extdata", "testing_raster.gdb",
+                                      package = "fluvgeo"),
+                          "dem_1m")
 
-# Use the DEM in the `testing_raster.gdb`
-gdb_path <- system.file("extdata", "testing_raster.gdb", package = "fluvgeo")
-dem_path <- file.path(gdb_path, "dem_1m")
+# Convert feature classes to sf objects
+xs_sf        <- fluvgeo::fc2sf(xs_fc)
+banklines_sf <- fluvgeo::fc2sf(banklines_fc)
 
-# Use the fluvgeo::sin_banklines_sp SpatialLinesDataFrame
-sin_banklines_sp <- fluvgeo::sin_banklines_sp
-
-cross_section <- sin_riffle_channel_sp
+# Set other parameters
 xs_number <- 1
-dem <- dem_path
-banklines <- sin_banklines_sp
 extent_factor <- 10
 
-test_that("check map_xs", {
+# sf
+test_that("check map_xs with sf inputs", {
   skip_if_no_arc()
   load_libraries()
-  xs_map_1 <- map_xs(cross_section = cross_section,
-                     xs_number = xs_number,
-                     dem = dem_path,
-                     banklines = banklines,
-                     extent_factor = extent_factor)
-  expect_true("tmap" %in% class(xs_map_1))
-  expect_error(print(xs_map_1), NA)
+
+  # Create map
+  xs_map_sf <- map_xs(cross_section = xs_sf,
+                      xs_number = xs_number,
+                      dem = dem,
+                      banklines = banklines_sf,
+                      extent_factor = extent_factor)
+  print(xs_map_sf)
+
+  expect_true("tmap" %in% class(xs_map_sf))
+  expect_error(print(xs_map_sf), NA)
 })
