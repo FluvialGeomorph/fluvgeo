@@ -5,6 +5,7 @@
 #'
 #' @export
 #' @param xs_dims      data frame; a data frame of cross section dimensions
+#'                     generated using `fluvgeo::xs_dimensions`.
 #' @param streams      character vector; The stream names in the study area.
 #'                     If a single value, then only that stream will be
 #'                     displayed. If a vector of stream names is specified
@@ -12,8 +13,8 @@
 #' @param bf_elevation numeric vector; The bankfull elevations (units:
 #'                     detrended feet) that are used to calculate hydraulic
 #'                     geometry.
-#' @param xs_trend     boolean; Smooth trend line?
-#' @param log_scale    boolean; Convert scales to log?
+#' @param xs_trend     logical; Smooth trend line?
+#' @param log_scale    logical; Convert scales to log?
 #'
 #' @return A ggplot object.
 #'

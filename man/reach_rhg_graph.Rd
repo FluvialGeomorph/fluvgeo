@@ -13,7 +13,8 @@ reach_rhg_graph(
 )
 }
 \arguments{
-\item{xs_dims}{data frame; a data frame of cross section dimensions}
+\item{xs_dims}{data frame; a data frame of cross section dimensions
+generated using `fluvgeo::xs_dimensions`.}
 
 \item{streams}{character vector; The stream names in the study area.
 If a single value, then only that stream will be
@@ -24,9 +25,9 @@ all streams in the vector will be displayed.}
 detrended feet) that are used to calculate hydraulic
 geometry.}
 
-\item{xs_trend}{boolean; Smooth trend line?}
+\item{xs_trend}{logical; Smooth trend line?}
 
-\item{log_scale}{boolean; Convert scales to log?}
+\item{log_scale}{logical; Convert scales to log?}
 }
 \value{
 A ggplot object.
