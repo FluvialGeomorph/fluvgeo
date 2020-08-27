@@ -36,6 +36,7 @@
 #' sin_4_plot
 #'
 #' @importFrom assertthat assert_that
+#' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot scale_y_continuous geom_line geom_hline theme_bw
 #' theme labs aes sec_axis element_text
 #'
@@ -80,7 +81,9 @@ xs_plot <- function(xs_points, stream, xs_number, bankfull_elevation) {
   eg <- mean(xs$DEM_Z - xs$Detrend_DEM_Z)
   # Draw the graph
   p <- ggplot(data = xs,
-              aes(POINT_M * 3.28084, Detrend_DEM_Z, label = Seq)) +
+              aes(x = .data$POINT_M * 3.28084,
+                  y = .data$Detrend_DEM_Z,
+                  label = .data$Seq)) +
     scale_y_continuous(sec.axis = sec_axis(~. + eg,
                                            name = "Elevation (NAVD88 feet)")) +
     geom_line() +
