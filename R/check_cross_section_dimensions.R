@@ -23,39 +23,30 @@
 #' structure doesn't match the requirement.
 #'
 #' @examples
-#' # Step: cross_section_dimensions
+#' # Create testing data
+#' ## Step: cross_section_dimensions
 #' xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
 #'                                     xs_points = fluvgeo::sin_riffle_channel_points_sp,
 #'                                     bankfull_elevation = 103,
 #'                                     lead_n = 1,
 #'                                     use_smoothing = TRUE,
-#'                                     loess_span = 0.5)
-#'
-#' check_cross_section_dimensions(xs_dims, "cross_section_dimensions")
-#'
-#' # Step: shear stress
+#'                                     loess_span = 0.5,
+#'                                     vert_units = "ft")
+#' ## Step: shear stress
 #' xs_dims_ss <- shear_stress(xs_dims)
 #'
-#' check_cross_section_dimensions(xs_dims_ss, "shear_stress")
-#'
-#' # Step: stream_power
+#' ## Step: stream_power
 #' xs_dims_sp <- stream_power(xs_dims_ss,
 #'                            discharge_method = "regional_curve",
 #'                            region = "Illinois River",
 #'                            drainage_area = 41)
 #'
-#' check_cross_section_dimensions(xs_dims_sp, "stream_power")
-#'
-#' # Step: planform
+#' ## Step: planform
 #' xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
 #'                                     fluvgeo::sin_bankline_points_sp)
 #'
-#' check_cross_section_dimensions(xs_dims_plan, "planform")
-#'
-#' # Step: metric_ratios
+#' ## Step: metric_ratios
 #' xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
-#'
-#' check_cross_section_dimensions(xs_dims_ratios, "metric_ratio")
 #'
 #' @importFrom assertthat assert_that
 #'
