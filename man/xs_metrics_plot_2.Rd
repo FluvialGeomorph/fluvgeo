@@ -29,10 +29,6 @@ A ggplot2 object.
 Produces a longitudinal plot of cross section metrics for the
 input stream reach.
 }
-\examples{
-
-
-}
 \seealso{
 The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
 SimpleFeatures data frame.

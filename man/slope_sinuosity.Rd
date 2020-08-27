@@ -46,20 +46,15 @@ Calculates the slope and sinuosity of the input channel
 features.
 }
 \examples{
-# Extract attribute data from the fluvgeo::sin_flowline_points_sp
-# SpatialPointsDataFrame
-sin_flowline_points_df <- fluvgeo::sin_flowline_points_sp@data
-
-# Extract data from the fluvgeo::sin_riffle_channel_sp SpatialLinesDataFrame
-sin_rifflechannel_df <- fluvgeo::sin_riffle_channel_sp@data
-
 # Call the slope_sinuosity function for a flowline
-sin_flowline_ss <- slope_sinuosity(sin_flowline_points_df,
-                                   lead_n = 1000, lag_n = 0)
+sin_flowline_ss <- slope_sinuosity(fluvgeo::sin_flowline_points_sp,
+                                   lead_n = 1000, lag_n = 0,
+                                   vert_units = "ft")
 
 # Call the slope_sinuosity function for a cross section
-sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_df,
-                                 lead_n = 1, lag_n = 0,
-                                 loess_span = 5)
+sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sp,
+                                         lead_n = 1, lag_n = 0,
+                                         loess_span = 5,
+                                         vert_units = "ft")
 
 }
