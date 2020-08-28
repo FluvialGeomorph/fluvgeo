@@ -26,7 +26,7 @@
 #'
 #' @examples
 #' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fluvgeo::sin_xs_points@@data
+#' sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@@data
 #'
 #' # Set variable values
 #' streams <- c("Sinsinawa")

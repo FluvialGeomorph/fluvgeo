@@ -17,14 +17,12 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract cross section dimension data
-#' sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@@data
+#' # Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
+#' sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@data
 #'
 #' # Call the xs_metrics_plot function
-#' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
-#'
-#' # Print the graph
-#' print(sin_metrics)
+#' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df,
+#'                                features_sp = fluvgeo::sin_features_sp)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data

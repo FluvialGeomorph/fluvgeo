@@ -92,7 +92,8 @@ xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
                                     bankfull_elevation = 103,
                                     lead_n = 1,
                                     use_smoothing = TRUE,
-                                    loess_span = 0.5)
+                                    loess_span = 0.5,
+                                    vert_units = "ft")
 
 # Calculate shear stress
 xs_dims_ss <- shear_stress(xs_dims)

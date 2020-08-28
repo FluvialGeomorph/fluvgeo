@@ -20,14 +20,30 @@
 #' \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @examples
-#' # Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
-#' sin_xs_dims_df <- fluvgeo::sin_xs_dimensions@@data
+#' # Get feature class test data
+#' xs_planform_fc <- file.path(system.file("extdata", "testing_data.gdb",
+#'                                         package = "fluvgeo"),
+#'                             "riffle_floodplain_dims_planform")
 #'
-#' # Call the xs_plot function
-#' sin_profile <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df)
+#' # Convert feature classes to an sf objects
+#' xs_planform_sf   <- fluvgeo::fc2sf(xs_planform_fc)
 #'
-#' # Print the graph
-#' sin_profile
+#' # Create the fluvgeo::FluvialGeomorphicMetric object
+#' wdr <- new(Class = "FluvialGeomorphicMetric",
+#'            metric = "Width Depth Ratio",
+#'            definition = "bankfull width / bankfull depth",
+#'            variable = "xs_width_depth_ratio",
+#'            threshold_breaks = c(0, 10, 20, Inf),
+#'            threshold_labels = c("Incised",
+#'                                 "Stable",
+#'                                 "Overwidened"),
+#'            source = "Dunn & Leopold, 1978")
+#'
+#' metric_plot <- fluvgeo::xs_metric_plot(metric = wdr,
+#'                                        reach_xs_dims = xs_planform_sf,
+#'                                        label_xs = TRUE,
+#'                                        profile_units = "miles")
+#' print(metric_plot)
 #'
 #' @importFrom utils head tail
 #' @importFrom rlang parse_expr .data

@@ -4,12 +4,13 @@
 #' section.
 #'
 #' @export
-#' @param cross_section       SpatialLinesDataFrame; a cross section lines
-#'                            feature class
+#' @param cross_section       SpatialLinesDataFrame or sf; A cross section lines
+#'                            feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
-#' @param dem                 character; path to a dem raster
-#' @param banklines           SpatialLinesDataFrame; a banklines feature class
+#' @param dem                 character; The path to a dem raster.
+#' @param banklines           SpatialLinesDataFrame or sf; A banklines feature
+#'                            class.
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.
 #'

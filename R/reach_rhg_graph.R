@@ -24,8 +24,8 @@
 #'
 #' # Set variable values
 #' streams <- "Sinsinawa"
-#' regions <- c("Eastern United States", "IN Central Till Plain")
-#' bankfull_elevations = seq(103, 104, 0.1)
+#' regions <- c("Illinois River", "IN Central Till Plain")
+#' bankfull_elevations <- seq(103, 104, 0.1)
 #'
 #' # Call the xs_dimensions function
 #' sin <- xs_dimensions(xs_points = sin_xs_points_df,
@@ -39,7 +39,7 @@
 #'                                        bf_elevation = bankfull_elevations)
 #'
 #' # Print the reach_rhg_graph
-#' sin_reach_rhg_graph
+#' print(sin_reach_rhg_graph)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom reshape2 melt

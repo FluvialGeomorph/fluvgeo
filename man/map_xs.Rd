@@ -7,15 +7,16 @@
 map_xs(cross_section, xs_number, dem, banklines, extent_factor = 1)
 }
 \arguments{
-\item{cross_section}{SpatialLinesDataFrame; a cross section lines
-feature class}
+\item{cross_section}{SpatialLinesDataFrame or sf; A cross section lines
+feature class.}
 
 \item{xs_number}{integer; The cross section identifier of the
 requested cross section.}
 
-\item{dem}{character; path to a dem raster}
+\item{dem}{character; The path to a dem raster.}
 
-\item{banklines}{SpatialLinesDataFrame; a banklines feature class}
+\item{banklines}{SpatialLinesDataFrame or sf; A banklines feature
+class.}
 
 \item{extent_factor}{numeric; A numeric value used to expand the map
 extent around each cross section.}

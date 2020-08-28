@@ -42,8 +42,8 @@ sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
 
 # Set variable values
 streams <- "Sinsinawa"
-regions <- c("Eastern United States", "IN Central Till Plain")
-bankfull_elevations = seq(103, 104, 0.1)
+regions <- c("Illinois River", "IN Central Till Plain")
+bankfull_elevations <- seq(103, 104, 0.1)
 
 # Call the xs_dimensions function
 sin <- xs_dimensions(xs_points = sin_xs_points_df,
@@ -57,6 +57,6 @@ sin_reach_rhg_graph <- reach_rhg_graph(xs_dims = sin,
                                        bf_elevation = bankfull_elevations)
 
 # Print the reach_rhg_graph
-sin_reach_rhg_graph
+print(sin_reach_rhg_graph)
 
 }
