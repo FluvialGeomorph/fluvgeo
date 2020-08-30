@@ -143,12 +143,16 @@ This section displays cross section profile graphs for each riffle cross section
 # RHG table
 xs_pts <- params$xs_points
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
-    # Create the cross sectiion map
-    print(fluvgeo::map_xs(cross_section = params$xs_dims_planform,
-                      xs_number = j,
-                      dem = params$dem,
-                      banklines = params$banklines,
-                      extent_factor = params$extent_factor))
+    # Convert feature classes to sf objects
+    xs_sf        <- fluvgeo::fc2sf(params$xs_dims_planform)
+    banklines_sf <- fluvgeo::fc2sf(params$banklines)
+  
+    # Create the cross section map
+    print(fluvgeo::map_xs(cross_section = xs_sf,
+                          xs_number = j,
+                          dem = params$dem,
+                          banklines = banklines_sf,
+                          extent_factor = params$extent_factor))
   
     # Create the cross section plot
     print(fluvgeo::xs_plot(xs_points = xs_pts,

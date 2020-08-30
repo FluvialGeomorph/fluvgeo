@@ -35,12 +35,12 @@ check_banklines <- function(banklines) {
   assert_that("bank" %in% colnames(banklines_df) &
                 is.character(banklines_df$bank),
               msg = paste("Numeric field 'bank' missing from ", name))
-  assert_that("from_measure" %in% colnames(banklines_df) &
-                is.numeric(banklines_df$from_measure),
-              msg = paste("Numeric field 'from_measure' missing from", name))
-  assert_that("to_measure" %in% colnames(banklines_df) &
-                is.numeric(banklines_df$to_measure),
-              msg = paste("Numeric field 'to_measure' missing from", name))
+  # assert_that("from_measure" %in% colnames(banklines_df) &
+  #               is.numeric(banklines_df$from_measure),
+  #             msg = paste("Numeric field 'from_measure' missing from", name))
+  # assert_that("to_measure" %in% colnames(banklines_df) &
+  #               is.numeric(banklines_df$to_measure),
+  #             msg = paste("Numeric field 'to_measure' missing from", name))
 
   # Check that there are two and only two records
   assert_that(length(unique(banklines_df$bank_id)) == 2,
