@@ -88,7 +88,7 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
                                 "Overwidened"),
            source = "Dunn & Leopold, 1978")
 
-# Create the rech metric map
+# Create the reach metric map
 print(fluvgeo::map_reach_metric(wdr,
                                 params$flowline,
                                 params$xs_dims_planform))

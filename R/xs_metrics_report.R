@@ -31,7 +31,7 @@
 #'
 #' @examples
 #' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
+#' sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@@data
 #'
 #' # Get a cross section planform dimensions feature class
 #' sin_xs_dims_planform <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
