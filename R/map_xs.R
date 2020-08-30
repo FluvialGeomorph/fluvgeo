@@ -24,33 +24,49 @@
 #'
 map_xs <- function(cross_section, xs_number, dem, banklines,
                    extent_factor = 1) {
-
   # Check data structure
   check_cross_section(cross_section, step = "assign_ids")
   check_banklines(banklines)
 
+  # Convert to sf
+  if(class(cross_section)[1] == "SpatialLinesDataFrame") {
+    cross_section_sf <- sf::st_as_sf(cross_section)
+  }
+  if(class(cross_section)[1] == "sf") {
+    cross_section_sf <- cross_section
+  }
+  if(class(banklines)[1] == "SpatialLinesDataFrame") {
+    banklines_sf <- sf::st_as_sf(banklines)
+  }
+  if(class(banklines)[1] == "sf") {
+    banklines_sf <- banklines
+  }
+
+  # Reproject so all layers in the same coordinate system as the DEM
+  dem_arc <- as.raster(arc.raster(arc.open(dem)))
+  dem_crs <- sf::st_crs(dem_arc)
+  cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_crs)
+  banklines_dem <- sf::st_transform(banklines_sf, crs = dem_crs)
+
   # Subset cross_section for the requested xs_number
-  xs_i <- cross_section[cross_section$Seq == xs_number, ]
+  xs_i <- cross_section_dem[cross_section_dem$Seq == xs_number, ]
 
   # Calculate the map extent for the current cross section
   map_extent <- fluvgeo::feature_extent(feature = xs_i,
                                         extent_factor = extent_factor)
 
   # Clip the dem to the cross section map extent
-  dem_arc <- arcgisbinding::arc.open(dem)
-  dem_i <- raster::crop(as.raster(arc.raster(dem_arc)), map_extent)
+  dem_i <- raster::crop(dem_arc, map_extent)
 
   # Resample the dem
-  dem_i_rs <- raster::raster(ncols = 500, nrows = 500,
-                             ext = raster::extent(dem_i),
-                             crs = dem_i@crs)
-  dem_i_rs <- raster::resample(dem_i, dem_i_rs, method = "bilinear")
-
-  #dem_i_a <- aggregate(dem_i, fact = 2)
+  # dem_i_rs1 <- raster::raster(ncols = 500, nrows = 500,
+  #                            ext = raster::extent(dem_i),
+  #                            crs = dem_i@crs)
+  # dem_i_rs <- raster::resample(dem_i, dem_i_rs, method = "bilinear")
 
   # Create a hillshade from dem_i
-  slp <- raster::terrain(dem_i_rs, opt = "slope", unit = "radians")
-  asp <- raster::terrain(dem_i_rs, opt = "aspect", unit = "radians")
+  slp <- raster::terrain(dem_i, opt = "slope", unit = "radians")
+  asp <- raster::terrain(dem_i, opt = "aspect", unit = "radians")
   hill <- raster::hillShade(slope = slp, aspect = asp)
 
   # Create a topo color ramp
@@ -67,7 +83,7 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
               tm_raster(style = "cont",
                         palette = grey(0:100/100),
                         legend.show = FALSE) +
-            tm_shape(shp = dem_i_rs,
+            tm_shape(shp = dem_i,
                      name = "Elevation",
                      unit = "ft",
                      is.master = TRUE) +
@@ -77,7 +93,7 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
                         alpha = 0.8,
                         title = "Elevation (NAVD88, ft)",
                         legend.show = TRUE) +
-            tm_shape(shp = cross_section,
+            tm_shape(shp = cross_section_dem,
                      name = "Cross Section") +
               tm_lines(col = "grey50", lwd = 7) +
               tm_text(text = "Seq",
@@ -89,7 +105,7 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
                       #along.lines = TRUE,                # appears to be broken
                       #overwrite.lines = TRUE             # appears to be broken
                       ) +
-            tm_shape(shp = banklines,
+            tm_shape(shp = banklines_dem,
                      name = "Banklines") +
               tm_lines(col = "blue", lwd = 1,
                        legend.lwd.show = ) +

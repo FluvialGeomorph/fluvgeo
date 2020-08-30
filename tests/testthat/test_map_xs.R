@@ -17,7 +17,6 @@ load_libraries <- function() {
   arcgisbinding::arc.check_product()
 }
 
-# sf
 # Get feature class test data
 xs_fc        <- file.path(system.file("extdata", "testing_data.gdb",
                                       package = "fluvgeo"),
@@ -28,14 +27,39 @@ banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
 dem          <- file.path(system.file("extdata", "testing_raster.gdb",
                                       package = "fluvgeo"),
                           "dem_1m")
+# xs_sf <- fluvgeo::fc2sf(xs_fc)
+# bl_sf <- fluvgeo::fc2sf(banklines_fc)
 
-# Convert feature classes to sf objects
-xs_sf        <- fluvgeo::fc2sf(xs_fc)
-banklines_sf <- fluvgeo::fc2sf(banklines_fc)
+# sp
+cross_section_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+banklines_sp <- fluvgeo::sin_banklines_sp
+
+# sf
+cross_section_sf <- sf::st_as_sf(cross_section_sp)
+banklines_sf <- sf::st_as_sf(banklines_sp)
+
+
 
 # Set other parameters
 xs_number <- 1
 extent_factor <- 1
+
+# sp
+test_that("check map_xs with sp inputs", {
+  skip_if_no_arc()
+  load_libraries()
+
+  # Create map
+  xs_map_sp <- map_xs(cross_section = cross_section_sp,
+                      xs_number = xs_number,
+                      dem = dem,
+                      banklines = banklines_sp,
+                      extent_factor = extent_factor)
+  print(xs_map_sp)
+
+  expect_true("tmap" %in% class(xs_map_sp))
+  expect_error(print(xs_map_sp), NA)
+})
 
 # sf
 test_that("check map_xs with sf inputs", {
@@ -43,7 +67,7 @@ test_that("check map_xs with sf inputs", {
   load_libraries()
 
   # Create map
-  xs_map_sf <- map_xs(cross_section = xs_sf,
+  xs_map_sf <- map_xs(cross_section = cross_section_sf,
                       xs_number = xs_number,
                       dem = dem,
                       banklines = banklines_sf,
@@ -52,4 +76,42 @@ test_that("check map_xs with sf inputs", {
 
   expect_true("tmap" %in% class(xs_map_sf))
   expect_error(print(xs_map_sf), NA)
+})
+
+# sf and sp inputs
+test_that("check map_xs with sf and sp inputs", {
+  skip_if_no_arc()
+  load_libraries()
+
+  # Create map
+  xs_map_sf_sp <- map_xs(cross_section = cross_section_sp,
+                         xs_number = xs_number,
+                         dem = dem,
+                         banklines = banklines_sf,
+                         extent_factor = extent_factor)
+  print(xs_map_sf_sp)
+
+  expect_true("tmap" %in% class(xs_map_sf_sp))
+  expect_error(print(xs_map_sf_sp), NA)
+})
+
+# different coordinate system inputs
+test_that("check map_xs with different coordinate system inputs", {
+  skip_if_no_arc()
+  load_libraries()
+
+  # Reproject to IL SP W USFT
+  ilspwusft <- st_crs(3436)
+  cross_section_il <- sf::st_transform(cross_section_sf, crs = ilspwusft)
+
+  # Create map
+  xs_map_sf_il <- map_xs(cross_section = cross_section_il,
+                         xs_number = xs_number,
+                         dem = dem,
+                         banklines = banklines_sf,
+                         extent_factor = extent_factor)
+  print(xs_map_sf_il)
+
+  expect_true("tmap" %in% class(xs_map_sf_il))
+  expect_error(print(xs_map_sf_il), NA)
 })
