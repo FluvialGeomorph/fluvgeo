@@ -17,6 +17,7 @@ level_2_report(
   regions,
   extent_factor,
   label_xs,
+  show_xs_map = FALSE,
   profile_units,
   output_dir,
   output_format
@@ -54,6 +55,8 @@ a list of regions.}
 extent of cross section site maps.}
 
 \item{label_xs}{logical; Label cross sections?}
+
+\item{show_xs_map}{logical; Add the cross section maps to the report?}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}

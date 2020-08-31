@@ -40,14 +40,16 @@ features_fc   <- file.path(system.file("extdata", "testing_data.gdb",
 bf_estimate   <- 103.5
 regions       <- c("Illinois River", "IL River LTE 300",
                    "Eastern United States")
+
 extent_factor <- 1
 label_xs      <- TRUE
+show_xs_map   <- FALSE
 profile_units <- "miles"
 output_dir    <- path.expand('~')                                   # tempdir()
 output_format <- "word_document"
 
 
-test_that("check level 2 report", {
+test_that("check level 2 report, no xs map", {
   skip_if_no_arc()
   load_libraries()
 
@@ -55,6 +57,7 @@ test_that("check level 2 report", {
   fluvgeo::level_2_report(stream, flowline_fc, xs_fc, xs_points_fc,
                           xs_dims_fc, dem, banklines_fc, features_fc,
                           bf_estimate, regions, extent_factor, label_xs,
+                          show_xs_map,
                           profile_units, output_dir, output_format)
 
   expect_true(file.exists(file.path(output_dir,
