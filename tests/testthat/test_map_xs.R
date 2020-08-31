@@ -17,7 +17,7 @@ load_libraries <- function() {
   arcgisbinding::arc.check_product()
 }
 
-# Get feature class test data
+# fc to sf
 xs_fc        <- file.path(system.file("extdata", "testing_data.gdb",
                                       package = "fluvgeo"),
                           "riffle_channel")
@@ -27,24 +27,38 @@ banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
 dem          <- file.path(system.file("extdata", "testing_raster.gdb",
                                       package = "fluvgeo"),
                           "dem_1m")
-# xs_sf <- fluvgeo::fc2sf(xs_fc)
-# bl_sf <- fluvgeo::fc2sf(banklines_fc)
+xs_fc_sf <- fluvgeo::fc2sf(xs_fc)
+bl_fc_sf <- fluvgeo::fc2sf(banklines_fc)
 
 # sp
 cross_section_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
 banklines_sp <- fluvgeo::sin_banklines_sp
 
-# sf
+# sp to sf
 cross_section_sf <- sf::st_as_sf(cross_section_sp)
 banklines_sf <- sf::st_as_sf(banklines_sp)
-
-
 
 # Set other parameters
 xs_number <- 1
 extent_factor <- 1
 
-# sp
+
+test_that("check map_xs with fc inputs converted to sf", {
+  skip_if_no_arc()
+  load_libraries()
+
+  # Create map
+  xs_map_fc_sf <- map_xs(cross_section = xs_fc_sf,
+                      xs_number = xs_number,
+                      dem = dem,
+                      banklines = bl_fc_sf,
+                      extent_factor = extent_factor)
+  print(xs_map_fc_sf)
+
+  expect_true("tmap" %in% class(xs_map_fc_sf))
+  expect_error(print(xs_map_fc_sf), NA)
+})
+
 test_that("check map_xs with sp inputs", {
   skip_if_no_arc()
   load_libraries()
@@ -61,7 +75,6 @@ test_that("check map_xs with sp inputs", {
   expect_error(print(xs_map_sp), NA)
 })
 
-# sf
 test_that("check map_xs with sf inputs", {
   skip_if_no_arc()
   load_libraries()
@@ -78,7 +91,6 @@ test_that("check map_xs with sf inputs", {
   expect_error(print(xs_map_sf), NA)
 })
 
-# sf and sp inputs
 test_that("check map_xs with sf and sp inputs", {
   skip_if_no_arc()
   load_libraries()
@@ -95,7 +107,6 @@ test_that("check map_xs with sf and sp inputs", {
   expect_error(print(xs_map_sf_sp), NA)
 })
 
-# different coordinate system inputs
 test_that("check map_xs with different coordinate system inputs", {
   skip_if_no_arc()
   load_libraries()
