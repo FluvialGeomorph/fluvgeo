@@ -1,4 +1,5 @@
 library(fluvgeo)
+library(sp)
 context("slope_sinuosity")
 
 # Call the slope_sinuosity function for a flowline
@@ -14,7 +15,7 @@ sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sp,
 
 # Reproject to a CRS with units = "us-ft"
 sin_riffle_channel_sp_ft <- sp::spTransform(fluvgeo::sin_riffle_channel_sp,
-                                            sp::CRS("+init=epsg:6457"))
+                                            sp::CRS(SRS_string = "EPSG:6457"))
 
 sin_riffle_channel_ss_ft <- slope_sinuosity(sin_riffle_channel_sp_ft,
                                          lead_n = 1, lag_n = 0,
