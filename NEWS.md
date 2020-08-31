@@ -1,3 +1,15 @@
+# fluvgeo v0.1.28 (2020-08-31)
+
+## Major Changes
+* The `map_xs` function now handles inputs in different coordinate systems. It does this by reprojecting all inputs to match the dem. 
+* Added the `flowline_metrics` function that plots Level 1 metrics. 
+
+## Bug Fixes
+* Made the cross section map optional in the Level 2 Report and the cross section metrics report. This works around a bug that causes reports to fail when the `map_xs` function is called in a report. 
+* Fixed the `xs_metrics_report`. 
+* Fixed examples.
+* Lots of little bug fixes. R CMD check now runs with only test errors. 
+
 # fluvgeo v0.1.27 (2020-08-16)
 
 ## Major Changes
