@@ -31,6 +31,6 @@ xs_metrics_report(xs_points = sin_xs_points_df,
 
 test_that("check report exists", {
   expect_true(file.exists(file.path(output_dir,
-                                    "xs_dimensions_Sinsinawa_103.html")))
+                                    "xs_dimensions_Sinsinawa_103.docx")))
 })
 
