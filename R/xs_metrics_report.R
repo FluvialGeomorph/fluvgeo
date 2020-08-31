@@ -81,7 +81,7 @@ xs_metrics_report <- function(xs_points, xs_dims_planform, flowline,
     xs_dims_plan <- xs_dims_planform[xs_dims_planform$ReachName == g, ]
 
     # Render the report for the current stream
-    rmarkdown::render(input = system.file("reports", "xs_dimensions_report.Rmd",
+    rmarkdown::render(input = system.file("reports", "xs_metrics_report.Rmd",
                                           package = "fluvgeo"),
                       output_format = output_format,
                       output_options = list(self_contained = TRUE),

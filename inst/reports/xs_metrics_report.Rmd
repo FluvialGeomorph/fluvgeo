@@ -11,6 +11,7 @@ params:
    bf_estimate: 101
    features:                              # sp object
    label_xs: TRUE
+   show_xs_map: FALSE
    output_format: "html_document"
 ---
 
@@ -143,45 +144,43 @@ This section displays cross section profile graphs for each riffle cross section
 # RHG table
 xs_pts <- params$xs_points
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
-    # Convert feature classes to sf objects
-    xs_sf        <- fluvgeo::fc2sf(params$xs_dims_planform)
-    banklines_sf <- fluvgeo::fc2sf(params$banklines)
+  # Create the cross section map
+  if(params$show_xs_map) {
+  print(fluvgeo::map_xs(cross_section = params$xs_sf,
+                        xs_number = j,
+                        dem = params$dem,
+                        banklines = params$banklines_sf,
+                        extent_factor = params$extent_factor))
+  }
   
-    # Create the cross section map
-    print(fluvgeo::map_xs(cross_section = xs_sf,
-                          xs_number = j,
-                          dem = params$dem,
-                          banklines = banklines_sf,
-                          extent_factor = params$extent_factor))
-  
-    # Create the cross section plot
-    print(fluvgeo::xs_plot(xs_points = xs_pts,
-                       stream = params$stream,
-                       xs_number = j,
-                       bankfull_elevation = params$bf_estimate))
-    # Calculate cross section geometry
-    xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
-    dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
-                               streams = params$stream,
-                               regions = params$regions,
-                               bankfull_elevations = params$bf_estimate)
-    # Remove duplicate 'DEM derived cross section' records
-    dims_unique <- unique(dims)
-    # Sort by 'xs_type'
-    dims_sort <- dims_unique[order(dims_unique$xs_type), ]
-    # Create kable table to display cross section dimensions
-    t <- knitr::kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area", 
-                                        "xs_width", "xs_depth")],
-                      format = format,
-                      digits = 2,
-                      row.names = FALSE,
-                      col.names = c("Cross Section Type", "Drainage Area", 
-                                    "Area", "Width", "Depth"),
-                      booktabs = T)
-    # Use knitr print function to ensure table is drawn properly
-    knitr:::print.knitr_kable(t)
-    # Insert vertical white space so that next figure in loop is recognized
-    cat('\n')
-    # Must set chunk option`results='asis'` to ensure table is drawn properly
+  # Create the cross section plot
+  print(fluvgeo::xs_plot(xs_points = xs_pts,
+                         stream = params$stream,
+                         xs_number = j,
+                         bankfull_elevation = params$bf_estimate))
+  # Calculate cross section geometry
+  xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
+  dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
+                                 streams = params$stream,
+                                 regions = params$regions,
+                                 bankfull_elevations = params$bf_estimate)
+  # Remove duplicate 'DEM derived cross section' records
+  dims_unique <- unique(dims)
+  # Sort by 'xs_type'
+  dims_sort <- dims_unique[order(dims_unique$xs_type), ]
+  # Create kable table to display cross section dimensions
+  t <- knitr::kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area", 
+                                      "xs_width", "xs_depth")],
+                    format = format,
+                    digits = 2,
+                    row.names = FALSE,
+                    col.names = c("Cross Section Type", "Drainage Area", 
+                                  "Area", "Width", "Depth"),
+                    booktabs = T)
+  # Use knitr print function to ensure table is drawn properly
+  knitr:::print.knitr_kable(t)
+  # Insert vertical white space so that next figure in loop is recognized
+  cat('\n')
+  # Must set chunk option`results='asis'` to ensure table is drawn properly
 }
 ```
