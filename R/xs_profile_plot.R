@@ -63,35 +63,35 @@ xs_profile_plot <- function(reach_xs_dims_sp,
   xs_dims <- gather(reach_xs_dims,
                     key = "water_levels",
                     value = "elevations",
-                    .data$watersurface_elev,
                     .data$bankfull_elev,
-                    .data$floodprone_elev)
+                    .data$watersurface_elev)
 
   # Determine min y value
   plot_min_y <- min(xs_dims$elevations)
 
   # Set factor levels to control legend
   xs_dims$water_levels <- factor(xs_dims$water_levels,
-                                 levels = c("floodprone_elev",
-                                            "bankfull_elev",
+                                 levels = c("bankfull_elev",
                                             "watersurface_elev"),
-                                 labels = c("Flood Prone",
-                                            "Bankfull",
+                                 labels = c("Bankfull",
                                             "Water Surface"))
 
   # Create xs graphing data
   reach_xs_dims$elev_min <- reach_xs_dims$watersurface_elev - 2
-  reach_xs_dims$elev_max <- reach_xs_dims$floodprone_elev + 2
+  reach_xs_dims$elev_max <- reach_xs_dims$bankfull_elev + 2
   xs_lines <- gather(reach_xs_dims,
                      key = "elevations",
                      value = "values",
                      .data$elev_min, .data$elev_max)
 
+  # Calculate y-axis minor breaks interval
+  ymin <- floor(min(reach_xs_dims$elev_min))
+  ymax <- ceiling(max(reach_xs_dims$elev_max))
+
   # Define colors and labels. Inspired by palettes from
   # https://www.tumblr.com/search/wes%20anderson%20palette using names
   # from colors().
-  cols <- c("Flood Prone"   = "coral3",
-            "Bankfull"      = "darkslategray4",
+  cols <- c("Bankfull"      = "darkslategray4",
             "Water Surface" = "cadetblue3")
 
   # Draw the graph
@@ -100,7 +100,7 @@ xs_profile_plot <- function(reach_xs_dims_sp,
                            color = .data$water_levels)) +
   geom_line(size = 2) +
   scale_color_manual(values = cols) +
-  # scale_x_reverse() +
+  scale_y_continuous(minor_breaks = seq(ymin, ymax, 1)) +
   theme_bw() +
   theme(legend.position = c(.01, .99),
         legend.justification = c("left", "top"),
