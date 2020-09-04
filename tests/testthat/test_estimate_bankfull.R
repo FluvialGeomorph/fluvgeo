@@ -15,21 +15,33 @@ load_libraries <- function() {
 }
 
 # sf
-stream <- "Sinsinawa"
+stream <- "Cole Creek R1"
+xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                       package = "fluvgeo"),
+                           "riffle_floodplain_dims")
+xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"),
+                         "riffle_floodplain_points")
+xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                                     package = "fluvgeo"),
+                         "riffle_floodplain_points")
+xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+                                     package = "fluvgeo"),
+                         "riffle_floodplain_points")
+xs_points_4 <- NULL
 
-xs_dims_fc    <- file.path(system.file("extdata", "testing_data.gdb",
-                                       package = "fluvgeo"),
-                           "riffle_channel_dims")
-xs_points_fc  <- file.path(system.file("extdata", "testing_data.gdb",
-                                       package = "fluvgeo"),
-                           "riffle_channel_points")
-features_fc   <- file.path(system.file("extdata", "testing_data.gdb",
+survey_name_1 <- "2016"
+survey_name_2 <- "2010"
+survey_name_3 <- "2004"
+survey_name_4 <- NULL
+
+features_fc   <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
                            "features")
 
-regions <- c("Eastern United States", "Illinois River")
-bankfull_elevations <- seq(103, 104, 0.1)
-bf_estimate <- 103.5
+regions <- c("Eastern United States", "USA")
+bankfull_elevations <- seq(101, 104, 0.1)
+bf_estimate <- 102.5
 stat <- "MAE"
 label_xs <- TRUE
 profile_units <- "miles"
@@ -40,14 +52,21 @@ test_that("The output html report exists", {
   skip_if_no_arc()
   load_libraries()
 
-  output_format <- "html_document"
+  output_format <- "word_document"
   output_file <- file.path(output_dir, paste0("bankfull_estimate_",
-                                              "Sinsinawa_103_5.html"))
+                                              "Cole_Creek_R1_102_5.docx"))
 
   # Call the estimate_bankfull function with test data
   estimate_bankfull(stream = stream,
                     xs_dims_fc = xs_dims_fc,
-                    xs_points_fc = xs_points_fc,
+                    xs_points_1 = xs_points_1,
+                    xs_points_2 = xs_points_2,
+                    xs_points_3 = xs_points_3,
+                    xs_points_4 = xs_points_4,
+                    survey_name_1 = survey_name_1,
+                    survey_name_2 = survey_name_2,
+                    survey_name_3 = survey_name_3,
+                    survey_name_4 = survey_name_4,
                     features_fc = features_fc,
                     regions = regions,
                     bankfull_elevations = bankfull_elevations,
@@ -60,36 +79,3 @@ test_that("The output html report exists", {
   expect_true(file.exists(output_file))
 })
 
-# Only test on systems with a working Tex distribution
-# test_that("The output pdf report exists", {
-#   estimate_bankfull(xs_points = sin_xs_points_df,
-#                     streams = streams,
-#                     regions = regions,
-#                     bankfull_elevations = bankfull_elevations,
-#                     bf_estimate = bf_estimate,
-#                     stat = stat,
-#                     output_dir = output_dir,
-#                     output_format = "pdf_document")
-#
-#   output_file <- file.path(output_dir, paste0("bankfull_estimate_",
-#                                               "Sinsinawa.pdf"))
-#   expect_true(file.exists(output_file))
-#   #file.remove(output_file)
-# })
-
-# Only test on systems with MS Word installed
-# test_that("The output word report exists", {
-#   estimate_bankfull(xs_points = sin_xs_points_df,
-#                     streams = streams,
-#                     regions = regions,
-#                     bankfull_elevations = bankfull_elevations,
-#                     bf_estimate = bf_estimate,
-#                     stat = stat,
-#                     output_dir = output_dir,
-#                     output_format = "word_document")
-#
-#   output_file <- file.path(output_dir, paste0("bankfull_estimate_",
-#                                               "Sinsinawa.docx"))
-#   expect_true(file.exists(output_file))
-#   #file.remove(output_file)
-# })

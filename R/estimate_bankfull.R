@@ -7,9 +7,20 @@
 #'                            match a stream name in `ReachName` field in the
 #'                            other parameters.
 #' @param xs_dims_fc          character; The path to the "xs_dims" feature
-#'                            class.
-#' @param xs_points_fc        character; The path to a `xs_points` feature
-#'                            class for the first time period.
+#'                            class. This is for the "base year" survey.
+#' @param xs_points_1         character; The path to a `xs_points` feature
+#'                            class for the "base year".
+#' @param xs_points_2         character; The path to a `xs_points` feature
+#'                            class for the second time period.
+#' @param xs_points_3         character; The path to a `xs_points` feature
+#'                            class for the third time period.
+#' @param xs_points_4         character; The path to a `xs_points` feature
+#'                            class for the fourth time period.
+#' @param survey_name_1       character: The name or date of the "base year"
+#'                            survey.
+#' @param survey_name_2       character: The name or date of the second survey.
+#' @param survey_name_3       character: The name or date of the third survey.
+#' @param survey_name_4       character: The name or date of the fourth survey.
 #' @param features_fc         character; The path to a `features` feature class.
 #' @param regions             character; The regions that a dimension will be
 #'                            calculated for. See the regional_curves$region
@@ -36,20 +47,37 @@
 #' @examples
 #'
 #'
-estimate_bankfull <- function(stream, xs_dims_fc, xs_points_fc, features_fc,
+estimate_bankfull <- function(stream, xs_dims_fc,
+                              xs_points_1, xs_points_2,
+                              xs_points_3, xs_points_4,
+                              survey_name_1, survey_name_2,
+                              survey_name_3, survey_name_4,
+                              features_fc,
                               regions, bankfull_elevations, bf_estimate,
                               stat, label_xs, profile_units,
                               output_dir, output_format) {
 
+  # Create list of survey paths
+  xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
+
+  # Name the survey paths list by their survey names
+  survey_names <- c(survey_name_1, survey_name_2, survey_name_3, survey_name_4)
+  xs_points_paths <- setNames(xs_points_paths, survey_names)
+
+  # Eliminate empty surveys
+  xs_points_paths <- purrr::discard(xs_points_paths, is.null)
+
+  # Convert list of survey paths to list of sf objects
+  xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
+
   # Convert feature classes to sf objects
   xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)
-  xs_points_sf <- fluvgeo::fc2sf(xs_points_fc)
   features_sf  <- fluvgeo::fc2sf(features_fc)
 
   # Set report parameters
   report_params <- list("stream" = stream,
                         "xs_dims_sf" = xs_dims_sf,
-                        "xs_points_sf" = xs_points_sf,
+                        "xs_pts_sf_list" = xs_pts_sf_list,
                         "features_sf" = features_sf,
                         "regions" = regions,
                         "bankfull_elevations" = bankfull_elevations,
@@ -67,8 +95,9 @@ estimate_bankfull <- function(stream, xs_dims_fc, xs_points_fc, features_fc,
   if (output_format == "html_document") {extension <- ".html"}
   if (output_format == "word_document") {extension <- ".docx"}
   if (output_format == "pdf_document")  {extension <- ".pdf"}
+  stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   bf_est <- gsub(".", "_", bf_estimate, fixed = TRUE)
-  output_file <- file.path(output_dir, paste0("bankfull_estimate_", stream,
+  output_file <- file.path(output_dir, paste0("bankfull_estimate_", stream_name,
                                               "_", bf_est, extension))
 
   # Render the report
