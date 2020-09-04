@@ -1,16 +1,20 @@
 ---
 title: "FluvialGeomorph Estimate Bankfull Report"
 params:
-   xs_points: !r as.data.frame(0)
-   stream: "Test"
-   regions: "Eastern United States"
-   bankfull_elevations: !r seq(103, 104, 0.1)
-   bf_estimate: 103.5
-   stat: "MAE"
-   output_format: "html_document"
+  stream: ""
+  xs_dims_sf: ""
+  xs_points_sf: ""
+  features_sf: ""
+  regions: ""
+  bankfull_elevations: ""
+  bf_estimate: ""
+  stat: "MAE"
+  label_xs: TRUE
+  profile_units: ""
+  output_format: "html_document"
 ---
 
-# `r params$stream` River
+# Estimate Bankfull: `r params$stream`
 The purpose of this analysis is to identify the bankfull elevation over a set of riffle cross sections for an ungaged stream reach by using regional hydraulic relationships.
 
 ```{r, library, echo=FALSE, message=FALSE}
@@ -99,6 +103,30 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
                                streams = params$stream,
                                bf_elevation = params$bf_estimate))
 ```
+
+## Longitudinal Profile
+```{r, longitudinal_profile_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Logitudinal Profile Plot"}
+
+# Convert to sp
+xs_dims_sf_zm  <- sf::st_zm(params$xs_dims_sf, what = "ZM")
+xs_dims_sp     <- sf::as_Spatial(xs_dims_sf_zm)
+features_sf_zm <- sf::st_zm(params$features_sf, what = "ZM")
+features_sp    <- sf::as_Spatial(features_sf_zm)
+
+print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp, 
+                               features = features_sp, 
+                               label_xs = params$label_xs,
+                               profile_units = params$profile_units))
+```
+
+## Cross Section Metrics
+```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot. ", warning=FALSE}
+print(fluvgeo::xs_metrics_plot_2(xs_dims_sf = params$xs_dims_sf, 
+                                 features_sf = params$features_sf,
+                                 label_xs = params$label_xs,
+                                 profile_units = params$profile_units))
+```
+
 
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
