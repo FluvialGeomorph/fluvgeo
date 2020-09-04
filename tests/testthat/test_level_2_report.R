@@ -45,7 +45,7 @@ extent_factor <- 1
 label_xs      <- TRUE
 show_xs_map   <- FALSE
 profile_units <- "miles"
-output_dir    <- path.expand('~')                                   # tempdir()
+output_dir    <- Sys.getenv("HOME")
 output_format <- "word_document"
 
 

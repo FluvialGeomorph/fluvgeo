@@ -27,7 +27,7 @@ survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"), "features")
 profile_units <- "feet"
-output_dir <- tempdir()
+output_dir <- Sys.getenv("HOME")
 output_format <- "word_document"
 
 fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,

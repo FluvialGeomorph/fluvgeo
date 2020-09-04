@@ -42,7 +42,7 @@ level_2_report <- function(stream, flowline_fc, xs_fc, xs_points_fc,
                            show_xs_map = FALSE,
                            profile_units, output_dir, output_format) {
 
-  # Convert feature classes to an sf objects
+  # Convert feature classes to sf objects
   flowline_sf  <- fluvgeo::fc2sf(flowline_fc)
   xs_sf        <- fluvgeo::fc2sf(xs_fc)
   xs_points_sf <- fluvgeo::fc2sf(xs_points_fc)
