@@ -104,7 +104,7 @@ xs_metrics_plot_2 <- function(xs_dims_sf,
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+          panel.grid.major = element_line(colour = "grey", size = 0.1)) +
     facet_grid(rows = vars(.data$metrics),
                labeller = label_wrap_gen(width = 15),
                scales = "free") +

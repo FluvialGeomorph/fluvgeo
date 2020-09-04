@@ -99,7 +99,7 @@ xs_metric_plot <- function(metric,
     theme_bw() +
     theme(legend.position = "right",
           legend.title = element_blank(),
-          panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+          panel.grid.major = element_line(colour = "grey", size = 0.1)) +
     labs(title = unique(metric@metric),
          x     = profile_units,
          y     = metric@metric)
