@@ -106,7 +106,7 @@ xs_profile_plot <- function(reach_xs_dims_sp,
         legend.justification = c("left", "top"),
         legend.background = element_rect(fill = alpha('white', 0.6)),
         legend.title = element_blank(),
-        panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+        panel.grid.major = element_line(colour = "grey", size = 0.1)) +
   labs(title = unique(reach_xs_dims$ReachName),
        x     = profile_units,
        y     = "Elevation (NAVD88 feet)")
