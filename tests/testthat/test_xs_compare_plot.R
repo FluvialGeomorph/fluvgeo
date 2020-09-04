@@ -32,6 +32,7 @@ xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 p <- fluvgeo::xs_compare_plot(stream = stream,
                               xs_number = xs_number,
                               xs_pts_sf_list = xs_pts_sf_list)
+print(p)
 
 test_that("xs_compareplot exists", {
   expect_true("ggplot" %in% class(p))
