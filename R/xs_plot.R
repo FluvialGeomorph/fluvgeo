@@ -90,7 +90,7 @@ xs_plot <- function(xs_points, stream, xs_number, bankfull_elevation) {
     geom_hline(yintercept = bankfull_elevation, colour = "blue") +
     theme_bw() +
     theme(aspect.ratio = 2/5) +
-    labs(title = paste("Cross Section ", as.character(xs_number)),
+    labs(title = paste("Cross Section", as.character(xs_number)),
          x = "Station Distance (feet, from right descending bank)",
          y = "Detrended Elevation (feet)") +
     theme(plot.title = element_text(hjust = 0)

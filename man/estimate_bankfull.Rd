@@ -5,21 +5,32 @@
 \title{Estimate bankfull report}
 \usage{
 estimate_bankfull(
-  xs_points,
-  streams,
+  stream,
+  xs_dims_fc,
+  xs_points_fc,
+  features_fc,
   regions,
   bankfull_elevations,
   bf_estimate,
   stat,
+  label_xs,
+  profile_units,
   output_dir,
   output_format
 )
 }
 \arguments{
-\item{xs_points}{data frame; a data frame of cross section points}
+\item{stream}{character; The stream name. The stream name must
+match a stream name in `ReachName` field in the
+other parameters.}
 
-\item{streams}{character vector; The stream names in the study
-area.}
+\item{xs_dims_fc}{character; The path to the "xs_dims" feature
+class.}
+
+\item{xs_points_fc}{character; The path to a `xs_points` feature
+class for the first time period.}
+
+\item{features_fc}{character; The path to a `features` feature class.}
 
 \item{regions}{character; The regions that a dimension will be
 calculated for. See the regional_curves$region
@@ -36,6 +47,11 @@ geometry.}
 \item{stat}{character; The statistic to graph "RMSE", "MAE"
 (the default).}
 
+\item{label_xs}{logical; Label cross sections?}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet"}
+
 \item{output_dir}{character; The output directory.}
 
 \item{output_format}{character; The output format of the report. One
@@ -43,32 +59,13 @@ of "html_document", "word_document",
 "pdf_document".}
 }
 \value{
-A report written to the file system in the output fromat requested.
+Produces a FluvialGeomorph Estimate Bankfull report in the
+`output_dir` in the requested file format.
 }
 \description{
-Produces the bankfull estimate report.
+Produces the Estimate Bankfull report.
 }
 \examples{
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
 
-# Set variable values
-streams <- c("Sinsinawa")
-regions <- c("Eastern United States", "IN Central Till Plain")
-bankfull_elevations <- seq(103, 104, 0.1)
-bf_estimate <- 103.5
-stat <- "MAE"
-output_dir <- Sys.getenv("HOME")
-output_format <- "html_document"
-
-# Call the estimate_bankfull function with test data
-estimate_bankfull(xs_points = sin_xs_points_df,
-                  streams = streams,
-                  regions = regions,
-                  bankfull_elevations = bankfull_elevations,
-                  bf_estimate = bf_estimate,
-                  stat = stat,
-                  output_dir = output_dir,
-                  output_format = output_format)
 
 }
