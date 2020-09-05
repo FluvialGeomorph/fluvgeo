@@ -4,13 +4,22 @@
 \alias{map_reach_overview}
 \title{Reach Overview Map}
 \usage{
-map_reach_overview(flowline, cross_section)
+map_reach_overview(
+  flowline_sf,
+  cross_section_sf,
+  background = "aerials",
+  exaggeration = 20
+)
 }
 \arguments{
-\item{flowline}{SpatialLinesDataFrame; a flowline feature class}
+\item{flowline_sf}{sf object; A flowline feature class}
 
-\item{cross_section}{SpatialLinesDataFrame; a cross section feature
-class}
+\item{cross_section_sf}{sf object; A cross section feature class}
+
+\item{background}{character; The type of map background. One of
+"aerial" or "elevation"}
+
+\item{exaggeration}{numeric; The degree of terrain exaggeration.}
 }
 \value{
 a tmap object
@@ -20,16 +29,5 @@ Produces a reach overview map displaying cross section
 locations over an aerial image.
 }
 \examples{
-# Use the fluvgeo::sin_flowline_sp SpatialLinesDataFrame
-sin_flowline_sp <- fluvgeo::sin_flowline_sp
-
-# Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
-sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
-
-# Create the map
-sin_map <- map_reach_overview(sin_flowline_sp, sin_riffle_channel_sp)
-
-# Print the map
-print(sin_map)
 
 }

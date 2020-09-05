@@ -1,18 +1,38 @@
 library(fluvgeo)
+library(tmap)
 context("map_reach_overview")
 
-# Use the fluvgeo::sin_flowline_sp SpatialLinesDataFrame
-sin_flowline_sp <- fluvgeo::sin_flowline_sp
+flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
+                                          package = "fluvgeo"),
+                              "flowline")
+cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                          package = "fluvgeo"),
+                              "riffle_floodplain")
+flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
+cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
 
-# Use the fluvgeo::sin_riffle_floodplain_sp SpatialLinesDataFrame
-sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
+# Create the aerial map
+aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
+                              cross_section_sf = cross_section_sf,
+                              background = "aerial")
 
-# Create the map
-sin_map <- map_reach_overview(sin_flowline_sp, sin_riffle_channel_sp)
+print(aerial_map)
 
-print(sin_map)
+# Create the elevation map
+elevation_map <- map_reach_overview(flowline_sf = flowline_sf,
+                                    cross_section_sf = cross_section_sf,
+                                    background = "elevation",
+                                    exaggeration = 50)
 
-test_that("check map_reach_overview", {
-  expect_true("tmap" %in% class(sin_map))
-  expect_error(print(sin_map), NA)
+print(elevation_map)
+
+
+test_that("check map_reach_overview aerial", {
+  expect_true("tmap" %in% class(aerial_map))
+  expect_error(print(aerial_map), NA)
+})
+
+test_that("check map_reach_overview elevation", {
+  expect_true("tmap" %in% class(elevation_map))
+  expect_error(print(elevation_map), NA)
 })
