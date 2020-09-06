@@ -6,6 +6,8 @@
 #' @export
 #' @param flowline_sf         sf object; A flowline feature class
 #' @param cross_section_sf    sf object; A cross section feature class
+#' @param xs_label_freq       numeric; An integer indicating the frequency of
+#'                            cross section labels.
 #' @param background          character; The type of map background. One of
 #'                            "aerial" or "elevation"
 #' @param exaggeration        numeric; The degree of terrain exaggeration.
@@ -17,13 +19,14 @@
 #' @importFrom sf st_crs st_transform
 #' @importFrom sp CRS
 #' @importFrom ceramic cc_location cc_elevation
-#' @importFrom raster terrain hillshade
+#' @importFrom raster terrain hillShade
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
 #' tm_scale_bar tm_layout
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
                                background = "aerials",
+                               xs_label_freq = 1,
                                exaggeration = 20) {
   # Check data structure
   check_flowline(flowline_sf, step = "create_flowline")
@@ -42,6 +45,10 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Set Mapbox API key
   Sys.setenv(MAPBOX_API_KEY="pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
 
+  # Determine cross section label frequency
+  label <- ((cross_section_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- cross_section_sf_ll[label, ]
+
   # Create thematic layers
   thematic_map <- tm_shape(shp = flowline_sf_ll,
                            name = "Flowline",
@@ -54,6 +61,8 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                            name = "Cross Sections") +
                      tm_lines(col = "red3",
                               lwd = 3) +
+                  tm_shape(shp = xs_labels_sf,
+                           name = "Cross Section labels") +
                      tm_symbols(col = "white",
                                 size = 1.0) +
                      tm_text(text = "Seq",

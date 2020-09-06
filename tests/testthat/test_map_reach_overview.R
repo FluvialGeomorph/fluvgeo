@@ -14,7 +14,8 @@ cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
 # Create the aerial map
 aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
                               cross_section_sf = cross_section_sf,
-                              background = "aerial")
+                              background = "aerial",
+                              xs_label_freq = 10)
 
 print(aerial_map)
 

@@ -8,6 +8,7 @@ map_reach_overview(
   flowline_sf,
   cross_section_sf,
   background = "aerials",
+  xs_label_freq = 1,
   exaggeration = 20
 )
 }
@@ -18,6 +19,9 @@ map_reach_overview(
 
 \item{background}{character; The type of map background. One of
 "aerial" or "elevation"}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 
 \item{exaggeration}{numeric; The degree of terrain exaggeration.}
 }
