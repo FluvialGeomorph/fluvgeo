@@ -8,17 +8,28 @@ level_2_report(
   stream,
   flowline_fc,
   xs_fc,
-  xs_points_fc,
   xs_dims_fc,
+  xs_points_1,
+  xs_points_2,
+  xs_points_3,
+  xs_points_4,
+  survey_name_1,
+  survey_name_2,
+  survey_name_3,
+  survey_name_4,
   dem,
   banklines_fc,
   features_fc,
   bf_estimate,
   regions,
-  extent_factor,
   label_xs,
   show_xs_map = FALSE,
   profile_units,
+  aerial = TRUE,
+  elevation = FALSE,
+  xs_label_freq = 5,
+  exaggeration = 10,
+  extent_factor = 1.2,
   output_dir,
   output_format
 )
@@ -33,10 +44,28 @@ other parameters.}
 \item{xs_fc}{character; The path to the cross section feature
 class.}
 
-\item{xs_points_fc}{character; The path to a `xs_points` feature
-class for the first time period.}
-
 \item{xs_dims_fc}{character; The path to the "xs_dims" feature class.}
+
+\item{xs_points_1}{character; The path to a `xs_points` feature
+class for the "base year".}
+
+\item{xs_points_2}{character; The path to a `xs_points` feature
+class for the second time period.}
+
+\item{xs_points_3}{character; The path to a `xs_points` feature
+class for the third time period.}
+
+\item{xs_points_4}{character; The path to a `xs_points` feature
+class for the fourth time period.}
+
+\item{survey_name_1}{character: The name or date of the "base year"
+survey.}
+
+\item{survey_name_2}{character: The name or date of the second survey.}
+
+\item{survey_name_3}{character: The name or date of the third survey.}
+
+\item{survey_name_4}{character: The name or date of the fourth survey.}
 
 \item{dem}{character; The path to the DEM raster.}
 
@@ -51,15 +80,27 @@ detrended feet).}
 dimensions for. See the `RegionalCurve` package for
 a list of regions.}
 
-\item{extent_factor}{numeric; The extent factor used to control the
-extent of cross section site maps.}
-
 \item{label_xs}{logical; Label cross sections?}
 
 \item{show_xs_map}{logical; Add the cross section maps to the report?}
 
 \item{profile_units}{character; the units of the longitudinal profile.
-One of "kilometers", "meters", "miles", or "feet"}
+One of "kilometers", "meters", "miles", or "feet".}
+
+\item{aerial}{logical; Display an overview map with an aerial
+photo background?}
+
+\item{elevation}{logical; Display an overview map with an elevation
+background?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
+
+\item{exaggeration}{numeric; The degree of terrain exaggeration.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
 
 \item{output_dir}{character; The path to the folder in which to
 write the report.}
