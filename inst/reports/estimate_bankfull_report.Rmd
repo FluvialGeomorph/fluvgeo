@@ -2,6 +2,7 @@
 title: "FluvialGeomorph Estimate Bankfull Report"
 params:
   stream: ""
+  flowline_sf: ""
   xs_dims_sf: ""
   xs_pts_sf_list: ""
   features_sf: ""
@@ -11,11 +12,13 @@ params:
   stat: "MAE"
   label_xs: TRUE
   profile_units: ""
+  aerial: TRUE
+  elevation: FALSE
+  xs_label_freq: 5
+  exaggeration: 10
+  extent_factor: 1.1
   output_format: "html_document"
 ---
-
-# Estimate Bankfull: `r params$stream`
-The purpose of this analysis is to identify the bankfull elevation over a set of riffle cross sections for an ungaged stream reach by using regional hydraulic relationships.
 
 ```{r, library, echo=FALSE, message=FALSE}
 library(assertthat)
@@ -44,6 +47,34 @@ if (params$output_format == "word_document") {
 }
 ```
 
+# `r params$stream`
+The purpose of this analysis is to identify the bankfull elevation over a set of riffle cross sections for an ungaged stream reach by using regional hydraulic relationships.
+
+## Study Area Overview
+```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(aerial) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$xs_dims_sf,
+                                    background = "aerial",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
+if(elevation) {
+  print(fluvgeo::map_reach_overview(flowline = flowline_sf, 
+                                    cross_section = params$xs_dims_sf,
+                                    background = "elevation",
+                                    xs_label_freq = params$xs_label_freq,
+                                    exaggeration = params$exaggeration,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+## Bankfull Elevation Sensitivity Analysis
+To help inform the estimation of a bankfull elevation, this section contains a sensitivity analysis of a goodness of fit metric (i.e., mean average error) calculated using this stream reach's riffle cross sections as compared to estimated dimensions from regional relationships for several hydraulic geometry dimensions. The table below contains a summary of the goodness of fit statistics for the selected bankfull elevation for the selected analysis regions.
+
 ```{r, calc_xs_dims, echo=FALSE, warning=FALSE, error=FALSE}
 # Calculate cross section dimensions
 xs_pts <- params$xs_pts_sf_list[[1]]
@@ -60,9 +91,6 @@ gof_stats <- fluvgeo::build_gof_stats(xs_dims = xs_dims,
                                bankfull_elevations = params$bankfull_elevations)
 
 ```
-
-## Bankfull Elevation Sensitivity Analysis
-To help inform the estimation of a bankfull elevation, this section contains a sensitivity analysis of a goodness of fit metric (i.e., mean average error) calculated using this stream reach's riffle cross sections as compared to estimated dimensions from regional relationships for several hydraulic geometry dimensions. The table below contains a summary of the goodness of fit statistics for the selected bankfull elevation for the selected analysis regions.
 
 ```{r, gof_graph, results='asis', echo=FALSE, message=FALSE, fig.width=7, fig.height=6, fig.cap="Bankfull Elevation Goodness of Fit "}
 # Draw goodness of fit graph
@@ -141,11 +169,6 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
                                     xs_number = j,
                                     xs_pts_sf_list = params$xs_pts_sf_list,
                                     bankfull_elevation = params$bf_estimate))
-  # # Create the cross section plot
-  # print(fluvgeo::xs_plot(xs_points = xs_pts,
-  #                        stream = params$stream,
-  #                        xs_number = j,
-  #                        bankfull_elevation = params$bf_estimate))
   # Calculate cross section geometry
   xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
   dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
@@ -166,8 +189,8 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
                                   "Area", "Width", "Depth"),
                     booktabs = TRUE)
   ps <- kableExtra::kable_styling(kable_input = p,
-                                  bootstrap_options = c("striped", "hover"),
-                                  latex_options = c("striped", "scale_down"))
+                                  font_size = 8,
+                                  fixed_thead = TRUE)
   print(ps)
   # Insert vertical white space so that next figure is recognized
   cat('\n')

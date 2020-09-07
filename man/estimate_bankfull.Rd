@@ -6,8 +6,16 @@
 \usage{
 estimate_bankfull(
   stream,
+  flowline_fc,
   xs_dims_fc,
-  xs_points_fc,
+  xs_points_1,
+  xs_points_2,
+  xs_points_3,
+  xs_points_4,
+  survey_name_1,
+  survey_name_2,
+  survey_name_3,
+  survey_name_4,
   features_fc,
   regions,
   bankfull_elevations,
@@ -15,6 +23,11 @@ estimate_bankfull(
   stat,
   label_xs,
   profile_units,
+  aerial,
+  elevation,
+  xs_label_freq,
+  exaggeration,
+  extent_factor,
   output_dir,
   output_format
 )
@@ -24,11 +37,32 @@ estimate_bankfull(
 match a stream name in `ReachName` field in the
 other parameters.}
 
-\item{xs_dims_fc}{character; The path to the "xs_dims" feature
+\item{flowline_fc}{character; The path to the `flowline` feature
 class.}
 
-\item{xs_points_fc}{character; The path to a `xs_points` feature
-class for the first time period.}
+\item{xs_dims_fc}{character; The path to the "xs_dims" feature
+class. This is for the "base year" survey.}
+
+\item{xs_points_1}{character; The path to a `xs_points` feature
+class for the "base year".}
+
+\item{xs_points_2}{character; The path to a `xs_points` feature
+class for the second time period.}
+
+\item{xs_points_3}{character; The path to a `xs_points` feature
+class for the third time period.}
+
+\item{xs_points_4}{character; The path to a `xs_points` feature
+class for the fourth time period.}
+
+\item{survey_name_1}{character: The name or date of the "base year"
+survey.}
+
+\item{survey_name_2}{character: The name or date of the second survey.}
+
+\item{survey_name_3}{character: The name or date of the third survey.}
+
+\item{survey_name_4}{character: The name or date of the fourth survey.}
 
 \item{features_fc}{character; The path to a `features` feature class.}
 
@@ -52,6 +86,21 @@ geometry.}
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}
 
+\item{aerial}{logical; Display an overview map with an aerial
+photo background?}
+
+\item{elevation}{logical; Display an overview map with an elevation
+background?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
+
+\item{exaggeration}{numeric; The degree of terrain exaggeration.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
+
 \item{output_dir}{character; The output directory.}
 
 \item{output_format}{character; The output format of the report. One
@@ -66,6 +115,5 @@ Produces a FluvialGeomorph Estimate Bankfull report in the
 Produces the Estimate Bankfull report.
 }
 \examples{
-
 
 }

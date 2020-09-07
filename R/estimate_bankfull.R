@@ -6,6 +6,8 @@
 #' @param stream              character; The stream name. The stream name must
 #'                            match a stream name in `ReachName` field in the
 #'                            other parameters.
+#' @param flowline_fc         character; The path to the `flowline` feature
+#'                            class.
 #' @param xs_dims_fc          character; The path to the "xs_dims" feature
 #'                            class. This is for the "base year" survey.
 #' @param xs_points_1         character; The path to a `xs_points` feature
@@ -36,6 +38,16 @@
 #' @param label_xs            logical; Label cross sections?
 #' @param profile_units       character; the units of the longitudinal profile.
 #'                            One of "kilometers", "meters", "miles", or "feet"
+#' @param aerial              logical; Display an overview map with an aerial
+#'                            photo background?
+#' @param elevation           logical; Display an overview map with an elevation
+#'                            background?
+#' @param xs_label_freq       numeric; An integer indicating the frequency of
+#'                            cross section labels.
+#' @param exaggeration        numeric; The degree of terrain exaggeration.
+#' @param extent_factor       numeric; The amount the extent is expanded around
+#'                            the cross section feature class. Values greater
+#'                            than one zoom out, values less than one zoom in.
 #' @param output_dir          character; The output directory.
 #' @param output_format       character; The output format of the report. One
 #'                            of "html_document", "word_document",
@@ -46,8 +58,10 @@
 #'
 #' @examples
 #'
+#' @importFrom purr discard map
+#' @importFrom rmarkdown render
 #'
-estimate_bankfull <- function(stream, xs_dims_fc,
+estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
                               xs_points_1, xs_points_2,
                               xs_points_3, xs_points_4,
                               survey_name_1, survey_name_2,
@@ -55,6 +69,8 @@ estimate_bankfull <- function(stream, xs_dims_fc,
                               features_fc,
                               regions, bankfull_elevations, bf_estimate,
                               stat, label_xs, profile_units,
+                              aerial, elevation, xs_label_freq,
+                              exaggeration, extent_factor,
                               output_dir, output_format) {
 
   # Create list of survey paths
@@ -71,11 +87,13 @@ estimate_bankfull <- function(stream, xs_dims_fc,
   xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
   # Convert feature classes to sf objects
+  flowline_sf  <- fluvgeo::fc2sf(flowline_fc)
   xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)
   features_sf  <- fluvgeo::fc2sf(features_fc)
 
   # Set report parameters
   report_params <- list("stream" = stream,
+                        "flowline_sf" = flowline_sf,
                         "xs_dims_sf" = xs_dims_sf,
                         "xs_pts_sf_list" = xs_pts_sf_list,
                         "features_sf" = features_sf,
@@ -85,6 +103,11 @@ estimate_bankfull <- function(stream, xs_dims_fc,
                         "stat" = stat,
                         "label_xs" = label_xs,
                         "profile_units" = profile_units,
+                        "aerial" = aerial,
+                        "elevation" = elevation,
+                        "xs_label_freq" = xs_label_freq,
+                        "exaggeration" = exaggeration,
+                        "extent_factor" = extent_factor,
                         "output_format" = output_format)
 
   # Define the report to use
@@ -97,8 +120,8 @@ estimate_bankfull <- function(stream, xs_dims_fc,
   if (output_format == "pdf_document")  {extension <- ".pdf"}
   stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   bf_est <- gsub(".", "_", bf_estimate, fixed = TRUE)
-  output_file <- file.path(output_dir, paste0("bankfull_estimate_", stream_name,
-                                              "_", bf_est, extension))
+  output_file <- file.path(output_dir, paste0(stream_name, "_", bf_est,
+                                              "_bankfull_estimate", extension))
 
   # Render the report
   rmarkdown::render(input = report_template,
