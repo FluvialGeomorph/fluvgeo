@@ -76,14 +76,13 @@ if(elevation) {
 To help inform the estimation of a bankfull elevation, this section contains a sensitivity analysis of a goodness of fit metric (i.e., mean average error) calculated using this stream reach's riffle cross sections as compared to estimated dimensions from regional relationships for several hydraulic geometry dimensions. The table below contains a summary of the goodness of fit statistics for the selected bankfull elevation for the selected analysis regions.
 
 ```{r, calc_xs_dims, echo=FALSE, warning=FALSE, error=FALSE}
-# Calculate cross section dimensions
+# Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
-
+# Calculate cross section dimensions
 xs_dims <- fluvgeo::xs_dimensions(xs_points = xs_pts,
                                streams = params$stream,
                                regions = params$regions,
                                bankfull_elevations = params$bankfull_elevations)
-
 # Calculate the gof stats
 gof_stats <- fluvgeo::build_gof_stats(xs_dims = xs_dims,
                                streams = params$stream,

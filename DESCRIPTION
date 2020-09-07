@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.29
+Version: 0.1.29.9000
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -35,6 +35,7 @@ VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
     assertthat,
+    ceramic,
     conicfit,
     dplyr,
     ggplot2,
