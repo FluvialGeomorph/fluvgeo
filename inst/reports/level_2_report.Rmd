@@ -48,7 +48,7 @@ if (params$output_format == "word_document") {
 }
 ```
 
-## Study Area Overview
+## Study Area Overview: `r params$stream`
 ```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
 if(aerial) {
   print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
@@ -142,10 +142,9 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
 
 ```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, warning=TRUE}
-# Iterate through cross sections creating: map, cross section plot, and 
-# RHG table
+# Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
-
+# Iterate through xs's creating: map, cross section plot, and RHG table
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   # Create the cross section map  
   if(params$show_xs_map) {

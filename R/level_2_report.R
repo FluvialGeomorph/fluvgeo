@@ -1,6 +1,6 @@
 #' @title  Level 2 Report
 #'
-#' @description  Creates a level 2 report.
+#' @description  Creates the FluvialGeomorph Level 2 report.
 #'
 #' @export
 #' @param stream             character; The stream name. The stream name must
