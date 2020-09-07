@@ -34,8 +34,18 @@
 #' @param profile_units      character; The units to be used for the x-axis of
 #'                           the longitudinal profile graphs. One of "feet",
 #'                           "miles", "meters", "kilometers".
-#' @param output_dir         character; The path to the folder in which to write the
-#'                           the report.
+#' @param aerial             logical; Display an overview map with an aerial
+#'                           photo background?
+#' @param elevation          logical; Display an overview map with an elevation
+#'                           background?
+#' @param xs_label_freq      numeric; An integer indicating the frequency of
+#'                           cross section labels.
+#' @param exaggeration       numeric; The degree of terrain exaggeration.
+#' @param extent_factor      numeric; The amount the extent is expanded around
+#'                           the cross section feature class. Values greater
+#'                           than one zoom out, values less than one zoom in.
+#' @param output_dir         character; The path to the folder in which to
+#'                           write the report.
 #' @param output_format      character; The file format of the report. One of
 #'                           "html_document", "word_document", "pdf_document".
 #'
@@ -53,7 +63,11 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
                            survey_name_1, survey_name_2,
                            survey_name_3, survey_name_4,
                            features_fc, profile_units,
+                           aerial = TRUE, elevation = FALSE,
+                           xs_label_freq = 5, exaggeration = 10,
+                           extent_factor = 1.2,
                            output_dir, output_format) {
+
   # Create list of survey paths
   flowline_points_paths <- list(flowline_points_1, flowline_points_2,
                                 flowline_points_3, flowline_points_4)
@@ -78,24 +92,31 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
   cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
   features_sf      <- fluvgeo::fc2sf(features_fc)
 
+  # Check features
+
   # Set report parameters
   report_params <- list("stream" = stream,
                         "flowline_sf" = flowline_sf,
                         "cross_section_sf" = cross_section_sf,
+                        "features_sf" = features_sf,
                         "flowline_points_sf_list" = flowline_pts_sf_list,
                         "xs_points_sf_list" = xs_pts_sf_list,
-                        "features_sf" = features_sf,
                         "profile_units" = profile_units,
+                        "aerial" = aerial,
+                        "elevation" = elevation,
+                        "xs_label_freq" = xs_label_freq,
+                        "exaggeration" = exaggeration,
+                        "extent_factor" = extent_factor,
                         "output_format" = output_format)
 
   report_template <- system.file("reports", "level_1_report.Rmd",
                                  package = "fluvgeo")
 
   # Construct output_file path
-  stream_name <- gsub(" ", "_", stream)
   if (output_format == "html_document") {extension <- ".html"}
   if (output_format == "word_document") {extension <- ".docx"}
   if (output_format == "pdf_document")  {extension <- ".pdf"}
+  stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   output_file <- file.path(output_dir, paste0(stream_name,
                                               "_level_1_report", extension))
   # Render the report

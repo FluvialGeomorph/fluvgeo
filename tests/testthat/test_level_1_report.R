@@ -27,6 +27,11 @@ survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"), "features")
 profile_units <- "feet"
+aerial <- TRUE
+elevation = TRUE
+xs_label_freq = 2
+exaggeration = 30
+extent_factor = 1.3
 output_dir <- Sys.getenv("HOME")
 output_format <- "word_document"
 
@@ -37,6 +42,8 @@ fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         survey_name_1, survey_name_2,
                         survey_name_3, survey_name_4,
                         features_fc, profile_units,
+                        aerial, elevation,
+                        xs_label_freq, exaggeration, extent_factor,
                         output_dir, output_format)
 
 test_that("report completed", {

@@ -22,6 +22,11 @@ level_1_report(
   survey_name_4,
   features_fc,
   profile_units,
+  aerial = TRUE,
+  elevation = FALSE,
+  xs_label_freq = 5,
+  exaggeration = 10,
+  extent_factor = 1.2,
   output_dir,
   output_format
 )
@@ -74,8 +79,23 @@ class for the fourth time period.}
 the longitudinal profile graphs. One of "feet",
 "miles", "meters", "kilometers".}
 
-\item{output_dir}{character; The path to the folder in which to write the
-the report.}
+\item{aerial}{logical; Display an overview map with an aerial
+photo background?}
+
+\item{elevation}{logical; Display an overview map with an elevation
+background?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
+
+\item{exaggeration}{numeric; The degree of terrain exaggeration.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
+
+\item{output_dir}{character; The path to the folder in which to
+write the report.}
 
 \item{output_format}{character; The file format of the report. One of
 "html_document", "word_document", "pdf_document".}

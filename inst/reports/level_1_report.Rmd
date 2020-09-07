@@ -1,14 +1,19 @@
 ---
 title: "FluvialGeomorph Level 1 Report"
 params:
+  stream: ""
+  flowline_sf: ""
   cross_section_sf: ""
   features_sf: ""
   flowline_points_sf_list: ""
-  flowline_sf: ""
-  output_format: ""
-  profile_units: ""
-  stream: ""
   xs_points_sf_list: ""
+  profile_units: ""
+  aerial: TRUE
+  elevation: FALSE
+  xs_label_freq: 5
+  exaggeration: 10
+  extent_factor: 1.1
+  output_format: ""
 ---
 
 ```{r library, eval=TRUE, include=FALSE}
@@ -23,15 +28,25 @@ library(tmap)
 ```
 
 ## Study Area Overview
-```{r overview, echo=FALSE, warning=FALSE, fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
-# Convert sf to sp
-## drop z and m since `sp` can't handle m
-cross_section_sf_zm <- sf::st_zm(cross_section_sf, what = "ZM")
-flowline_sp      <- sf::as_Spatial(params$flowline_sf)
-cross_section_sp <- sf::as_Spatial(cross_section_sf_zm)
+```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(aerial) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$cross_section_sf,
+                                    background = "aerial",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
 
-print(fluvgeo::map_reach_overview(flowline = flowline_sp, 
-                                  cross_section = cross_section_sp))
+```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
+if(elevation) {
+  print(fluvgeo::map_reach_overview(flowline = flowline_sf, 
+                                    cross_section = params$cross_section_sf,
+                                    background = "elevation",
+                                    xs_label_freq = params$xs_label_freq,
+                                    exaggeration = params$exaggeration,
+                                    extent_factor = params$extent_factor))
+}
 ```
 
 ## Longitudinal Profile
@@ -65,5 +80,5 @@ for(i in unique(cross_section$Seq)) {
 }
 ```
 
-Version: 0.1.27
+Version: 0.1.29
 
