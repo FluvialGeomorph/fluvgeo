@@ -9,7 +9,8 @@ map_reach_overview(
   cross_section_sf,
   background = "aerials",
   xs_label_freq = 1,
-  exaggeration = 20
+  exaggeration = 20,
+  extent_factor = 1.1
 )
 }
 \arguments{
@@ -24,13 +25,17 @@ map_reach_overview(
 cross section labels.}
 
 \item{exaggeration}{numeric; The degree of terrain exaggeration.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
 }
 \value{
 a tmap object
 }
 \description{
 Produces a reach overview map displaying cross section
-locations over an aerial image.
+locations over an aerial image or elevation multi-direction shaded relief.
 }
 \examples{
 

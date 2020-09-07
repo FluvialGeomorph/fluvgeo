@@ -1,7 +1,7 @@
 #' @title Reach Overview Map
 #'
 #' @description Produces a reach overview map displaying cross section
-#' locations over an aerial image.
+#' locations over an aerial image or elevation multi-direction shaded relief.
 #'
 #' @export
 #' @param flowline_sf         sf object; A flowline feature class
@@ -11,6 +11,9 @@
 #' @param background          character; The type of map background. One of
 #'                            "aerial" or "elevation"
 #' @param exaggeration        numeric; The degree of terrain exaggeration.
+#' @param extent_factor       numeric; The amount the extent is expanded around
+#'                            the cross section feature class. Values greater
+#'                            than one zoom out, values less than one zoom in.
 #'
 #' @return a tmap object
 #'
@@ -27,7 +30,8 @@
 map_reach_overview <- function(flowline_sf, cross_section_sf,
                                background = "aerials",
                                xs_label_freq = 1,
-                               exaggeration = 20) {
+                               exaggeration = 20,
+                               extent_factor = 1.1) {
   # Check data structure
   check_flowline(flowline_sf, step = "create_flowline")
   check_cross_section(cross_section_sf, step = "assign_ids")
@@ -39,21 +43,21 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                       crs = sp::CRS(SRS_string = "EPSG:4326"))
 
   # Set extent
-  ex_extent <- fluvgeo::feature_extent(cross_section_sf_ll,
-                                       extent_factor = 1.5)
+  xs_extent <- fluvgeo::feature_extent(cross_section_sf_ll,
+                                       extent_factor = extent_factor)
 
   # Set Mapbox API key
   Sys.setenv(MAPBOX_API_KEY="pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
 
   # Determine cross section label frequency
-  label <- ((cross_section_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
-  xs_labels_sf <- cross_section_sf_ll[label, ]
+  labeled_xs <- ((cross_section_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- cross_section_sf_ll[labeled_xs, ]
 
   # Create thematic layers
   thematic_map <- tm_shape(shp = flowline_sf_ll,
                            name = "Flowline",
                            unit = "mi",
-                           bbox = ex_extent,
+                           bbox = xs_extent,
                            is.master = TRUE) +
                     tm_lines(col = "blue",
                              lwd = 3) +
@@ -80,8 +84,8 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Aerial
   if(background == "aerial") {
     # Get aerial photos
-    aerial_photos <- ceramic::cc_location(ex_extent,
-                                        type = "mapbox.satellite")
+    aerial_photos <- ceramic::cc_location(xs_extent,
+                                          type = "mapbox.satellite")
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()
@@ -92,9 +96,9 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Elevation
   if(background == "elevation") {
     # Get elevation
-    elevation <- ceramic::cc_elevation(ex_extent)
+    elevation <- ceramic::cc_elevation(xs_extent)
 
-    # Create a topo color ramp
+    # Create an esri-like topo color ramp
     esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
                                                       "chartreuse4", "goldenrod1",
                                                       "orangered4", "saddlebrown",
@@ -102,12 +106,11 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                              bias = 1,
                                              space = "Lab",
                                              interpolate = "linear")
-    # Convert meters to feet
+    # Convert elevation meters to feet
     elev_ft <- elevation * 3.28084
 
     # Create a hillshade
     exaggerated <- elevation * exaggeration
-
     slp <- raster::terrain(exaggerated, opt = "slope", unit = "radians")
     asp <- raster::terrain(exaggerated, opt = "aspect", unit = "radians")
     hill_270 <- raster::hillShade(slope = slp, aspect = asp,
@@ -116,6 +119,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                   angle = 30, direction = 315)
     hill_355 <- raster::hillShade(slope = slp, aspect = asp,
                                   angle = 30, direction = 355)
+    #hill <- max(hill_270, hill_315, hill_355)
 
     background_map <- tm_shape(shp = hill_270,
                                name = "Hillshade") +
@@ -124,13 +128,13 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                   alpha = 1,
                                   legend.show = FALSE) +
                       tm_shape(shp = hill_315,
-                               name = "Hillshade") +
+                               name = "Hillshade 315") +
                         tm_raster(style = "cont",
                                   palette = gray.colors(100, 0, 1),
                                   alpha = 0.5,
                                   legend.show = FALSE) +
                       tm_shape(shp = hill_355,
-                               name = "Hillshade") +
+                               name = "Hillshade 355") +
                         tm_raster(style = "cont",
                                   palette = gray.colors(100, 0, 1),
                                   alpha = 0.5,

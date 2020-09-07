@@ -10,12 +10,16 @@ cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
                               "riffle_floodplain")
 flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
 cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
+xs_label_freq = 2
+exaggeration = 1
+extent_factor = 1.5
 
 # Create the aerial map
 aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
                               cross_section_sf = cross_section_sf,
                               background = "aerial",
-                              xs_label_freq = 10)
+                              xs_label_freq = xs_label_freq,
+                              extent_factor = extent_factor)
 
 print(aerial_map)
 
@@ -23,7 +27,9 @@ print(aerial_map)
 elevation_map <- map_reach_overview(flowline_sf = flowline_sf,
                                     cross_section_sf = cross_section_sf,
                                     background = "elevation",
-                                    exaggeration = 50)
+                                    xs_label_freq = xs_label_freq,
+                                    exaggeration = exaggeration,
+                                    extent_factor = extent_factor)
 
 print(elevation_map)
 
