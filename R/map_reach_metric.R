@@ -6,9 +6,13 @@
 #' @export
 #' @param metric              MetricThreshold object; the fluvial geomorphic
 #'                            metric to be mapped
-#' @param flowline            SpatialLinesDataFrame; a flowline feature class
-#' @param xs_dimensions       SpatialLinesDataFrame; a cross section dimensions
-#'                            feature class
+#' @param flowline            SpatialLinesDataFrame or sf; a flowline feature
+#'                            class.
+#' @param xs_dimensions       SpatialLinesDataFrame or sf; a cross section
+#'                            dimensions feature class.
+#' @param extent_factor       numeric; The amount the extent is expanded around
+#'                            the cross section feature class. Values greater
+#'                            than one zoom out, values less than one zoom in.
 #'
 #' @return a tmap object
 #'
@@ -32,17 +36,25 @@
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
 #' tm_scale_bar tm_layout
 #'
-map_reach_metric <- function(metric, flowline, xs_dimensions) {
+map_reach_metric <- function(metric, flowline, xs_dimensions,
+                             extent_factor = 1.1) {
   # Check data structure
   check_flowline(flowline, step = "create_flowline")
 
+  # Set extent
+  xs_extent <- fluvgeo::feature_extent(xs_dimensions,
+                                       extent_factor = extent_factor)
+
   # Create the reach map
   metric_map <- tm_shape(shp = flowline,
-                         bbox = bb(flowline, 1.1),
+                         bbox = xs_extent,
                          name = "Flowline") +
-                  tm_lines(col = "blue", lwd = 2) +
+                  tm_lines(col = "blue",
+                           lwd = 2) +
                 tm_shape(shp = xs_dimensions,
                          name = "Cross Sections") +
+                  tm_lines(col = "red3",
+                           lwd = 2) +
                   tm_symbols(col = metric@variable,
                              title.col = metric@metric,
                              size = 2,
@@ -52,7 +64,7 @@ map_reach_metric <- function(metric, flowline, xs_dimensions) {
                              interval.closure = "left") +
                   tm_text(text = "Seq",
                           col = "black",
-                          size = 0.5,
+                          size = 0.7,
                           remove.overlap = TRUE) +
                 tm_layout(legend.outside = TRUE,
                           legend.outside.position = "right",

@@ -21,6 +21,7 @@ xs_dimensions_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
 wdr_map_sp <- map_reach_metric(wdr,
                                flowline = flowline_sp,
                                xs_dimensions = xs_dimensions_sp)
+print(wdr_map_sp)
 
 # sf
 # Get feature class test data in sf format
@@ -34,12 +35,6 @@ xs_dimensions_fc <- file.path(system.file("extdata", "testing_data.gdb",
 # Convert feature classes to an sf objects
 flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
 xs_dimensions_sf <- fluvgeo::fc2sf(xs_dimensions_fc)
-
-# Create the reach metric map using sp input
-wdr_map_sp <- map_reach_metric(wdr,
-                               flowline = flowline_sp,
-                               xs_dimensions = xs_dimensions_sp)
-print(wdr_map_sp)
 
 # Create the reach metric map using sf input
 wdr_map_sf <- map_reach_metric(wdr,

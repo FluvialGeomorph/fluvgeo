@@ -4,16 +4,21 @@
 \alias{map_reach_metric}
 \title{Reach Metric Map}
 \usage{
-map_reach_metric(metric, flowline, xs_dimensions)
+map_reach_metric(metric, flowline, xs_dimensions, extent_factor = 1.1)
 }
 \arguments{
 \item{metric}{MetricThreshold object; the fluvial geomorphic
 metric to be mapped}
 
-\item{flowline}{SpatialLinesDataFrame; a flowline feature class}
+\item{flowline}{SpatialLinesDataFrame or sf; a flowline feature
+class.}
 
-\item{xs_dimensions}{SpatialLinesDataFrame; a cross section dimensions
-feature class}
+\item{xs_dimensions}{SpatialLinesDataFrame or sf; a cross section
+dimensions feature class.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
 }
 \value{
 a tmap object
