@@ -1,10 +1,10 @@
-#' @title Calculate expanded feature extent
+#' @title Calculate Expanded Feature Extent
 #'
 #' @description Creates a new expanded map extent based on a supplied
 #' map extent multiplying factor.
 #'
 #' @export
-#' @param feature             sp::Spatial* feature; a feature class
+#' @param feature             sp::Spatial* feature or sf; A feature class.
 #' @param extent_factor       numeric; A numeric value used to expand the extent
 #'                            of the supplied feature class.
 #'

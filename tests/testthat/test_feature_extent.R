@@ -1,11 +1,29 @@
 library(fluvgeo)
 context("feature_extent")
 
-# Calculate extents
-fp_extent <- feature_extent(fluvgeo::sin_flowline_points_sp)
-rc_extent <- feature_extent(fluvgeo::sin_riffle_channel_sp)
+# sf
+flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
+                                          package = "fluvgeo"),
+                              "flowline")
+cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
+                                          package = "fluvgeo"),
+                              "riffle_floodplain")
+flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
+cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
 
-test_that("Check feature extents", {
-  expect_true(class(fp_extent)[1] == "Extent")
-  expect_true(class(rc_extent)[1] == "Extent")
+fp_extent_sf <- feature_extent(fluvgeo::sin_flowline_points_sp)
+rc_extent_sf <- feature_extent(fluvgeo::sin_riffle_channel_sp)
+
+# sp
+fp_extent_sp <- feature_extent(fluvgeo::sin_flowline_points_sp)
+rc_extent_sp <- feature_extent(fluvgeo::sin_riffle_channel_sp)
+
+test_that("Check sf feature extents", {
+  expect_true(class(fp_extent_sf)[1] == "Extent")
+  expect_true(class(rc_extent_sf)[1] == "Extent")
+})
+
+test_that("Check sp feature extents", {
+  expect_true(class(fp_extent_sp)[1] == "Extent")
+  expect_true(class(rc_extent_sp)[1] == "Extent")
 })

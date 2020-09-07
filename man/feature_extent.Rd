@@ -2,12 +2,12 @@
 % Please edit documentation in R/feature_extent.R
 \name{feature_extent}
 \alias{feature_extent}
-\title{Calculate expanded feature extent}
+\title{Calculate Expanded Feature Extent}
 \usage{
 feature_extent(feature, extent_factor = 1)
 }
 \arguments{
-\item{feature}{sp::Spatial* feature; a feature class}
+\item{feature}{sp::Spatial* feature or sf; A feature class.}
 
 \item{extent_factor}{numeric; A numeric value used to expand the extent
 of the supplied feature class.}
