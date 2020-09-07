@@ -1,103 +1,129 @@
 #' @title Cross Section Metrics Report
 #'
-#' @description Produces the cross section metrics report.
+#' @description Creates the FluvialGeomorph Cross Section Metrics report.
 #'
 #' @export
-#' @param xs_points           data frame; a data frame of a cross section points
-#'                            data struture
-#' @param xs_dims_planform    SpatialLinesDataFrame; a
-#'                            SpatialLinesDataFrame of a cross section planform
-#'                            dimensions data structure
-#' @param flowline            SpatialLinesDataFrame; a SpatialLinesDataFrame of
-#'                            a flowline data structure
-#' @param dem                 character; path to a dem raster
-#' @param banklines           SpatialLinesDataFrame; a banklines feature class
-#' @param extent_factor       numeric; A numeric value used to expand the map
-#'                            extent around each cross section
-#' @param streams             character vector; The stream names in the study
-#'                            area.
-#' @param regions             character; The regions that a dimension will be
-#'                            calculated for. See the regional_curves$region
-#'                            field for a complete list.
-#' @param features            SpatialPointsDataFrame; a
-#'                            SpatialPointsDataFrame of river features
-#' @param label_xs            boolean; Draw the cross section labels?
-#' @param output_dir          character; The output directory.
-#' @param output_format       character; The output format of the report. One
-#'                            of "html_document", "word_document",
-#'                            "pdf_document".
+#' @param stream             character; The stream name. The stream name must
+#'                           match a stream name in `ReachName` field in the
+#'                           other parameters.
+#' @param flowline_fc        character; The path to a `flowline` feature class.
+#' @param xs_fc              character; The path to the cross section feature
+#'                           class.
+#' @param xs_dims_fc         character; The path to the "xs_dims" feature class.
+#' @param xs_points_1        character; The path to a `xs_points` feature
+#'                           class for the "base year".
+#' @param xs_points_2        character; The path to a `xs_points` feature
+#'                           class for the second time period.
+#' @param xs_points_3        character; The path to a `xs_points` feature
+#'                           class for the third time period.
+#' @param xs_points_4        character; The path to a `xs_points` feature
+#'                           class for the fourth time period.
+#' @param survey_name_1      character: The name or date of the "base year"
+#'                           survey.
+#' @param survey_name_2      character: The name or date of the second survey.
+#' @param survey_name_3      character: The name or date of the third survey.
+#' @param survey_name_4      character: The name or date of the fourth survey.
+#' @param dem                character; The path to the DEM raster.
+#' @param banklines_fc       character: the path to the banklines feature class.
+#' @param features_fc        character; The path to a `features` feature class.
+#' @param bf_estimate        numeric; Detrended bankfull estimate (units:
+#'                           detrended feet).
+#' @param regions            character vector; Regions to calculate hydraulic
+#'                           dimensions for. See the `RegionalCurve` package for
+#'                           a list of regions.
+#' @param label_xs           logical; Label cross sections?
+#' @param show_xs_map        logical; Add the cross section maps to the report?
+#' @param profile_units      character; the units of the longitudinal profile.
+#'                           One of "kilometers", "meters", "miles", or "feet".
+#' @param aerial             logical; Display an overview map with an aerial
+#'                           photo background?
+#' @param elevation          logical; Display an overview map with an elevation
+#'                           background?
+#' @param xs_label_freq      numeric; An integer indicating the frequency of
+#'                           cross section labels.
+#' @param exaggeration       numeric; The degree of terrain exaggeration.
+#' @param extent_factor      numeric; The amount the extent is expanded around
+#'                           the cross section feature class. Values greater
+#'                           than one zoom out, values less than one zoom in.
+#' @param output_dir         character; The path to the folder in which to
+#'                           write the report.
+#' @param output_format      character; The file format of the report. One of
+#'                           "html_document", "word_document", "pdf_document".
 #'
 #' @return A report written to the file system in the output fromat requested.
 #'
-#' @examples
-#' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@@data
+#' @importFrom rmarkdown render
 #'
-#' # Get a cross section planform dimensions feature class
-#' sin_xs_dims_planform <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
-#'
-#' # Set variable values
-#' dem <- system.file("extdata", "dem_1m.tif", package = "fluvgeo")
-#' extent_factor <- 2
-#' streams <- c("Sinsinawa")
-#' regions <- c("Eastern United States", "IN Central Till Plain")
-#' output_dir <- Sys.getenv("HOME")
-#' output_format <- "word_document"
-#'
-#' # Create the xs Metrics Report
-#' xs_metrics_report(xs_points = sin_xs_points_df,
-#'                   xs_dims_planform = sin_xs_dims_planform,
-#'                   flowline = fluvgeo::sin_flowline_sp,
-#'                   dem = dem,
-#'                   banklines = fluvgeo::sin_banklines_sp,
-#'                   extent_factor = extent_factor,
-#'                   streams = streams,
-#'                   regions = regions,
-#'                   features = fluvgeo::sin_features_sp,
-#'                   label_xs = TRUE,
-#'                   output_dir = output_dir,
-#'                   output_format = output_format)
-#'
-xs_metrics_report <- function(xs_points, xs_dims_planform, flowline,
-                              dem, banklines, extent_factor, streams, regions,
-                              features, label_xs, output_dir, output_format) {
-  # Iterate through streams
-  for (g in streams) {
-    # Determine `bf_estimate`
-    bf_estimate <- unique(xs_dims_planform$bankfull_elevation)
+xs_metrics_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
+                              xs_points_1, xs_points_2,
+                              xs_points_3, xs_points_4,
+                              survey_name_1, survey_name_2,
+                              survey_name_3, survey_name_4,
+                              dem, banklines_fc, features_fc,
+                              bf_estimate, regions, label_xs,
+                              show_xs_map = FALSE, profile_units,
+                              aerial = TRUE, elevation = FALSE,
+                              xs_label_freq = 5, exaggeration = 10,
+                              extent_factor = 1.2,
+                              output_dir, output_format) {
+  # Create list of survey paths
+  xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
 
-    # Bankfull elevations to examine for sensitivity analysis
-    bankfull_elevations <- bf_estimate
+  # Name the survey paths list by their survey names
+  survey_names <- c(survey_name_1, survey_name_2, survey_name_3, survey_name_4)
+  xs_points_paths <- setNames(xs_points_paths, survey_names)
 
-    # Construct output_file path
-    if (output_format == "html_document") {extension <- ".html"}
-    if (output_format == "word_document") {extension <- ".docx"}
-    if (output_format == "pdf_document")  {extension <- ".pdf"}
-    output_file <- file.path(output_dir, paste0("xs_dimensions_",
-                                                g, "_", bf_estimate, extension))
+  # Eliminate empty surveys
+  xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 
-    # Subset xs_points for the current stream
-    xs_pts <- xs_points[xs_points$ReachName == g, ]
-    xs_dims_plan <- xs_dims_planform[xs_dims_planform$ReachName == g, ]
+  # Convert list of survey paths to list of sf objects
+  xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
-    # Render the report for the current stream
-    rmarkdown::render(input = system.file("reports", "xs_metrics_report.Rmd",
-                                          package = "fluvgeo"),
-                      output_format = output_format,
-                      output_options = list(self_contained = TRUE),
-                      params = list(xs_points = xs_pts,
-                                    xs_dims_planform = xs_dims_plan,
-                                    flowline = flowline,
-                                    dem = dem,
-                                    banklines = banklines,
-                                    extent_factor = extent_factor,
-                                    stream = g,
-                                    regions = regions,
-                                    bf_estimate = bf_estimate,
-                                    features = features,
-                                    label_xs = label_xs,
-                                    output_format = output_format),
-                      output_file = output_file,
-                      quiet = FALSE)
-  }
+  # Convert feature classes to sf objects
+  flowline_sf  <- fluvgeo::fc2sf(flowline_fc)
+  xs_sf        <- fluvgeo::fc2sf(xs_fc)
+  xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)
+  banklines_sf <- fluvgeo::fc2sf(banklines_fc)
+  features_sf  <- fluvgeo::fc2sf(features_fc)
+
+  # Set report parameters
+  report_params <- list("stream" = stream,
+                        "flowline_sf" = flowline_sf,
+                        "xs_sf" = xs_sf,
+                        "xs_dims_sf" = xs_dims_sf,
+                        "xs_pts_sf_list" = xs_pts_sf_list,
+                        "dem" = dem,
+                        "banklines_sf" = banklines_sf,
+                        "features_sf" = features_sf,
+                        "bf_estimate" = bf_estimate,
+                        "regions" = regions,
+                        "label_xs" = label_xs,
+                        "show_xs_map" = show_xs_map,
+                        "profile_units" = profile_units,
+                        "aerial" = aerial,
+                        "elevation" = elevation,
+                        "xs_label_freq" = xs_label_freq,
+                        "exaggeration" = exaggeration,
+                        "extent_factor" = extent_factor,
+                        "output_format" = output_format)
+
+  # Define the report to use
+  report_template <- system.file("reports", "xs_metrics_report.Rmd",
+                                 package = "fluvgeo")
+
+  # Construct output_file path
+  if (output_format == "html_document") {extension <- ".html"}
+  if (output_format == "word_document") {extension <- ".docx"}
+  if (output_format == "pdf_document")  {extension <- ".pdf"}
+  stream_name <- gsub(" ", "_", stream, fixed = TRUE)
+  bf_est <- gsub(".", "_", bf_estimate, fixed = TRUE)
+  output_file <- file.path(output_dir, paste0(stream_name, "_", bf_est,
+                                              "_level_2_report", extension))
+
+  # Render the report
+  rmarkdown::render(input = report_template,
+                    output_format = output_format,
+                    output_options = list(self_contained = TRUE),
+                    params = report_params,
+                    output_file = output_file)
 }

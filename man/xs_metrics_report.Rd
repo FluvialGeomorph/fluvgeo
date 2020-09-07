@@ -5,89 +5,112 @@
 \title{Cross Section Metrics Report}
 \usage{
 xs_metrics_report(
-  xs_points,
-  xs_dims_planform,
-  flowline,
+  stream,
+  flowline_fc,
+  xs_fc,
+  xs_dims_fc,
+  xs_points_1,
+  xs_points_2,
+  xs_points_3,
+  xs_points_4,
+  survey_name_1,
+  survey_name_2,
+  survey_name_3,
+  survey_name_4,
   dem,
-  banklines,
-  extent_factor,
-  streams,
+  banklines_fc,
+  features_fc,
+  bf_estimate,
   regions,
-  features,
   label_xs,
+  show_xs_map = FALSE,
+  profile_units,
+  aerial = TRUE,
+  elevation = FALSE,
+  xs_label_freq = 5,
+  exaggeration = 10,
+  extent_factor = 1.2,
   output_dir,
   output_format
 )
 }
 \arguments{
-\item{xs_points}{data frame; a data frame of a cross section points
-data struture}
+\item{stream}{character; The stream name. The stream name must
+match a stream name in `ReachName` field in the
+other parameters.}
 
-\item{xs_dims_planform}{SpatialLinesDataFrame; a
-SpatialLinesDataFrame of a cross section planform
-dimensions data structure}
+\item{flowline_fc}{character; The path to a `flowline` feature class.}
 
-\item{flowline}{SpatialLinesDataFrame; a SpatialLinesDataFrame of
-a flowline data structure}
+\item{xs_fc}{character; The path to the cross section feature
+class.}
 
-\item{dem}{character; path to a dem raster}
+\item{xs_dims_fc}{character; The path to the "xs_dims" feature class.}
 
-\item{banklines}{SpatialLinesDataFrame; a banklines feature class}
+\item{xs_points_1}{character; The path to a `xs_points` feature
+class for the "base year".}
 
-\item{extent_factor}{numeric; A numeric value used to expand the map
-extent around each cross section}
+\item{xs_points_2}{character; The path to a `xs_points` feature
+class for the second time period.}
 
-\item{streams}{character vector; The stream names in the study
-area.}
+\item{xs_points_3}{character; The path to a `xs_points` feature
+class for the third time period.}
 
-\item{regions}{character; The regions that a dimension will be
-calculated for. See the regional_curves$region
-field for a complete list.}
+\item{xs_points_4}{character; The path to a `xs_points` feature
+class for the fourth time period.}
 
-\item{features}{SpatialPointsDataFrame; a
-SpatialPointsDataFrame of river features}
+\item{survey_name_1}{character: The name or date of the "base year"
+survey.}
 
-\item{label_xs}{boolean; Draw the cross section labels?}
+\item{survey_name_2}{character: The name or date of the second survey.}
 
-\item{output_dir}{character; The output directory.}
+\item{survey_name_3}{character: The name or date of the third survey.}
 
-\item{output_format}{character; The output format of the report. One
-of "html_document", "word_document",
-"pdf_document".}
+\item{survey_name_4}{character: The name or date of the fourth survey.}
+
+\item{dem}{character; The path to the DEM raster.}
+
+\item{banklines_fc}{character: the path to the banklines feature class.}
+
+\item{features_fc}{character; The path to a `features` feature class.}
+
+\item{bf_estimate}{numeric; Detrended bankfull estimate (units:
+detrended feet).}
+
+\item{regions}{character vector; Regions to calculate hydraulic
+dimensions for. See the `RegionalCurve` package for
+a list of regions.}
+
+\item{label_xs}{logical; Label cross sections?}
+
+\item{show_xs_map}{logical; Add the cross section maps to the report?}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet".}
+
+\item{aerial}{logical; Display an overview map with an aerial
+photo background?}
+
+\item{elevation}{logical; Display an overview map with an elevation
+background?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
+
+\item{exaggeration}{numeric; The degree of terrain exaggeration.}
+
+\item{extent_factor}{numeric; The amount the extent is expanded around
+the cross section feature class. Values greater
+than one zoom out, values less than one zoom in.}
+
+\item{output_dir}{character; The path to the folder in which to
+write the report.}
+
+\item{output_format}{character; The file format of the report. One of
+"html_document", "word_document", "pdf_document".}
 }
 \value{
 A report written to the file system in the output fromat requested.
 }
 \description{
-Produces the cross section metrics report.
-}
-\examples{
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
-
-# Get a cross section planform dimensions feature class
-sin_xs_dims_planform <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
-
-# Set variable values
-dem <- system.file("extdata", "dem_1m.tif", package = "fluvgeo")
-extent_factor <- 2
-streams <- c("Sinsinawa")
-regions <- c("Eastern United States", "IN Central Till Plain")
-output_dir <- Sys.getenv("HOME")
-output_format <- "word_document"
-
-# Create the xs Metrics Report
-xs_metrics_report(xs_points = sin_xs_points_df,
-                  xs_dims_planform = sin_xs_dims_planform,
-                  flowline = fluvgeo::sin_flowline_sp,
-                  dem = dem,
-                  banklines = fluvgeo::sin_banklines_sp,
-                  extent_factor = extent_factor,
-                  streams = streams,
-                  regions = regions,
-                  features = fluvgeo::sin_features_sp,
-                  label_xs = TRUE,
-                  output_dir = output_dir,
-                  output_format = output_format)
-
+Creates the FluvialGeomorph Cross Section Metrics report.
 }
