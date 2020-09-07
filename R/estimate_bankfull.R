@@ -58,7 +58,7 @@
 #'
 #' @examples
 #'
-#' @importFrom purr discard map
+#' @importFrom purrr discard map
 #' @importFrom rmarkdown render
 #'
 estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
