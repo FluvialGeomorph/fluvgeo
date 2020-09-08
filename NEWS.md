@@ -1,3 +1,18 @@
+# fluvgeo v0.1.29 (2020-09-07)
+
+## Major Changes
+* Updated the Level 1 Report with new options. 
+* Updated the Estimate Bankfull Report with new options.
+* Updated the Level 2 Report with new options. 
+* Upgraded the `map_reach_overview` function to use aerial photos and coarse-scale elevation from [Mapbox](https://www.mapbox.com/maps/satellite). This functionality is provided by the `ceramic` R package. Use of Mapbox requires an API key to access a relatively generous free tier of mapping services. 
+* Added the Lever 2 compare xs plot graph that allows users to compare multiple surveys with the "base year" survey. Displays the detrended elevation for the "base year" survey.
+* Added level 2 test data for the Cole Creek R1 test site. This site contains multiple surveys. 
+
+## Bug Fixes
+* Updated the `map_reach_overview` to use the `ceramic` R package to retrieve  [Mapbox](https://www.mapbox.com/maps/satellite) aerial photos and coarse-scale elevation in place of the broken `tmaptools::read_osm`. 
+* Removed the floodprone water surface series from the longitudinal profile graph. 
+
+
 # fluvgeo v0.1.28 (2020-08-31)
 
 ## Major Changes
