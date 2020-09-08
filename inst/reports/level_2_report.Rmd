@@ -81,8 +81,8 @@ features_sp    <- sf::as_Spatial(features_sf_zm)
 
 print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp, 
                                features = features_sp, 
-                               label_xs = params$label_xs),
-                               profile_units = params$profile_units)
+                               label_xs = params$label_xs,
+                               profile_units = params$profile_units))
 ```
 
 ## Cross Section Metrics
