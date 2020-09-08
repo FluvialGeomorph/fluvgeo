@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_bankfull.R
 \name{estimate_bankfull}
 \alias{estimate_bankfull}
-\title{Estimate bankfull report}
+\title{Estimate Bankfull Report}
 \usage{
 estimate_bankfull(
   stream,
@@ -83,7 +83,7 @@ geometry.}
 
 \item{label_xs}{logical; Label cross sections?}
 
-\item{profile_units}{character; the units of the longitudinal profile.
+\item{profile_units}{character; The units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}
 
 \item{aerial}{logical; Display an overview map with an aerial
@@ -112,7 +112,7 @@ Produces a FluvialGeomorph Estimate Bankfull report in the
 `output_dir` in the requested file format.
 }
 \description{
-Produces the Estimate Bankfull report.
+Produces the FluvialGeomorph Estimate Bankfull report.
 }
 \examples{
 

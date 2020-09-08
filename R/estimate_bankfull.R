@@ -1,6 +1,6 @@
-#' @title Estimate bankfull report
+#' @title Estimate Bankfull Report
 #'
-#' @description Produces the Estimate Bankfull report.
+#' @description Produces the FluvialGeomorph Estimate Bankfull report.
 #'
 #' @export
 #' @param stream              character; The stream name. The stream name must
@@ -36,7 +36,7 @@
 #' @param stat                character; The statistic to graph "RMSE", "MAE"
 #'                            (the default).
 #' @param label_xs            logical; Label cross sections?
-#' @param profile_units       character; the units of the longitudinal profile.
+#' @param profile_units       character; The units of the longitudinal profile.
 #'                            One of "kilometers", "meters", "miles", or "feet"
 #' @param aerial              logical; Display an overview map with an aerial
 #'                            photo background?

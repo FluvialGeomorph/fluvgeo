@@ -105,5 +105,5 @@ Produces a FluvialGeomorph Level 1 Report in the `output_dir` in the
 requested file format.
 }
 \description{
-Creates a level 1 report.
+Creates a FluvialGeomorph Level 1 report.
 }

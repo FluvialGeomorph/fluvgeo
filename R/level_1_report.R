@@ -1,9 +1,8 @@
-#' @title  Level 1 Report
+#' @title Level 1 Report
 #'
-#' @description  Creates a level 1 report.
+#' @description  Creates a FluvialGeomorph Level 1 report.
 #'
 #' @export
-#'
 #' @param stream             character; The stream name. The stream name must
 #'                           match a stream name in `ReachName` field in the
 #'                           other parameters.
