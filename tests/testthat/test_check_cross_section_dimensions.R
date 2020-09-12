@@ -35,6 +35,10 @@ xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
 
 
 test_that("check cross_section_dimension step", {
+  expect_true(check_cross_section_dimensions(xs_dims, "level_1"))
+})
+
+test_that("check cross_section_dimension step", {
   expect_true(check_cross_section_dimensions(xs_dims, "cross_section_dimensions"))
 })
 

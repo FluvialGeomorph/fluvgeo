@@ -9,6 +9,7 @@
 #'                                   `cross_section_dimension` data structure
 #'                                   used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
+#'                        "level_1",
 #'                        "cross_section_dimensions", "shear_stress,
 #'                        "stream_power", "planform", "metric_ratios"
 #'
@@ -51,16 +52,17 @@
 #' @importFrom assertthat assert_that
 #'
 check_cross_section_dimensions <- function(cross_section_dimensions,
-                                           step = c("cross_section_dimensions",
+                                           step = c("level_1",
+                                                    "cross_section_dimensions",
                                                     "shear_stress",
                                                     "stream_power",
                                                     "planform",
                                                     "metric_ratios")) {
   name <- deparse(substitute(cross_section_dimensions))
 
-  # Step: cross_section_dimensions
-  if(step %in% c("cross_section_dimensions", "shear_stress", "stream_power",
-                 "planform", "metric_ratios")) {
+  # Step: Level 1
+  if(step %in% c("level_1", "cross_section_dimensions", "shear_stress",
+                 "stream_power", "planform", "metric_ratios")) {
     assert_that(is.data.frame(as.data.frame(cross_section_dimensions)),
                 msg = paste(name, "must be a data frame"))
     assert_that("Seq" %in% names(cross_section_dimensions) &
@@ -108,6 +110,16 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("slope" %in% names(cross_section_dimensions) &
                   is.numeric(cross_section_dimensions$slope),
                 msg = paste("Numeric field 'slope' missing from", name))
+
+    # Check for duplicate or missing `Seq` values
+    assert_that(length(unique(cross_section_dimensions$Seq)) ==
+                  length(min(cross_section_dimensions$Seq):max(cross_section_dimensions$Seq)),
+                msg = paste("Check for duplicate or missing `Seq` values in", name))
+  }
+
+  # Step: cross_section_dimensions
+  if(step %in% c("cross_section_dimensions", "shear_stress", "stream_power",
+                 "planform", "metric_ratios")) {
     assert_that("bankfull_elevation" %in% names(cross_section_dimensions) &
                   is.numeric(cross_section_dimensions$bankfull_elevation),
                 msg = paste("Numeric field 'bankfull_elevation' missing from", name))
@@ -151,10 +163,6 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
                   is.numeric(cross_section_dimensions$floodprone_elev),
                 msg = paste("Numeric field 'floodprone_elev' missing from", name))
 
-    # Check for duplicate or missing `Seq` values
-    assert_that(length(unique(cross_section_dimensions$Seq)) ==
-                  length(min(cross_section_dimensions$Seq):max(cross_section_dimensions$Seq)),
-                msg = paste("Check for duplicate or missing `Seq` values in", name))
   }
 
   # Step: shear_stress
