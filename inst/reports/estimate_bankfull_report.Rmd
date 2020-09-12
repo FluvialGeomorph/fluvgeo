@@ -167,7 +167,8 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
                                     xs_number = j,
                                     xs_pts_sf_list = params$xs_pts_sf_list,
-                                    bankfull_elevation = params$bf_estimate))
+                                    bankfull_elevation = params$bf_estimate,
+                                    aspect_ratio = 1))
   # Calculate cross section geometry
   xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
   dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
