@@ -98,6 +98,6 @@ cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
   # Add other fields to be removed
   xs_names <- append(xs_names, c("reach_name", "xs_type"))
 
-  # Remove the uneeded fields
+  # Remove the unneeded fields
   dims_join_reduced <- select(dims_join, -xs_names)
 }

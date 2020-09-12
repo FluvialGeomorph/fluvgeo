@@ -16,7 +16,6 @@
 #' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
 #' SimpleFeatures data frame.
 #'
-#'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
 #' @importFrom tidyr gather

@@ -4,7 +4,13 @@
 \alias{xs_compare_plot_L2}
 \title{Overplot multiple cross section profile surveys}
 \usage{
-xs_compare_plot_L2(stream, xs_number, xs_pts_sf_list, bankfull_elevation)
+xs_compare_plot_L2(
+  stream,
+  xs_number,
+  xs_pts_sf_list,
+  bankfull_elevation,
+  aspect_ratio = 0.5
+)
 }
 \arguments{
 \item{stream}{character; The name of the stream.}
@@ -20,6 +26,8 @@ legend.}
 \item{bankfull_elevation}{numeric; The detrended bankfull elevation (in
 feet) that is used to calculate hydraulic
 geometry.}
+
+\item{aspect_ratio}{numeric; The aspect ratio of the graph.}
 }
 \value{
 A ggplot2 object.
