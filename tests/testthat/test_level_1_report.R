@@ -5,7 +5,7 @@ stream <- "Cole Creek R1"
 flowline_fc      <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                               package = "fluvgeo"), "flowline")
 cross_section_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                              package = "fluvgeo"), "xs_250_25")
+                              package = "fluvgeo"), "xs_250_25_dims")
 flowline_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
                                package = "fluvgeo"), "flowline_points")
 flowline_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",

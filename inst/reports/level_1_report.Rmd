@@ -64,8 +64,15 @@ print(compare_xs_long_profile(stream = params$stream,
                               profile_units = params$profile_units))
 ```
 
-## Cross Section Profiles
+## Cross Section Metrics
+```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot.", warning=FALSE}
+print(L1_metrics <- xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
+                                       features_sf = features_sf,
+                                       profile_units = params$profile_units))
+```
 
+
+## Cross Section Profiles
 ```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=5}
 cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
 
