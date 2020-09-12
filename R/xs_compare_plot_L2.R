@@ -14,6 +14,7 @@
 #' @param bankfull_elevation  numeric; The detrended bankfull elevation (in
 #'                            feet) that is used to calculate hydraulic
 #'                            geometry.
+#' @param aspect_ratio        numeric; The aspect ratio of the graph.
 #'
 #' @return A ggplot2 object.
 #'
@@ -32,7 +33,7 @@
 #' @importFrom ggplot2 ggplot
 #'
 xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
-                               bankfull_elevation) {
+                               bankfull_elevation, aspect_ratio = 0.5) {
   # Determine the base survey
   base_survey <- names(xs_pts_sf_list)[1]
 
@@ -47,15 +48,18 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
   xs_pts <- dplyr::bind_rows(xs_current, .id = "Survey")
 
   # Define survey factor levels
-  xs_pts$Survey <- factor(xs_pts$Survey)
+  survey_levels <- sort(unique(as.character(xs_pts$Survey)),
+                        decreasing = TRUE)
+  xs_pts$Survey <- factor(xs_pts$Survey,
+                          levels = survey_levels,
+                          labels = survey_levels,
+                          ordered = TRUE)
 
   # Filter for the base_survey
-  xs_pts_base_survey <- dplyr::filter(xs_pts, Survey == base_survey)
+  xs_pts_base_survey <- dplyr::filter(xs_pts, .data$Survey == base_survey)
 
   # Calculate the transform between actual elevation and detrend elevation
   eg <- mean(xs_pts_base_survey$Detrend_DEM_Z - xs_pts_base_survey$DEM_Z)
-
-
 
   # Define colors
   cols <- c("coral3", "darkslategray4", "darkolivegreen", "mediumpurple4")
@@ -77,9 +81,9 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
     geom_hline(yintercept = bankfull_elevation - eg,
                colour = "blue", size = 1) +
     theme_bw() +
-    theme(aspect.ratio = 1,
+    theme(aspect.ratio = aspect_ratio,
           legend.direction = "vertical",
-          legend.position = c(0.07,0.1),
+          legend.position = c(0.07,0.2),
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey", size = 0.1),

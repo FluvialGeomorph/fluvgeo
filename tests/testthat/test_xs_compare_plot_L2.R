@@ -36,7 +36,8 @@ xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 p3 <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                   xs_number = xs_number,
                                   xs_pts_sf_list = xs_pts_sf_list,
-                                  bankfull_elevation = bankfull_elevation)
+                                  bankfull_elevation = bankfull_elevation,
+                                  aspect_ratio = 1)
 print(p3)
 
 # Only one survey
