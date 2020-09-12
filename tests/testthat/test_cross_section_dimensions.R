@@ -1,81 +1,47 @@
 library(fluvgeo)
 context("cross_section_dimensions")
 
+# Get feature class test data
+xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                       package = "fluvgeo"),
+                           "xs_250_25_dims")
+
+# Convert to sf
+xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
+
+# Select fields available at level 1
+xs_dims_L1_sf <- dplyr::select(xs_dims_sf, 1:15)
+
+# Convert to sf
+xs <- sf::as_Spatial(xs_dims_L1_sf)
+
+# Set parameters
+lead_n = 1
+use_smoothing = TRUE
+loess_span = 0.5
+vert_units = "ft"
+
 # Calculate cross section dimensions
-xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
-                                    xs_points = fluvgeo::sin_riffle_channel_points_sp,
-                                    bankfull_elevation = 103,
-                                    lead_n = 1,
-                                    use_smoothing = TRUE,
-                                    loess_span = 0.5,
-                                    vert_units = "ft")
+xs_dims_L1 <- cross_section_dimensions_L1(xs = xs,
+                                          lead_n = lead_n,
+                                          use_smoothing = use_smoothing,
+                                          loess_span = loess_span,
+                                          vert_units = vert_units)
 
-test_that("check fields exist by name", {
-  expect_true("Seq"                   %in% colnames(xs_dims))
-  expect_true("Z_smooth"              %in% colnames(xs_dims))
-  expect_true("upstream_x"            %in% colnames(xs_dims))
-  expect_true("upstream_y"            %in% colnames(xs_dims))
-  expect_true("downstream_x"          %in% colnames(xs_dims))
-  expect_true("downstream_y"          %in% colnames(xs_dims))
-  expect_true("upstream_z"            %in% colnames(xs_dims))
-  expect_true("downstream_z"          %in% colnames(xs_dims))
-  expect_true("upstream_m"            %in% colnames(xs_dims))
-  expect_true("downstream_m"          %in% colnames(xs_dims))
-  expect_true("rise"                  %in% colnames(xs_dims))
-  expect_true("run"                   %in% colnames(xs_dims))
-  expect_true("stream_length"         %in% colnames(xs_dims))
-  expect_true("valley_length"         %in% colnames(xs_dims))
-  expect_true("sinuosity"             %in% colnames(xs_dims))
-  expect_true("slope"                 %in% colnames(xs_dims))
-  expect_true("bankfull_elevation"    %in% colnames(xs_dims))
-  expect_true("drainage_area"         %in% colnames(xs_dims))
-  expect_true("xs_area"               %in% colnames(xs_dims))
-  expect_true("xs_width"              %in% colnames(xs_dims))
-  expect_true("xs_depth"              %in% colnames(xs_dims))
-  expect_true("discharge"             %in% colnames(xs_dims))
-  expect_true("fp_area"               %in% colnames(xs_dims))
-  expect_true("fp_width"              %in% colnames(xs_dims))
-  expect_true("fp_depth"              %in% colnames(xs_dims))
-  expect_true("xs_width_depth_ratio"  %in% colnames(xs_dims))
-  expect_true("xs_entrenchment_ratio" %in% colnames(xs_dims))
-  expect_true("watersurface_elev"     %in% colnames(xs_dims))
-  expect_true("bankfull_elev"         %in% colnames(xs_dims))
-  expect_true("floodprone_elev"       %in% colnames(xs_dims))
+# Calculate cross section dimensions
+xs_dims_L2 <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+                              xs_points = fluvgeo::sin_riffle_channel_points_sp,
+                              bankfull_elevation = 103,
+                              lead_n = 1,
+                              use_smoothing = TRUE,
+                              loess_span = 0.5,
+                              vert_units = "ft")
+
+test_that("check cross section dimensions level_1", {
+  expect_true(check_cross_section_dimensions(xs_dims_L1, "level_1"))
 })
 
-test_that("check field data type", {
-  expect_true(is.numeric(xs_dims$Seq))
-  expect_true(is.numeric(xs_dims$Z_smooth))
-  expect_true(is.numeric(xs_dims$upstream_x))
-  expect_true(is.numeric(xs_dims$upstream_y))
-  expect_true(is.numeric(xs_dims$downstream_x))
-  expect_true(is.numeric(xs_dims$downstream_y))
-  expect_true(is.numeric(xs_dims$upstream_z))
-  expect_true(is.numeric(xs_dims$downstream_z))
-  expect_true(is.numeric(xs_dims$upstream_m))
-  expect_true(is.numeric(xs_dims$downstream_m))
-  expect_true(is.numeric(xs_dims$rise))
-  expect_true(is.numeric(xs_dims$run))
-  expect_true(is.numeric(xs_dims$stream_length))
-  expect_true(is.numeric(xs_dims$valley_length))
-  expect_true(is.numeric(xs_dims$sinuosity))
-  expect_true(is.numeric(xs_dims$slope))
-  expect_true(is.numeric(xs_dims$bankfull_elevation))
-  expect_true(is.numeric(xs_dims$drainage_area))
-  expect_true(is.numeric(xs_dims$xs_area))
-  expect_true(is.numeric(xs_dims$xs_width))
-  expect_true(is.numeric(xs_dims$xs_depth))
-
-  expect_true(is.numeric(xs_dims$fp_area))
-  expect_true(is.numeric(xs_dims$fp_width))
-  expect_true(is.numeric(xs_dims$fp_depth))
-  expect_true(is.numeric(xs_dims$xs_width_depth_ratio))
-  expect_true(is.numeric(xs_dims$xs_entrenchment_ratio))
-  expect_true(is.numeric(xs_dims$watersurface_elev))
-  expect_true(is.numeric(xs_dims$bankfull_elev))
-  expect_true(is.numeric(xs_dims$floodprone_elev))
-})
-
-test_that("check data structure", {
-  expect_true(check_cross_section_dimensions(xs_dims, "cross_section_dimensions"))
+test_that("check cross section dimensions", {
+  expect_true(check_cross_section_dimensions(xs_dims_L2,
+                                             "cross_section_dimensions"))
 })
