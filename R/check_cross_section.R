@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param cross_section   SpatialLinesDataFrame: a `cross_section` data
+#' @param cross_section   SpatialLinesDataFrame of sf: a `cross_section` data
 #'                        structure used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "assign_ids", "watershed_area", "river_position",

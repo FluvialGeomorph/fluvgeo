@@ -11,7 +11,7 @@ check_cross_section(
 )
 }
 \arguments{
-\item{cross_section}{SpatialLinesDataFrame: a `cross_section` data
+\item{cross_section}{SpatialLinesDataFrame of sf: a `cross_section` data
 structure used by the fluvgeo package.}
 
 \item{step}{character; last completed processing step. One of
