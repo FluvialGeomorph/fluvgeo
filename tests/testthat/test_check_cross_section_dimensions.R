@@ -54,13 +54,17 @@ test_that("check planform step", {
   expect_true(check_cross_section_dimensions(xs_dims_plan, "planform"))
 })
 
-test_that("check mertic_ratio step", {
-  expect_true(check_cross_section_dimensions(xs_dims_ratios, "metric_ratio"))
+test_that("check mertic_ratios step", {
+  expect_true(check_cross_section_dimensions(xs_dims_ratios, "metric_ratios"))
 })
 
 
 # sf
-
 test_that("check stream_power step, sf", {
   expect_true(check_cross_section_dimensions(xs_dims_sf, "stream_power"))
+})
+
+
+test_that("check for wrong step", {
+  expect_error(check_cross_section_dimensions(xs_dims_ratios, "metric_ratio"))
 })

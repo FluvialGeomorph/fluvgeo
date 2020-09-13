@@ -1,4 +1,6 @@
 library(fluvgeo)
+library(dplyr)
+library(sf)
 context("cross_section_dimensions")
 
 # Get feature class test data

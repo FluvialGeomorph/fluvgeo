@@ -58,7 +58,7 @@ test_that("The output docx report exists", {
 
   output_format <- "word_document"
   output_file <- file.path(output_dir, paste0("Cole_Creek_R1_102_5_",
-                                              "bankfull_estimate_.docx"))
+                                              "bankfull_estimate.docx"))
 
   # Call the estimate_bankfull function with test data
   estimate_bankfull(stream = stream,
