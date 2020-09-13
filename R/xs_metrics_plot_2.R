@@ -8,6 +8,8 @@
 #'                        dimensions.
 #' @param features_sf     SimpleFeatures data frame of infrastructure features.
 #' @param label_xs        logical; Draw the cross section locations?
+#' @param xs_label_freq   numeric; An integer indicating the frequency of
+#'                        cross section labels.
 #' @param profile_units   character; the units of the longitudinal profile.
 #'                        One of "kilometers", "meters", "miles", or "feet"
 #'
@@ -27,6 +29,7 @@
 xs_metrics_plot_2 <- function(xs_dims_sf,
                               features_sf,
                               label_xs = TRUE,
+                              xs_label_freq = 10,
                               profile_units = "kilometers") {
   # Check parameters
   check_cross_section_dimensions(xs_dims_sf, "stream_power")
@@ -65,16 +68,16 @@ xs_metrics_plot_2 <- function(xs_dims_sf,
   plot_min_y <- min(na.omit(xs_dims_sf$unit_stream_power))
 
   # Gather data by metrics for plotting
-  xs_dims <- gather(xs_dims_sf,
-                    key = "metrics",
-                    value = "values",
-                    na.rm = TRUE,
-                    .data$xs_width_depth_ratio,
-                    .data$xs_entrenchment_ratio,
-                    .data$slope,
-                    .data$sinuosity,
-                    .data$shear_stress_weight,
-                    .data$unit_stream_power)
+  xs_dims <- tidyr::gather(xs_dims_sf,
+                           key = "metrics",
+                           value = "values",
+                           na.rm = TRUE,
+                           .data$xs_width_depth_ratio,
+                           .data$xs_entrenchment_ratio,
+                           .data$slope,
+                           .data$sinuosity,
+                           .data$shear_stress_weight,
+                           .data$unit_stream_power)
 
   # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -90,6 +93,10 @@ xs_metrics_plot_2 <- function(xs_dims_sf,
                     "Sinuosity"                   = "mediumpurple4",
                     "Shear Stress (lb/ft^2)"      = "indianred4",
                     "Unit Stream Power (kg/m/s)"  = "darkolivegreen")
+
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_dims$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_dims[labeled_xs, ]
 
   # Draw the graph
   p <- ggplot(xs_dims,
@@ -121,7 +128,12 @@ xs_metrics_plot_2 <- function(xs_dims_sf,
                     segment.size = 0)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 3, color = "black")
+  xs_labels <- geom_text_repel(inherit.aes = FALSE,
+                               data = xs_labels_sf,
+                               aes(x = .data$km_to_mouth * unit_coef,
+                                   y = .data$values,
+                                   label = .data$Seq),
+                               size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
