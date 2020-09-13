@@ -17,10 +17,15 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
 flowline_sp      <- fluvgeo::sin_flowline_sp
 xs_dimensions_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
 
+xs_label_freq = 2
+extent_factor = 1.1
+
 # Create the reach metric map
 wdr_map_sp <- map_reach_metric(wdr,
                                flowline = flowline_sp,
-                               xs_dimensions = xs_dimensions_sp)
+                               xs_dimensions = xs_dimensions_sp,
+                               xs_label_freq = xs_label_freq,
+                               extent_factor = extent_factor)
 print(wdr_map_sp)
 
 # sf

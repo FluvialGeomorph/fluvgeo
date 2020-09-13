@@ -10,6 +10,8 @@
 #'                            class.
 #' @param xs_dimensions       SpatialLinesDataFrame or sf; a cross section
 #'                            dimensions feature class.
+#' @param xs_label_freq       numeric; An integer indicating the frequency of
+#'                            cross section labels.
 #' @param extent_factor       numeric; The amount the extent is expanded around
 #'                            the cross section feature class. Values greater
 #'                            than one zoom out, values less than one zoom in.
@@ -37,6 +39,7 @@
 #' tm_scale_bar tm_layout
 #'
 map_reach_metric <- function(metric, flowline, xs_dimensions,
+                             xs_label_freq = 2,
                              extent_factor = 1.1) {
   # Check data structure
   check_flowline(flowline, step = "create_flowline")
@@ -44,6 +47,10 @@ map_reach_metric <- function(metric, flowline, xs_dimensions,
   # Set extent
   xs_extent <- fluvgeo::feature_extent(xs_dimensions,
                                        extent_factor = extent_factor)
+
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_dimensions$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_dimensions[labeled_xs, ]
 
   # Create the reach map
   metric_map <- tm_shape(shp = flowline,
@@ -62,6 +69,8 @@ map_reach_metric <- function(metric, flowline, xs_dimensions,
                              style = "fixed",
                              breaks = metric@threshold_breaks,
                              interval.closure = "left") +
+                tm_shape(shp = xs_labels_sf,
+                         name = "Cross Section labels") +
                   tm_text(text = "Seq",
                           col = "black",
                           size = 0.7,
