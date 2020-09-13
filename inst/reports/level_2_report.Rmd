@@ -87,10 +87,10 @@ print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp,
 
 ## Cross Section Metrics
 ```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot. ", warning=FALSE}
-print(fluvgeo::xs_metrics_plot_2(xs_dims_sf = params$xs_dims_sf, 
-                                 features_sf = params$features_sf,
-                                 label_xs = params$label_xs,
-                                 profile_units = params$profile_units))
+print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf, 
+                                  features_sf = params$features_sf,
+                                  label_xs = params$label_xs,
+                                  profile_units = params$profile_units))
 ```
 
 ## Width Depth Ratio

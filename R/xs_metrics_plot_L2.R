@@ -26,11 +26,11 @@
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars
 #'
-xs_metrics_plot_2 <- function(xs_dims_sf,
-                              features_sf,
-                              label_xs = TRUE,
-                              xs_label_freq = 10,
-                              profile_units = "kilometers") {
+xs_metrics_plot_L2 <- function(xs_dims_sf,
+                               features_sf,
+                               label_xs = TRUE,
+                               xs_label_freq = 10,
+                               profile_units = "kilometers") {
   # Check parameters
   check_cross_section_dimensions(xs_dims_sf, "stream_power")
   check_features(features_sf)

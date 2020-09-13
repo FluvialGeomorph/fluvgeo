@@ -1,5 +1,5 @@
 library(fluvgeo)
-context("xs_metrics_plot_2")
+context("xs_metrics_plot_L2")
 
 # Get feature class test data
 features_fc   <- file.path(system.file("extdata", "testing_data.gdb",
@@ -18,11 +18,11 @@ xs_label_freq = 2
 profile_units = "miles"
 
 # Call the xs_metrics_plot function
-level_2_metrics <- xs_metrics_plot_2(xs_dims_sf = xs_dims_sf,
-                                     features_sf = features_sf,
-                                     label_xs = label_xs,
-                                     xs_label_freq = xs_label_freq,
-                                     profile_units = profile_units)
+level_2_metrics <- xs_metrics_plot_L2(xs_dims_sf = xs_dims_sf,
+                                      features_sf = features_sf,
+                                      label_xs = label_xs,
+                                      xs_label_freq = xs_label_freq,
+                                      profile_units = profile_units)
 
 print(level_2_metrics)
 
