@@ -4,10 +4,16 @@
 \alias{cross_section_dimensions_L1}
 \title{Calculate Cross Section Dimensions at Level 1}
 \usage{
-cross_section_dimensions_L1(xs, lead_n, use_smoothing, loess_span, vert_units)
+cross_section_dimensions_L1(
+  xs_sf,
+  lead_n,
+  use_smoothing,
+  loess_span,
+  vert_units
+)
 }
 \arguments{
-\item{xs}{SpatialLinesDataFrame; the full path to a
+\item{xs_sf}{sf object; the full path to a
 cross section line feature class}
 
 \item{lead_n}{numeric; The number of features to lead/lag on
