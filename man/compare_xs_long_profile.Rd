@@ -9,7 +9,8 @@ compare_xs_long_profile(
   xs_pts_sf_list,
   features_sf = NULL,
   profile_units = "feet",
-  label_xs = TRUE
+  label_xs = TRUE,
+  xs_label_freq = 10
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ legend.}
 One of "kilometers", "meters", "miles", or "feet"}
 
 \item{label_xs}{logical; Draw the cross section labels?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 }
 \value{
 A ggplot2 object.

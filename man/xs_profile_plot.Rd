@@ -8,6 +8,7 @@ xs_profile_plot(
   reach_xs_dims_sp,
   features_sp = NULL,
   label_xs = TRUE,
+  xs_label_freq = 10,
   profile_units = "kilometers"
 )
 }
@@ -18,6 +19,9 @@ dimensions.}
 \item{features_sp}{SpatialPointsDataFrame of infrastructure features}
 
 \item{label_xs}{logical; Draw the cross section labels?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}

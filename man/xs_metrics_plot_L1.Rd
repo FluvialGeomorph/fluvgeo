@@ -8,6 +8,7 @@ xs_metrics_plot_L1(
   xs_dims_sf,
   features_sf,
   label_xs = TRUE,
+  xs_label_freq = 10,
   profile_units = "kilometers"
 )
 }
@@ -18,6 +19,9 @@ dimensions.}
 \item{features_sf}{SimpleFeatures data frame of infrastructure features.}
 
 \item{label_xs}{logical; Draw the cross section locations?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}

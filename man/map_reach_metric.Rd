@@ -4,7 +4,13 @@
 \alias{map_reach_metric}
 \title{Reach Metric Map}
 \usage{
-map_reach_metric(metric, flowline, xs_dimensions, extent_factor = 1.1)
+map_reach_metric(
+  metric,
+  flowline,
+  xs_dimensions,
+  xs_label_freq = 2,
+  extent_factor = 1.1
+)
 }
 \arguments{
 \item{metric}{MetricThreshold object; the fluvial geomorphic
@@ -15,6 +21,9 @@ class.}
 
 \item{xs_dimensions}{SpatialLinesDataFrame or sf; a cross section
 dimensions feature class.}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 
 \item{extent_factor}{numeric; The amount the extent is expanded around
 the cross section feature class. Values greater
