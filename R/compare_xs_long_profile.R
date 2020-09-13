@@ -14,6 +14,8 @@
 #' @param profile_units       character; the units of the longitudinal profile.
 #'                            One of "kilometers", "meters", "miles", or "feet"
 #' @param label_xs            logical; Draw the cross section labels?
+#' @param xs_label_freq       numeric; An integer indicating the frequency of
+#'                            cross section labels.
 #'
 #' @return A ggplot2 object.
 #'
@@ -38,7 +40,8 @@
 #'
 #'
 compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
-                                    profile_units = "feet", label_xs = TRUE) {
+                                    profile_units = "feet", label_xs = TRUE,
+                                    xs_label_freq = 10) {
   # Check parameters
   #check_features(features_sp)
   assert_that(is.logical(label_xs), msg = "label_xs must be logical")
@@ -76,6 +79,10 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
                             value = "values",
                             .data$line_top, .data$line_bottom)
 
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_lines$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_lines[labeled_xs, ]
+
   # Determine min y value
   plot_min_y <- min(xs_pts$DEM_Z)
 
@@ -108,13 +115,13 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
 
   # Draw cross section labels
   xs_line <- geom_line(inherit.aes = FALSE,
-                       data = xs_lines,
+                       data = xs_labels_sf,
                        aes(x = .data$km_to_mouth * unit_coef,
                            y = .data$values,
                            group = .data$Seq),
                        show.legend = FALSE)
   xs_labels <- geom_text(inherit.aes = FALSE,
-                         data = xs_lines[xs_lines$elevations == "line_top",],
+                         data = xs_labels_sf[xs_labels_sf$elevations == "line_top",],
                          aes(x = .data$km_to_mouth * unit_coef,
                              y = .data$values - 1.5,
                              label = .data$Seq),

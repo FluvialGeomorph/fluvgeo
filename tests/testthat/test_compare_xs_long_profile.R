@@ -16,6 +16,8 @@ survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"), "features")
 profile_units <- "feet"
+label_xs = TRUE
+xs_label_freq = 2
 
 # Create list of survey paths
 xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
@@ -37,7 +39,10 @@ features_sf <- fluvgeo::fc2sf(features_fc)
 p <- compare_xs_long_profile(stream = stream,
                              xs_pts_sf_list = xs_pts_sf_list,
                              features_sf = features_sf,
-                             profile_units = profile_units)
+                             profile_units = profile_units,
+                             label_xs = label_xs,
+                             xs_label_freq = xs_label_freq)
+print(p)
 
 test_that("compare_XS_long_profile exists", {
   expect_true("ggplot" %in% class(p))
