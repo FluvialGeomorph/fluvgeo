@@ -12,11 +12,11 @@ check_cross_section_dimensions(
 )
 }
 \arguments{
-\item{cross_section_dimensions}{a data frame or SpatialLinesDataFrame: a
+\item{cross_section_dimensions}{data frame, SpatialLinesDataFrame, sf: A
 `cross_section_dimension` data structure
 used by the fluvgeo package.}
 
-\item{step}{character; last completed processing step. One of
+\item{step}{character; Last completed processing step. One of
 "level_1",
 "cross_section_dimensions", "shear_stress,
 "stream_power", "planform", "metric_ratios"}
