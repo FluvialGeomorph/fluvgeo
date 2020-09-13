@@ -27,12 +27,12 @@ TRUE, FALSE (default)}
 \item{loess_span}{numeric; the loess regression span parameter,
 defaults to 0.05}
 
-\item{vert_units}{character; The vertical units. One of: "m"
+\item{vert_units}{character; The DEM vertical units. One of: "m"
 (meter), "ft" (foot), "us-ft" (us survey foot)}
 }
 \value{
-A new cross section data frame with the hydraulic geometry
-     dimensions added.
+A new cross section data frame with the Level 1 hydraulic geometry
+dimensions added.
 }
 \description{
 Calculates level 1 cross section dimensions for the input
