@@ -13,10 +13,16 @@ xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
 xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)
 features_sf  <- fluvgeo::fc2sf(features_fc)
 
+label_xs = TRUE
+xs_label_freq = 2
+profile_units = "miles"
+
 # Call the xs_metrics_plot function
 level_1_metrics <- xs_metrics_plot_L1(xs_dims_sf = xs_dims_sf,
                                      features_sf = features_sf,
-                                     profile_units = "miles")
+                                     label_xs = label_xs,
+                                     xs_label_freq = xs_label_freq,
+                                     profile_units = profile_units)
 
 print(level_1_metrics)
 

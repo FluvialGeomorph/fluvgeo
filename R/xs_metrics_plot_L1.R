@@ -8,6 +8,8 @@
 #'                        dimensions.
 #' @param features_sf     SimpleFeatures data frame of infrastructure features.
 #' @param label_xs        logical; Draw the cross section locations?
+#' @param xs_label_freq   numeric; An integer indicating the frequency of
+#'                        cross section labels.
 #' @param profile_units   character; the units of the longitudinal profile.
 #'                        One of "kilometers", "meters", "miles", or "feet"
 #'
@@ -26,9 +28,10 @@
 xs_metrics_plot_L1 <- function(xs_dims_sf,
                                features_sf,
                                label_xs = TRUE,
+                               xs_label_freq = 10,
                                profile_units = "kilometers") {
   # Check parameters
-  check_cross_section_dimensions(xs_dims_sf, "stream_power")
+  check_cross_section_dimensions(xs_dims_sf, "level_1")
   check_features(features_sf)
 
   # Calculate a unit conversion coefficient from kilometers to other units
@@ -63,15 +66,15 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
   plot_min_y <- min(na.omit(xs_dims_sf$sinuosity))
 
   # Gather data by metrics for plotting
-  xs_dims <- gather(xs_dims_sf,
-                    key = "metrics",
-                    value = "values",
-                    na.rm = TRUE,
-                    .data$Watershed_Area_SqMile,
-                    .data$Z,
-                    .data$Z_smooth,
-                    .data$slope,
-                    .data$sinuosity)
+  xs_dims <- tidyr::gather(xs_dims_sf,
+                           key = "metrics",
+                           value = "values",
+                           na.rm = TRUE,
+                           .data$Watershed_Area_SqMile,
+                           .data$Z,
+                           .data$Z_smooth,
+                           .data$slope,
+                           .data$sinuosity)
 
   # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -87,6 +90,10 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
                     "Slope"                          = "indianred4",
                     "Sinuosity"                      = "darkolivegreen")
 
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_dims$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_dims[labeled_xs, ]
+
   # Draw the graph
   p <- ggplot(xs_dims,
               aes(x = .data$km_to_mouth * unit_coef,
@@ -96,7 +103,6 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
     geom_point(size = 3) +
     geom_line(size = 1) +
     scale_color_manual(values = metrics_cols) +
-    # scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -117,7 +123,12 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
                     segment.size = 0)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 3, color = "black")
+  xs_labels <- geom_text_repel(inherit.aes = FALSE,
+                               data = xs_labels_sf,
+                               aes(x = .data$km_to_mouth * unit_coef,
+                                   y = .data$values,
+                                   label = .data$Seq),
+                               size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
