@@ -125,7 +125,7 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
                          aes(x = .data$km_to_mouth * unit_coef,
                              y = .data$values - 1.5,
                              label = .data$Seq),
-                             size = 1.5)
+                             size = 3)
 
   # Label river features
   if(!is.null(features)) {

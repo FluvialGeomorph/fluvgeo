@@ -5,7 +5,7 @@ context("xs_profile_plot")
 reach_xs_dims_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
 features_sp      <- fluvgeo::sin_features_sp
 label_xs = TRUE
-xs_label_freq = 10
+xs_label_freq = 2
 profile_units = "kilometers"
 
 # Create cross section profile plot
