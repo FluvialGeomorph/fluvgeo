@@ -9,6 +9,8 @@
 #' @param reach_xs_dims   data frame; a data frame of cross section
 #'                        dimensions.
 #' @param label_xs        logical; Draw the cross section locations?
+#' @param xs_label_freq   numeric; An integer indicating the frequency of
+#'                        cross section labels.
 #' @param profile_units   character; the units of the longitudinal profile.
 #'                        One of "kilometers", "meters", "miles", or "feet"
 #'
@@ -56,6 +58,7 @@
 xs_metric_plot <- function(metric,
                            reach_xs_dims,
                            label_xs = TRUE,
+                           xs_label_freq = 10,
                            profile_units = "kilometers") {
   # Convert the metric variable into an expression
   metric_string <- rlang::parse_expr(paste0(".data$", metric@variable))
@@ -68,10 +71,10 @@ xs_metric_plot <- function(metric,
                       "feet"       = 3280.84)
 
   # Gather data by metrics for plotting
-  xs_dims <- gather(reach_xs_dims,
-                    key = "metrics",
-                    value = "values",
-                    !!metric_string)
+  xs_dims <- tidyr::gather(reach_xs_dims,
+                           key = "metrics",
+                           value = "values",
+                           !!metric_string)
 
   # Set the threshold values used for drawing horizontal lines. Remove the
   # first and last threshold values (min and max) leaving the middle values
@@ -82,6 +85,10 @@ xs_metric_plot <- function(metric,
                                breaks = metric@threshold_breaks,
                                lables = metric@threshold_labels,
                                ordered_result = TRUE)
+
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_dims$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_dims[labeled_xs, ]
 
   # Draw the graph
   p <- ggplot(xs_dims,
@@ -95,7 +102,6 @@ xs_metric_plot <- function(metric,
                        labels = metric@threshold_labels) +
     geom_hline(yintercept = metric_threshold_lines,
                color = "red") +
-    # scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "right",
           legend.title = element_blank(),
@@ -105,7 +111,12 @@ xs_metric_plot <- function(metric,
          y     = metric@metric)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 3, color = "black")
+  xs_labels <- geom_text_repel(inherit.aes = FALSE,
+                               data = xs_labels_sf,
+                               aes(x = .data$km_to_mouth * unit_coef,
+                                   y = .data$values,
+                                   label = .data$Seq),
+                               size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
