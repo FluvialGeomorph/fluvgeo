@@ -8,6 +8,8 @@
 #'                         dimensions.
 #' @param features_sp      SpatialPointsDataFrame of infrastructure features
 #' @param label_xs         logical; Draw the cross section labels?
+#' @param xs_label_freq    numeric; An integer indicating the frequency of
+#'                         cross section labels.
 #' @param profile_units    character; the units of the longitudinal profile.
 #'                         One of "kilometers", "meters", "miles", or "feet"
 #'
@@ -38,6 +40,7 @@
 xs_profile_plot <- function(reach_xs_dims_sp,
                             features_sp = NULL,
                             label_xs = TRUE,
+                            xs_label_freq = 10,
                             profile_units = "kilometers") {
   # Check parameters
   check_cross_section_dimensions(reach_xs_dims_sp, "cross_section_dimensions")
@@ -79,10 +82,14 @@ xs_profile_plot <- function(reach_xs_dims_sp,
   # Create xs graphing data
   reach_xs_dims$elev_min <- reach_xs_dims$watersurface_elev - 2
   reach_xs_dims$elev_max <- reach_xs_dims$bankfull_elev + 2
-  xs_lines <- gather(reach_xs_dims,
-                     key = "elevations",
-                     value = "values",
-                     .data$elev_min, .data$elev_max)
+  xs_lines <- tidyr::gather(reach_xs_dims,
+                            key = "elevations",
+                            value = "values",
+                            .data$elev_min, .data$elev_max)
+
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_lines$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_lines[labeled_xs, ]
 
   # Calculate y-axis minor breaks interval
   ymin <- floor(min(reach_xs_dims$elev_min))
@@ -119,7 +126,7 @@ xs_profile_plot <- function(reach_xs_dims_sp,
                            group = .data$Seq),
                        show.legend = FALSE)
   xs_labels <- geom_text_repel(inherit.aes = FALSE,
-                               data = xs_lines[xs_lines$elevations == "elev_max",],
+                               data = xs_labels_sf[xs_labels_sf$elevations == "elev_max",],
                                aes(x = .data$km_to_mouth * unit_coef,
                                    y = .data$values,
                                    label = .data$Seq),
