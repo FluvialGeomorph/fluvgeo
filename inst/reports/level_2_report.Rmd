@@ -82,6 +82,7 @@ features_sp    <- sf::as_Spatial(features_sf_zm)
 print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp, 
                                features = features_sp, 
                                label_xs = params$label_xs,
+                               xs_label_freq = params$xs_label_freq,
                                profile_units = params$profile_units))
 ```
 
@@ -90,6 +91,7 @@ print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp,
 print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf, 
                                   features_sf = params$features_sf,
                                   label_xs = params$label_xs,
+                                  xs_label_freq = params$xs_label_freq,
                                   profile_units = params$profile_units))
 ```
 
@@ -109,6 +111,7 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
 # Create the reach metric map
 print(fluvgeo::map_reach_metric(wdr,
                                 flowline = params$flowline_sf,
+                                xs_label_freq = params$xs_label_freq,
                                 xs_dimensions = params$xs_dims_sf))
 ```
 
@@ -116,6 +119,7 @@ print(fluvgeo::map_reach_metric(wdr,
 print(fluvgeo::xs_metric_plot(metric = wdr,
                               reach_xs_dims = params$xs_dims_sf,
                               label_xs = TRUE,
+                              xs_label_freq = params$xs_label_freq,
                               profile_units = params$profile_units))
 ```
 
@@ -141,7 +145,7 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
 
-```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, warning=TRUE}
+```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=3, warning=TRUE}
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
 # Iterate through xs's creating: map, cross section plot, and RHG table
