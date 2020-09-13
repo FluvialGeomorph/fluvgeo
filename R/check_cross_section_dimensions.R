@@ -60,6 +60,18 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
                                                     "metric_ratios")) {
   name <- deparse(substitute(cross_section_dimensions))
 
+  # Check parameters
+  steps <- c("level_1",
+             "cross_section_dimensions",
+             "shear_stress",
+             "stream_power",
+             "planform",
+             "metric_ratios")
+  assert_that(step %in% steps,
+              msg = paste("parameter `step` must be one of",
+                          paste(steps, collapse = ", ")))
+
+
   if(class(cross_section_dimensions)[1] == "SpatialLinesDataFrame") {
     cross_section_dimensions_df <- cross_section_dimensions@data
   }
