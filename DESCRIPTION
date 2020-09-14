@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.29
+Version: 0.1.30
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -30,7 +30,8 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     knitr,
-    kableExtra
+    kableExtra,
+    rgdal
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
