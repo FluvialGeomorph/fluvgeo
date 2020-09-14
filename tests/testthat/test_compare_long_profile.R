@@ -39,6 +39,7 @@ p <- fluvgeo::compare_long_profile(stream = stream,
                                    flowline_pts_sf_list = flowline_pts_sf_list,
                                    features_sf = features_sf,
                                    profile_units = profile_units)
+print(p)
 
 test_that("compare_long_profile plot exists", {
   expect_true("ggplot" %in% class(p))

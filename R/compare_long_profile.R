@@ -44,7 +44,12 @@ compare_long_profile <- function(stream, flowline_pts_sf_list,
   flowline_pts <- dplyr::bind_rows(flowline_current, .id = "Survey")
 
   # Define survey factor levels
-  flowline_pts$Survey <- factor(flowline_pts$Survey)
+  survey_levels <- sort(unique(as.character(flowline_pts$Survey)),
+                        decreasing = TRUE)
+  flowline_pts$Survey <- factor(flowline_pts$Survey,
+                                levels = survey_levels,
+                                labels = survey_levels,
+                                ordered = TRUE)
 
   # Determine min y value
   plot_min_y <- min(flowline_pts$Z)
