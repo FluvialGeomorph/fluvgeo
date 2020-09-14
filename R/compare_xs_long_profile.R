@@ -59,7 +59,12 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
   xs_pts <- dplyr::bind_rows(stream_current, .id = "Survey")
 
   # Define survey factor levels
-  xs_pts$Survey <- factor(xs_pts$Survey)
+  survey_levels <- sort(unique(as.character(xs_pts$Survey)),
+                        decreasing = TRUE)
+  xs_pts$Survey <- factor(xs_pts$Survey,
+                          levels = survey_levels,
+                          labels = survey_levels,
+                          ordered = TRUE)
 
   # Find the lowest elevation for each cross section
   xs_pts_survey_seq_grouped <- dplyr::group_by(xs_pts, .data$Survey,
