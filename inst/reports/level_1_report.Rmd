@@ -61,6 +61,7 @@ print(fluvgeo::compare_long_profile(stream = params$stream,
 print(compare_xs_long_profile(stream = params$stream,
                               xs_pts_sf_list = params$xs_points_sf_list,
                               features_sf = params$features_sf,
+                              xs_label_freq = params$xs_label_freq,
                               profile_units = params$profile_units))
 ```
 
@@ -68,6 +69,7 @@ print(compare_xs_long_profile(stream = params$stream,
 ```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot.", warning=FALSE}
 print(L1_metrics <- xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
                                        features_sf = features_sf,
+                                       xs_label_freq = params$xs_label_freq,
                                        profile_units = params$profile_units))
 ```
 
