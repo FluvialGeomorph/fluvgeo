@@ -40,7 +40,12 @@ xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
   xs_pts <- dplyr::bind_rows(xs_current, .id = "Survey")
 
   # Define survey factor levels
-  xs_pts$Survey <- factor(xs_pts$Survey)
+  survey_levels <- sort(unique(as.character(xs_pts$Survey)),
+                        decreasing = TRUE)
+  xs_pts$Survey <- factor(xs_pts$Survey,
+                          levels = survey_levels,
+                          labels = survey_levels,
+                          ordered = TRUE)
 
   # Define colors
   cols <- c("coral3", "darkslategray4", "darkolivegreen", "mediumpurple4")
@@ -58,12 +63,11 @@ xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
     scale_y_continuous(minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
     theme_bw() +
-    theme(aspect.ratio = 2/5) +
+    theme(aspect.ratio = 2/5,
+          plot.title = element_text(hjust = 0),
+          legend.position = "bottom") +
     labs(title = paste("Cross Section ", as.character(xs_number)),
          x = "Station Distance (feet, from right descending bank)",
-         y = "Elevation (NAVD88 feet)") +
-    theme(plot.title = element_text(hjust = 0),
-          legend.position="bottom"
-    )
+         y = "Elevation (NAVD88 feet)")
   return(p)
 }
