@@ -30,7 +30,8 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     knitr,
-    kableExtra
+    kableExtra,
+    rgdal
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,

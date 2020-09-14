@@ -1,3 +1,19 @@
+# fluvgeo v0.1.30 (2020-09-13)
+
+## Major Changes
+* Added a new Level 1 cross sections dimensions tool. This supports the new Level 1 workflow that calculates the dimensions possible at this stage of the analysis. 
+* Updated the Level 1 Report with a new cross section metrics graph. 
+* Updated the Estimate Bankfull Report cross section graphs to use a square aspect ratio.
+* Updated the Level 2 Report cross section graphs to use a wide aspect ratio.
+* Added a labeling frequency parameter to the following functions: `xs_metrics_plot_L1`, `xs_metrics_plot_L2`, `compare_xs_long_profile`, `xs_long_profile`, `xs_profile_plot`, `map_reach_metric`, `xs_metric_plot`. 
+
+## Bug Fixes
+* Fixed Level 1 graph series order to match Level 2 report series order. 
+* Added a parameter check to the `check_cross_section_dimensions`. 
+* `check_cross_section_dimensions` now accepts sf input. 
+* Fixed some failing tests.
+
+
 # fluvgeo v0.1.29 (2020-09-07)
 
 ## Major Changes
