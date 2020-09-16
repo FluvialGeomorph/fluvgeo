@@ -8,7 +8,7 @@
 #'                            feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
-#' @param dem                 character; The path to a dem raster.
+#' @param dem                 RasterLater; A dem raster.
 #' @param banklines           SpatialLinesDataFrame or sf; A banklines feature
 #'                            class.
 #' @param extent_factor       numeric; A numeric value used to expand the map
@@ -17,6 +17,7 @@
 #' @return a tmap object
 #'
 #' @importFrom arcgisbinding arc.open arc.raster
+#' @importFrom rgdal showSRID
 #' @importFrom raster extent as.raster raster crop resample terrain hillShade
 #' @importFrom grDevices colorRampPalette grey
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
@@ -42,9 +43,11 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
     banklines_sf <- banklines
   }
 
+  # Get valid DEM spatial reference system
+  dem_wkt2 <- rgdal::showSRID(dem@crs@projargs)          # convert to valid WKT2
+  dem_crs <- sp::CRS(SRS_string = dem_wkt2)
+
   # Reproject so all layers in the same coordinate system as the DEM
-  dem_arc <- as.raster(arc.raster(arc.open(dem)))
-  dem_crs <- sf::st_crs(dem_arc)
   cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_crs)
   banklines_dem <- sf::st_transform(banklines_sf, crs = dem_crs)
 
@@ -52,17 +55,15 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
   xs_i <- cross_section_dem[cross_section_dem$Seq == xs_number, ]
 
   # Calculate the map extent for the current cross section
-  map_extent <- fluvgeo::feature_extent(feature = xs_i,
+  xs_extent <- fluvgeo::feature_extent(feature = xs_i,
                                         extent_factor = extent_factor)
+  xs_extent_esri <- c(xmin = xs_extent@xmin,
+                      ymin = xs_extent@ymin,
+                      xmax = xs_extent@xmax,
+                      ymax = xs_extent@ymax)
 
   # Clip the dem to the cross section map extent
-  dem_i <- raster::crop(dem_arc, map_extent)
-
-  # Resample the dem
-  # dem_i_rs1 <- raster::raster(ncols = 500, nrows = 500,
-  #                            ext = raster::extent(dem_i),
-  #                            crs = dem_i@crs)
-  # dem_i_rs <- raster::resample(dem_i, dem_i_rs, method = "bilinear")
+  dem_i <- raster::crop(dem, xs_extent)
 
   # Create a hillshade from dem_i
   slp <- raster::terrain(dem_i, opt = "slope", unit = "radians")
@@ -71,18 +72,18 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
 
   # Create a topo color ramp
   esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
-                                                      "chartreuse4", "goldenrod1",
-                                                      "orangered4", "saddlebrown",
-                                                      "gray70", "white"),
+                                                  "chartreuse4", "goldenrod1",
+                                                  "orangered4", "saddlebrown",
+                                                  "gray70", "white"),
                                            bias = 1,
                                            space = "Lab",
                                            interpolate = "linear")
   # Create the cross section map
   xs_map <- tm_shape(shp = hill,
-                     name = "Hillshade") +
-              tm_raster(style = "cont",
-                        palette = grey(0:100/100),
-                        legend.show = FALSE) +
+                      name = "Hillshade") +
+               tm_raster(style = "cont",
+                         palette = gray.colors(100, 0, 1),
+                         legend.show = FALSE) +
             tm_shape(shp = dem_i,
                      name = "Elevation",
                      unit = "ft",

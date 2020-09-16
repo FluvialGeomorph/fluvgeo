@@ -13,7 +13,7 @@ feature class.}
 \item{xs_number}{integer; The cross section identifier of the
 requested cross section.}
 
-\item{dem}{character; The path to a dem raster.}
+\item{dem}{RasterLater; A dem raster.}
 
 \item{banklines}{SpatialLinesDataFrame or sf; A banklines feature
 class.}
