@@ -8,6 +8,7 @@ xs_metric_plot(
   metric,
   reach_xs_dims,
   label_xs = TRUE,
+  xs_label_freq = 10,
   profile_units = "kilometers"
 )
 }
@@ -19,6 +20,9 @@ metric to be mapped}
 dimensions.}
 
 \item{label_xs}{logical; Draw the cross section locations?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
 One of "kilometers", "meters", "miles", or "feet"}
