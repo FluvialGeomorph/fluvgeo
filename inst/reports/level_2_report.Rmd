@@ -26,6 +26,7 @@ params:
 library(sf)
 library(dplyr)
 library(knitr)
+library(pander)
 library(ggplot2)
 library(ggrepel)
 library(tmap)
@@ -145,19 +146,28 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
 
-```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=3, warning=TRUE}
+```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
+if(params$show_xs_map) {
+  # Get dem raster
+  dem_arc <- arc.open(params$dem)
+  dem_wkt2 <- rgdal::showSRID(dem_arc@sr$WKT)
+  dem_raster <- arcgisbinding::as.raster(arc.raster(dem_arc))
+  raster::crs(dem_raster) <- sp::CRS(SRS_string = dem_wkt2)
+}
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
+
 # Iterate through xs's creating: map, cross section plot, and RHG table
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   # Create the cross section map  
   if(params$show_xs_map) {
     print(fluvgeo::map_xs(cross_section = params$xs_sf,
                           xs_number = j,
-                          dem = params$dem,
+                          dem = dem_raster,
                           banklines = params$banklines_sf,
                           extent_factor = params$extent_factor))
   }
+  pander::pandoc.p('')  
   # Create the cross section plot
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
                                     xs_number = j,
@@ -186,10 +196,15 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   # Use knitr print function to ensure table is drawn properly
   knitr:::print.knitr_kable(t)
   # Insert vertical white space so that next figure in loop is recognized
-  cat('\n')
-  # Must set chunk option`results='asis'` to ensure table is drawn properly
+  cat("  \n")  
+  # Must set chunk option results='asis' to ensure table is drawn properly
 }
 ```
 
+```{r}
+
+
+
+```
 
 version 1.0.30
