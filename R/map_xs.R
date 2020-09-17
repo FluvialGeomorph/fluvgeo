@@ -8,9 +8,9 @@
 #'                            feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
-#' @param dem                 RasterLater; A dem raster.
+#' @param dem                 RasterLayer; A dem raster.
 #' @param banklines           SpatialLinesDataFrame or sf; A banklines feature
-#'                            class.
+#'                            class (optional).
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.
 #'
@@ -23,11 +23,14 @@
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
 #'
-map_xs <- function(cross_section, xs_number, dem, banklines,
+map_xs <- function(cross_section, xs_number, dem,
+                   banklines = NULL,
                    extent_factor = 1) {
   # Check data structure
   check_cross_section(cross_section, step = "assign_ids")
-  check_banklines(banklines)
+  if(!is.null(banklines)) {
+    check_banklines(banklines)
+  }
 
   # Convert to sf
   if(class(cross_section)[1] == "SpatialLinesDataFrame") {
@@ -36,20 +39,22 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
   if(class(cross_section)[1] == "sf") {
     cross_section_sf <- cross_section
   }
-  if(class(banklines)[1] == "SpatialLinesDataFrame") {
+  if(!is.null(banklines) & class(banklines)[1] == "SpatialLinesDataFrame") {
     banklines_sf <- sf::st_as_sf(banklines)
   }
-  if(class(banklines)[1] == "sf") {
+  if(!is.null(banklines) & class(banklines)[1] == "sf") {
     banklines_sf <- banklines
   }
 
   # Get valid DEM spatial reference system
   dem_wkt2 <- rgdal::showSRID(dem@crs@projargs)          # convert to valid WKT2
-  dem_crs <- sp::CRS(SRS_string = dem_wkt2)
+  dem_CRS <- sp::CRS(SRS_string = dem_wkt2)
 
   # Reproject so all layers in the same coordinate system as the DEM
-  cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_crs)
-  banklines_dem <- sf::st_transform(banklines_sf, crs = dem_crs)
+  cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_CRS)
+  if(!is.null(banklines)) {
+    banklines_dem <- sf::st_transform(banklines_sf, crs = dem_CRS)
+  }
 
   # Subset cross_section for the requested xs_number
   xs_i <- cross_section_dem[cross_section_dem$Seq == xs_number, ]
@@ -106,14 +111,6 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
                       #along.lines = TRUE,                # appears to be broken
                       #overwrite.lines = TRUE             # appears to be broken
                       ) +
-            tm_shape(shp = banklines_dem,
-                     name = "Banklines") +
-              tm_lines(col = "blue", lwd = 1,
-                       legend.lwd.show = ) +
-              tm_add_legend(type = "line",
-                            labels = "Bankfull",
-                            col = "blue",
-                            lwd = 1) +
             tm_compass(type = "arrow",
                        position = c("right", "bottom")) +
             tm_scale_bar(width = 0.25,
@@ -122,5 +119,19 @@ map_xs <- function(cross_section, xs_number, dem, banklines,
                       legend.outside = TRUE,
                       legend.outside.position = "right",
                       frame.lwd = 3)
-  return(xs_map)
+
+  if(!is.null(banklines)) {
+    banklines_map <- tm_shape(shp = banklines_dem,
+                              name = "Banklines") +
+                       tm_lines(col = "blue", lwd = 1,
+                                legend.lwd.show = ) +
+                       tm_add_legend(type = "line",
+                                     labels = "Bankfull",
+                                     col = "blue",
+                                     lwd = 1)
+  }
+
+  # Return the plot
+  if(!is.null(banklines)) return(xs_map + banklines_map)
+  if(is.null(banklines)) return(xs_map)
 }

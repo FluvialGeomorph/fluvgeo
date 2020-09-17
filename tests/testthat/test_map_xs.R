@@ -70,6 +70,21 @@ test_that("check map_xs with sf inputs", {
   expect_error(print(xs_map_sf), NA)
 })
 
+test_that("check map_xs with no banklines", {
+  skip_if_no_arc()
+  load_libraries()
+
+  # Create map
+  xs_map_nb <- map_xs(cross_section = cross_section,
+                      xs_number = xs_number,
+                      dem = dem,
+                      extent_factor = extent_factor)
+  print(xs_map_nb)
+
+  expect_true("tmap" %in% class(xs_map_nb))
+  expect_error(print(xs_map_nb), NA)
+})
+
 test_that("check map_xs with sp inputs", {
   skip_if_no_arc()
   load_libraries()
