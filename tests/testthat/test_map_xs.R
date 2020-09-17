@@ -13,6 +13,8 @@ skip_if_no_arc <- function() {
 load_libraries <- function() {
   library(sp)
   library(sf)
+  library(raster)
+  library(rgdal)
   library(tmap)
   library(arcgisbinding)
   arcgisbinding::arc.check_product()
@@ -31,10 +33,7 @@ dem_path        <- file.path(system.file("extdata", "testing_raster.gdb",
 # Get raster
 if(skip_if_no_arc()) {
   load_libraries()
-  dem_arc <- arc.open(dem_path)
-  dem_wkt2 <- rgdal::showSRID(dem_arc@sr$WKT)           # convert to valid WKT2
-  dem <- arcgisbinding::as.raster(arc.raster(dem_arc))
-  raster::crs(dem) <- sp::CRS(SRS_string = dem_wkt2)
+  dem <- fluvgeo::esri_raster2RasterLayer(raster_path = dem_path)
 }
 
 cross_section <- fluvgeo::fc2sf(cross_section_fc)
