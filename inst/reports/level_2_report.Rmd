@@ -149,10 +149,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_arc <- arc.open(params$dem)
-  dem_wkt2 <- rgdal::showSRID(dem_arc@sr$WKT)
-  dem_raster <- arcgisbinding::as.raster(arc.raster(dem_arc))
-  raster::crs(dem_raster) <- sp::CRS(SRS_string = dem_wkt2)
+  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
 }
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
@@ -201,10 +198,5 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 }
 ```
 
-```{r}
-
-
-
-```
 
 version 1.0.30

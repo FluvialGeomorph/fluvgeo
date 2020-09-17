@@ -9,6 +9,8 @@ skip_if_no_arc <- function() {
 load_libraries <- function() {
   library(sp)
   library(sf)
+  library(raster)
+  library(rgdal)
   library(tmap)
   library(arcgisbinding)
   arcgisbinding::arc.check_product()
