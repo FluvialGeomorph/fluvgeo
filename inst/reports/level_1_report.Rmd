@@ -97,7 +97,6 @@ for(i in unique(cross_section$Seq)) {
                           dem = dem_raster,
                           extent_factor = params$extent_factor))
   }
-  #pander::pandoc.p('')
   print(fluvgeo::xs_compare_plot(stream = stream,
                                  xs_number = i,
                                  xs_pts_sf_list = xs_pts_sf_list))
