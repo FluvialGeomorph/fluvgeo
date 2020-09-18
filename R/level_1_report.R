@@ -30,6 +30,8 @@
 #' @param survey_name_3      character: The name or date of the third survey.
 #' @param survey_name_4      character: The name or date of the fourth survey.
 #' @param features_fc        character; The path to a `features` feature class.
+#' @param dem                character; The path to the DEM raster.
+#' @param show_xs_map        logical; Add the cross section maps to the report?
 #' @param profile_units      character; The units to be used for the x-axis of
 #'                           the longitudinal profile graphs. One of "feet",
 #'                           "miles", "meters", "kilometers".
@@ -61,7 +63,7 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
                            xs_points_1, xs_points_2, xs_points_3, xs_points_4,
                            survey_name_1, survey_name_2,
                            survey_name_3, survey_name_4,
-                           features_fc, profile_units,
+                           features_fc, dem, show_xs_map = FALSE, profile_units,
                            aerial = TRUE, elevation = FALSE,
                            xs_label_freq = 5, exaggeration = 10,
                            extent_factor = 1.2,
@@ -100,6 +102,8 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
                         "features_sf" = features_sf,
                         "flowline_points_sf_list" = flowline_pts_sf_list,
                         "xs_points_sf_list" = xs_pts_sf_list,
+                        "dem" = dem,
+                        "show_xs_map" = show_xs_map,
                         "profile_units" = profile_units,
                         "aerial" = aerial,
                         "elevation" = elevation,

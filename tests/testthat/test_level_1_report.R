@@ -26,6 +26,10 @@ survey_name_3 <- "2016"
 survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"), "features")
+dem         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"),
+                         "dem_2016_ft")
+show_xs_map <- FALSE
 profile_units <- "feet"
 aerial <- TRUE
 elevation = TRUE
@@ -41,7 +45,7 @@ fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         xs_points_1, xs_points_2, xs_points_3, xs_points_4,
                         survey_name_1, survey_name_2,
                         survey_name_3, survey_name_4,
-                        features_fc, profile_units,
+                        features_fc, dem, show_xs_map, profile_units,
                         aerial, elevation,
                         xs_label_freq, exaggeration, extent_factor,
                         output_dir, output_format)

@@ -7,6 +7,8 @@ params:
   features_sf: ""
   flowline_points_sf_list: ""
   xs_points_sf_list: ""
+  dem: ""
+  show_xs_map: FALSE
   profile_units: ""
   aerial: TRUE
   elevation: FALSE
@@ -18,13 +20,17 @@ params:
 
 ```{r library, eval=TRUE, include=FALSE}
 library(sf)
+library(sp)
 library(dplyr)
-library(purrr)
 library(knitr)
-library(rmarkdown)
+library(pander)
 library(ggplot2)
 library(ggrepel)
+library(raster)
+library(rgdal)
 library(tmap)
+library(arcgisbinding)
+arcgisbinding::arc.check_product()
 ```
 
 ## Study Area Overview
@@ -58,28 +64,40 @@ print(fluvgeo::compare_long_profile(stream = params$stream,
 ```
 
 ```{r xs_long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="XS Longitudinal Profile Plot"}
-print(compare_xs_long_profile(stream = params$stream,
-                              xs_pts_sf_list = params$xs_points_sf_list,
-                              features_sf = params$features_sf,
-                              xs_label_freq = params$xs_label_freq,
-                              profile_units = params$profile_units))
+print(fluvgeo::compare_xs_long_profile(stream = params$stream,
+                                     xs_pts_sf_list = params$xs_points_sf_list,
+                                     features_sf = params$features_sf,
+                                     xs_label_freq = params$xs_label_freq,
+                                     profile_units = params$profile_units))
 ```
 
 ## Cross Section Metrics
 ```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot.", warning=FALSE}
-print(L1_metrics <- xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
-                                       features_sf = features_sf,
-                                       xs_label_freq = params$xs_label_freq,
-                                       profile_units = params$profile_units))
+print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
+                                  features_sf = features_sf,
+                                  xs_label_freq = params$xs_label_freq,
+                                  profile_units = params$profile_units))
 ```
 
 
 ## Cross Section Profiles
-```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=5}
+```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=4}
+if(params$show_xs_map) {
+  # Get dem raster
+  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+}
+
 cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
 
 # Iterate through cross sections
 for(i in unique(cross_section$Seq)) {
+  if(params$show_xs_map) {
+    print(fluvgeo::map_xs(cross_section = params$cross_section_sf,
+                          xs_number = i,
+                          dem = dem_raster,
+                          extent_factor = params$extent_factor))
+  }
+  #pander::pandoc.p('')
   print(fluvgeo::xs_compare_plot(stream = stream,
                                  xs_number = i,
                                  xs_pts_sf_list = xs_pts_sf_list))
@@ -90,5 +108,5 @@ for(i in unique(cross_section$Seq)) {
 ```
 
 
-Version: 0.1.30
+Version: 0.1.31
 
