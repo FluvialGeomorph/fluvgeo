@@ -24,11 +24,14 @@ params:
 
 ```{r library, eval=TRUE, include=FALSE}
 library(sf)
+library(sp)
 library(dplyr)
 library(knitr)
 library(pander)
 library(ggplot2)
 library(ggrepel)
+library(raster)
+library(rgdal)
 library(tmap)
 library(arcgisbinding)
 arcgisbinding::arc.check_product()
@@ -164,7 +167,7 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
                           banklines = params$banklines_sf,
                           extent_factor = params$extent_factor))
   }
-  pander::pandoc.p('')  
+  pander::pandoc.p('')
   # Create the cross section plot
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
                                     xs_number = j,
@@ -199,4 +202,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-version 1.0.30
+version 1.0.31
