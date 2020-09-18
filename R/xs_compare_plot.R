@@ -64,8 +64,13 @@ xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
     scale_color_manual(values = cols) +
     theme_bw() +
     theme(aspect.ratio = 2/5,
+          legend.direction = "vertical",
+          legend.position = c(0.07,0.2),
+          legend.background = element_rect(fill = alpha('white', 0.6)),
+          legend.title = element_blank(),
+          panel.grid.major = element_line(colour = "grey", size = 0.1),
           plot.title = element_text(hjust = 0),
-          legend.position = "bottom") +
+          ) +
     labs(title = paste("Cross Section ", as.character(xs_number)),
          x = "Station Distance (feet, from right descending bank)",
          y = "Elevation (NAVD88 feet)")
