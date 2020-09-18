@@ -87,19 +87,21 @@ if(params$show_xs_map) {
   dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
 }
 
+# Ensure that cross sections are sequentially ordered
 cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
 
 # Iterate through cross sections
-for(i in unique(cross_section$Seq)) {
+for(j in unique(cross_section$Seq)) {
   if(params$show_xs_map) {
+    # Create the cross section plot
     print(fluvgeo::map_xs(cross_section = params$cross_section_sf,
-                          xs_number = i,
+                          xs_number = j,
                           dem = dem_raster,
                           extent_factor = params$extent_factor))
   }
-  print(fluvgeo::xs_compare_plot(stream = stream,
-                                 xs_number = i,
-                                 xs_pts_sf_list = xs_pts_sf_list))
+  print(fluvgeo::xs_compare_plot_L1(stream = stream,
+                                    xs_number = j,
+                                    xs_pts_sf_list = xs_pts_sf_list))
   # Insert vertical white space so that next figure in loop is recognized
   cat('\n')
   # Must set chunk option`results='asis'` to ensure table is drawn properly

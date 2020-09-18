@@ -21,6 +21,8 @@ level_1_report(
   survey_name_3,
   survey_name_4,
   features_fc,
+  dem,
+  show_xs_map = FALSE,
   profile_units,
   aerial = TRUE,
   elevation = FALSE,
@@ -74,6 +76,10 @@ class for the fourth time period.}
 \item{survey_name_4}{character: The name or date of the fourth survey.}
 
 \item{features_fc}{character; The path to a `features` feature class.}
+
+\item{dem}{character; The path to the DEM raster.}
+
+\item{show_xs_map}{logical; Add the cross section maps to the report?}
 
 \item{profile_units}{character; The units to be used for the x-axis of
 the longitudinal profile graphs. One of "feet",
