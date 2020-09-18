@@ -32,12 +32,12 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-p <- fluvgeo::xs_compare_plot(stream = stream,
-                              xs_number = xs_number,
-                              xs_pts_sf_list = xs_pts_sf_list)
+p <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                 xs_number = xs_number,
+                                 xs_pts_sf_list = xs_pts_sf_list)
 print(p)
 
-test_that("xs_compareplot exists", {
+test_that("xs_compare_plot_L1 exists", {
   expect_true("ggplot" %in% class(p))
   expect_error(print(p), NA)
 })

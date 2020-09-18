@@ -28,7 +28,7 @@
 #' @importFrom rlang .data
 #' @importFrom ggplot2 ggplot
 #'
-xs_compare_plot <- function(stream, xs_number, xs_pts_sf_list) {
+xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list) {
   # Extract data frames (for ggplot2) from the sf objects
   xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
