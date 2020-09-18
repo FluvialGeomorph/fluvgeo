@@ -17,6 +17,8 @@ estimate_bankfull(
   survey_name_3,
   survey_name_4,
   features_fc,
+  dem,
+  show_xs_map,
   regions,
   bankfull_elevations,
   bf_estimate,
@@ -65,6 +67,10 @@ survey.}
 \item{survey_name_4}{character: The name or date of the fourth survey.}
 
 \item{features_fc}{character; The path to a `features` feature class.}
+
+\item{dem}{character; The path to the DEM raster.}
+
+\item{show_xs_map}{logical; Add the cross section maps to the report?}
 
 \item{regions}{character; The regions that a dimension will be
 calculated for. See the regional_curves$region

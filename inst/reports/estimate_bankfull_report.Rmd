@@ -6,6 +6,8 @@ params:
   xs_dims_sf: ""
   xs_pts_sf_list: ""
   features_sf: ""
+  dem: ""
+  show_xs_map: FALSE
   regions: ""
   bankfull_elevations: ""
   bf_estimate: ""
@@ -163,9 +165,24 @@ print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf,
 This section displays cross section profile graphs for each riffle cross section in this stream reach. The blue horizontal line represents the estimated water surface elevation. A table of cross section hydraulic geometry dimensions calculated for the current cross section appears under each graph. 
 
 ```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=7}
+if(params$show_xs_map) {
+  # Get dem raster
+  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+}
+
+# Ensure that cross sections are sequentially ordered
+cross_section <- dplyr::arrange(params$xs_dims_sf, Seq)
+
 # Iterate through xs's, create plot, calculate xs dimensions, print RHG table
-for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
-  # Create the cross section plot
+for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
+  if(params$show_xs_map) {
+    # Create the cross section plot
+    print(fluvgeo::map_xs(cross_section = params$xs_dims_sf,
+                          xs_number = j,
+                          dem = dem_raster,
+                          extent_factor = params$extent_factor))
+  }
+  pander::pandoc.p('')
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
                                     xs_number = j,
                                     xs_pts_sf_list = params$xs_pts_sf_list,
@@ -200,4 +217,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-version 0.1.30
+version 0.1.31

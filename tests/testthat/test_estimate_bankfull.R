@@ -36,9 +36,13 @@ survey_name_1 <- "2016"
 survey_name_2 <- "2010"
 survey_name_3 <- "2004"
 survey_name_4 <- NULL
-features_fc   <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                                       package = "fluvgeo"),
-                           "features")
+features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"),
+                         "features")
+dem         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                                     package = "fluvgeo"),
+                         "dem_2016_ft")
+show_xs_map <- FALSE
 regions <- c("Eastern United States", "USA")
 bankfull_elevations <- seq(101, 104, 0.1)
 bf_estimate <- 102.5
@@ -73,6 +77,8 @@ test_that("The output docx report exists", {
                     survey_name_3 = survey_name_3,
                     survey_name_4 = survey_name_4,
                     features_fc = features_fc,
+                    dem = dem,
+                    show_xs_map = show_xs_map,
                     regions = regions,
                     bankfull_elevations = bankfull_elevations,
                     bf_estimate = bf_estimate,

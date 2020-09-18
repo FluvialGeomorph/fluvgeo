@@ -24,6 +24,8 @@
 #' @param survey_name_3       character: The name or date of the third survey.
 #' @param survey_name_4       character: The name or date of the fourth survey.
 #' @param features_fc         character; The path to a `features` feature class.
+#' @param dem                character; The path to the DEM raster.
+#' @param show_xs_map        logical; Add the cross section maps to the report?
 #' @param regions             character; The regions that a dimension will be
 #'                            calculated for. See the regional_curves$region
 #'                            field for a complete list.
@@ -66,7 +68,7 @@ estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
                               xs_points_3, xs_points_4,
                               survey_name_1, survey_name_2,
                               survey_name_3, survey_name_4,
-                              features_fc,
+                              features_fc, dem, show_xs_map,
                               regions, bankfull_elevations, bf_estimate,
                               stat, label_xs, profile_units,
                               aerial, elevation, xs_label_freq,
@@ -97,6 +99,8 @@ estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
                         "xs_dims_sf" = xs_dims_sf,
                         "xs_pts_sf_list" = xs_pts_sf_list,
                         "features_sf" = features_sf,
+                        "dem" = dem,
+                        "show_xs_map" = show_xs_map,
                         "regions" = regions,
                         "bankfull_elevations" = bankfull_elevations,
                         "bf_estimate" = bf_estimate,
