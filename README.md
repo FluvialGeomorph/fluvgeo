@@ -51,6 +51,10 @@ provided by the following US Army Corps of Engineers (USACE) programs:
 
 <img src="man/figures/FRMP_300.png" height=75 align="right" /><img src="man/figures/MRG&P_300.png" height=75 align="right" /><img src="man/figures/RSMlogo.png" height=75 align="right" /><img src="man/figures/EMRRP_logo_300.png" height=75 align="right" />
 
+## Latest Updates
+
+Check out the [NEWS](NEWS.md) for details on the latest updates.
+
 ## Authors
 
   - Michael Dougherty, Geographer, U.S. Army Corps of Engineers

@@ -37,6 +37,8 @@ Funding for development and maintenance of FluvialGeomorph has been provided by 
 
 <img src="man/figures/FRMP_300.png" height=75 align="right" /><img src="man/figures/MRG&P_300.png" height=75 align="right" /><img src="man/figures/RSMlogo.png" height=75 align="right" /><img src="man/figures/EMRRP_logo_300.png" height=75 align="right" />
 
+## Latest Updates
+Check out the [NEWS](NEWS.md) for details on the latest updates. 
 
 ## Authors
 * Michael Dougherty, Geographer, U.S. Army Corps of Engineers
@@ -46,7 +48,7 @@ Funding for development and maintenance of FluvialGeomorph has been provided by 
 ## Install
 To install the `fluvgeo` package, install from GitHub using the `devtools` package:
 
-```r
+```{r install, eval=FALSE}
 devtools::install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRUE)
 ```
 

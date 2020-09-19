@@ -1,3 +1,15 @@
+# fluvgeo v0.1.31 (2020-09-20)
+
+## Major Changes
+* Added `map_xs` to the Level 1 and Estimate Bankfull reports. 
+* Made the banklines parameter in `map_xs` optional to support its use in the Level 1 report and the Estimate Bankfull report before banklines are created. 
+* Added the `esri_raster2RasterLayer` function to standardize raster retrieval. 
+* Moved the legend of `xs_compare_plot_L1` into the plot area to be consistent with the level 2 plots. 
+
+## Bug Fixes
+* Restructured the way XS maps are drawn in reports when called in a loop. Changed the `map_xs` function to accept a `raster::RasterLayer` so that the site DEM is only loaded once rather than being loaded each time the `map_xs` function is called. 
+
+
 # fluvgeo v0.1.30 (2020-09-13)
 
 ## Major Changes
