@@ -3,8 +3,10 @@ output: github_document
 ---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<img src="man/figures/fluvgeo-3.png" width=250 align="right" />
+
 # fluvgeo
-An `R` Package for Performing **Fluv**ial **Geo**mrphology Analysis <img src="man/figures/castle.png" align="right" />
+An `R` Package for Performing **Fluv**ial **Geo**mrphology Analysis
 
 ## Package Status
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)
