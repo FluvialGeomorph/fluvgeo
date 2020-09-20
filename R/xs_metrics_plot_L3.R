@@ -1,28 +1,19 @@
-#' @title Plot cross section metrics
+#' @title Plot Level 3 Cross Section Metrics
 #'
-#' @description Produces a longitudinal plot of cross section metrics for the
-#' input stream reach.
+#' @description Produces a longitudinal plot of Level 3 cross section metrics
+#' for the input stream reach.
 #'
 #' @export
-#' @param reach_xs_dims   data frame; a data frame of cross section
+#' @param xs_dims_sf      SimpleFeatures data frame of Level 3 cross section
 #'                        dimensions.
-#' @param features_sp     SpatialPointsDataFrame of infrastructure features
+#' @param features_sf     SimpleFeatures data frame of infrastructure features.
 #' @param label_xs        logical; Draw the cross section locations?
+#' @param xs_label_freq   numeric; An integer indicating the frequency of
+#'                        cross section labels.
+#' @param profile_units   character; the units of the longitudinal profile.
+#'                        One of "kilometers", "meters", "miles", or "feet".
 #'
 #' @return A ggplot2 object.
-#'
-#' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' SpatialPointsDataFrame. See the \code{sin_xs_dimensions} package dataset for
-#' an example of this format of cross section data produced by the
-#' \code{FluvialGeomorph} ArcGIS toolbox.
-#'
-#' @examples
-#' # Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
-#' sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@data
-#'
-#' # Call the xs_metrics_plot function
-#' sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df,
-#'                                features_sp = fluvgeo::sin_features_sp)
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -31,13 +22,21 @@
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars label_wrap_gen
 #'
-xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
+xs_metrics_plot_L3 <- function(xs_dims_sf,
+                               features_sf,
+                               label_xs = TRUE,
+                               xs_label_freq = 10,
+                               profile_units = "kilometers") {
   # Check parameters
-  check_cross_section_dimensions(reach_xs_dims, "metric_ratios")
-  check_features(features_sp)
+  check_cross_section_dimensions(xs_dims_sf, "metric_ratios")
+  check_features(features_sf)
 
-  # Convert to data frames for ggplot
-  features <- features_sp@data
+  # Calculate a unit conversion coefficient from kilometers to other units
+  unit_coef <- switch(profile_units,
+                      "kilometers" = 1,
+                      "meters"     = 1000,
+                      "miles"      = 0.621371,
+                      "feet"       = 3280.84)
 
   # Define `metrics` factor levels
   metrics_levels <- c("xs_width_depth_ratio",
@@ -58,26 +57,28 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                       "RC to BFW")
 
   # Create a metrics variable to control which facet receives feature labels
-  features$metrics <- factor(rep("rc_bfw_ratio_10", length(features$Name)),
-                             levels = metrics_levels,
-                             labels = metrics_labels)
+  features_sf$metrics <- factor(rep("rc_bfw_ratio_10",
+                                    length(features_sf$Name)),
+                                levels = metrics_levels,
+                                labels = metrics_labels)
 
   # Determine min y value
-  plot_min_y <- min(reach_xs_dims$rc_bfw_ratio_10)
+  plot_min_y <- min(na.omit(xs_dims_sf$rc_bfw_ratio_10))
 
   # Gather data by metrics for plotting
-  xs_dims <- gather(reach_xs_dims,
-                    key = "metrics",
-                    value = "values",
-                    .data$xs_width_depth_ratio,
-                    .data$xs_entrenchment_ratio,
-                    .data$slope,
-                    .data$sinuosity,
-                    .data$shear_stress_weight,
-                    .data$unit_stream_power,
-                    .data$rc_bfw_ratio_10)
+  xs_dims <- tidyr::gather(xs_dims_sf,
+                           key = "metrics",
+                           value = "values",
+                           na.rm = TRUE,
+                          .data$xs_width_depth_ratio,
+                          .data$xs_entrenchment_ratio,
+                          .data$slope,
+                          .data$sinuosity,
+                          .data$shear_stress_weight,
+                          .data$unit_stream_power,
+                          .data$rc_bfw_ratio_10)
 
-  # Set factor levels to control labelling
+  # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
                             levels = metrics_levels,
                             labels = metrics_labels)
@@ -93,16 +94,19 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
                     "Unit Stream Power (kg/m/s)"  = "darkolivegreen",
                     "RC to BFW"                   = "plum4")
 
+  # Determine cross section label frequency
+  labeled_xs <- ((xs_dims$Seq + xs_label_freq) %% xs_label_freq) == 0
+  xs_labels_sf <- xs_dims[labeled_xs, ]
+
   # Draw the graph
   p <- ggplot(xs_dims,
-              aes(x = .data$km_to_mouth,
+              aes(x = .data$km_to_mouth * unit_coef,
                   y = .data$values,
                   color = .data$metrics,
                   label = .data$Seq)) +
     geom_point(size = 3) +
     geom_line(size = 1) +
     scale_color_manual(values = metrics_cols) +
-    scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),
@@ -110,20 +114,25 @@ xs_metrics_plot <- function(reach_xs_dims, features_sp, label_xs = TRUE) {
     facet_grid(rows = vars(.data$metrics),
                labeller = label_wrap_gen(width = 15),
                scales = "free") +
-    labs(title = unique(reach_xs_dims$ReachName),
-         x     = "Kilometers",
+    labs(title = unique(xs_dims$ReachName),
+         x     = profile_units,
          y     = "") +
     geom_text_repel(inherit.aes = FALSE,
-                    data = features,
-                    aes(x = .data$km_to_mouth,
+                    data = features_sf,
+                    aes(x = .data$km_to_mouth * unit_coef,
                         y = rep(plot_min_y - 0, length(.data$Name)),
                         label = .data$Name),
-                    nudge_x = 0, angle = 90, size = 1.8,
+                    nudge_x = 0, angle = 90, size = 3,
                     force = 0.01,
                     segment.size = 0)
 
   # Draw cross section labels
-  xs_labels <- geom_text_repel(size = 1.8, color = "black")
+  xs_labels <- geom_text_repel(inherit.aes = FALSE,
+                               data = xs_labels_sf,
+                               aes(x = .data$km_to_mouth * unit_coef,
+                                   y = .data$values,
+                                   label = .data$Seq),
+                               size = 3, color = "black")
 
   # Return the plot
   if(label_xs == FALSE) return(p)
