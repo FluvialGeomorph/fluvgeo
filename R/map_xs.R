@@ -96,7 +96,7 @@ map_xs <- function(cross_section, xs_number, dem,
               tm_raster(col = "Band_1",
                         style = "cont",
                         palette = esri_topo(1000),
-                        alpha = 0.8,
+                        alpha = 0.7,
                         title = "Elevation (NAVD88, ft)",
                         legend.show = TRUE) +
             tm_shape(shp = cross_section_dem,
