@@ -90,7 +90,7 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
           plot.title = element_text(hjust = 0)
           ) +
     labs(title = paste("Cross Section", as.character(xs_number)),
-         x = "Station Distance (feet, from right descending bank)",
+         x = "Station Distance (feet, from left descending bank, looking downstream)",
          y = "Elevation (NAVD88 feet)")
   return(p)
 }
