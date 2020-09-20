@@ -2,37 +2,34 @@
 % Please edit documentation in R/xs_metrics_plot_L3.R
 \name{xs_metrics_plot_L3}
 \alias{xs_metrics_plot_L3}
-\title{Plot cross section metrics}
+\title{Plot Level 3 Cross Section Metrics}
 \usage{
-xs_metrics_plot_L3(reach_xs_dims, features_sp, label_xs = TRUE)
+xs_metrics_plot_L3(
+  xs_dims_sf,
+  features_sf,
+  label_xs = TRUE,
+  xs_label_freq = 10,
+  profile_units = "kilometers"
+)
 }
 \arguments{
-\item{reach_xs_dims}{data frame; a data frame of cross section
+\item{xs_dims_sf}{SimpleFeatures data frame of Level 3 cross section
 dimensions.}
 
-\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
+\item{features_sf}{SimpleFeatures data frame of infrastructure features.}
 
 \item{label_xs}{logical; Draw the cross section locations?}
+
+\item{xs_label_freq}{numeric; An integer indicating the frequency of
+cross section labels.}
+
+\item{profile_units}{character; the units of the longitudinal profile.
+One of "kilometers", "meters", "miles", or "feet".}
 }
 \value{
 A ggplot2 object.
 }
 \description{
-Produces a longitudinal plot of cross section metrics for the
-input stream reach.
-}
-\examples{
-# Extract data from the fluvgeo::sin_xs_dimensions SpatialPointsDataFrame
-sin_xs_dims_df <- fluvgeo::sin_riffle_floodplain_dims_planform_sp@data
-
-# Call the xs_metrics_plot function
-sin_metrics <- xs_metrics_plot(reach_xs_dims = sin_xs_dims_df,
-                               features_sp = fluvgeo::sin_features_sp)
-
-}
-\seealso{
-The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-SpatialPointsDataFrame. See the \code{sin_xs_dimensions} package dataset for
-an example of this format of cross section data produced by the
-\code{FluvialGeomorph} ArcGIS toolbox.
+Produces a longitudinal plot of Level 3 cross section metrics
+for the input stream reach.
 }

@@ -1,23 +1,19 @@
 #' @title Plot Level 2 Cross Section Metrics
 #'
-#' @description Produces a longitudinal plot of cross section metrics for the
-#' input stream reach.
+#' @description Produces a longitudinal plot of Level 2 cross section metrics
+#' for the input stream reach.
 #'
 #' @export
-#' @param xs_dims_sf      SimpleFeatures data frame of Level 1 cross section
+#' @param xs_dims_sf      SimpleFeatures data frame of Level 2 cross section
 #'                        dimensions.
 #' @param features_sf     SimpleFeatures data frame of infrastructure features.
 #' @param label_xs        logical; Draw the cross section locations?
 #' @param xs_label_freq   numeric; An integer indicating the frequency of
 #'                        cross section labels.
 #' @param profile_units   character; the units of the longitudinal profile.
-#'                        One of "kilometers", "meters", "miles", or "feet"
+#'                        One of "kilometers", "meters", "miles", or "feet".
 #'
 #' @return A ggplot2 object.
-#'
-#' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' SimpleFeatures data frame.
-#'
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
@@ -50,6 +46,7 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                       "shear_stress_weight",
                       "unit_stream_power")
 
+
   # Define `metrics` factor labels
   metrics_labels <- c("Width Depth Ratio",
                       "Entrenchment Ratio",
@@ -57,6 +54,7 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                       "Sinuosity",
                       "Shear Stress (lb/ft^2)",
                       "Unit Stream Power (kg/m/s)")
+
 
   # Create a metrics variable to control which facet receives feature labels
   features_sf$metrics <- factor(rep("unit_stream_power",
@@ -79,6 +77,7 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                            .data$shear_stress_weight,
                            .data$unit_stream_power)
 
+
   # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
                             levels = metrics_levels,
@@ -94,6 +93,7 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                     "Shear Stress (lb/ft^2)"      = "indianred4",
                     "Unit Stream Power (kg/m/s)"  = "darkolivegreen")
 
+
   # Determine cross section label frequency
   labeled_xs <- ((xs_dims$Seq + xs_label_freq) %% xs_label_freq) == 0
   xs_labels_sf <- xs_dims[labeled_xs, ]
@@ -107,7 +107,6 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
     geom_point(size = 3) +
     geom_line(size = 1) +
     scale_color_manual(values = metrics_cols) +
-    # scale_x_reverse() +
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),

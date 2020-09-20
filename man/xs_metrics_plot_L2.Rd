@@ -13,7 +13,7 @@ xs_metrics_plot_L2(
 )
 }
 \arguments{
-\item{xs_dims_sf}{SimpleFeatures data frame of Level 1 cross section
+\item{xs_dims_sf}{SimpleFeatures data frame of Level 2 cross section
 dimensions.}
 
 \item{features_sf}{SimpleFeatures data frame of infrastructure features.}
@@ -24,16 +24,12 @@ dimensions.}
 cross section labels.}
 
 \item{profile_units}{character; the units of the longitudinal profile.
-One of "kilometers", "meters", "miles", or "feet"}
+One of "kilometers", "meters", "miles", or "feet".}
 }
 \value{
 A ggplot2 object.
 }
 \description{
-Produces a longitudinal plot of cross section metrics for the
-input stream reach.
-}
-\seealso{
-The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-SimpleFeatures data frame.
+Produces a longitudinal plot of Level 2 cross section metrics
+for the input stream reach.
 }

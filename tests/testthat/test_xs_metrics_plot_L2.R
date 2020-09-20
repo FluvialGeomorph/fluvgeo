@@ -23,7 +23,6 @@ level_2_metrics <- xs_metrics_plot_L2(xs_dims_sf = xs_dims_sf,
                                       label_xs = label_xs,
                                       xs_label_freq = xs_label_freq,
                                       profile_units = profile_units)
-
 print(level_2_metrics)
 
 test_that("check xs metrics plot", {
