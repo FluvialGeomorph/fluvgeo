@@ -54,6 +54,7 @@
 #' requested file format.
 #'
 #' @importFrom rmarkdown render
+#' @importFrom purrr discard
 #'
 level_2_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
                            xs_points_1, xs_points_2,
@@ -67,7 +68,6 @@ level_2_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
                            xs_label_freq = 5, exaggeration = 10,
                            extent_factor = 1.2,
                            output_dir, output_format) {
-
   # Create list of survey paths
   xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
 

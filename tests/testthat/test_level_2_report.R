@@ -26,7 +26,7 @@ xs_fc         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                            "xs_250_25")
 xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25_dims")
+                           "xs_250_25_dims_L1")
 xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"),
                          "xs_250_25_points")
@@ -82,26 +82,5 @@ test_that("check level 2 report, without xs map", {
                                output_dir, output_format)
   print(p)
   expect_true(file.exists(file.path(output_dir,
-                                    "Sinsinawa_level_2_report.docx")))
+                                    "Cole_Creek_R1_level_2_report.docx")))
 })
-
-# test_that("check level 2 report, with xs map", {
-#   skip_if_no_arc()
-#   load_libraries()
-#
-#   # Create report
-#   p <- fluvgeo::level_2_report(stream, flowline_fc, xs_fc, xs_dims_fc,
-#                                xs_points_1, xs_points_2,
-#                                xs_points_3, xs_points_4,
-#                                survey_name_1, survey_name_2,
-#                                survey_name_3, survey_name_4,
-#                                dem, banklines_fc, features_fc,
-#                                bf_estimate, regions, label_xs,
-#                                show_xs_map, profile_units,
-#                                aerial, elevation,
-#                                xs_label_freq, exaggeration, extent_factor,
-#                                output_dir, output_format)
-#   print(p)
-#   expect_true(file.exists(file.path(output_dir,
-#                                     "Sinsinawa_level_2_report.docx")))
-# })
