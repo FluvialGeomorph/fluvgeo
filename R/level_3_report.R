@@ -50,22 +50,24 @@
 #' @param output_format      character; The file format of the report. One of
 #'                           "html_document", "word_document", "pdf_document".
 #'
-#' @return A report written to the file system in the output fromat requested.
+#' @return Produces a FluvialGeomorph Level 3 Report in the `output_dir` in the
+#' requested file format.
 #'
 #' @importFrom rmarkdown render
+#' @importFrom purrr discard
 #'
-xs_metrics_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
-                              xs_points_1, xs_points_2,
-                              xs_points_3, xs_points_4,
-                              survey_name_1, survey_name_2,
-                              survey_name_3, survey_name_4,
-                              dem, banklines_fc, features_fc,
-                              bf_estimate, regions, label_xs,
-                              show_xs_map = FALSE, profile_units,
-                              aerial = TRUE, elevation = FALSE,
-                              xs_label_freq = 5, exaggeration = 10,
-                              extent_factor = 1.2,
-                              output_dir, output_format) {
+level_3_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
+                           xs_points_1, xs_points_2,
+                           xs_points_3, xs_points_4,
+                           survey_name_1, survey_name_2,
+                           survey_name_3, survey_name_4,
+                           dem, banklines_fc, features_fc,
+                           bf_estimate, regions, label_xs,
+                           show_xs_map = FALSE, profile_units,
+                           aerial = TRUE, elevation = FALSE,
+                           xs_label_freq = 5, exaggeration = 10,
+                           extent_factor = 1.2,
+                           output_dir, output_format) {
   # Create list of survey paths
   xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
 
@@ -108,7 +110,7 @@ xs_metrics_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
                         "output_format" = output_format)
 
   # Define the report to use
-  report_template <- system.file("reports", "xs_metrics_report.Rmd",
+  report_template <- system.file("reports", "level_3_report.Rmd",
                                  package = "fluvgeo")
 
   # Construct output_file path
@@ -118,7 +120,7 @@ xs_metrics_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
   stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   bf_est <- gsub(".", "_", bf_estimate, fixed = TRUE)
   output_file <- file.path(output_dir, paste0(stream_name, "_", bf_est,
-                                              "_level_2_report", extension))
+                                              "_level_3_report", extension))
 
   # Render the report
   rmarkdown::render(input = report_template,

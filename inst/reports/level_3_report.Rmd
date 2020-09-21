@@ -1,5 +1,5 @@
 ---
-title: "FluvialGeomorph Level 2 Report"
+title: "FluvialGeomorph Level 3 Report"
 params:
   stream: ""
   flowline_sf:  ""
@@ -24,10 +24,14 @@ params:
 
 ```{r library, eval=TRUE, include=FALSE}
 library(sf)
+library(sp)
 library(dplyr)
 library(knitr)
+library(pander)
 library(ggplot2)
 library(ggrepel)
+library(raster)
+library(rgdal)
 library(tmap)
 library(arcgisbinding)
 arcgisbinding::arc.check_product()
@@ -52,7 +56,7 @@ if (params$output_format == "word_document") {
 ```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
 if(aerial) {
   print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
-                                    cross_section = params$cross_section_sf,
+                                    cross_section = params$xs_dims_sf,
                                     background = "aerial",
                                     xs_label_freq = params$xs_label_freq,
                                     extent_factor = params$extent_factor))
@@ -62,7 +66,7 @@ if(aerial) {
 ```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
 if(elevation) {
   print(fluvgeo::map_reach_overview(flowline = flowline_sf, 
-                                    cross_section = params$cross_section_sf,
+                                    cross_section = params$xs_dims_sf,
                                     background = "elevation",
                                     xs_label_freq = params$xs_label_freq,
                                     exaggeration = params$exaggeration,
@@ -81,16 +85,18 @@ features_sp    <- sf::as_Spatial(features_sf_zm)
 
 print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp, 
                                features = features_sp, 
-                               label_xs = params$label_xs),
-                               profile_units = params$profile_units)
+                               label_xs = params$label_xs,
+                               xs_label_freq = params$xs_label_freq,
+                               profile_units = params$profile_units))
 ```
 
 ## Cross Section Metrics
 ```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot. ", warning=FALSE}
-print(fluvgeo::xs_metrics_plot_2(xs_dims_sf = params$xs_dims_sf, 
-                                 features_sf = params$features_sf,
-                                 label_xs = params$label_xs,
-                                 profile_units = params$profile_units))
+print(fluvgeo::xs_metrics_plot_L3(xs_dims_sf = params$xs_dims_sf, 
+                                  features_sf = params$features_sf,
+                                  label_xs = params$label_xs,
+                                  xs_label_freq = params$xs_label_freq,
+                                  profile_units = params$profile_units))
 ```
 
 ## Width Depth Ratio
@@ -109,6 +115,7 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
 # Create the reach metric map
 print(fluvgeo::map_reach_metric(wdr,
                                 flowline = params$flowline_sf,
+                                xs_label_freq = params$xs_label_freq,
                                 xs_dimensions = params$xs_dims_sf))
 ```
 
@@ -116,6 +123,7 @@ print(fluvgeo::map_reach_metric(wdr,
 print(fluvgeo::xs_metric_plot(metric = wdr,
                               reach_xs_dims = params$xs_dims_sf,
                               label_xs = TRUE,
+                              xs_label_freq = params$xs_label_freq,
                               profile_units = params$profile_units))
 ```
 
@@ -134,14 +142,16 @@ rc_bfw <- new(Class = "FluvialGeomorphicMetric",
 
 # Create the reach metric map
 print(fluvgeo::map_reach_metric(rc_bfw,
-                                flowline = params$flowline,
-                                xs_dimensions = params$xs_dims_planform))
+                                flowline = params$flowline_sf,
+                                xs_label_freq = params$xs_label_freq,
+                                xs_dimensions = params$xs_dims_sf))
 ```
 
 ```{r rc_bfw_plot, echo=FALSE, fig.width=7, fig.cap="Radius of Curvature to Bankfull Width Graph", warning=FALSE}
 print(fluvgeo::xs_metric_plot(metric = rc_bfw,
                               reach_xs_dims = params$xs_dims_sf,
                               label_xs = TRUE,
+                              xs_label_freq = params$xs_label_freq,
                               profile_units = params$profile_units))
 ```
 
@@ -167,23 +177,31 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the selected region, while the second row contains hydraulic geometry dimensions for the current cross section.
 
-```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=TRUE}
+```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
+if(params$show_xs_map) {
+  # Get dem raster
+  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+}
+# Get the xs_points for the base year survey
+xs_pts <- params$xs_pts_sf_list[[1]]
+
 # Iterate through xs'ss creating: map, cross section plot, and RHG table
 for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   # Create the cross section map
   if(params$show_xs_map) {
   print(fluvgeo::map_xs(cross_section = params$xs_sf,
                         xs_number = j,
-                        dem = params$dem,
+                        dem = dem_raster,
                         banklines = params$banklines_sf,
                         extent_factor = params$extent_factor))
   }
-  
+  pander::pandoc.p('')
   # Create the cross section plot
-  print(fluvgeo::xs_plot(xs_points = xs_pts,
-                         stream = params$stream,
-                         xs_number = j,
-                         bankfull_elevation = params$bf_estimate))
+  print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
+                                    xs_number = j,
+                                    xs_pts_sf_list = params$xs_pts_sf_list,
+                                    bankfull_elevation = params$bf_estimate,
+                                    aspect_ratio = 0.4))
   # Calculate cross section geometry
   xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
   dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
@@ -198,11 +216,10 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   t <- knitr::kable(x = dims_sort[, c("xs_type", "drainage_area", "xs_area", 
                                       "xs_width", "xs_depth")],
                     format = format,
-                    digits = 2,
+                    digits = 1,
                     row.names = FALSE,
                     col.names = c("Cross Section Type", "Drainage Area", 
-                                  "Area", "Width", "Depth"),
-                    booktabs = T)
+                                  "Area", "Width", "Depth"))
   # Use knitr print function to ensure table is drawn properly
   knitr:::print.knitr_kable(t)
   # Insert vertical white space so that next figure in loop is recognized
