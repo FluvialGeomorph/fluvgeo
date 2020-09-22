@@ -6,7 +6,7 @@ context("cross_section_dimensions_L1")
 # Get feature class test data
 xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25_dims")
+                           "xs_250_25_dims_L1")
 
 # Convert to sf
 xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)

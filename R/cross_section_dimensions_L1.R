@@ -30,8 +30,11 @@ cross_section_dimensions_L1 <- function(xs_sf, lead_n,
   # Subset xs for the current reach
   xs_reach <- xs_sf[xs_sf$ReachName == unique(xs_sf$ReachName), ]
 
+  # Drop z: sp can't handle lines with z values
+  xs_reach_zm <-sf::st_zm(xs_reach, drop = TRUE, what = "ZM")
+
   # Convert to sp for slope_sinuosity
-  xs_reach_sp <- sf::as_Spatial(xs_reach)
+  xs_reach_sp <- sf::as_Spatial(xs_reach_zm)
 
   # Calculate slope and sinuosity for xs_reach
   xs_reach_ss <- fluvgeo::slope_sinuosity(channel_features = xs_reach_sp,
