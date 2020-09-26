@@ -26,7 +26,7 @@ xs_fc         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                            "xs_250_25")
 xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25_dims_L1")
+                           "xs_250_25_dims_L2")
 xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                      package = "fluvgeo"),
                          "xs_250_25_points")
@@ -82,5 +82,5 @@ test_that("check level 2 report, without xs map", {
                                output_dir, output_format)
   print(p)
   expect_true(file.exists(file.path(output_dir,
-                                    "Cole_Creek_R1_level_2_report.docx")))
+                                    "Cole_Creek_R1_103_5_level_2_report.docx")))
 })
