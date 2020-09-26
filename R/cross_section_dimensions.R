@@ -84,20 +84,16 @@ cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
   # (xs_dimensions)
   xs_reach_geoms <- dplyr::bind_rows(xs_geoms)
 
+  # Remove fields from reach_geoms calculated by xs_reach_geoms
+  reach_geoms_2 <- reach_geoms[!(names(reach_geoms) %in% names(xs_reach_geoms))]
+
   # Join reach_geoms and xs_reach_geoms
-  dims_join <- merge(x = reach_geoms,
+  dims_join <- merge(x = reach_geoms_2,
                      y = xs_reach_geoms,
                      by.x = "Seq", by.y = "cross_section")
   message("join of reach_geoms and xs_reach_geoms complete")
 
-  # Remove fields from dims_join already on xs
-  # Get the list of names from xs
-  xs_names <- names(xs@data)
-  # Retain the field `Seq` for the join
-  xs_names <- xs_names[xs_names != "Seq"]
-  # Add other fields to be removed
-  xs_names <- append(xs_names, c("reach_name", "xs_type"))
-
-  # Remove the unneeded fields
-  dims_join_reduced <- select(dims_join, -xs_names)
+  # Remove unneeded fields
+  unneeded_names <- c("reach_name", "xs_type")
+  dims_join_reduced <- dplyr::select(dims_join, -unneeded_names)
 }
