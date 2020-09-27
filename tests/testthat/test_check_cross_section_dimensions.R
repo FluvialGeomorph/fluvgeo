@@ -3,7 +3,7 @@ context("check_cross_section_dimensions")
 
 # Create testing data
 ## Step: cross_section_dimensions
-xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
                                     xs_points = fluvgeo::sin_riffle_channel_points_sp,
                                     bankfull_elevation = 103,
                                     lead_n = 1,

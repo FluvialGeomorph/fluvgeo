@@ -36,9 +36,11 @@
 #'
 #' @importFrom dplyr bind_rows select
 #'
-cross_section_dimensions <- function(xs, xs_points, bankfull_elevation,
-                                     lead_n, use_smoothing, loess_span = 0.5,
-                                     vert_units) {
+cross_section_dimensions_L2 <- function(xs, xs_points, bankfull_elevation,
+                                        lead_n,
+                                        use_smoothing,
+                                        loess_span = 0.5,
+                                        vert_units) {
   # Check inputs
   check_cross_section(xs, "station_points")
   check_cross_section_points(xs_points, "station_points")

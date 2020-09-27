@@ -1,7 +1,7 @@
 library(fluvgeo)
 library(dplyr)
 library(sf)
-context("cross_section_dimensions")
+context("cross_section_dimensions_L2")
 
 # Get feature class test data
 xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
@@ -27,7 +27,7 @@ loess_span <- 0.5
 vert_units <- "ft"
 
 # Calculate cross section dimensions
-xs_dims_1 <- cross_section_dimensions(xs = xs,
+xs_dims_1 <- cross_section_dimensions_L2(xs = xs,
                                       xs_points = xs_points,
                                       bankfull_elevation = bankfull_elevation,
                                       lead_n = lead_n,
@@ -36,7 +36,7 @@ xs_dims_1 <- cross_section_dimensions(xs = xs,
                                       vert_units = vert_units)
 
 # Calculate cross section dimensions
-xs_dims_2 <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
+xs_dims_2 <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
                               xs_points = fluvgeo::sin_riffle_channel_points_sp,
                               bankfull_elevation = bankfull_elevation,
                               lead_n = lead_n,

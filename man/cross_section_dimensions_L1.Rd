@@ -8,7 +8,7 @@ cross_section_dimensions_L1(
   xs_sf,
   lead_n,
   use_smoothing,
-  loess_span,
+  loess_span = 0.5,
   vert_units
 )
 }
