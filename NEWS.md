@@ -1,3 +1,10 @@
+# fluvgeo v0.1.32 (2020-09-27)
+
+## Bug Fixes
+* Fixed a bug that prevented the Level 1 and 2 reports from displaying slope. 
+* Adjusted the `loess_span` default values. 
+
+
 # fluvgeo v0.1.31 (2020-09-21)
 
 ## Major Changes
