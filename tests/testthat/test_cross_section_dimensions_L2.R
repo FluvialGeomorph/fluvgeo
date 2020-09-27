@@ -6,7 +6,7 @@ context("cross_section_dimensions_L2")
 # Get feature class test data
 xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25_dims_L1")
+                           "xs_250_25")
 xs_points_fc  <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                        package = "fluvgeo"),
                            "xs_250_25_points")
