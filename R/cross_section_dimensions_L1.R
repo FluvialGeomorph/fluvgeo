@@ -23,7 +23,8 @@
 #' @importFrom sf as_Spatial
 #'
 cross_section_dimensions_L1 <- function(xs_sf, lead_n,
-                                     use_smoothing, loess_span, vert_units) {
+                                     use_smoothing, loess_span = 0.5,
+                                     vert_units) {
   # Check inputs
   check_cross_section(xs_sf, "station_points")
 
