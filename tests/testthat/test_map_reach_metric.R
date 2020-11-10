@@ -12,24 +12,6 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
                                 "Overwidened"),
            source = "Dunn & Leopold, 1978")
 
-# sp
-# Get feature class test data in sp format
-flowline_sp      <- fluvgeo::sin_flowline_sp
-xs_dimensions_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
-
-xs_label_freq = 2
-extent_factor = 1.1
-
-# Create the reach metric map
-wdr_map_sp <- map_reach_metric(wdr,
-                               flowline = flowline_sp,
-                               xs_dimensions = xs_dimensions_sp,
-                               xs_label_freq = xs_label_freq,
-                               extent_factor = extent_factor)
-print(wdr_map_sp)
-
-# sf
-
 # Get feature class test data in sf format
 flowline_fc     <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                          package = "fluvgeo"),
@@ -43,27 +25,40 @@ xs_dimensions_L3_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
                                              package = "fluvgeo"),
                                  "xs_250_25_dims_L3")
 
-# Convert feature classes to an sf objects, Level 2
+# Convert feature classes to an sf objects
 flowline_sf         <- fluvgeo::fc2sf(flowline_fc)
 xs_dimensions_L2_sf <- fluvgeo::fc2sf(xs_dimensions_L2_fc)
 xs_dimensions_L3_sf <- fluvgeo::fc2sf(xs_dimensions_L3_fc)
 
-# Create the reach metric map using sf input
-wdr_map_L2_sf <- map_reach_metric(wdr,
-                                  flowline = flowline_sf,
-                                  xs_dimensions = xs_dimensions_L2_sf)
+xs_label_freq = 2
+background = "aerial"
+exaggeration = 20
+extent_factor = 1.1
+
+# Create the reach metric map using sf input, Level 2
+wdr_map_L2_sf <- map_reach_metric(metric = wdr,
+                                  flowline_sf = flowline_sf,
+                                  xs_dimensions = xs_dimensions_L2_sf,
+                                  xs_label_freq = xs_label_freq,
+                                  background = background,
+                                  exaggeration = exaggeration,
+                                  extent_factor = extent_factor)
 print(wdr_map_L2_sf)
 
 # Create the reach metric map using sf input, Level 3
-wdr_map_L3_sf <- map_reach_metric(wdr,
-                                  flowline = flowline_sf,
-                                  xs_dimensions = xs_dimensions_L3_sf)
+wdr_map_L3_sf <- map_reach_metric(metric = wdr,
+                                  flowline_sf = flowline_sf,
+                                  xs_dimensions = xs_dimensions_L3_sf,
+                                  xs_label_freq = xs_label_freq,
+                                  background = "elevation",
+                                  exaggeration = exaggeration,
+                                  extent_factor = extent_factor)
 print(wdr_map_L3_sf)
 
-test_that("check map_reach_metric using sp input", {
-  expect_true("tmap" %in% class(wdr_map_sp))
-  expect_error(print(wdr_map_sp), NA)
-})
+# test_that("check map_reach_metric using sp input", {
+#   expect_true("tmap" %in% class(wdr_map_sp))
+#   expect_error(print(wdr_map_sp), NA)
+# })
 
 test_that("check map_reach_metric using sf input, Level 2", {
   expect_true("tmap" %in% class(wdr_map_L2_sf))
