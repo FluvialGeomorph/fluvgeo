@@ -100,7 +100,7 @@ print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf,
 ```
 
 ## Width Depth Ratio
-```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE}
+```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE, message=FALSE}
 # Create the fluvgeo::FluvialGeomorphicMetric object
 wdr <- new(Class = "FluvialGeomorphicMetric",
            metric = "Width Depth Ratio",

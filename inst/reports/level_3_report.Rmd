@@ -100,7 +100,7 @@ print(fluvgeo::xs_metrics_plot_L3(xs_dims_sf = params$xs_dims_sf,
 ```
 
 ## Width Depth Ratio
-```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE}
+```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE, message=FALSE}
 # Create the fluvgeo::FluvialGeomorphicMetric object
 wdr <- new(Class = "FluvialGeomorphicMetric",
            metric = "Width Depth Ratio",
@@ -128,7 +128,7 @@ print(fluvgeo::xs_metric_plot(metric = wdr,
 ```
 
 ## Radius of Curvature to Bankfull Width
-```{r, rc_bfw_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Radius of Curvature to Bankfull Width Map", warning=FALSE}
+```{r, rc_bfw_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Radius of Curvature to Bankfull Width Map", warning=FALSE, message=FALSE}
 # Create the FluvialGeomorphicMetric object
 rc_bfw <- new(Class = "FluvialGeomorphicMetric",
               metric = "Radius of Curvature to Bankfull Width Ratio",
