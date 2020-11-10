@@ -28,7 +28,7 @@
 #' tm_scale_bar tm_layout
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
-                               background = "aerials",
+                               background = "aerial",
                                xs_label_freq = 1,
                                exaggeration = 20,
                                extent_factor = 1.1) {
