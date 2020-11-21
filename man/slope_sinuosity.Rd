@@ -14,7 +14,7 @@ slope_sinuosity(
 )
 }
 \arguments{
-\item{channel_features}{Spatial*DataFrame; an `fluvgeo` data structure of
+\item{channel_features}{Spatial*DataFrame; a `fluvgeo` data structure of
 channel features (i.e., cross section, flowline
 points, etc.) Must have the following fields:
 `ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`}
@@ -48,12 +48,12 @@ features.
 \examples{
 # Call the slope_sinuosity function for a flowline
 sin_flowline_ss <- slope_sinuosity(fluvgeo::sin_flowline_points_sp,
-                                   lead_n = 1000, lag_n = 0,
+                                   lead_n = 100, lag_n = 0,
                                    vert_units = "ft")
 
 # Call the slope_sinuosity function for a cross section
 sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sp,
-                                         lead_n = 1, lag_n = 0,
+                                         lead_n = 3, lag_n = 0,
                                          loess_span = 0.5,
                                          vert_units = "ft")
 

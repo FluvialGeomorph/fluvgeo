@@ -7,7 +7,7 @@
 map_reach_overview(
   flowline_sf,
   cross_section_sf,
-  background = "aerials",
+  background = "aerial",
   xs_label_freq = 1,
   exaggeration = 20,
   extent_factor = 1.1
