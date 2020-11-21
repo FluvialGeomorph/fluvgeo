@@ -227,3 +227,6 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   # Must set chunk option`results='asis'` to ensure table is drawn properly
 }
 ```
+
+
+Version: 0.1.33
