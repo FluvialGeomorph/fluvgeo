@@ -4,7 +4,7 @@
 #' features.
 #'
 #' @export
-#' @param channel_features Spatial*DataFrame; an `fluvgeo` data structure of
+#' @param channel_features Spatial*DataFrame; a `fluvgeo` data structure of
 #'                         channel features (i.e., cross section, flowline
 #'                         points, etc.) Must have the following fields:
 #'                         `ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`
@@ -28,12 +28,12 @@
 #' @examples
 #' # Call the slope_sinuosity function for a flowline
 #' sin_flowline_ss <- slope_sinuosity(fluvgeo::sin_flowline_points_sp,
-#'                                    lead_n = 1000, lag_n = 0,
+#'                                    lead_n = 100, lag_n = 0,
 #'                                    vert_units = "ft")
 #'
 #' # Call the slope_sinuosity function for a cross section
 #' sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sp,
-#'                                          lead_n = 1, lag_n = 0,
+#'                                          lead_n = 3, lag_n = 0,
 #'                                          loess_span = 0.5,
 #'                                          vert_units = "ft")
 #'
@@ -82,24 +82,26 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                 length(loess_span) == 1,
               msg = "'loess_span' must be numeric vector of length one")
 
-  # Set the unit conversion factors
-  ## If horizontal units = meter, use meter to feet conversion factor
+  # Notes on FluvialGeomorph units:
+  # POINT_M - These values will always be in kilometers and therefore need
+  # to be converted into feet: 1 km = 3280.48 ft.
+  # Z - FluvialGeomorph Z vertical units are by convention in feet, but
+  # controlled for in this function by the `vert_con_factor`.
+  # POINT_X, POINT_Y - X and Y horizontal units are in the units of the
+  # channel_features' coordinate system. Distances calculated using them are
+  # converted to feet in this function by the `horiz_con_factor`.
+
+  # Set the horizontal unit conversion factor to calculate feet
   if(any(grep("units=m", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 3.28084
-  }
-  ## If horizontal units = feet, set conversion factor to 1
-  if(any(grep("units=us-ft", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 1
-  }
-  ## If horizontal units = us survey feet, set conversion factor to 0.999...
+    horiz_con_factor <- 3.28084}
   if(any(grep("units=ft", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 0.999998000004
-  }
-  ## If vertical units = meter, use meter to feet conversion factor
+    horiz_con_factor <- 1}
+  if(any(grep("units=us-ft", sp::proj4string(channel_features))) == 1) {
+    horiz_con_factor <- 0.999998000004}
+
+  # Set the vertical unit conversion factor to calculate feet
   if(vert_units == "m") vert_con_factor <- 3.28084
-  ## If vertical units = feet, set conversion factor to 1
   if(vert_units == "ft") vert_con_factor <- 1
-  ## If vertical units = us survey feet, set conversion factor to 0.999...
   if(vert_units == "us-ft") vert_con_factor <- 0.999998000004
 
   # Convert Spatial*DataFrame to a data frame
@@ -124,7 +126,7 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
 
   # Sort by ReachName and POINT_M
   flowline_pts <- channel_features[order(channel_features$ReachName,
-                               channel_features$POINT_M),]
+                                         channel_features$POINT_M), ]
 
   # Iterate through reaches and calculate gradient and sinuosity
   reaches <- levels(as.factor(flowline_pts$ReachName))
@@ -132,21 +134,21 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     # Subset flowline_pts for the current reach
     fl_pts <- flowline_pts[flowline_pts$ReachName == r, ]
 
-    ## Calculate gradient-slope
-    # Calculate a loess smoothed z
-    l_z_5 <- loess(Z ~ POINT_M, data = fl_pts, span = loess_span)
-    fl_pts$Z_smooth <- predict(l_z_5)
+    # Calculate a smoothed z (and convert to feet).
+    smooth_z <- loess(Z ~ POINT_M, data = fl_pts, span = loess_span)
+    fl_pts$Z_smooth <- predict(smooth_z) * vert_con_factor
 
-    # Calculate variable mins and maxs. Use as default to lead/lag to
-    # prevent NAs being introduced at ends of series.
-    upstream_m_lead         <- max(fl_pts$POINT_M)
-    downstream_m_lag        <- min(fl_pts$POINT_M)
+    # Calculate variable mins and maxs (ensure units in feet).
+    # Used as default to lead/lag to prevent NAs being introduced at ends
+    # of series.
+    upstream_m_lead         <- max(fl_pts$POINT_M) * 3280.48
+    downstream_m_lag        <- min(fl_pts$POINT_M) * 3280.48
     upstream_z_smooth_lead  <- max(fl_pts$Z_smooth)
     downstream_z_smooth_lag <- min(fl_pts$Z_smooth)
-    upstream_z_lead         <- max(fl_pts$Z)
-    downstream_z_lag        <- min(fl_pts$Z)
+    upstream_z_lead         <- max(fl_pts$Z) * vert_con_factor
+    downstream_z_lag        <- min(fl_pts$Z) * vert_con_factor
 
-    # Calculate z values (already in feet)
+    # Calculate upstream/downstream z values (ensure units in feet)
     if (use_smoothing == TRUE) {
       fl_pts$upstream_z   <- lead(x = fl_pts$Z_smooth,
                                   n = lead_n,
@@ -156,31 +158,29 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                                  default = downstream_z_smooth_lag)
     }
     if (use_smoothing == FALSE) {
-      fl_pts$upstream_z   <- lead(x = fl_pts$Z,
+      fl_pts$upstream_z   <- lead(x = fl_pts$Z * vert_con_factor,
                                   n = lead_n,
                                   default = upstream_z_lead)
-      fl_pts$downstream_z <- lag(x = fl_pts$Z,
+      fl_pts$downstream_z <- lag(x = fl_pts$Z * vert_con_factor,
                                  n = lag_n,
                                  default = downstream_z_lag)
     }
 
-    # Calculate m values (and convert m from kilometers to feet: 1 km =
-    # 3280.84 ft). M will always be in kilometers
-    fl_pts$upstream_m   <- lead(x = fl_pts$POINT_M,
+    # Calculate upstream/downstream m-values (ensure units in feet).
+    fl_pts$upstream_m   <- lead(x = fl_pts$POINT_M * 3280.48,
                                 n = lead_n,
-                                default = upstream_m_lead) * 3280.48
-    fl_pts$downstream_m <- lag(x = fl_pts$POINT_M,
+                                default = upstream_m_lead)
+    fl_pts$downstream_m <- lag(x = fl_pts$POINT_M * 3280.48,
                                n = lag_n,
-                               default = downstream_m_lag) * 3280.48
+                               default = downstream_m_lag)
 
-    # Calculate rise and run (in feet)
+    # Calculate rise and run (already in feet)
     fl_pts$rise <- fl_pts$upstream_z - fl_pts$downstream_z
     fl_pts$run  <- fl_pts$upstream_m - fl_pts$downstream_m
 
     # Calculate slope: (rise / run)
     fl_pts$slope <- fl_pts$rise / fl_pts$run
 
-    ## Calculate sinuosity
     # Calculate coords of first and last record. Use as default to lead/lag
     # to prevent NAs being introduced at ends of series.
     upstream_x_lead  <- last(fl_pts$POINT_X)
@@ -188,7 +188,7 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     upstream_y_lead  <- last(fl_pts$POINT_Y)
     downstream_y_lag <- first(fl_pts$POINT_Y)
 
-    # Calculate x values
+    # Calculate x values (units in original coordinate system units)
     fl_pts$upstream_x   <- lead(x = fl_pts$POINT_X,
                                 n = lead_n,
                                 default = upstream_x_lead)
@@ -196,7 +196,7 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                                n = lag_n,
                                default = downstream_x_lag)
 
-    # Calculate y values
+    # Calculate y values (units in original coordinate system units)
     fl_pts$upstream_y   <- lead(x = fl_pts$POINT_Y,
                                 n = lead_n,
                                 default = upstream_y_lead)
@@ -204,17 +204,17 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
                                n = lag_n,
                                default = downstream_y_lag)
 
-    # Calculate stream_length (units feet)
+    # Calculate stream_length (already in feet)
     fl_pts$stream_length <- fl_pts$upstream_m - fl_pts$downstream_m
 
-    # Calculate valley_length and convert units to feet
+    # Calculate valley_length (and convert horiz. units to feet)
     fl_pts$valley_length <- pointDistance(p1 = cbind(fl_pts$upstream_x,
                                                      fl_pts$upstream_y),
                                           p2 = cbind(fl_pts$downstream_x,
                                                      fl_pts$downstream_y),
                                           lonlat = FALSE) * horiz_con_factor
 
-    # Calculate sinuosity stream_length / valley_length
+    # Calculate sinuosity: (stream_length / valley_length)
     fl_pts$sinuosity <- fl_pts$stream_length / fl_pts$valley_length
 
     return(fl_pts)
