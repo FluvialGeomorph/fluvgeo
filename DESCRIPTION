@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.32
+Version: 0.1.33
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -31,8 +31,7 @@ LazyData: true
 Suggests: 
     knitr,
     kableExtra,
-    pander,
-    rgdal
+    pander
 VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
@@ -49,6 +48,7 @@ Imports:
     raster,
     RegionalCurve,
     reshape2,
+    rgdal,
     rlang,
     rmarkdown,
     scales,

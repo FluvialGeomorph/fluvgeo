@@ -1,3 +1,12 @@
+# fluvgeo v0.1.33 (2020-11-21)
+
+## Major Changes
+* Added the option to display an aerial photo or elevation background to the `map_reach_metric` function. 
+
+## Bug Fixes
+* Updated the `slope_sinuosity` function to ensure that coordinate systems with linear units of meters, feet, or US survey feet are handled properly. 
+
+
 # fluvgeo v0.1.32 (2020-09-27)
 
 ## Bug Fixes
