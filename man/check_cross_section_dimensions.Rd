@@ -38,29 +38,28 @@ data structure to be checked throughout its lifecycle. Each step defines a
 changing set of requirements for the `cross section_dimension` data structure.
 }
 \examples{
-# Create testing data
-## Step: cross_section_dimensions
-xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
-                                    xs_points = fluvgeo::sin_riffle_channel_points_sp,
-                                    bankfull_elevation = 103,
-                                    lead_n = 1,
-                                    use_smoothing = TRUE,
-                                    loess_span = 0.5,
-                                    vert_units = "ft")
-## Step: shear stress
+# Step: cross_section_dimensions
+xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
+                                       xs_points = fluvgeo::sin_riffle_channel_points_sp,
+                                       bankfull_elevation = 103,
+                                       lead_n = 1,
+                                       use_smoothing = TRUE,
+                                       loess_span = 0.5,
+                                       vert_units = "ft")
+
+check_cross_section_dimensions(xs_dims, "cross_section_dimensions")
+
+# Step: shear stress
 xs_dims_ss <- shear_stress(xs_dims)
 
-## Step: stream_power
+check_cross_section_dimensions(xs_dims_ss, "shear_stress")
+
+# Step: stream_power
 xs_dims_sp <- stream_power(xs_dims_ss,
                            discharge_method = "regional_curve",
                            region = "Illinois River",
                            drainage_area = 41)
 
-## Step: planform
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
-                                    fluvgeo::sin_bankline_points_sp)
-
-## Step: metric_ratios
-xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
+check_cross_section_dimensions(xs_dims_sp, "stream_power")
 
 }

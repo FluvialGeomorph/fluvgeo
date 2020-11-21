@@ -1,7 +1,7 @@
-#' @title Calculate cross section dimensions
+#' @title Calculate Cross Section Dimensions at Level 2
 #'
-#' @description  Calculates cross section hydraulic geometry dimensions for
-#'     the input cross section feature class.
+#' @description  Calculates level 2 cross section dimensions for the input
+#' cross section feature class.
 #'
 #' @export
 #' @param xs                  SpatialLinesDataFrame; the full path to a
@@ -23,16 +23,6 @@
 #'
 #' @return A new cross section data frame with the hydraulic geometry
 #'      dimensions added.
-#'
-#' @examples
-#' # Calculate cross section dimensions
-#' xs_dims <- cross_section_dimensions(xs = fluvgeo::sin_riffle_channel_sp,
-#'                                     xs_points = fluvgeo::sin_riffle_channel_points_sp,
-#'                                     bankfull_elevation = 103,
-#'                                     lead_n = 1,
-#'                                     use_smoothing = TRUE,
-#'                                     loess_span = 0.5,
-#'                                     vert_units = "ft")
 #'
 #' @importFrom dplyr bind_rows select
 #'
