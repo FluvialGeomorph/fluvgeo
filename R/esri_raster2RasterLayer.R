@@ -2,11 +2,11 @@
 #'
 #' @description Converts an ESRI raster to a raster::RasterLayer.
 #'
-#' @usage Rasters stored in ESRI Geodatabases can currently only be read using
-#' the `arcgisbinding`
-#'
 #' @export
 #' @param raster_path       character; A path to an ESRI raster.
+#'
+#' @details Rasters stored in ESRI Geodatabases can currently only be read using
+#' the `arcgisbinding`
 #'
 #' @return A `raster::RasterLayer` object.
 #'

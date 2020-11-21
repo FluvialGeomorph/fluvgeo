@@ -4,8 +4,7 @@
 \alias{esri_raster2RasterLayer}
 \title{Convert an ESRI raster to a RasterLayer}
 \usage{
-Rasters stored in ESRI Geodatabases can currently only be read using
-the `arcgisbinding`
+esri_raster2RasterLayer(raster_path)
 }
 \arguments{
 \item{raster_path}{character; A path to an ESRI raster.}
@@ -15,4 +14,8 @@ A `raster::RasterLayer` object.
 }
 \description{
 Converts an ESRI raster to a raster::RasterLayer.
+}
+\details{
+Rasters stored in ESRI Geodatabases can currently only be read using
+the `arcgisbinding`
 }
