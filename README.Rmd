@@ -1,6 +1,4 @@
----
-output: github_document
----
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <img src="man/figures/fluvgeo-3.png" width=250 align="right" />
