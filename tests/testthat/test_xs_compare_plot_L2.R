@@ -3,21 +3,22 @@ library(fluvgeo)
 
 stream <- "Cole Creek R1"
 xs_number <- 1
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "riffle_floodplain_points")
-xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
                          "riffle_floodplain_points")
-xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
                          "riffle_floodplain_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2016"
 survey_name_2 <- "2010"
-survey_name_3 <- "2004"
+survey_name_3 <- "2006"
 survey_name_4 <- NULL
 bankfull_elevation <- 103
+aspect_ratio = 0.4
 
 # Create list of survey paths
 xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
@@ -37,13 +38,13 @@ p3 <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                   xs_number = xs_number,
                                   xs_pts_sf_list = xs_pts_sf_list,
                                   bankfull_elevation = bankfull_elevation,
-                                  aspect_ratio = 1)
+                                  aspect_ratio = aspect_ratio)
 print(p3)
 
 # Only one survey
 stream <- "Cole Creek R1"
 xs_number <- 1
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "riffle_floodplain_points")
 xs_points_2 <- NULL
@@ -54,6 +55,7 @@ survey_name_2 <- NULL
 survey_name_3 <- NULL
 survey_name_4 <- NULL
 bankfull_elevation <- 103
+aspect_ratio = 0.5
 
 # Create list of survey paths
 xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
@@ -72,7 +74,8 @@ xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 p1 <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                   xs_number = xs_number,
                                   xs_pts_sf_list = xs_pts_sf_list,
-                                  bankfull_elevation = bankfull_elevation)
+                                  bankfull_elevation = bankfull_elevation,
+                                  aspect_ratio = aspect_ratio)
 print(p1)
 
 
