@@ -46,7 +46,7 @@ if(aerial) {
 
 ```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
 if(elevation) {
-  print(fluvgeo::map_reach_overview(flowline = flowline_sf, 
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
                                     cross_section = params$cross_section_sf,
                                     background = "elevation",
                                     xs_label_freq = params$xs_label_freq,
@@ -58,9 +58,9 @@ if(elevation) {
 ## Longitudinal Profile
 ```{r long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="Longitudinal Profile Plot"}
 print(fluvgeo::compare_long_profile(stream = params$stream,
-                                    flowline_pts_sf_list = flowline_pts_sf_list,
-                                    features_sf = params$features_sf,
-                                    profile_units = params$profile_units))
+                            flowline_pts_sf_list = flowline_pts_sf_list,
+                            features_sf = params$features_sf,
+                            profile_units = params$profile_units))
 ```
 
 ```{r xs_long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="XS Longitudinal Profile Plot"}
@@ -74,7 +74,7 @@ print(fluvgeo::compare_xs_long_profile(stream = params$stream,
 ## Cross Section Metrics
 ```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot.", warning=FALSE}
 print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
-                                  features_sf = features_sf,
+                                  features_sf = params$features_sf,
                                   xs_label_freq = params$xs_label_freq,
                                   profile_units = params$profile_units))
 ```
