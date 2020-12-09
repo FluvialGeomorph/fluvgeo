@@ -2,38 +2,47 @@ library(fluvgeo)
 context("level_1_report")
 
 stream <- "Cole Creek R1"
-flowline_fc      <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                              package = "fluvgeo"), "flowline")
-cross_section_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                              package = "fluvgeo"), "xs_250_25_dims_L1")
-flowline_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
-                               package = "fluvgeo"), "flowline_points")
-flowline_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
-                               package = "fluvgeo"), "flowline_points")
-flowline_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                               package = "fluvgeo"), "flowline_points")
+flowline_fc      <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                          package = "fluvgeo"),
+                              "flowline")
+cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                          package = "fluvgeo"),
+                              "xs_50_dims_L1")
+flowline_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                           package = "fluvgeo"),
+                               "flowline_points")
+flowline_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
+                                           package = "fluvgeo"),
+                               "flowline_points")
+flowline_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
+                                           package = "fluvgeo"),
+                               "flowline_points")
 flowline_points_4 <- NULL
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
-                         package = "fluvgeo"), "xs_250_25_points")
-xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
-                         package = "fluvgeo"), "xs_250_25_points")
-xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                         package = "fluvgeo"), "xs_250_25_points")
+xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                     package = "fluvgeo"),
+                         "xs_50_points")
+xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
+                                     package = "fluvgeo"),
+                         "xs_50_points")
+xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
+                                     package = "fluvgeo"),
+                         "xs_50_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2004"
 survey_name_2 <- "2010"
 survey_name_3 <- "2016"
 survey_name_4 <- NULL
-features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                                     package = "fluvgeo"), "features")
-dem         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "dem_2016_ft")
+                         "features")
+dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                     package = "fluvgeo"),
+                         "dem_2016_hydro_50")
 show_xs_map <- FALSE
 profile_units <- "feet"
 aerial <- TRUE
 elevation = TRUE
-xs_label_freq = 2
+xs_label_freq = 10
 exaggeration = 30
 extent_factor = 1.3
 output_dir <- Sys.getenv("HOME")
