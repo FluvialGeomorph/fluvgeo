@@ -8,24 +8,37 @@
 #'                            other parameters.
 #' @param flowline_fc         character; The path to the `flowline` feature
 #'                            class.
-#' @param xs_dims_fc          character; The path to the "xs_dims" feature
-#'                            class. This is for the "base year" survey.
-#' @param xs_points_1         character; The path to a `xs_points` feature
-#'                            class for the "base year".
-#' @param xs_points_2         character; The path to a `xs_points` feature
-#'                            class for the second time period.
-#' @param xs_points_3         character; The path to a `xs_points` feature
-#'                            class for the third time period.
-#' @param xs_points_4         character; The path to a `xs_points` feature
-#'                            class for the fourth time period.
+#' @param xs_dims_fc          character; The path to the
+#'                            `riffle_channel_dims_L2` feature class.
+#'                            This is for the "base year" survey.
+#' @param xs_points_ch_1      character; The path to the `riffle_channel_points`
+#'                            feature class for the "base year".
+#' @param xs_points_ch_2      character; The path to the `riffle_channel_points`
+#'                            feature class for the second time period.
+#' @param xs_points_ch_3      character; The path to the `riffle_channel_points`
+#'                            feature class for the third time period.
+#' @param xs_points_ch_4      character; The path to the `riffle_channel_points`
+#'                            feature class for the fourth time period.
+#' @param xs_points_fp_1      character; The path to the
+#'                            `riffle_floodplain_points` feature class for
+#'                            the "base year".
+#' @param xs_points_fp_2      character; The path to the
+#'                            `riffle_floodplain_points` feature class for the
+#'                            second time period.
+#' @param xs_points_fp_3      character; The path to the
+#'                            `riffle_floodplain_points` feature class for the
+#'                            third time period.
+#' @param xs_points_fp_4      character; The path to the
+#'                            `riffle_floodplain_points` feature class for the
+#'                            fourth time period.
 #' @param survey_name_1       character: The name or date of the "base year"
 #'                            survey.
 #' @param survey_name_2       character: The name or date of the second survey.
 #' @param survey_name_3       character: The name or date of the third survey.
 #' @param survey_name_4       character: The name or date of the fourth survey.
 #' @param features_fc         character; The path to a `features` feature class.
-#' @param dem                character; The path to the DEM raster.
-#' @param show_xs_map        logical; Add the cross section maps to the report?
+#' @param dem                 character; The path to the DEM raster.
+#' @param show_xs_map         logical; Add the cross section maps to the report?
 #' @param regions             character; The regions that a dimension will be
 #'                            calculated for. See the regional_curves$region
 #'                            field for a complete list.
@@ -64,8 +77,10 @@
 #' @importFrom rmarkdown render
 #'
 estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
-                              xs_points_1, xs_points_2,
-                              xs_points_3, xs_points_4,
+                              xs_points_ch_1, xs_points_ch_2,
+                              xs_points_ch_3, xs_points_ch_4,
+                              xs_points_fp_1, xs_points_fp_2,
+                              xs_points_fp_3, xs_points_fp_4,
                               survey_name_1, survey_name_2,
                               survey_name_3, survey_name_4,
                               features_fc, dem, show_xs_map,
@@ -76,17 +91,23 @@ estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
                               output_dir, output_format) {
 
   # Create list of survey paths
-  xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)
+  xs_points_ch_paths <- list(xs_points_ch_1, xs_points_ch_2,
+                             xs_points_ch_3, xs_points_ch_4)
+  xs_points_fp_paths <- list(xs_points_fp_1, xs_points_fp_2,
+                             xs_points_fp_3, xs_points_fp_4)
 
   # Name the survey paths list by their survey names
   survey_names <- c(survey_name_1, survey_name_2, survey_name_3, survey_name_4)
-  xs_points_paths <- setNames(xs_points_paths, survey_names)
+  xs_points_ch_paths <- setNames(xs_points_ch_paths, survey_names)
+  xs_points_fp_paths <- setNames(xs_points_fp_paths, survey_names)
 
   # Eliminate empty surveys
-  xs_points_paths <- purrr::discard(xs_points_paths, is.null)
+  xs_points_ch_paths <- purrr::discard(xs_points_ch_paths, is.null)
+  xs_points_fp_paths <- purrr::discard(xs_points_fp_paths, is.null)
 
   # Convert list of survey paths to list of sf objects
-  xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
+  xs_pts_ch_sf_list <- purrr::map(xs_points_ch_paths, fluvgeo::fc2sf)
+  xs_pts_fp_sf_list <- purrr::map(xs_points_fp_paths, fluvgeo::fc2sf)
 
   # Convert feature classes to sf objects
   flowline_sf  <- fluvgeo::fc2sf(flowline_fc)
@@ -97,7 +118,8 @@ estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
   report_params <- list("stream" = stream,
                         "flowline_sf" = flowline_sf,
                         "xs_dims_sf" = xs_dims_sf,
-                        "xs_pts_sf_list" = xs_pts_sf_list,
+                        "xs_pts_ch_sf_list" = xs_pts_ch_sf_list,
+                        "xs_pts_fp_sf_list" = xs_pts_fp_sf_list,
                         "features_sf" = features_sf,
                         "dem" = dem,
                         "show_xs_map" = show_xs_map,

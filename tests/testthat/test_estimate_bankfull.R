@@ -16,36 +16,46 @@ load_libraries <- function() {
 
 # sf
 stream <- "Cole Creek R1"
-flowline_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+flowline_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "flowline")
-xs_dims_fc  <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_dims_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                         "riffle_floodplain_dims")
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                         "riffle_channel_dims_L2")
+xs_points_ch_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
-xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                            "riffle_channel_points")
+xs_points_ch_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
-xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+                            "riffle_channel_points")
+xs_points_ch_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
-xs_points_4 <- NULL
+                            "riffle_channel_points")
+xs_points_ch_4 <- NULL
+xs_points_fp_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                        package = "fluvgeo"),
+                            "riffle_floodplain_points")
+xs_points_fp_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
+                                        package = "fluvgeo"),
+                            "riffle_floodplain_points")
+xs_points_fp_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
+                                        package = "fluvgeo"),
+                            "riffle_floodplain_points")
+xs_points_fp_4 <- NULL
 survey_name_1 <- "2016"
 survey_name_2 <- "2010"
-survey_name_3 <- "2004"
+survey_name_3 <- "2006"
 survey_name_4 <- NULL
-features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "features")
-dem         <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "dem_2016_ft")
+                         "dem_2016_hydro_50")
 show_xs_map <- FALSE
 regions <- c("Eastern United States", "USA")
-bankfull_elevations <- seq(101, 104, 0.1)
-bf_estimate <- 102.5
+bankfull_elevations <- seq(104, 106, 0.2)
+bf_estimate <- 105
 stat <- "MAE"
 label_xs <- TRUE
 profile_units <- "miles"
@@ -61,17 +71,21 @@ test_that("The output docx report exists", {
   load_libraries()
 
   output_format <- "word_document"
-  output_file <- file.path(output_dir, paste0("Cole_Creek_R1_102_5_",
+  output_file <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
                                               "bankfull_estimate.docx"))
 
   # Call the estimate_bankfull function with test data
   estimate_bankfull(stream = stream,
                     flowline_fc = flowline_fc,
                     xs_dims_fc = xs_dims_fc,
-                    xs_points_1 = xs_points_1,
-                    xs_points_2 = xs_points_2,
-                    xs_points_3 = xs_points_3,
-                    xs_points_4 = xs_points_4,
+                    xs_points_ch_1 = xs_points_ch_1,
+                    xs_points_ch_2 = xs_points_ch_2,
+                    xs_points_ch_3 = xs_points_ch_3,
+                    xs_points_ch_4 = xs_points_ch_4,
+                    xs_points_fp_1 = xs_points_fp_1,
+                    xs_points_fp_2 = xs_points_fp_2,
+                    xs_points_fp_3 = xs_points_fp_3,
+                    xs_points_fp_4 = xs_points_fp_4,
                     survey_name_1 = survey_name_1,
                     survey_name_2 = survey_name_2,
                     survey_name_3 = survey_name_3,

@@ -4,7 +4,8 @@ params:
   stream: ""
   flowline_sf: ""
   xs_dims_sf: ""
-  xs_pts_sf_list: ""
+  xs_pts_ch_sf_list: ""
+  xs_pts_fp_sf_list: ""
   features_sf: ""
   dem: ""
   show_xs_map: FALSE
@@ -79,9 +80,9 @@ To help inform the estimation of a bankfull elevation, this section contains a s
 
 ```{r, calc_xs_dims, echo=FALSE, warning=FALSE, error=FALSE}
 # Get the xs_points for the base year survey
-xs_pts <- params$xs_pts_sf_list[[1]]
+xs_pts_ch <- params$xs_pts_ch_sf_list[[1]]
 # Calculate cross section dimensions
-xs_dims <- fluvgeo::xs_dimensions(xs_points = xs_pts,
+xs_dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_ch,
                                streams = params$stream,
                                regions = params$regions,
                                bankfull_elevations = params$bankfull_elevations)
@@ -173,7 +174,7 @@ if(params$show_xs_map) {
 # Ensure that cross sections are sequentially ordered
 cross_section <- dplyr::arrange(params$xs_dims_sf, Seq)
 
-# Iterate through xs's, create plot, calculate xs dimensions, print RHG table
+# Iterate through xs's
 for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
   if(params$show_xs_map) {
     # Create the cross section plot
@@ -185,12 +186,18 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
   pander::pandoc.p('')
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
                                     xs_number = j,
-                                    xs_pts_sf_list = params$xs_pts_sf_list,
+                                    xs_pts_sf_list = params$xs_pts_fp_sf_list,
+                                    bankfull_elevation = params$bf_estimate,
+                                    aspect_ratio = 0.4))
+  
+  print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
+                                    xs_number = j,
+                                    xs_pts_sf_list = params$xs_pts_ch_sf_list,
                                     bankfull_elevation = params$bf_estimate,
                                     aspect_ratio = 1))
   # Calculate cross section geometry
-  xs_pts_j <- xs_pts[xs_pts$Seq == j, ]
-  dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_j,
+  xs_pts_ch_j <- xs_pts_ch[xs_pts_ch$Seq == j, ]
+  dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_ch_j,
                                  streams = params$stream,
                                  regions = params$regions,
                                  bankfull_elevations = params$bf_estimate)
@@ -217,4 +224,4 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
 ```
 
 
-version 0.1.33
+version 0.1.34
