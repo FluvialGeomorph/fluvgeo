@@ -129,7 +129,7 @@ print(ks)
 
 The figure below displays the selected regional hydraulic geometry curves plotted with the values for each of the cross sections in the current reach.
 
-```{r, regional_curve_graph, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Regional Hydraulic Geometry Curves"}
+```{r, regional_curve_graph, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Regional Hydraulic Geometry Curves"}
 # Draw reach regional curves graph
 print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
                                streams = params$stream,
@@ -165,7 +165,7 @@ print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf,
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. The blue horizontal line represents the estimated water surface elevation. A table of cross section hydraulic geometry dimensions calculated for the current cross section appears under each graph. 
 
-```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=7}
+```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=4}
 if(params$show_xs_map) {
   # Get dem raster
   dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
@@ -181,7 +181,7 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
     print(fluvgeo::map_xs(cross_section = params$xs_dims_sf,
                           xs_number = j,
                           dem = dem_raster,
-                          extent_factor = params$extent_factor))
+                          extent_factor = params$extent_factor * 3))
   }
   pander::pandoc.p('')
   print(fluvgeo::xs_compare_plot_L2(stream = params$stream,
@@ -194,7 +194,7 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
                                     xs_number = j,
                                     xs_pts_sf_list = params$xs_pts_ch_sf_list,
                                     bankfull_elevation = params$bf_estimate,
-                                    aspect_ratio = 1))
+                                    aspect_ratio = 0.8))
   # Calculate cross section geometry
   xs_pts_ch_j <- xs_pts_ch[xs_pts_ch$Seq == j, ]
   dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_ch_j,

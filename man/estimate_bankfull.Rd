@@ -8,10 +8,14 @@ estimate_bankfull(
   stream,
   flowline_fc,
   xs_dims_fc,
-  xs_points_1,
-  xs_points_2,
-  xs_points_3,
-  xs_points_4,
+  xs_points_ch_1,
+  xs_points_ch_2,
+  xs_points_ch_3,
+  xs_points_ch_4,
+  xs_points_fp_1,
+  xs_points_fp_2,
+  xs_points_fp_3,
+  xs_points_fp_4,
   survey_name_1,
   survey_name_2,
   survey_name_3,
@@ -42,20 +46,37 @@ other parameters.}
 \item{flowline_fc}{character; The path to the `flowline` feature
 class.}
 
-\item{xs_dims_fc}{character; The path to the "xs_dims" feature
-class. This is for the "base year" survey.}
+\item{xs_dims_fc}{character; The path to the
+`riffle_channel_dims_L2` feature class.
+This is for the "base year" survey.}
 
-\item{xs_points_1}{character; The path to a `xs_points` feature
-class for the "base year".}
+\item{xs_points_ch_1}{character; The path to the `riffle_channel_points`
+feature class for the "base year".}
 
-\item{xs_points_2}{character; The path to a `xs_points` feature
-class for the second time period.}
+\item{xs_points_ch_2}{character; The path to the `riffle_channel_points`
+feature class for the second time period.}
 
-\item{xs_points_3}{character; The path to a `xs_points` feature
-class for the third time period.}
+\item{xs_points_ch_3}{character; The path to the `riffle_channel_points`
+feature class for the third time period.}
 
-\item{xs_points_4}{character; The path to a `xs_points` feature
-class for the fourth time period.}
+\item{xs_points_ch_4}{character; The path to the `riffle_channel_points`
+feature class for the fourth time period.}
+
+\item{xs_points_fp_1}{character; The path to the
+`riffle_floodplain_points` feature class for
+the "base year".}
+
+\item{xs_points_fp_2}{character; The path to the
+`riffle_floodplain_points` feature class for the
+second time period.}
+
+\item{xs_points_fp_3}{character; The path to the
+`riffle_floodplain_points` feature class for the
+third time period.}
+
+\item{xs_points_fp_4}{character; The path to the
+`riffle_floodplain_points` feature class for the
+fourth time period.}
 
 \item{survey_name_1}{character: The name or date of the "base year"
 survey.}
