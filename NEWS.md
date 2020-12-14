@@ -1,3 +1,12 @@
+# fluvgeo v0.1.34 (2020-12-14)
+
+## Major Changes
+* Updated the Estimate Bankfull report to use the `riffle_floodplain` feature class. 
+
+## Bug Fixes
+* Updated Cole Creek test data.  
+
+
 # fluvgeo v0.1.33 (2020-11-21)
 
 ## Major Changes
