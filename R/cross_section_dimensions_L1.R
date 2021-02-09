@@ -39,7 +39,7 @@ cross_section_dimensions_L1 <- function(xs_sf, lead_n,
 
   # Calculate slope and sinuosity for xs_reach
   xs_reach_ss <- fluvgeo::slope_sinuosity(channel_features = xs_reach_sp,
-                                          lead_n = lead_n, lag_n = 0,
+                                          lead_n = lead_n, lag_n = lead_n,
                                           use_smoothing = use_smoothing,
                                           loess_span = loess_span,
                                           vert_units = vert_units)
