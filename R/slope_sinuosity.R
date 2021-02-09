@@ -181,6 +181,10 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     # Calculate slope: (rise / run)
     fl_pts$slope <- fl_pts$rise / fl_pts$run
 
+    # Calculate slope greater than or equal to zero
+    fl_pts$slope_gte_zero <- fl_pts$slope
+    fl_pts$slope_gte_zero[fl_pts$slope_gte_zero < 0] <- 0
+
     # Calculate coords of first and last record. Use as default to lead/lag
     # to prevent NAs being introduced at ends of series.
     upstream_x_lead  <- last(fl_pts$POINT_X)
