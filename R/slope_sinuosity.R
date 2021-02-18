@@ -122,7 +122,7 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   channel_features$stream_length <- 0
   channel_features$valley_length <- 0
   channel_features$sinuosity     <- 0
-  channel_features$sinuosity_nlt_one <- 0
+  channel_features$sinuosity_gte_one <- 0
   channel_features$slope             <- 0
   channel_features$slope_gte_zero    <- 0
 
@@ -185,7 +185,7 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
 
     # Calculate slope greater than or equal to zero
     fl_pts$slope_gte_zero <- fl_pts$slope
-    fl_pts$slope_gte_zero[fl_pts$slope_gte_zero < 0] <- 0
+    fl_pts$slope_gte_zero[fl_pts$slope_gte_zero <= 0] <- 0
 
     # Calculate coords of first and last record. Use as default to lead/lag
     # to prevent NAs being introduced at ends of series.
@@ -223,9 +223,9 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     # Calculate sinuosity: (stream_length / valley_length)
     fl_pts$sinuosity <- fl_pts$stream_length / fl_pts$valley_length
 
-    # Calculate sinuosity not less than one
-    fl_pts$sinuosity_nlt_one <- fl_pts$sinuosity
-    fl_pts$sinuosity_nlt_one[fl_pts$sinuosity_nlt_one < 1] <- 1
+    # Calculate sinuosity greater than or equal to one
+    fl_pts$sinuosity_gte_one <- fl_pts$sinuosity
+    fl_pts$sinuosity_gte_one[fl_pts$sinuosity_gte_one <= 1] <- 1
 
     return(fl_pts)
   }
