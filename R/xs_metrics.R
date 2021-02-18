@@ -134,8 +134,14 @@ xs_metrics <- function(xs_points, stream, xs_number,
   # mean_depth = xs_area / xs_width
   xs_width_depth <- xs_dims$xs_width / (xs_dims$xs_area / xs_dims$xs_width)
 
+  # Calculate width_depth ratio greater than or equal to one
+  xs_width_depth_gte_one <- ifelse(xs_width_depth <= 1, 1, xs_width_depth)
+
   # Calculate entrenchment ratio
   xs_entrench <- fp_dims$xs_width / xs_dims$xs_width
+
+  # Calculate entrenchment ratio greater than or equal to one
+  xs_entrench_gte_one <- ifelse(xs_entrench <= 1, 1, xs_entrench)
 
   # Calculate Water surface elevation
   watersurface_elev <- xs[xs$Detrend_DEM_Z == min(xs$Detrend_DEM_Z), ]$DEM_Z
@@ -144,18 +150,23 @@ xs_metrics <- function(xs_points, stream, xs_number,
   xs_type <- c("DEM derived cross section")
 
   # Build data frame of results
-  dims <- data.frame(stream, xs_number, xs_type, bankfull_elevation,
-                     drainage_area, xs_dims$xs_area, xs_dims$xs_width,
-                     xs_dims$xs_depth, xs_dims$discharge,
-                     fp_dims$xs_area, fp_dims$xs_width,
-                     fp_dims$xs_depth, xs_width_depth, xs_entrench,
-                     watersurface_elev, xs_dims$ground_elev, fp_dims$ground_elev,
+  dims <- data.frame(stream, xs_number, xs_type,
+                     bankfull_elevation, drainage_area,
+                     xs_dims$xs_area, xs_dims$xs_width, xs_dims$xs_depth,
+                     xs_dims$discharge,
+                     fp_dims$xs_area, fp_dims$xs_width, fp_dims$xs_depth,
+                     xs_width_depth, xs_width_depth_gte_one,
+                     xs_entrench, xs_entrench_gte_one,
+                     watersurface_elev, xs_dims$ground_elev,
+                     fp_dims$ground_elev,
                      stringsAsFactors = FALSE)
   colnames(dims) <- c("reach_name", "cross_section", "xs_type",
                       "bankfull_elevation", "drainage_area",
-                      "xs_area", "xs_width", "xs_depth", "discharge",
+                      "xs_area", "xs_width", "xs_depth",
+                      "discharge",
                       "fp_area", "fp_width", "fp_depth",
-                      "xs_width_depth_ratio", "xs_entrenchment_ratio",
+                      "xs_width_depth_ratio", "xs_width_depth_ratio_gte_one",
+                      "xs_entrenchment_ratio", "xs_entrenchment_ratio_gte_one",
                       "watersurface_elev", "bankfull_elev",
                       "floodprone_elev")
   return(dims)
