@@ -128,9 +128,15 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("sinuosity" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$sinuosity),
                 msg = paste("Numeric field 'sinuosity' missing from", name))
+    assert_that("sinuosity_gte_one" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$sinuosity_gte_one),
+                msg = paste("Numeric field 'sinuosity_gte_one' missing from", name))
     assert_that("slope" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$slope),
                 msg = paste("Numeric field 'slope' missing from", name))
+    assert_that("slope_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$slope_gte_zero),
+                msg = paste("Numeric field 'slope_gte_zero' missing from", name))
 
     # Check for duplicate or missing `Seq` values
     assert_that(length(unique(cross_section_dimensions_df$Seq)) ==
@@ -171,9 +177,15 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("xs_width_depth_ratio" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$xs_width_depth_ratio),
                 msg = paste("Numeric field 'xs_width_depth_ratio' missing from", name))
+    assert_that("xs_width_depth_ratio_gte_one" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$xs_width_depth_ratio_gte_one),
+                msg = paste("Numeric field 'xs_width_depth_ratio_gte_one' missing from", name))
     assert_that("xs_entrenchment_ratio" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$xs_entrenchment_ratio),
                 msg = paste("Numeric field 'xs_entrenchment_ratio' missing from", name))
+    assert_that("xs_entrenchment_ratio_gte_one" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$xs_entrenchment_ratio_gte_one),
+                msg = paste("Numeric field 'xs_entrenchment_ratio_gte_one' missing from", name))
     assert_that("watersurface_elev" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$watersurface_elev),
                 msg = paste("Numeric field 'watersurface_elev' missing from", name))
@@ -191,12 +203,21 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("shear_stress_density" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$shear_stress_density),
                 msg = paste("Numeric field 'shear_stress_density' missing from", name))
+    assert_that("shear_stress_density_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$shear_stress_density_gte_zero),
+                msg = paste("Numeric field 'shear_stress_density_gte_zero' missing from", name))
     assert_that("shear_stress_weight" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$shear_stress_weight),
                 msg = paste("Numeric field 'shear_stress_weight' missing from", name))
+    assert_that("shear_stress_weight_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$shear_stress_weight_gte_zero),
+                msg = paste("Numeric field 'shear_stress_weight_gte_zero' missing from", name))
     assert_that("shear_stress_lane" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$shear_stress_lane),
                 msg = paste("Numeric field 'shear_stress_lane' missing from", name))
+    assert_that("shear_stress_lane_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$shear_stress_lane_gte_zero),
+                msg = paste("Numeric field 'shear_stress_lane_gte_zero' missing from", name))
   }
 
   # Step: stream_power
@@ -204,12 +225,21 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("stream_power" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$stream_power),
                 msg = paste("Numeric field 'stream_power' missing from", name))
+    assert_that("stream_power_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$stream_power_gte_zero),
+                msg = paste("Numeric field 'stream_power_gte_zero' missing from", name))
     assert_that("stream_power_lane" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$stream_power_lane),
                 msg = paste("Numeric field 'stream_power_lane' missing from", name))
+    assert_that("stream_power_lane_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$stream_power_lane_gte_zero),
+                msg = paste("Numeric field 'stream_power_lane_gte_zero' missing from", name))
     assert_that("unit_stream_power" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$unit_stream_power),
                 msg = paste("Numeric field 'unit_stream_power' missing from", name))
+    assert_that("unit_stream_power_gte_zero" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$unit_stream_power_gte_zero),
+                msg = paste("Numeric field 'unit_stream_power_gte_zero' missing from", name))
   }
 
   # Step: planform
@@ -252,9 +282,15 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("rc_bfw_ratio" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$rc_bfw_ratio),
                 msg = paste("Numeric field 'rc_bfw_ratio' missing from", name))
+    assert_that("rc_bfw_ratio_lte_10" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$rc_bfw_ratio_lte_10),
+                msg = paste("Numeric field 'rc_bfw_ratio_lte_10' missing from", name))
     assert_that("mbw_bfw_ratio" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$mbw_bfw_ratio),
                 msg = paste("Numeric field 'mbw_bfw_ratio' missing from", name))
+    assert_that("mbw_bfw_ratio_lte_30" %in% names(cross_section_dimensions_df) &
+                  is.numeric(cross_section_dimensions_df$mbw_bfw_ratio_lte_30),
+                msg = paste("Numeric field 'mbw_bfw_ratio_lte_30' missing from", name))
   }
 
   # Return TRUE if all assertions are met
