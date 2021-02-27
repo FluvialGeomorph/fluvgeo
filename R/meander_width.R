@@ -4,10 +4,11 @@
 #' in the input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo bankline_points data
+#' @param bankline_points  SpatialPointsDataFrame; a fluvgeo bankline_points data
 #'                         structure
 #'
-#' @return Returns a data frame of loops with the calculated meander width.
+#' @return Returns a data frame of loops with the calculated meander width in
+#' units feet.
 #'
 #' @examples
 #' meander_width(fluvgeo::sin_bankline_points_sp)
@@ -20,6 +21,18 @@
 meander_width <- function(bankline_points) {
   # Check parameters
   expect_true(check_bankline_points(bankline_points))
+
+  # POINT_X, POINT_Y - X and Y horizontal units are in the units of the
+  # channel_features' coordinate system. Distances calculated using them are
+  # converted to feet in this function by the `horiz_con_factor`.
+
+  # Set the horizontal unit conversion factor to calculate feet
+  if(any(grep("units=m", sp::proj4string(bankline_points))) == 1) {
+    horiz_con_factor <- 3.28084}
+  if(any(grep("units=ft", sp::proj4string(bankline_points))) == 1) {
+    horiz_con_factor <- 1}
+  if(any(grep("units=us-ft", sp::proj4string(bankline_points))) == 1) {
+    horiz_con_factor <- 0.999998000004}
 
   # Convert Spatial*DataFrame to a data frame
   bankline_points <- bankline_points@data
@@ -66,14 +79,14 @@ meander_width <- function(bankline_points) {
                                                            loop_apex$bank_POINT_Y),
                                                 p2 = cbind(loop_apex$valley_POINT_X,
                                                            loop_apex$valley_POINT_Y),
-                                                lonlat = FALSE)
+                                                lonlat = FALSE) * horiz_con_factor
 
   # Calculate next loop width
   loop_apex$next_loop_width <- pointDistance(p1 = cbind(loop_apex$bank_POINT_X,
                                                         loop_apex$bank_POINT_Y),
                                              p2 = cbind(loop_apex$valley_POINT_X,
                                                         loop_apex$valley_POINT_Y),
-                                             lonlat = FALSE)
+                                             lonlat = FALSE) * horiz_con_factor
   # Calculate meander width
   loop_apex$meander_width <- loop_apex$current_loop_width +
                              loop_apex$next_loop_width

@@ -1,7 +1,9 @@
 library(fluvgeo)
 context("meander_length")
 
-ml <- meander_length(fluvgeo::sin_bankline_points_sp)
+bankline_points <- fluvgeo::sin_bankline_points_sp
+
+ml <- meander_length(bankline_points = bankline_points)
 
 test_that("check meander_length output data structure", {
   expect_true(is.data.frame(ml))
