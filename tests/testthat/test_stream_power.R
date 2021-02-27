@@ -113,3 +113,9 @@ test_that("check data structure", {
   expect_true(check_cross_section_dimensions(xs_dims_sp, "stream_power"))
   expect_true(check_cross_section_dimensions(xs_dims_sp2, "stream_power"))
 })
+
+test_that("check values", {
+  expect_true(all(na.omit(xs_dims_sp$stream_power_gte_zero) >= 0))
+  expect_true(all(na.omit(xs_dims_sp$stream_power_lane_gte_zero) >= 0))
+  expect_true(all(na.omit(xs_dims_sp$unit_stream_power_gte_zero) >= 0))
+})

@@ -137,10 +137,15 @@ stream_power <- function(xs_dims,
   xs_dims$discharge <- Q
 
   # Calculate stream power variables
-  xs_dims$stream_power       <- rho * g * Q * xs_dims$slope
-  xs_dims$stream_power_lane  <- Q * xs_dims$slope
-  xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope) /
+  xs_dims$stream_power       <- rho * g * Q * xs_dims$slope_gte_zero
+  xs_dims$stream_power_gte_zero <- gte(xs_dims$stream_power, 0)
+
+  xs_dims$stream_power_lane  <- Q * xs_dims$slope_gte_zero
+  xs_dims$stream_power_lane_gte_zero <- gte(xs_dims$stream_power_lane, 0)
+
+  xs_dims$unit_stream_power  <- (rho * g * Q * xs_dims$slope_gte_zero) /
                                 (xs_dims$xs_width * 0.3048)
+  xs_dims$unit_stream_power_gte_zero <- gte(xs_dims$unit_stream_power, 0)
 
   return(xs_dims)
 }
