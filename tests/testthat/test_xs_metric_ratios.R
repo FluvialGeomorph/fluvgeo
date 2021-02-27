@@ -14,8 +14,8 @@ test_that("check data structure", {
 })
 
 test_that("check values of rc_bfw_ratio < 10", {
-  expect_equal(xs_dims_ratios$rc_bfw_ratio_10[4], 10)
-  expect_equal(xs_dims_ratios$rc_bfw_ratio_10[5], 10)
-  expect_equal(xs_dims_ratios$rc_bfw_ratio_10[6], 10)
-  expect_equal(xs_dims_ratios$rc_bfw_ratio_10[10], 10)
+  expect_equal(xs_dims_ratios$rc_bfw_ratio_lte_10[4], 10)
+  expect_equal(xs_dims_ratios$rc_bfw_ratio_lte_10[5], 10)
+  expect_equal(xs_dims_ratios$rc_bfw_ratio_lte_10[6], 10)
+  expect_equal(xs_dims_ratios$rc_bfw_ratio_lte_10[10], 10)
 })
