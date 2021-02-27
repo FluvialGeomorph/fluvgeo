@@ -43,9 +43,12 @@ test_that("check fields exist by name", {
   expect_true("watersurface_elev"     %in% colnames(xs_dims_ss))
   expect_true("bankfull_elev"         %in% colnames(xs_dims_ss))
   expect_true("floodprone_elev"       %in% colnames(xs_dims_ss))
-  expect_true("shear_stress_density"  %in% colnames(xs_dims_ss))
-  expect_true("shear_stress_weight"   %in% colnames(xs_dims_ss))
-  expect_true("shear_stress_lane"     %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_density"           %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_density_gte_zero"  %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_weight"            %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_weight_gte_zero"   %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_lane"              %in% colnames(xs_dims_ss))
+  expect_true("shear_stress_lane_gte_zero"     %in% colnames(xs_dims_ss))
 })
 
 test_that("check field data type", {
@@ -80,10 +83,19 @@ test_that("check field data type", {
   expect_true(is.numeric(xs_dims_ss$bankfull_elev))
   expect_true(is.numeric(xs_dims_ss$floodprone_elev))
   expect_true(is.numeric(xs_dims_ss$shear_stress_density))
+  expect_true(is.numeric(xs_dims_ss$shear_stress_density_gte_zero))
   expect_true(is.numeric(xs_dims_ss$shear_stress_weight))
+  expect_true(is.numeric(xs_dims_ss$shear_stress_weight_gte_zero))
   expect_true(is.numeric(xs_dims_ss$shear_stress_lane))
+  expect_true(is.numeric(xs_dims_ss$shear_stress_lane_gte_zero))
 })
 
 test_that("check data structure", {
   expect_true(check_cross_section_dimensions(xs_dims_ss, "shear_stress"))
+})
+
+test_that("check values", {
+  expect_true(all(na.omit(xs_dims_ss$shear_stress_density_gte_zero) >= 0))
+  expect_true(all(na.omit(xs_dims_ss$shear_stress_weight_gte_zero) >= 0))
+  expect_true(all(na.omit(xs_dims_ss$shear_stress_lane_gte_zero) >= 0))
 })

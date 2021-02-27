@@ -107,11 +107,17 @@ shear_stress <- function(xs_dims, water_density = 1000) {
   specific_weight <- water_density_slug * 32.174
 
   # Calculate shear stress variables
-  xs_dims$shear_stress_density <- water_density * (xs_dims$xs_mean_depth * 0.3048) * xs_dims$slope
+  xs_dims$shear_stress_density <- water_density *
+                                  (xs_dims$xs_mean_depth * 0.3048) *
+                                  xs_dims$slope_gte_zero
+  xs_dims$shear_stress_density_gte_zero <- gte(xs_dims$shear_stress_density, 0)
 
-  xs_dims$shear_stress_weight <- specific_weight * xs_dims$xs_mean_depth * xs_dims$slope
+  xs_dims$shear_stress_weight <- specific_weight * xs_dims$xs_mean_depth *
+                                 xs_dims$slope_gte_zero
+  xs_dims$shear_stress_weight_gte_zero <- gte(xs_dims$shear_stress_weight, 0)
 
-  xs_dims$shear_stress_lane <- xs_dims$xs_mean_depth * xs_dims$slope
+  xs_dims$shear_stress_lane <- xs_dims$xs_mean_depth * xs_dims$slope_gte_zero
+  xs_dims$shear_stress_lane_gte_zero <- gte(xs_dims$shear_stress_lane, 0)
 
   return(xs_dims)
 }
