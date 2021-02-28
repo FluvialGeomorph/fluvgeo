@@ -2,15 +2,16 @@ library(fluvgeo)
 context("xs_metric_ratios")
 
 # Calculate cross section planform dimensions
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
-                                    fluvgeo::sin_bankline_points_sp)
+xs_dims_L2 <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
+                                  fluvgeo::sin_bankline_points_sp)
 
 # Calculate cross section metric ratios
-xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
+xs_dims_ratios <- xs_metric_ratios(xs_dimensions = xs_dims_L2)
 
 
 test_that("check data structure", {
-  expect_true(check_cross_section_dimensions(xs_dims_ratios, "metric_ratios"))
+  expect_true(check_cross_section_dimensions(xs_dims_ratios,
+                                             "metric_ratios"))
 })
 
 test_that("check values of rc_bfw_ratio < 10", {

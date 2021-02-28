@@ -2,22 +2,22 @@ library(purrr)
 library(fluvgeo)
 
 stream <- "Cole Creek R1"
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
-                                     package = "fluvgeo"), "xs_250_25_points")
-xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
-                                     package = "fluvgeo"), "xs_250_25_points")
-xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
-                                     package = "fluvgeo"), "xs_250_25_points")
+xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
+xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
+xs_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                     package = "fluvgeo"), "xs_50_points")
 xs_points_4 <- NULL
-survey_name_1 <- "2004"
+survey_name_1 <- "2006"
 survey_name_2 <- "2010"
 survey_name_3 <- "2016"
 survey_name_4 <- NULL
-features_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"), "features")
 profile_units <- "feet"
 label_xs = TRUE
-xs_label_freq = 2
+xs_label_freq = 10
 
 # Create list of survey paths
 xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)

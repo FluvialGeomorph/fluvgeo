@@ -45,7 +45,7 @@ extent_factor <- 1.2
 
 
 # sp
-cross_section_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+cross_section_sp <- fluvgeo::sin_riffle_floodplain_dims_L3_sp
 banklines_sp     <- fluvgeo::sin_banklines_sp
 
 # sp to sf

@@ -13,17 +13,17 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
            source = "Dunn & Leopold, 1978")
 
 # Get feature class test data in sf format
-flowline_fc     <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+flowline_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
                                          package = "fluvgeo"),
                              "flowline")
 # Level 2
-xs_dimensions_L2_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_dimensions_L2_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                              package = "fluvgeo"),
-                                 "xs_250_25_dims_L2")
+                                 "xs_50_dims_L2")
 # Level 3
-xs_dimensions_L3_fc <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_dimensions_L3_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                              package = "fluvgeo"),
-                                 "xs_250_25_dims_L3")
+                                 "xs_50_dims_L3")
 
 # Convert feature classes to an sf objects
 flowline_sf         <- fluvgeo::fc2sf(flowline_fc)

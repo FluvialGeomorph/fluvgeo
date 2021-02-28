@@ -10,22 +10,22 @@ sin_fl_pts_sp         <- fluvgeo::sin_flowline_points_sp
 sin_riffle_channel_sp <- fluvgeo::sin_riffle_channel_sp
 
 sin_fl_pts_ss         <- slope_sinuosity(sin_fl_pts_sp,
-                                         lead_n = 100, lag_n = 0,
+                                         lead_n = 50, lag_n = 50,
                                          loess_span = 0.5,
                                          vert_units = "ft")
 
 sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_sp,
-                                         lead_n = 3, lag_n = 0,
+                                         lead_n = 1, lag_n = 1,
                                          loess_span = 0.5,
                                          vert_units = "ft")
 
 # Get feature class test data
-fl_pts_m_fc  <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+fl_pts_m_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                       package = "fluvgeo"),
                           "flowline_points")
-xs_m_fc      <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_m_fc      <- file.path(system.file("extdata", "y2016_R1.gdb",
                                       package = "fluvgeo"),
-                          "xs_250_25")
+                          "xs_50")
 
 # Convert to sf and then to sp
 fl_pts_m_sf <- fluvgeo::fc2sf(fl_pts_m_fc)
@@ -34,12 +34,12 @@ fl_pts_m_sp <- sf::as_Spatial(sf::st_zm(fl_pts_m_sf))
 xs_m_sp     <- sf::as_Spatial(xs_m_sf)
 
 fl_pts_m_sp_ss <- slope_sinuosity(fl_pts_m_sp,
-                                  lead_n = 100, lag_n = 0,
+                                  lead_n = 50, lag_n = 50,
                                   loess_span = 0.5,
                                   vert_units = "ft")
 
 xs_m_sp_ss <- slope_sinuosity(xs_m_sp,
-                              lead_n = 1, lag_n = 0,
+                              lead_n = 1, lag_n = 1,
                               loess_span = 0.5,
                               vert_units = "ft")
 
@@ -60,12 +60,12 @@ fl_pts_ft_sp <- sf::as_Spatial(sf::st_zm(fl_pts_ft_sf))
 xs_ft_sp     <- sf::as_Spatial(sf::st_zm(xs_ft_sf))
 
 fl_pts_ft_sp_ss <- slope_sinuosity(fl_pts_ft_sp,
-                                   lead_n = 100, lag_n = 0,
+                                   lead_n = 50, lag_n = 50,
                                    loess_span = 0.5,
                                    vert_units = "ft")
 
 xs_ft_sp_ss <- slope_sinuosity(xs_ft_sp,
-                               lead_n = 6, lag_n = 0,
+                               lead_n = 3, lag_n = 3,
                                loess_span = 0.5,
                                vert_units = "ft")
 

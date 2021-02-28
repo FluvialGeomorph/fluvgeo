@@ -34,7 +34,7 @@
 #' # Create the reach metric map
 #' wdr_map <- map_reach_metric(wdr,
 #'                             fluvgeo::sin_flowline_sp,
-#'                             fluvgeo::sin_riffle_floodplain_dims_planform_sp)
+#'                             fluvgeo::sin_riffle_floodplain_dims_L3_sp)
 #' print(wdr_map)
 #'
 #' @importFrom sf st_crs st_transform

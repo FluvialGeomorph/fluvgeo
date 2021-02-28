@@ -3,15 +3,15 @@ library(fluvgeo)
 
 stream <- "Cole Creek R1"
 xs_number <- 1
-xs_points_1 <- file.path(system.file("extdata", "testing_Cole_2004.gdb",
+xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
-                         "xs_250_25_points")
-xs_points_2 <- file.path(system.file("extdata", "testing_Cole_2010.gdb",
+                         "xs_50_points")
+xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
-                         "xs_250_25_points")
-xs_points_3 <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                         "xs_50_points")
+xs_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "xs_250_25_points")
+                         "xs_50_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2004"
 survey_name_2 <- "2010"

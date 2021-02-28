@@ -4,12 +4,12 @@ library(sf)
 context("cross_section_dimensions_L2")
 
 # Get feature class test data
-xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_dims_fc    <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25")
-xs_points_fc  <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+                           "xs_50")
+xs_points_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25_points")
+                           "xs_50_points")
 
 # Convert to sf
 xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)
@@ -21,7 +21,7 @@ xs_points <- sf::as_Spatial(sf::st_zm(xs_points_sf, what = "ZM"))
 
 # Set parameters
 bankfull_elevation <- 104
-lead_n <- 1
+lead_n <- 3
 use_smoothing <- TRUE
 loess_span <- 0.5
 vert_units <- "ft"

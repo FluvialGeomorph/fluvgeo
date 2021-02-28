@@ -20,7 +20,7 @@ xs_dims_sp <- stream_power(xs_dims_ss,
                            drainage_area = 41)
 
 ## Step: planform
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
                                     fluvgeo::sin_bankline_points_sp)
 
 ## Step: metric_ratios
@@ -30,7 +30,7 @@ xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
 # sf
 xs_dims_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                     package = "fluvgeo"),
-                        "riffle_floodplain_dims")
+                        "riffle_floodplain_dims_L2")
 xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
 
 

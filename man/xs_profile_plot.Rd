@@ -35,7 +35,7 @@ of the input stream reach.
 }
 \examples{
 # Create cross section profile plot
-profile_plot <- xs_profile_plot(reach_xs_dims_sp = fluvgeo::sin_riffle_floodplain_dims_planform_sp,
+profile_plot <- xs_profile_plot(reach_xs_dims_sp = fluvgeo::sin_riffle_floodplain_dims_L3_sp,
                                 features_sp = fluvgeo::sin_features_sp,
                                 label_xs = TRUE)
 

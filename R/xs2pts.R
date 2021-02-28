@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' # Retrieve a cross section data structure
-#' xs_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+#' xs_sp <- fluvgeo::sin_riffle_floodplain_dims_L3_sp
 #'
 #' # Call the xs2pts function for a cross section
 #' xs_pts <- xs2pts(xs_sp)

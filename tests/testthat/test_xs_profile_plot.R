@@ -2,7 +2,7 @@ library(fluvgeo)
 context("xs_profile_plot")
 
 # Get test data
-reach_xs_dims_sp <- fluvgeo::sin_riffle_floodplain_dims_planform_sp
+reach_xs_dims_sp <- fluvgeo::sin_riffle_floodplain_dims_L3_sp
 features_sp      <- fluvgeo::sin_features_sp
 label_xs = TRUE
 xs_label_freq = 2

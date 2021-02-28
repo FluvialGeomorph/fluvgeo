@@ -4,9 +4,9 @@ library(sf)
 context("cross_section_dimensions_L1")
 
 # Get feature class test data
-xs_dims_fc    <- file.path(system.file("extdata", "testing_Cole_2016.gdb",
+xs_dims_fc    <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                           "xs_250_25")
+                           "xs_50")
 
 # Convert to sf
 xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
@@ -15,7 +15,7 @@ xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
 xs_sf <- dplyr::select(xs_dims_sf, 1:15)
 
 # Set parameters
-lead_n = 1
+lead_n = 6
 use_smoothing = TRUE
 loess_span = 0.5
 vert_units = "ft"

@@ -7,11 +7,12 @@
 meander_length(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; an fluvgeo bankline_points data
-structure}
+\item{bankline_points}{SpatialPointsDataFrame; a fluvgeo bankline_points
+data structure.}
 }
 \value{
-Returns a data frame of loops with the calculated meander length.
+Returns a data frame of loops with the calculated meander length in
+units feet.
 }
 \description{
 Calculates the meander length (wavelength) for each loop in the
