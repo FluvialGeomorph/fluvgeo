@@ -37,6 +37,3 @@ a tmap object
 Produces a reach overview map displaying cross section
 locations over an aerial image or elevation multi-direction shaded relief.
 }
-\examples{
-
-}

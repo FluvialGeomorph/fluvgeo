@@ -141,6 +141,3 @@ Produces a FluvialGeomorph Estimate Bankfull report in the
 \description{
 Produces the FluvialGeomorph Estimate Bankfull report.
 }
-\examples{
-
-}

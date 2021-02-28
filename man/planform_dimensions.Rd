@@ -23,6 +23,6 @@ Calculates planform dimensions for each cross section in the
 }
 \examples{
 # Calculate cross section planform dimensions
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_sp,
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
                                    fluvgeo::sin_bankline_points_sp)
 }
