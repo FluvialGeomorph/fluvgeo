@@ -17,8 +17,6 @@
 #'
 #' @return a tmap object
 #'
-#' @examples
-#'
 #' @importFrom sf st_crs st_transform
 #' @importFrom sp CRS
 #' @importFrom ceramic cc_location cc_elevation

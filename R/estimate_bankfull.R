@@ -71,8 +71,6 @@
 #' @return Produces a FluvialGeomorph Estimate Bankfull report in the
 #' `output_dir` in the requested file format.
 #'
-#' @examples
-#'
 #' @importFrom purrr discard map
 #' @importFrom rmarkdown render
 #'
