@@ -14,8 +14,8 @@ Package Status
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.34-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--12--14-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.1.35-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2021--02--28-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 Description
@@ -51,8 +51,14 @@ provided by the following US Army Corps of Engineers (USACE) programs:
     (MRG&P)](https://www.mvd.usace.army.mil/Missions/Mississippi-River-Science-Technology/MS-River-Geomorphology-Potamology/)
 -   [Flood Risk Management Program
     (FRM)](https://www.iwr.usace.army.mil/Missions/Flood-Risk-Management/Flood-Risk-Management-Program/)
+-   [Engineering With Nature (EWN)](https://ewn.el.erdc.dren.mil/)
 
-<img src="man/figures/FRMP_300.png" height=75 align="right" /><img src="man/figures/MRG&P_300.png" height=75 align="right" /><img src="man/figures/RSMlogo.png" height=75 align="right" /><img src="man/figures/EMRRP_logo_300.png" height=75 align="right" />
+<img src="man/figures/EWN_200.png" height=75 align="right" />
+<img src="man/figures/SilverJackets_200.png" height=75 align="right" />
+<img src="man/figures/FRMP_200.png" height=75 align="right" />
+<img src="man/figures/MRG&P_300.png" height=75 align="right" />
+<img src="man/figures/RSM_200.png" height=75 align="right" />
+<img src="man/figures/EMRRP_logo_200.png" height=75 align="right" />
 
 Latest Updates
 --------------
@@ -75,7 +81,7 @@ Install
 To install the `fluvgeo` package, install from GitHub using the
 `devtools` package:
 
-    devtools::install_github(repo = "FluvialGeomorph/fluvgeo", build_vignettes = TRUE)
+    remotes::install_github(repo = "FluvialGeomorph/fluvgeo@*release")
 
 Bug Reports
 -----------
