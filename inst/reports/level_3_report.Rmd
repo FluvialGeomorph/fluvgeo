@@ -75,7 +75,7 @@ if(elevation) {
 ```
 
 ## Longitudinal Profile
-```{r, longitudinal_profile_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Logitudinal Profile Plot"}
+```{r, longitudinal_profile_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Longitudinal Profile Plot"}
 
 # Convert to sp
 xs_dims_sf_zm  <- sf::st_zm(params$xs_dims_sf, what = "ZM")
@@ -229,4 +229,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-Version: 0.1.34
+Version: 0.1.35
