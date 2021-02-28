@@ -1,3 +1,13 @@
+# fluvgeo v0.1.35 (2021-02-28)
+
+## Major Changes
+* Updated all metric calculations to include an additional variable for each metric modified to only contain the values within the logical limits of that metric. This improves interpretation by eliminating technical possible, but confusing results from the display. The unmodified variables are also included for review and troubleshooting. 
+* Slope and sinuosity are now calculated based on an upstream AND downstream centered moving window. Previously the calculation had been made with just an upstream moving window [69d9835](https://github.com/FluvialGeomorph/fluvgeo/commit/69d983518a3b5318b66d39b1c94c36db8c3ae7d8). 
+
+## Bug Fixes
+* Updated and cleaned test data.  
+
+
 # fluvgeo v0.1.34 (2020-12-14)
 
 ## Major Changes
