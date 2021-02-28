@@ -39,12 +39,12 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                       "feet"       = 3280.84)
 
   # Define `metrics` factor levels
-  metrics_levels <- c("xs_width_depth_ratio",
-                      "xs_entrenchment_ratio",
-                      "slope",
-                      "sinuosity",
-                      "shear_stress_weight",
-                      "unit_stream_power")
+  metrics_levels <- c("xs_width_depth_ratio_gte_one",
+                      "xs_entrenchment_ratio_gte_one",
+                      "slope_gte_zero",
+                      "sinuosity_gte_one",
+                      "shear_stress_weight_gte_zero",
+                      "unit_stream_power_gte_zero")
 
 
   # Define `metrics` factor labels
@@ -57,7 +57,7 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
 
 
   # Create a metrics variable to control which facet receives feature labels
-  features_sf$metrics <- factor(rep("unit_stream_power",
+  features_sf$metrics <- factor(rep("unit_stream_power_gte_zero",
                                     length(features_sf$Name)),
                                 levels = metrics_levels,
                                 labels = metrics_labels)
@@ -70,12 +70,12 @@ xs_metrics_plot_L2 <- function(xs_dims_sf,
                            key = "metrics",
                            value = "values",
                            na.rm = TRUE,
-                           .data$xs_width_depth_ratio,
-                           .data$xs_entrenchment_ratio,
-                           .data$slope,
-                           .data$sinuosity,
-                           .data$shear_stress_weight,
-                           .data$unit_stream_power)
+                           .data$xs_width_depth_ratio_gte_one,
+                           .data$xs_entrenchment_ratio_gte_one,
+                           .data$slope_gte_zero,
+                           .data$sinuosity_gte_one,
+                           .data$shear_stress_weight_gte_zero,
+                           .data$unit_stream_power_gte_zero)
 
 
   # Set factor levels to control labeling

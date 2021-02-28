@@ -45,8 +45,8 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
   metrics_levels <- c("Watershed_Area_SqMile",
                       "Z",
                       "Z_smooth",
-                      "slope",
-                      "sinuosity")
+                      "slope_gte_zero",
+                      "sinuosity_gte_one")
 
   # Define `metrics` factor labels
   km_to_mouth_label <- paste0("Longitudinal Distance (", profile_units, ")")
@@ -57,13 +57,13 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
                       "Sinuosity")
 
   # Create a metrics variable to control which facet receives feature labels
-  features_sf$metrics <- factor(rep("sinuosity",
+  features_sf$metrics <- factor(rep("sinuosity_gte_one",
                                     length(features_sf$Name)),
                                 levels = metrics_levels,
                                 labels = metrics_labels)
 
   # Determine min y value
-  plot_min_y <- min(na.omit(xs_dims_sf$sinuosity))
+  plot_min_y <- min(na.omit(xs_dims_sf$sinuosity_gte_one))
 
   # Gather data by metrics for plotting
   xs_dims <- tidyr::gather(xs_dims_sf,
@@ -73,8 +73,8 @@ xs_metrics_plot_L1 <- function(xs_dims_sf,
                            .data$Watershed_Area_SqMile,
                            .data$Z,
                            .data$Z_smooth,
-                           .data$slope,
-                           .data$sinuosity)
+                           .data$slope_gte_zero,
+                           .data$sinuosity_gte_one)
 
   # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
