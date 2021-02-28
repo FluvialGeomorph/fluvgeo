@@ -33,7 +33,7 @@ test_that("convert ESRI GDB raster to RasterLayer", {
 
   # Create map
   esri_raster <- esri_raster2RasterLayer(raster_path = raster_path)
-  plot(esri_raster)
+  #plot(esri_raster)
 
   expect_true("RasterLayer" %in% class(esri_raster))
 })
@@ -44,7 +44,7 @@ test_that("convert .tif raster to RasterLayer", {
 
   # Create map
   tif_raster <- esri_raster2RasterLayer(raster_path = tif_path)
-  plot(tif_raster)
+  #plot(tif_raster)
 
   expect_true("RasterLayer" %in% class(tif_raster))
 })

@@ -61,9 +61,9 @@ label_xs <- TRUE
 profile_units <- "miles"
 aerial <- TRUE
 elevation = TRUE
-xs_label_freq = 2
-exaggeration = 30
-extent_factor = 1.3
+xs_label_freq = 10
+exaggeration = 10
+extent_factor = 1.2
 output_dir <- Sys.getenv("HOME")
 
 test_that("The output docx report exists", {
@@ -73,6 +73,7 @@ test_that("The output docx report exists", {
   output_format <- "word_document"
   output_file <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
                                               "bankfull_estimate.docx"))
+  if (file.exists(output_file)) file.remove(output_file)
 
   # Call the estimate_bankfull function with test data
   estimate_bankfull(stream = stream,
