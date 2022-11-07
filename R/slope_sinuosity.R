@@ -37,6 +37,7 @@
 #'                                          loess_span = 0.5,
 #'                                          vert_units = "ft")
 #'
+#' @importFrom terra vect linearUnits
 #' @importFrom assertthat assert_that
 #' @importFrom stats loess predict
 #' @importFrom dplyr first last lead lag
@@ -81,6 +82,8 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   assert_that(is.numeric(loess_span) &&
                 length(loess_span) == 1,
               msg = "'loess_span' must be numeric vector of length one")
+  assert_that(vert_units %in% c("m", "ft", "us-ft"),
+              msg = "vert_units must be one of 'm', 'ft', 'us-ft'")
 
   # Notes on FluvialGeomorph units:
   # POINT_M - These values will always be in kilometers and therefore need
@@ -92,12 +95,10 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   # converted to feet in this function by the `horiz_con_factor`.
 
   # Set the horizontal unit conversion factor to calculate feet
-  if(any(grep("units=m", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 3.28084}
-  if(any(grep("units=ft", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 1}
-  if(any(grep("units=us-ft", sp::proj4string(channel_features))) == 1) {
-    horiz_con_factor <- 0.999998000004}
+  linear_units_m <- terra::linearUnits(terra::vect(channel_features))
+  if(linear_units_m == 0) {
+    stop("channel_features crs is geographic, must be a projected crs")
+  } else {horiz_con_factor <- 3.28084}                # converts meter to feet
 
   # Set the vertical unit conversion factor to calculate feet
   if(vert_units == "m") vert_con_factor <- 3.28084
