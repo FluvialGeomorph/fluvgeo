@@ -214,12 +214,13 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     # Calculate stream_length (already in feet)
     fl_pts$stream_length <- fl_pts$upstream_m - fl_pts$downstream_m
 
-    # Calculate valley_length (and convert horiz. units to feet)
-    fl_pts$valley_length <- pointDistance(p1 = cbind(fl_pts$upstream_x,
-                                                     fl_pts$upstream_y),
-                                          p2 = cbind(fl_pts$downstream_x,
-                                                     fl_pts$downstream_y),
-                                          lonlat = FALSE) * horiz_con_factor
+    # Calculate valley_length in meters and convert horiz. units to feet
+    fl_pts$valley_length <- raster::pointDistance(
+               p1 = cbind(fl_pts$upstream_x * linear_units_m,
+                          fl_pts$upstream_y * linear_units_m),
+               p2 = cbind(fl_pts$downstream_x * linear_units_m,
+                          fl_pts$downstream_y * linear_units_m),
+               lonlat = FALSE) * horiz_con_factor
 
     # Calculate sinuosity: (stream_length / valley_length)
     fl_pts$sinuosity <- fl_pts$stream_length / fl_pts$valley_length
