@@ -18,7 +18,7 @@
 #' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
 #' \code{ArcGIS Desktop} users.
 #'
-#' @seealso The \code{\link{arc2sp}} function for loading data from and ESRI
+#' @seealso The \code{\link{arc2sp}} function for loading data from an ESRI
 #' spatial dataset.
 #'
 #' @references
@@ -44,7 +44,37 @@
 #' sp2arc(sp_object = fc_sp, fc_path = temp_file)
 #' }
 #'
+#' @importFrom assertthat assert_that
+#' @importFrom stringr str_detect
+#' @importFrom arcgisbinding arc.write
+#'
 sp2arc <- function(sp_object, fc_path) {
+  # Check parameters
+  assert_that(stringr::str_detect(class(sp_object), "Spatial*"),
+              msg = "sp_object must be of class `Spatial*DataFrame`")
+
+  # Get metadata from the sp object (arc.write is too lazy to read it directly)
+  # https://github.com/R-ArcGIS/r-bridge/issues/26
+
+  # Get sp Spatial data class
+  sp_shape_type <- slotNames(sp_object)[2]
+
+  # Set ESRI shape type to sp shape type
+  esri_shape_type <- switch(sp_shape_type,
+                            points      = "SpatialPointsDataFrame",
+                            multipoints = "SpatialMultiPointsDataFrame",
+                            lines       = "SpatialLinesDataFrame",
+                            polygons    = "SpatialPolygonsDataFrame")
+
+  # Get the CRS
+  sp_crs <- sp_object@proj4string
+
+  # Construct arc.write `shapeinfo` parameter (undocumented)
+  shape_info <- list(type = esri_shape_type,
+                     WKT = sp::wkt(sp_crs))
+
   # Write the sp object to a geodatabase feature class
-  arcgisbinding::arc.write(data = sp_object, path = fc_path)
+  arcgisbinding::arc.write(data = sp_object,
+                           path = fc_path,
+                           shape_info = shape_info)
 }

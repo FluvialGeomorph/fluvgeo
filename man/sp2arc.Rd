@@ -53,6 +53,6 @@ sp2arc(sp_object = fc_sp, fc_path = temp_file)
 }
 }
 \seealso{
-The \code{\link{arc2sp}} function for loading data from and ESRI
+The \code{\link{arc2sp}} function for loading data from an ESRI
 spatial dataset.
 }
