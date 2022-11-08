@@ -41,22 +41,26 @@
 #' }
 #'
 #' @importFrom arcgisbinding arc.data2sp arc.select arc.open
+#' @importFrom sp CRS
 #'
 arc2sp <- function(fc_path) {
   # Check if fc parent folder exists
   stopifnot(file.exists(dirname(fc_path)))
 
-  # arcgisbinding prone to crashing if not warmed up first with an easy example
-  warmup <- arc.data2sp(
-              arc.select(arc.open(system.file("extdata", "ca_ozone_pts.shp",
-                                     package="arcgisbinding")),
-                         'ozone'))
-
-  # Open a connection to the specified ArcGIS feature class
+  # Create an arc.dataset-class object
   arcobj <- arcgisbinding::arc.open(fc_path)
-  # Select the ArcGIS data
+
+  # Get CRS
+  arcobj_crs <- sp::CRS(SRS_string = paste0("EPSG:", arcobj@shapeinfo$WKID))
+
+  # Make a selection of the ArcGIS data (all data) returned in arc.data format
   arc <- arcgisbinding::arc.select(arcobj)
-  # Convert the ArcGIS format to the sp format
+
+  # Convert the arc.data format to the sp format
   sp <- arcgisbinding::arc.data2sp(arc)
+
+  # Set CRS
+  slot(sp, "proj4string") <- arcobj_crs
+
   return(sp)
 }
