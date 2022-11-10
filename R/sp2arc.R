@@ -54,15 +54,14 @@ sp2arc <- function(sp_object, fc_path) {
               msg = "sp_object must be of class `Spatial*DataFrame`")
 
   # Get metadata from the sp object (arc.write is too lazy to read it directly)
-  # https://github.com/R-ArcGIS/r-bridge/issues/26
+  # https://github.com/R-ArcGIS/r-bridge/issues/26 , 38
 
   # Get sp Spatial data class
-  sp_shape_type <- slotNames(sp_object)[2]
+  sp_shape_type <- class(sp_object)
 
   # Set ESRI shape type to sp shape type
   esri_shape_type <- switch(sp_shape_type,
                             points      = "SpatialPointsDataFrame",
-                            multipoints = "SpatialMultiPointsDataFrame",
                             lines       = "SpatialLinesDataFrame",
                             polygons    = "SpatialPolygonsDataFrame")
 
@@ -76,5 +75,6 @@ sp2arc <- function(sp_object, fc_path) {
   # Write the sp object to a geodatabase feature class
   arcgisbinding::arc.write(data = sp_object,
                            path = fc_path,
-                           shape_info = shape_info)
+                           shape_info = shape_info,
+                           overwrite = TRUE)
 }
