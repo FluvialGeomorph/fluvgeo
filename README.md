@@ -2,24 +2,21 @@
 
 <img src="man/figures/fluvgeo-3.png" width=250 align="right" />
 
-fluvgeo
-=======
+# fluvgeo
 
 An `R` Package for Performing **Fluv**ial **Geo**mrphology Analysis
 
-Package Status
---------------
+## Package Status
 
 [![Maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle)
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.35-orange.svg?style=flat-square)](commits/master)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2021--02--28-yellowgreen.svg)](/commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.1.36-orange.svg?style=flat-square)](commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2022--11--15-yellowgreen.svg)](/commits/master)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
-Description
------------
+## Description
 
 This package contains a wide range of functions for performing fluvial
 geomorphic analysis. This `R` package is designed for use with the
@@ -37,8 +34,7 @@ perform a wide range of fluvial geomorphic analysis:
 
 <img src="man/figures/HDQLO-03_h120.jpg" width=125 align="right" />
 
-Funding
--------
+## Funding
 
 Funding for development and maintenance of FluvialGeomorph has been
 provided by the following US Army Corps of Engineers (USACE) programs:
@@ -60,31 +56,26 @@ provided by the following US Army Corps of Engineers (USACE) programs:
 <img src="man/figures/RSM_200.png" height=75 align="right" />
 <img src="man/figures/EMRRP_logo_200.png" height=75 align="right" />
 
-Latest Updates
---------------
+## Latest Updates
 
 Check out the [NEWS](NEWS.md) for details on the latest updates.
 
-Authors
--------
+## Authors
 
 -   Michael Dougherty, Geographer, U.S. Army Corps of Engineers
     <a itemprop="sameAs" content="https://orcid.org/0000-0002-1465-5927" href="https://orcid.org/0000-0002-1465-5927" target="orcid.widget" rel="me noopener noreferrer" style="vertical-align:top;"><img src="https://orcid.org/sites/default/files/images/orcid_16x16.png" style="width:1em;margin-right:.5em;" alt="ORCID iD icon">https://orcid.org/0000-0002-1465-5927</a>
-
 -   Christopher Haring, Fluvial Geomorphologist/Research Physical
     Scientist, U.S. Army Corps of Engineers
 -   Charles Theiling, Ecologist, U.S. Army Corps of Engineers
 
-Install
--------
+## Install
 
 To install the `fluvgeo` package, install from GitHub using the
 `devtools` package:
 
     remotes::install_github(repo = "FluvialGeomorph/fluvgeo@*release")
 
-Bug Reports
------------
+## Bug Reports
 
 If you find any bugs using `fluvgeo`, please open an
 [issue](https://github.com/FluvialGeomorph/fluvgeo/issues).

@@ -1,3 +1,12 @@
+# fluvgeo v0.1.36 (2022-11-15)
+
+## Bug Fixes
+* Updated the process for identifying horizontal coordinate systems and setting linear unit conversion factors for slope and sinuosity calculations.  
+* Fixed bug when calculating sinuosity when linear units not meters. 
+* Identified ESRI arcgisbinding bug in properly handling coordinate reference systems on read and write (see `arcgisbinding` issue 26 & 38)[https://github.com/R-ArcGIS/r-bridge/issues/38]. 
+
+
+
 # fluvgeo v0.1.35 (2021-02-28)
 
 ## Major Changes
