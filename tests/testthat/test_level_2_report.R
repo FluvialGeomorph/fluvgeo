@@ -1,22 +1,6 @@
 library(fluvgeo)
 context("level_2_report")
 
-# Helper functions
-skip_if_no_arc <- function() {
-  testthat::skip_if_not_installed("arcgisbinding")
-}
-
-load_libraries <- function() {
-  library(sp)
-  library(sf)
-  library(raster)
-  library(rgdal)
-  library(tmap)
-  library(arcgisbinding)
-  arcgisbinding::arc.check_product()
-}
-
-# sf
 stream <- "Cole Creek R1"
 flowline_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
@@ -65,22 +49,44 @@ output_format <- "word_document"
 
 
 test_that("check level 2 report, without xs map", {
-  skip_if_no_arc()
-  load_libraries()
+  expected_report <- file.path(output_dir,
+                               "Cole_Creek_R1_103_5_level_2_report.docx")
+  if (file.exists(expected_report)) file.remove(expected_report)
 
-  # Create report
-  p <- fluvgeo::level_2_report(stream, flowline_fc, xs_fc, xs_dims_fc,
-                               xs_points_1, xs_points_2,
-                               xs_points_3, xs_points_4,
-                               survey_name_1, survey_name_2,
-                               survey_name_3, survey_name_4,
-                               dem, banklines_fc, features_fc,
-                               bf_estimate, regions, label_xs,
-                               show_xs_map, profile_units,
-                               aerial, elevation,
-                               xs_label_freq, exaggeration, extent_factor,
-                               output_dir, output_format)
-  print(p)
-  expect_true(file.exists(file.path(output_dir,
-                                    "Cole_Creek_R1_103_5_level_2_report.docx")))
+  fluvgeo::level_2_report(stream, flowline_fc, xs_fc, xs_dims_fc,
+                          xs_points_1, xs_points_2,
+                          xs_points_3, xs_points_4,
+                          survey_name_1, survey_name_2,
+                          survey_name_3, survey_name_4,
+                          dem, banklines_fc, features_fc,
+                          bf_estimate, regions, label_xs,
+                          show_xs_map, profile_units,
+                          aerial, elevation,
+                          xs_label_freq, exaggeration, extent_factor,
+                          output_dir, output_format)
+
+  expect_true(file.exists(expected_report))
+})
+
+test_that("check level 2 report, without xs map, network drive", {
+  network_dir <- "//mvrdfs.mvr.ds.usace.army.mil/EGIS/Work/FluvialGeomorph"
+  output_dir <- file.path(network_dir, "temp")
+  dir.create(output_dir, showWarnings = FALSE)
+  expected_report <- file.path(output_dir,
+                               "Cole_Creek_R1_103_5_level_2_report.docx")
+  if (file.exists(expected_report)) file.remove(expected_report)
+
+  fluvgeo::level_2_report(stream, flowline_fc, xs_fc, xs_dims_fc,
+                          xs_points_1, xs_points_2,
+                          xs_points_3, xs_points_4,
+                          survey_name_1, survey_name_2,
+                          survey_name_3, survey_name_4,
+                          dem, banklines_fc, features_fc,
+                          bf_estimate, regions, label_xs,
+                          show_xs_map, profile_units,
+                          aerial, elevation,
+                          xs_label_freq, exaggeration, extent_factor,
+                          output_dir, output_format)
+
+  expect_true(file.exists(expected_report))
 })

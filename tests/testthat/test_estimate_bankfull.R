@@ -1,20 +1,6 @@
 library(fluvgeo)
 context("estimate_bankfull")
 
-# Helper functions
-skip_if_no_arc <- function() {
-  testthat::skip_if_not_installed("arcgisbinding")
-}
-
-load_libraries <- function() {
-  library(sp)
-  library(sf)
-  library(tmap)
-  library(arcgisbinding)
-  arcgisbinding::arc.check_product()
-}
-
-# sf
 stream <- "Cole Creek R1"
 flowline_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
@@ -65,48 +51,52 @@ xs_label_freq = 10
 exaggeration = 10
 extent_factor = 1.2
 output_dir <- Sys.getenv("HOME")
+output_format <- "word_document"
+
 
 test_that("The output docx report exists", {
-  skip_if_no_arc()
-  load_libraries()
+  expected_report <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
+                                                  "bankfull_estimate.docx"))
+  if (file.exists(expected_report)) file.remove(expected_report)
 
-  output_format <- "word_document"
-  output_file <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
-                                              "bankfull_estimate.docx"))
-  if (file.exists(output_file)) file.remove(output_file)
+  estimate_bankfull(stream, flowline_fc, xs_dims_fc,
+                    xs_points_ch_1, xs_points_ch_2,
+                    xs_points_ch_3, xs_points_ch_4,
+                    xs_points_fp_1, xs_points_fp_2,
+                    xs_points_fp_3, xs_points_fp_4,
+                    survey_name_1, survey_name_2,
+                    survey_name_3, survey_name_4,
+                    features_fc, dem, show_xs_map, regions,
+                    bankfull_elevations, bf_estimate,
+                    stat, label_xs, profile_units,
+                    aerial, elevation,
+                    xs_label_freq, exaggeration, extent_factor,
+                    output_dir, output_format)
 
-  # Call the estimate_bankfull function with test data
-  estimate_bankfull(stream = stream,
-                    flowline_fc = flowline_fc,
-                    xs_dims_fc = xs_dims_fc,
-                    xs_points_ch_1 = xs_points_ch_1,
-                    xs_points_ch_2 = xs_points_ch_2,
-                    xs_points_ch_3 = xs_points_ch_3,
-                    xs_points_ch_4 = xs_points_ch_4,
-                    xs_points_fp_1 = xs_points_fp_1,
-                    xs_points_fp_2 = xs_points_fp_2,
-                    xs_points_fp_3 = xs_points_fp_3,
-                    xs_points_fp_4 = xs_points_fp_4,
-                    survey_name_1 = survey_name_1,
-                    survey_name_2 = survey_name_2,
-                    survey_name_3 = survey_name_3,
-                    survey_name_4 = survey_name_4,
-                    features_fc = features_fc,
-                    dem = dem,
-                    show_xs_map = show_xs_map,
-                    regions = regions,
-                    bankfull_elevations = bankfull_elevations,
-                    bf_estimate = bf_estimate,
-                    stat = stat,
-                    label_xs = label_xs,
-                    profile_units = profile_units,
-                    aerial = aerial,
-                    elevation = elevation,
-                    xs_label_freq = xs_label_freq,
-                    exaggeration = exaggeration,
-                    extent_factor = extent_factor,
-                    output_dir = output_dir,
-                    output_format = output_format)
-  expect_true(file.exists(output_file))
+  expect_true(file.exists(expected_report))
 })
 
+test_that("The output docx report exists", {
+  network_dir <- "//mvrdfs.mvr.ds.usace.army.mil/EGIS/Work/FluvialGeomorph"
+  output_dir <- file.path(network_dir, "temp")
+  dir.create(output_dir, showWarnings = FALSE)
+  expected_report <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
+                                                  "bankfull_estimate.docx"))
+  if (file.exists(expected_report)) file.remove(expected_report)
+
+  estimate_bankfull(stream, flowline_fc, xs_dims_fc,
+                    xs_points_ch_1, xs_points_ch_2,
+                    xs_points_ch_3, xs_points_ch_4,
+                    xs_points_fp_1, xs_points_fp_2,
+                    xs_points_fp_3, xs_points_fp_4,
+                    survey_name_1, survey_name_2,
+                    survey_name_3, survey_name_4,
+                    features_fc, dem, show_xs_map, regions,
+                    bankfull_elevations, bf_estimate,
+                    stat, label_xs, profile_units,
+                    aerial, elevation,
+                    xs_label_freq, exaggeration, extent_factor,
+                    output_dir, output_format)
+
+  expect_true(file.exists(expected_report))
+})

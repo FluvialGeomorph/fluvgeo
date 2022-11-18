@@ -115,17 +115,24 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
   report_template <- system.file("reports", "level_1_report.Rmd",
                                  package = "fluvgeo")
 
-  # Construct output_file path
+  # Construct output_file paths
   if (output_format == "html_document") {extension <- ".html"}
   if (output_format == "word_document") {extension <- ".docx"}
   if (output_format == "pdf_document")  {extension <- ".pdf"}
   stream_name <- gsub(" ", "_", stream, fixed = TRUE)
+  temp_file   <- file.path(tempdir(),  paste0(stream_name,
+                                              "_level_1_report", extension))
   output_file <- file.path(output_dir, paste0(stream_name,
                                               "_level_1_report", extension))
-  # Render the report
+
+  # Render the report to temp_file
   rmarkdown::render(input = report_template,
                     output_format = output_format,
                     output_options = list(self_contained = TRUE),
                     params = report_params,
-                    output_file = output_file)
+                    output_file = temp_file)
+
+  # Copy temp_file to output_file and cleanup
+  file.copy(from = temp_file, to = output_file, overwrite = TRUE)
+  file.remove(temp_file)
 }

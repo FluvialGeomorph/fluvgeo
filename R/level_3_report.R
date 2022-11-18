@@ -119,6 +119,8 @@ level_3_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
   if (output_format == "pdf_document")  {extension <- ".pdf"}
   stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   bf_est <- gsub(".", "_", bf_estimate, fixed = TRUE)
+  temp_file   <- file.path(tempdir(), paste0(stream_name, "_", bf_est,
+                                             "_level_3_report", extension))
   output_file <- file.path(output_dir, paste0(stream_name, "_", bf_est,
                                               "_level_3_report", extension))
 
@@ -127,5 +129,9 @@ level_3_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
                     output_format = output_format,
                     output_options = list(self_contained = TRUE),
                     params = report_params,
-                    output_file = output_file)
+                    output_file = temp_file)
+
+  # Copy temp_file to output_file and cleanup
+  file.copy(from = temp_file, to = output_file, overwrite = TRUE)
+  file.remove(temp_file)
 }

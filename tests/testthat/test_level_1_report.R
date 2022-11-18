@@ -48,7 +48,12 @@ extent_factor = 1.3
 output_dir <- Sys.getenv("HOME")
 output_format <- "word_document"
 
-fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
+
+test_that("report completed - local path", {
+  expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report.docx")
+  if (file.exists(expected_report)) file.remove(expected_report)
+
+  fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         flowline_points_1, flowline_points_2,
                         flowline_points_3, flowline_points_4,
                         xs_points_1, xs_points_2, xs_points_3, xs_points_4,
@@ -59,7 +64,26 @@ fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
                         xs_label_freq, exaggeration, extent_factor,
                         output_dir, output_format)
 
-test_that("report completed", {
+  expect_true(file.exists(expected_report))
+})
+
+test_that("report completed - network path", {
+  network_dir <- "//mvrdfs.mvr.ds.usace.army.mil/EGIS/Work/FluvialGeomorph"
+  output_dir <- file.path(network_dir, "temp")
+  dir.create(output_dir, showWarnings = FALSE)
   expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report.docx")
+  if (file.exists(expected_report)) file.remove(expected_report)
+
+  fluvgeo::level_1_report(stream, flowline_fc, cross_section_fc,
+                        flowline_points_1, flowline_points_2,
+                        flowline_points_3, flowline_points_4,
+                        xs_points_1, xs_points_2, xs_points_3, xs_points_4,
+                        survey_name_1, survey_name_2,
+                        survey_name_3, survey_name_4,
+                        features_fc, dem, show_xs_map, profile_units,
+                        aerial, elevation,
+                        xs_label_freq, exaggeration, extent_factor,
+                        output_dir, output_format)
+
   expect_true(file.exists(expected_report))
 })
