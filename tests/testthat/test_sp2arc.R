@@ -32,7 +32,7 @@ create_temp_gdb <- function() {
   gdb_path <- file.path(system.file("extdata", "testing_data.gdb",
                                     package = "fluvgeo"))
   file.copy(from = gdb_path, to = temp_folder, recursive = TRUE)
-  temp_gdb_path <- file.path(temp_folder, "testing_data.gdb")
+  temp_gdb_path <- file.path(temp_folder, "testing_data.gdb", "feature_dataset")
   return(temp_gdb_path)
 }
 
@@ -48,6 +48,10 @@ test_that("check output points gdb fc exists", {
   point_fc <- file.path(temp_gdb_path, paste0("temp_point",
                                               round(stats::runif(1, 1, 10000),
                                                     digits = 0)))
+  # testing variables
+  sp_object <- point_sp
+  fc_path <- point_fc
+
   sp2arc(sp_object = point_sp, fc_path = point_fc)
   arcobj <- arcgisbinding::arc.open(point_fc)
   expect_true(exists("arcobj"))
