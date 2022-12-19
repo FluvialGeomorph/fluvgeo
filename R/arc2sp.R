@@ -52,13 +52,16 @@ arc2sp <- function(fc_path) {
   # Create an arc.dataset-class object
   arcobj <- arcgisbinding::arc.open(fc_path)
 
-  # Get CRS
-  arcobj_crs <- sp::CRS(SRS_string = paste0("EPSG:", arcobj@shapeinfo$WKID))
+  # Get WKT from arcobj
+  arcobj_wkt <- get_arc_wkt(fc_path)
+
+  # Create CRS object
+  arcobj_crs <- sp::CRS(SRS_string = arcobj_wkt)
 
   # Convert WKT unicode to ascii (https://github.com/r-spatial/sf/issues/1341)
-  arcobj_wkt <- sp::wkt(arcobj_crs)
-  arcobj_wkt_ascii <- stringr::str_replace(arcobj_wkt, "°|º", "\\\u00b0")
-  arcobj_crs_ascii <- sp::CRS(SRS_string = arcobj_wkt_ascii)
+  #arcobj_wkt <- sp::wkt(arcobj_crs)
+  #arcobj_wkt_ascii <- stringr::str_replace(arcobj_wkt, "°|º", "\\\u00b0")
+  #arcobj_crs_ascii <- sp::CRS(SRS_string = arcobj_wkt_ascii)
 
   # Make a selection of the ArcGIS data (all data) returned in arc.data format
   arc <- arcgisbinding::arc.select(arcobj)
@@ -66,8 +69,8 @@ arc2sp <- function(fc_path) {
   # Convert the arc.data format to the sp format
   sp <- arcgisbinding::arc.data2sp(arc)
 
-  # Set CRS
-  slot(sp, "proj4string") <- arcobj_crs_ascii
+  # Set CRS of output sp object
+  slot(sp, "proj4string") <- arcobj_crs
 
   return(sp)
 }
