@@ -53,24 +53,29 @@ sp2arc <- function(sp_object, fc_path) {
   assert_that(stringr::str_detect(class(sp_object), "Spatial*"),
               msg = "sp_object must be of class `Spatial*DataFrame`")
 
-  # Get metadata from the sp object (arc.write is too lazy to read it directly)
-  # https://github.com/R-ArcGIS/r-bridge/issues/26 , 38
+  # Use the `shapeinfo` object with arc.write to preserve crs
+  # https://github.com/R-ArcGIS/r-bridge/issues/38
 
   # Get sp Spatial data class
   sp_shape_type <- class(sp_object)
 
   # Set ESRI shape type to sp shape type
   esri_shape_type <- switch(sp_shape_type,
-                            points      = "SpatialPointsDataFrame",
-                            lines       = "SpatialLinesDataFrame",
-                            polygons    = "SpatialPolygonsDataFrame")
+                            "SpatialPointsDataFrame"   = "Point",
+                            "SpatialLinesDataFrame"    = "Polyline",
+                            "SpatialPolygonsDataFrame" = "Polygon")
 
-  # Get the CRS
-  sp_crs <- sp_object@proj4string
+  # Get the GDB `flowline` shapeinfo object (used for all GDB objects)
+  gdb_path <- dirname(fc_path)
+  flowline_path <- file.path(gdb_path, "flowline")
+  arcobj <- arcgisbinding::arc.open(flowline_path)
+  shape_info <- arcobj@shapeinfo
 
-  # Construct arc.write `shapeinfo` parameter (undocumented)
-  shape_info <- list(type = esri_shape_type,
-                     WKT = sp::wkt(sp_crs))
+  # Get the sp CRS object
+  #sp_crs <- sp_object@proj4string
+
+  # Set the `shapeinfo` type parameter (undocumented)
+  shape_info$type <- esri_shape_type
 
   # Write the sp object to a geodatabase feature class
   arcgisbinding::arc.write(data = sp_object,
