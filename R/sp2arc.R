@@ -5,7 +5,7 @@
 #'
 #' @export
 #' @param sp_object     \code{sp} object
-#' @param fc_path       character; Path to the ArcGIS feature class.
+#' @param fc_path       character; Path to the ArcGIS output feature class.
 #'
 #' @return Writes the \code{sp} object to an ArcGIS feature class specified
 #'     by path.
@@ -65,14 +65,12 @@ sp2arc <- function(sp_object, fc_path) {
                             "SpatialLinesDataFrame"    = "Polyline",
                             "SpatialPolygonsDataFrame" = "Polygon")
 
-  # Get the GDB `flowline` shapeinfo object (used for all GDB objects)
-  gdb_path <- dirname(fc_path)
-  flowline_path <- file.path(gdb_path, "flowline")
-  arcobj <- arcgisbinding::arc.open(flowline_path)
+  # Get the GDB `stream_network` shapeinfo object (used for all GDB objects)
+  gdb_feature_dataset_path <- dirname(fc_path)
+  stream_network_path <- file.path(gdb_feature_dataset_path,
+                                   "stream_network")
+  arcobj <- arcgisbinding::arc.open(stream_network_path)
   shape_info <- arcobj@shapeinfo
-
-  # Get the sp CRS object
-  #sp_crs <- sp_object@proj4string
 
   # Set the `shapeinfo` type parameter (undocumented)
   shape_info$type <- esri_shape_type
@@ -80,6 +78,6 @@ sp2arc <- function(sp_object, fc_path) {
   # Write the sp object to a geodatabase feature class
   arcgisbinding::arc.write(data = sp_object,
                            path = fc_path,
-                           shape_info = shape_info,
+                           #shape_info = shape_info,
                            overwrite = TRUE)
 }
