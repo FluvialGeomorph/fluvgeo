@@ -9,7 +9,7 @@ sp2arc(sp_object, fc_path)
 \arguments{
 \item{sp_object}{\code{sp} object}
 
-\item{fc_path}{character; Path to the ArcGIS feature class.}
+\item{fc_path}{character; Path to the ArcGIS output feature class.}
 }
 \value{
 Writes the \code{sp} object to an ArcGIS feature class specified
