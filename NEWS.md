@@ -1,9 +1,16 @@
+# fluvgeo v0.1.37 (2023-01-03)
+
+## Bug Fixes
+* Developed workaround to the [`arcgisbinding` failure to comprehensively handle coordinate reference system conversions between ESRI-GDAL-ESRI](https://github.com/R-ArcGIS/r-bridge/issues/38). The workaround is to require the user to read and write geodatabase (GDB) feature classes into a feature dataset. The feature dataset then enforces the coordinate reference system. 
+* Determined that the `arcgisbinding` recommendation to handle coordinate reference system conversions between ESRI-GDAL/PROJ6-ESRI using the `arc.write()` `shape_info` method does not work, [Issue 38](https://github.com/R-ArcGIS/r-bridge/issues/38). 
+
+
 # fluvgeo v0.1.36 (2022-11-15)
 
 ## Bug Fixes
 * Updated the process for identifying horizontal coordinate systems and setting linear unit conversion factors for slope and sinuosity calculations.  
 * Fixed bug when calculating sinuosity when linear units not meters. 
-* Identified ESRI arcgisbinding bug in properly handling coordinate reference systems on read and write (see `arcgisbinding` issue 26 & 38)[https://github.com/R-ArcGIS/r-bridge/issues/38]. 
+* Identified ESRI arcgisbinding bug in properly handling coordinate reference systems on read and write (see `arcgisbinding` issue 26 & 38) (https://github.com/R-ArcGIS/r-bridge/issues/38)[https://github.com/R-ArcGIS/r-bridge/issues/38]. 
 
 
 
