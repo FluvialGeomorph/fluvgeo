@@ -1,3 +1,11 @@
+# fluvgeo v0.1.38 (2023-01-21)
+
+## Bug Fixes
+* Updated the fc2sf function to enforce feature dataset usage. 
+* Updated all test functions to reference test data in feature datasets.  
+* Updated test data to use feature dataset for vector feature class storage. This implements the corrdinate reference system workaround. 
+
+
 # fluvgeo v0.1.37 (2023-01-03)
 
 ## Bug Fixes
