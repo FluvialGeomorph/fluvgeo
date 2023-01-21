@@ -3,18 +3,22 @@ library(fluvgeo)
 
 stream <- "Cole Creek R1"
 flowline_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
-                               package = "fluvgeo"), "flowline_points")
+                               package = "fluvgeo"),
+                               "feature_dataset/flowline_points")
 flowline_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
-                               package = "fluvgeo"), "flowline_points")
+                               package = "fluvgeo"),
+                               "feature_dataset/flowline_points")
 flowline_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
-                               package = "fluvgeo"), "flowline_points")
+                               package = "fluvgeo"),
+                               "feature_dataset/flowline_points")
 flowline_points_4 <- NULL
 survey_name_1 <- "2006"
 survey_name_2 <- "2010"
 survey_name_3 <- "2016"
 survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"), "features")
+                                     package = "fluvgeo"),
+                         "feature_dataset/features")
 profile_units <- "feet"
 
 # Create list of survey paths

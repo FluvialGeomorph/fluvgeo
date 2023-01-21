@@ -5,13 +5,13 @@ stream <- "Cole Creek R1"
 xs_number <- 1
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
+                         "feature_dataset/riffle_floodplain_points")
 xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
+                         "feature_dataset/riffle_floodplain_points")
 xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
+                         "feature_dataset/riffle_floodplain_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2016"
 survey_name_2 <- "2010"
@@ -46,7 +46,7 @@ stream <- "Cole Creek R1"
 xs_number <- 1
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
-                         "riffle_floodplain_points")
+                         "feature_dataset/riffle_floodplain_points")
 xs_points_2 <- NULL
 xs_points_3 <- NULL
 xs_points_4 <- NULL

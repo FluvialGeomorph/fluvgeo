@@ -5,7 +5,7 @@ context("check_banklines")
 # Get feature class test data in sf format
 banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                       package = "fluvgeo"),
-                          "banklines")
+                          "feature_dataset/banklines")
 # Convert feature classes to an sf objects
 banklines_sf <- fluvgeo::fc2sf(banklines_fc)
 

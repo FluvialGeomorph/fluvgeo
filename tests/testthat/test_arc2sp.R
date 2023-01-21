@@ -8,7 +8,8 @@ load_libraries <- function() {
 }
 
 fc_path <- file.path(system.file("extdata", "testing_data.gdb",
-                                 package = "fluvgeo"), "riffle_channel")
+                                 package = "fluvgeo"),
+                     "feature_dataset/riffle_channel")
 
 double_backslash_path <- gsub("/", "\\\\", fc_path)
 

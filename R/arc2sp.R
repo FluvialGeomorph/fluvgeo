@@ -34,7 +34,8 @@
 #'
 #' # Path to an ESRI geodatabase feature class
 #' fc_path_in <- file.path(system.file("extdata", "testing_data.gdb",
-#'                         package = "fluvgeo"), "riffle_channel")
+#'                         package = "fluvgeo"),
+#'                         "feature_dataset/riffle_channel")
 #'
 #' # Convert the ArcGIS polyline feature class to an `sp` object
 #' fc_sp <- arc2sp(fc_path = fc_path_in)
@@ -47,7 +48,7 @@
 #'
 arc2sp <- function(fc_path) {
   # Check if fc parent folder exists
-  stopifnot(file.exists(dirname(fc_path)))
+  stopifnot(file.exists(dirname(dirname(fc_path))))
 
   # Create an arc.dataset-class object
   arcobj <- arcgisbinding::arc.open(fc_path)

@@ -38,7 +38,7 @@ sp_object <- point_sp
 test_that("check output points gdb fc exists", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_gdb_path <- create_temp_gdb(temp_folder_num = 2)
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
   fc_path <- file.path(temp_gdb_path, paste0("temp_point",
                                               round(stats::runif(1, 1, 10000),
                                                     digits = 0)))
@@ -52,7 +52,7 @@ test_that("check output points gdb fc exists", {
 test_that("verify fc CRS via WKT string", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 2)
   fc_path <- file.path(temp_gdb_path, paste0("temp_point",
                                               round(stats::runif(1, 1, 10000),
                                                     digits = 0)))
