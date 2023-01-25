@@ -30,9 +30,10 @@ create_temp_gdb <- function(temp_folder_num = 1) {
 # Get sp objects
 point_sp <- fluvgeo::sin_features_sp
 line_sp  <- fluvgeo::sin_flowline_sp
+line_2_sp <- fluvgeo::sin_riffle_channel_sp
 
 # testing variable
-sp_object <- point_sp
+sp_object <- line_sp
 
 
 test_that("check output points gdb fc exists", {
@@ -44,6 +45,20 @@ test_that("check output points gdb fc exists", {
                                                     digits = 0)))
   print(fc_path)
   sp2arc(sp_object = point_sp, fc_path = fc_path)
+  arcobj <- arcgisbinding::arc.open(fc_path)
+  expect_true(exists("arcobj"))
+  expect_true(arcobj@path == fc_path)
+})
+
+test_that("check output points gdb fc exists", {
+  testthat::skip_if_not_installed("arcgisbinding")
+  load_libraries()
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
+  fc_path <- file.path(temp_gdb_path, paste0("temp_line",
+                                             round(stats::runif(1, 1, 10000),
+                                                   digits = 0)))
+  print(fc_path)
+  sp2arc(sp_object = line_2_sp, fc_path = fc_path)
   arcobj <- arcgisbinding::arc.open(fc_path)
   expect_true(exists("arcobj"))
   expect_true(arcobj@path == fc_path)
