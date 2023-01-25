@@ -1,3 +1,20 @@
+# fluvgeo v0.1.42 (2023-01-21)
+
+## Major changes
+* Added the `sx2arc_table` function to write `sf` and `sp` objects to a file geodatabase table. 
+
+## Bug Fixes
+* Discovered that `arcgisbinding::arc.write` frequently fails writing feature classes to a geodatabase. "Wild caught" file geodatabase feature classes produced by the `FluvialGeomorph-toolbox` when converted to `sp` or `sf` inside `fluvgeo` frequently fail to create a valid feature class (i.e., missing geometry, no coordinate system) when saved to a file geodatabase using `arc.write`. 
+* This behavior is described in the `arcgisbinding` issues listed below. These outstanding issues identify and generally discuss the problems, but provide no fix or clear workaround guidance.
+
+  - [Issue 108](https://github.com/R-ArcGIS/r-bridge-install/issues/108)
+  - [Issue 38](https://github.com/R-ArcGIS/r-bridge/issues/38)
+  
+* The workarounds identified in these issues were implemented in the `sp2arc` and `sf2arc` functions. No combination of these suggestions were able to produce a reliable workaround. 
+* Since no comprehensive solution is currently being provided for these issues in `arc.write`, we have chosen to minimize our exposure. We have decided to only write table data back to the file geodatabase. 
+* If the `arcgisbinging` team addresses these issues, we may choose to go back to trusting the writing of file geodatabase feature classes using `arc.write`.  
+
+
 # fluvgeo v0.1.38 (2023-01-21)
 
 ## Bug Fixes
