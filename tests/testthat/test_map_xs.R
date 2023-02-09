@@ -23,10 +23,10 @@ load_libraries <- function() {
 # fc to sf
 cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
-                              "riffle_channel")
+                              "feature_dataset/riffle_channel")
 banklines_fc     <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
-                              "banklines")
+                              "feature_dataset/banklines")
 dem_path        <- file.path(system.file("extdata", "testing_raster.gdb",
                                           package = "fluvgeo"),
                               "dem_1m")

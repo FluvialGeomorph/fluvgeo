@@ -9,50 +9,31 @@ sp2arc(sp_object, fc_path)
 \arguments{
 \item{sp_object}{\code{sp} object}
 
-\item{fc_path}{character; Path to the ArcGIS feature class.}
+\item{fc_path}{character; Path to the ArcGIS output feature class. The
+feature class must reside in a file geodatabase feature
+dataset.}
 }
 \value{
 Writes the \code{sp} object to an ArcGIS feature class specified
-    by path.
+by fc_path.
 }
 \description{
 Converts an \code{sp} object to an ArcGIS feature class in
     the specified geodatabase feature class.
 }
 \details{
-The \code{sp2arc} function requires the prior installation of the
+This function requires the prior installation of the
 \code{arcgisbinding} package AND a licensed installation of ESRI
-\code{ArcGIS Desktop} or \code{ArcGIS Pro}. The \code{arcgisbinding}
-package can be installed from within \code{ArcGIS Pro} or by following the
-instructions at
-\url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
-\code{ArcGIS Desktop} users.
-}
-\examples{
-\donttest{
-library(sp)
-library(arcgisbinding)
-arc.check_product()
-
-# An `sp` object
-fc_sp <- fluvgeo::sin_flowline_sp
-
-# Create a path to a shapefile in a temporary directory
-temp_file <- tempfile("flowline", fileext = ".shp")
-
-# Convert the `sp` object to a shapefile
-sp2arc(sp_object = fc_sp, fc_path = temp_file)
-}
-
+\code{ArcGIS Pro}. The \code{arcgisbinding} package can be installed
+from within \code{ArcGIS Pro}.
 }
 \references{
 \describe{
-  \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+  \item{ArcGIS Pro}{\url{https://pro.arcgis.com/}}
   \item{\code{arcgisbinding}}{
   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 }
 }
 \seealso{
-The \code{\link{arc2sp}} function for loading data from an ESRI
-spatial dataset.
+This function for loading data from an ESRI spatial dataset.
 }

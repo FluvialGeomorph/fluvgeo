@@ -4,10 +4,10 @@ context("xs_metrics_plot_L3")
 # Get feature class test data
 features_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                           "features")
+                           "feature_dataset/features")
 xs_dims_fc    <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
-                           "xs_50_dims_L3")
+                           "feature_dataset/xs_50_dims_L3")
 
 # Convert feature classes to an sf objects
 xs_dims_sf   <- fluvgeo::fc2sf(xs_dims_fc)

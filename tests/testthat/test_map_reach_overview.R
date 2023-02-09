@@ -4,10 +4,10 @@ context("map_reach_overview")
 
 flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
-                              "flowline")
+                              "feature_dataset/flowline")
 cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
-                              "riffle_floodplain")
+                              "feature_dataset/riffle_floodplain")
 flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
 cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
 xs_label_freq = 2

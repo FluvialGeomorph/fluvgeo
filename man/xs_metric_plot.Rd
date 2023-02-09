@@ -38,7 +38,7 @@ input stream reach.
 # Get feature class test data
 xs_planform_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                         package = "fluvgeo"),
-                            "riffle_floodplain_dims_L3")
+                            "feature_dataset/riffle_floodplain_dims_L3")
 
 # Convert feature classes to an sf objects
 xs_planform_sf   <- fluvgeo::fc2sf(xs_planform_fc)

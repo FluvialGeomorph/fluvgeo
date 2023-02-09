@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.36
+Version: 0.1.42
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -61,4 +61,4 @@ Imports:
     tidyr,
     tmap,
     utils
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3

@@ -21,7 +21,7 @@ Test data in ESRI ArcGIS file geodatabase format is stored in
 Convert a file geodatabase feature class to an sp object
 ```{r import}
 # Path to data
-data_path <- "D:/Workspace/EMRRP_Sediment/Methods/fluvgeo/inst/extdata/testing_data.gdb/"
+data_path <- "D:/Workspace/EMRRP_Sediment/Methods/fluvgeo/inst/extdata/testing_data.gdb/feature_dataset/"
 
 # Import geospatial datasets
 sin_flowline_sp                 <- fluvgeo::arc2sp(paste0(data_path, 

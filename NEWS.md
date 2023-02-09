@@ -1,9 +1,41 @@
+# fluvgeo v0.1.42 (2023-01-21)
+
+## Major changes
+* Added the `sx2arc_table` function to write `sf` and `sp` objects to a file geodatabase table. 
+
+## Bug Fixes
+* Discovered that `arcgisbinding::arc.write` frequently fails writing feature classes to a geodatabase. "Wild caught" file geodatabase feature classes produced by the `FluvialGeomorph-toolbox` when converted to `sp` or `sf` inside `fluvgeo` frequently fail to create a valid feature class (i.e., missing geometry, no coordinate system) when saved to a file geodatabase using `arc.write`. 
+* This behavior is described in the `arcgisbinding` issues listed below. These outstanding issues identify and generally discuss the problems, but provide no fix or clear workaround guidance.
+
+  - [Issue 108](https://github.com/R-ArcGIS/r-bridge-install/issues/108)
+  - [Issue 38](https://github.com/R-ArcGIS/r-bridge/issues/38)
+  
+* The workarounds identified in these issues were implemented in the `sp2arc` and `sf2arc` functions. No combination of these suggestions were able to produce a reliable workaround. 
+* Since no comprehensive solution is currently being provided for these issues in `arc.write`, we have chosen to minimize our exposure. We have decided to only write table data back to the file geodatabase. 
+* If the `arcgisbinging` team addresses these issues, we may choose to go back to trusting the writing of file geodatabase feature classes using `arc.write`.  
+
+
+# fluvgeo v0.1.38 (2023-01-21)
+
+## Bug Fixes
+* Updated the fc2sf function to enforce feature dataset usage. 
+* Updated all test functions to reference test data in feature datasets.  
+* Updated test data to use feature dataset for vector feature class storage. This implements the corrdinate reference system workaround. 
+
+
+# fluvgeo v0.1.37 (2023-01-03)
+
+## Bug Fixes
+* Developed workaround to the [`arcgisbinding` failure to comprehensively handle coordinate reference system conversions between ESRI-GDAL-ESRI](https://github.com/R-ArcGIS/r-bridge/issues/38). The workaround is to require the user to read and write geodatabase (GDB) feature classes into a feature dataset. The feature dataset then enforces the coordinate reference system. 
+* Determined that the `arcgisbinding` recommendation to handle coordinate reference system conversions between ESRI-GDAL/PROJ6-ESRI using the `arc.write()` `shape_info` method does not work, [Issue 38](https://github.com/R-ArcGIS/r-bridge/issues/38). 
+
+
 # fluvgeo v0.1.36 (2022-11-15)
 
 ## Bug Fixes
 * Updated the process for identifying horizontal coordinate systems and setting linear unit conversion factors for slope and sinuosity calculations.  
 * Fixed bug when calculating sinuosity when linear units not meters. 
-* Identified ESRI arcgisbinding bug in properly handling coordinate reference systems on read and write (see `arcgisbinding` issue 26 & 38)[https://github.com/R-ArcGIS/r-bridge/issues/38]. 
+* Identified ESRI arcgisbinding bug in properly handling coordinate reference systems on read and write (see `arcgisbinding` issue 26 & 38) (https://github.com/R-ArcGIS/r-bridge/issues/38)[https://github.com/R-ArcGIS/r-bridge/issues/38]. 
 
 
 

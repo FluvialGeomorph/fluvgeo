@@ -22,10 +22,10 @@ sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_sp,
 # Get feature class test data
 fl_pts_m_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                       package = "fluvgeo"),
-                          "flowline_points")
+                          "feature_dataset/flowline_points")
 xs_m_fc      <- file.path(system.file("extdata", "y2016_R1.gdb",
                                       package = "fluvgeo"),
-                          "xs_50")
+                          "feature_dataset/xs_50")
 
 # Convert to sf and then to sp
 fl_pts_m_sf <- fluvgeo::fc2sf(fl_pts_m_fc)
@@ -48,10 +48,10 @@ xs_m_sp_ss <- slope_sinuosity(xs_m_sp,
 # Get feature class test data
 fl_pts_ft_fc <- file.path(system.file("extdata", "state_plane.gdb",
                                       package = "fluvgeo"),
-                          "flowline_points")
+                          "feature_dataset/flowline_points")
 xs_ft_fc     <- file.path(system.file("extdata", "state_plane.gdb",
                                       package = "fluvgeo"),
-                          "XS_R1_2016")
+                          "feature_dataset/XS_R1_2016")
 
 # Convert to sf and then to sp
 fl_pts_ft_sf <- fluvgeo::fc2sf(fl_pts_ft_fc)

@@ -8,7 +8,7 @@ fc2sf(fc_path)
 }
 \arguments{
 \item{fc_path}{character; Path to the feature class (e.g.,
-"C:/parent_folder/geodatabase.gdb/feature_class").}
+"C:/folder/geodatabase.gdb/feature_dataset/feature_class").}
 }
 \value{
 An `sf` object.

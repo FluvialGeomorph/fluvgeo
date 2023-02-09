@@ -7,99 +7,84 @@ load_libraries <- function() {
   arc.check_product()
 }
 
-create_shapefile <- function() {
-  temp_file <- tempfile("flowline", fileext = ".shp")
-}
-
-delete_shapefile <- function(file_with_path) {
-  file_pattern <- tools::file_path_sans_ext(basename(file_with_path))
-  shapefile_list <- list.files(dirname(file_with_path),
-                               pattern = file_pattern,
-                               full.names = TRUE)
-  file.remove(shapefile_list)
+forward_slash_path <- function(fc_path) {
+  gsub("\\\\", "/", fc_path)
 }
 
 double_backslash_path <- function(fc_path) {
   gsub("/", "\\\\", fc_path)
 }
 
-forward_slash_path <- function(fc_path) {
-  gsub("\\\\", "/", fc_path)
-}
+temp_dir <- forward_slash_path(tempdir())
 
-create_temp_gdb <- function() {
-  temp_folder <- forward_slash_path(tempdir())
+create_temp_gdb <- function(temp_folder_num = 1) {
+  temp_folder <- file.path(temp_dir, temp_folder_num)
+  dir.create(temp_folder, showWarnings = FALSE)
   gdb_path <- file.path(system.file("extdata", "testing_data.gdb",
                                     package = "fluvgeo"))
   file.copy(from = gdb_path, to = temp_folder, recursive = TRUE)
-  temp_gdb_path <- file.path(temp_folder, "testing_data.gdb")
+  temp_gdb_path <- file.path(temp_folder, "testing_data.gdb", "feature_dataset")
   return(temp_gdb_path)
 }
 
 # Get sp objects
 point_sp <- fluvgeo::sin_features_sp
 line_sp  <- fluvgeo::sin_flowline_sp
+line_2_sp <- fluvgeo::sin_riffle_channel_sp
+
+# testing variable
+sp_object <- line_sp
 
 
 test_that("check output points gdb fc exists", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_gdb_path <- create_temp_gdb()
-  point_fc <- file.path(temp_gdb_path, paste0("temp_point",
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
+  fc_path <- file.path(temp_gdb_path, paste0("temp_point",
                                               round(stats::runif(1, 1, 10000),
                                                     digits = 0)))
-  sp2arc(sp_object = point_sp, fc_path = point_fc)
-  arcobj <- arcgisbinding::arc.open(point_fc)
+  print(fc_path)
+  sp2arc(sp_object = point_sp, fc_path = fc_path)
+  arcobj <- arcgisbinding::arc.open(fc_path)
   expect_true(exists("arcobj"))
-  unlink(temp_gdb_path, recursive = TRUE)
+  expect_true(arcobj@path == fc_path)
 })
 
-test_that("check output points shapefile exists", {
+test_that("check output points gdb fc exists", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_file <- create_shapefile()
-  sp2arc(sp_object = point_sp, fc_path = temp_file)
-  expect_true(file.exists(temp_file))
-  #delete_shapefile(temp_file)
-})
-
-test_that("check output lines shapefile exists", {
-  testthat::skip_if_not_installed("arcgisbinding")
-  load_libraries()
-  temp_file <- create_shapefile()
-  sp2arc(sp_object = line_sp, fc_path = temp_file)
-  expect_true(file.exists(temp_file))
-  #delete_shapefile(temp_file)
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
+  fc_path <- file.path(temp_gdb_path, paste0("temp_line",
+                                             round(stats::runif(1, 1, 10000),
+                                                   digits = 0)))
+  print(fc_path)
+  sp2arc(sp_object = line_2_sp, fc_path = fc_path)
+  arcobj <- arcgisbinding::arc.open(fc_path)
+  expect_true(exists("arcobj"))
+  expect_true(arcobj@path == fc_path)
 })
 
 test_that("verify fc CRS via WKT string", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_gdb_path <- create_temp_gdb()
-  point_fc <- file.path(temp_gdb_path, paste0("temp_point",
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 2)
+  fc_path <- file.path(temp_gdb_path, paste0("temp_point",
                                               round(stats::runif(1, 1, 10000),
                                                     digits = 0)))
-  sp2arc(sp_object = point_sp, fc_path = point_fc)
-  fc_wkt <- get_arc_wkt(point_fc)
-  unlink(temp_gdb_path, recursive = TRUE)
-})
-
-test_that("verify shapefile CRS via WKT string", {
-  testthat::skip_if_not_installed("arcgisbinding")
-  load_libraries()
-  temp_file <- create_shapefile()
-  sp2arc(sp_object = point_sp, fc_path = temp_file)
-  shapefile_wkt <- get_arc_wkt(temp_file)
-  shapefile_crs <- sp::CRS(SRS_string = shapefile_wkt)
-  sp_crs <- point_sp@proj4string
-  expect_true(raster::compareCRS(shapefile_crs, sp_crs))
-  #delete_shapefile(temp_file)
+  print(fc_path)
+  sp2arc(sp_object = point_sp, fc_path = fc_path)
+  sp_crs <- sp::CRS(SRS_string = sp::wkt(point_sp))
+  fc_crs <- sp::CRS(SRS_string = get_arc_wkt(fc_path))
+  expect_true(raster::compareCRS(sp_crs, fc_crs))
 })
 
 test_that("check invalid input data", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  temp_file <- create_shapefile()
-  expect_error(sp2arc("7", temp_file))
-  #delete_shapefile(temp_file)
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 3)
+  fc_path <- file.path(temp_gdb_path, paste0("temp_point",
+                                              round(stats::runif(1, 1, 10000),
+                                                    digits = 0)))
+  print(fc_path)
+  expect_error(sp2arc("7", fc_path))
 })

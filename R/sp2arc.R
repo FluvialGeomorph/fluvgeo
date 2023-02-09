@@ -5,43 +5,25 @@
 #'
 #' @export
 #' @param sp_object     \code{sp} object
-#' @param fc_path       character; Path to the ArcGIS feature class.
+#' @param fc_path       character; Path to the ArcGIS output feature class. The
+#'                      feature class must reside in a file geodatabase feature
+#'                      dataset.
 #'
 #' @return Writes the \code{sp} object to an ArcGIS feature class specified
-#'     by path.
+#' by fc_path.
 #'
-#' @details The \code{sp2arc} function requires the prior installation of the
+#' @details This function requires the prior installation of the
 #' \code{arcgisbinding} package AND a licensed installation of ESRI
-#' \code{ArcGIS Desktop} or \code{ArcGIS Pro}. The \code{arcgisbinding}
-#' package can be installed from within \code{ArcGIS Pro} or by following the
-#' instructions at
-#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
-#' \code{ArcGIS Desktop} users.
+#' \code{ArcGIS Pro}. The \code{arcgisbinding} package can be installed
+#' from within \code{ArcGIS Pro}.
 #'
-#' @seealso The \code{\link{arc2sp}} function for loading data from an ESRI
-#' spatial dataset.
+#' @seealso This function for loading data from an ESRI spatial dataset.
 #'
 #' @references
 #' \describe{
-#'   \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+#'   \item{ArcGIS Pro}{\url{https://pro.arcgis.com/}}
 #'   \item{\code{arcgisbinding}}{
 #'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
-#' }
-#'
-#'@examples
-#' \donttest{
-#' library(sp)
-#' library(arcgisbinding)
-#' arc.check_product()
-#'
-#' # An `sp` object
-#' fc_sp <- fluvgeo::sin_flowline_sp
-#'
-#' # Create a path to a shapefile in a temporary directory
-#' temp_file <- tempfile("flowline", fileext = ".shp")
-#'
-#' # Convert the `sp` object to a shapefile
-#' sp2arc(sp_object = fc_sp, fc_path = temp_file)
 #' }
 #'
 #' @importFrom assertthat assert_that
@@ -50,7 +32,7 @@
 #'
 sp2arc <- function(sp_object, fc_path) {
   # Check parameters
-  assert_that(stringr::str_detect(class(sp_object), "Spatial*"),
+  assert_that(stringr::str_detect(class(sp_object)[1], "Spatial*"),
               msg = "sp_object must be of class `Spatial*DataFrame`")
 
   # Use the `shapeinfo` object with arc.write to preserve crs
@@ -65,21 +47,22 @@ sp2arc <- function(sp_object, fc_path) {
                             "SpatialLinesDataFrame"    = "Polyline",
                             "SpatialPolygonsDataFrame" = "Polygon")
 
-  # Get the GDB `flowline` shapeinfo object (used for all GDB objects)
-  gdb_path <- dirname(fc_path)
-  flowline_path <- file.path(gdb_path, "flowline")
-  arcobj <- arcgisbinding::arc.open(flowline_path)
+  # Get the GDB `stream_network` shapeinfo object (used for all GDB objects)
+  gdb_feature_dataset_path <- dirname(fc_path)
+  stream_network_path <- file.path(gdb_feature_dataset_path,
+                                   "stream_network")
+  arcobj <- arcgisbinding::arc.open(stream_network_path)
   shape_info <- arcobj@shapeinfo
-
-  # Get the sp CRS object
-  #sp_crs <- sp_object@proj4string
 
   # Set the `shapeinfo` type parameter (undocumented)
   shape_info$type <- esri_shape_type
+  shape_info <- shape_info[c("type", "hasZ", "hasM", "WKID")]
 
   # Write the sp object to a geodatabase feature class
-  arcgisbinding::arc.write(data = sp_object,
-                           path = fc_path,
+  arcgisbinding::arc.write(path = fc_path,
+                           data = sp_object,
+                           #coords = colnames(sp_object@data),
                            shape_info = shape_info,
+                           validate = TRUE,
                            overwrite = TRUE)
 }
