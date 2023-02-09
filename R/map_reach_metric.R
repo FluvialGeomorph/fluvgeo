@@ -47,7 +47,7 @@
 #'
 map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                              xs_label_freq = 2,
-                             background = "aerial",
+                             background = "none",
                              exaggeration = 20,
                              extent_factor = 1.1) {
   # Check data structure
@@ -71,7 +71,7 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   labeled_xs <- ((xs_dimensions_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
   xs_labels_sf <- xs_dimensions_sf_ll[labeled_xs, ]
 
-  # Create the reach map
+  # Create the reach metric map
   metric_map <- tm_shape(shp = flowline_sf_ll,
                          bbox = xs_extent,
                          name = "Flowline") +
@@ -105,19 +105,24 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   # Aerial
   if(background == "aerial") {
     # Get aerial photos
-    aerial_photos <- ceramic::cc_location(xs_extent,
-                                          type = "mapbox.satellite")
+    invisible(capture.output(aerial_photos <- ceramic::cc_location(xs_extent,
+                                              type = "mapbox.satellite"),
+                             type = "output",
+                             file = "NUL"))
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()
 
     overview_map <- background_map + metric_map
+
+
   }
 
   # Elevation
   if(background == "elevation") {
     # Get elevation
-    elevation <- ceramic::cc_elevation(xs_extent)
+    invisible(capture.output(elevation <- ceramic::cc_elevation(xs_extent),
+                             type = "message"))
 
     # Create an esri-like topo color ramp
     esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
