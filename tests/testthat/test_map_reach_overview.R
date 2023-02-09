@@ -15,6 +15,15 @@ exaggeration = 1
 extent_factor = 1.5
 
 # Create the aerial map
+map <- map_reach_overview(flowline_sf = flowline_sf,
+                          cross_section_sf = cross_section_sf,
+                          background = "none",
+                          xs_label_freq = xs_label_freq,
+                          extent_factor = extent_factor)
+
+print(map)
+
+# Create the aerial map
 aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
                               cross_section_sf = cross_section_sf,
                               background = "aerial",
@@ -33,6 +42,10 @@ elevation_map <- map_reach_overview(flowline_sf = flowline_sf,
 
 print(elevation_map)
 
+test_that("check map_reach_overview aerial", {
+  expect_true("tmap" %in% class(map))
+  expect_error(print(map), NA)
+})
 
 test_that("check map_reach_overview aerial", {
   expect_true("tmap" %in% class(aerial_map))

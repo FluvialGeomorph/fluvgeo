@@ -9,7 +9,7 @@
 #' @param xs_label_freq       numeric; An integer indicating the frequency of
 #'                            cross section labels.
 #' @param background          character; The type of map background. One of
-#'                            "aerial" or "elevation"
+#'                            "aerial", "elevation", or "none".
 #' @param exaggeration        numeric; The degree of terrain exaggeration.
 #' @param extent_factor       numeric; The amount the extent is expanded around
 #'                            the cross section feature class. Values greater
@@ -26,7 +26,7 @@
 #' tm_scale_bar tm_layout
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
-                               background = "aerial",
+                               background = "none",
                                xs_label_freq = 1,
                                exaggeration = 20,
                                extent_factor = 1.1) {
@@ -147,6 +147,11 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                   legend.show = TRUE)
 
     overview_map <- background_map + thematic_map
+  }
+
+  # No background
+  if(background == "none") {
+    overview_map <- thematic_map
   }
 
   return(overview_map)
