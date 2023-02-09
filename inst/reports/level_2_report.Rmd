@@ -14,7 +14,7 @@ params:
   label_xs: TRUE
   show_xs_map: FALSE
   profile_units: "kilometers"
-  aerial: TRUE
+  aerial: FALSE
   elevation: FALSE
   xs_label_freq: 5
   exaggeration: 10
@@ -37,7 +37,7 @@ library(arcgisbinding)
 arcgisbinding::arc.check_product()
 ```
 
-```{r output, document_type, echo=FALSE}
+```{r output_document_type, echo=FALSE}
 if (params$output_format == "html_document") {
   options(knitr.table.format = "html")
   format <- "html"
@@ -52,24 +52,20 @@ if (params$output_format == "word_document") {
 }
 ```
 
-## Study Area Overview: `r params$stream`
-```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
-if(aerial) {
-  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
-                                    cross_section = params$xs_dims_sf,
-                                    background = "aerial",
-                                    xs_label_freq = params$xs_label_freq,
-                                    extent_factor = params$extent_factor))
-}
+```{r set_background, echo=FALSE}
+if(params$aerial & !params$elevation)  {background <- "aerial"}
+if(!params$aerial & params$elevation)  {background <- "elevation"}
+if(!params$aerial & !params$elevation) {background <- "none"}
 ```
 
-```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
-if(elevation) {
-  print(fluvgeo::map_reach_overview(flowline = flowline_sf, 
+
+## Study Area Overview: `r params$stream`
+```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(params$show_xs_map) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
                                     cross_section = params$xs_dims_sf,
-                                    background = "elevation",
+                                    background = background,
                                     xs_label_freq = params$xs_label_freq,
-                                    exaggeration = params$exaggeration,
                                     extent_factor = params$extent_factor))
 }
 ```
@@ -100,7 +96,7 @@ print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf,
 ```
 
 ## Width Depth Ratio
-```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE, message=FALSE}
+```{r, wdr}
 # Create the fluvgeo::FluvialGeomorphicMetric object
 wdr <- new(Class = "FluvialGeomorphicMetric",
            metric = "Width Depth Ratio",
@@ -111,12 +107,16 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
                                 "Stable",
                                 "Overwidened"),
            source = "Dunn & Leopold, 1978")
+```
 
-# Create the reach metric map
-print(fluvgeo::map_reach_metric(wdr,
-                                flowline = params$flowline_sf,
-                                xs_label_freq = params$xs_label_freq,
-                                xs_dimensions = params$xs_dims_sf))
+```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE, message=FALSE}
+if(params$show_xs_map) {
+  print(fluvgeo::map_reach_metric(wdr,
+                                  flowline = params$flowline_sf,
+                                  xs_label_freq = params$xs_label_freq,
+                                  xs_dimensions = params$xs_dims_sf,
+                                  background = background))
+}
 ```
 
 ```{r wdr_plot, eval=TRUE, echo=FALSE, fig.width=7, fig.cap="Width Depth Ratio Graph", warning=FALSE}
@@ -202,4 +202,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-version 1.0.35
+version 0.1.37
