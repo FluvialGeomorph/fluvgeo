@@ -1,3 +1,12 @@
+# fluvgeo v0.1.43 (2023-02-09)
+
+## Major changes
+* Added the ability to turn off aerial or elevation backgrounds to map functions. 
+
+## Bug Fixes
+* The R package `ceramic` is passing GDAL output that is interrupting the display of maps in reports. 
+
+
 # fluvgeo v0.1.42 (2023-01-21)
 
 ## Major changes
