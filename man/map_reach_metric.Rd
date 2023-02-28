@@ -9,7 +9,7 @@ map_reach_metric(
   flowline_sf,
   xs_dimensions_sf,
   xs_label_freq = 2,
-  background = "aerial",
+  background = "none",
   exaggeration = 20,
   extent_factor = 1.1
 )

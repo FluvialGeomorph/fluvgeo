@@ -17,13 +17,14 @@
 #'
 #' @return a tmap object
 #'
-#' @importFrom sf st_crs st_transform
+#' @importFrom sf st_crs st_transform st_bbox
 #' @importFrom sp CRS
 #' @importFrom ceramic cc_location cc_elevation
 #' @importFrom raster terrain hillShade
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
 #' tm_scale_bar tm_layout
+#' @importFrom maptiles get_tiles
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
                                background = "none",

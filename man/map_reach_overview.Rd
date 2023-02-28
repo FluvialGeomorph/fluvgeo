@@ -7,7 +7,7 @@
 map_reach_overview(
   flowline_sf,
   cross_section_sf,
-  background = "aerial",
+  background = "none",
   xs_label_freq = 1,
   exaggeration = 20,
   extent_factor = 1.1
@@ -19,7 +19,7 @@ map_reach_overview(
 \item{cross_section_sf}{sf object; A cross section feature class}
 
 \item{background}{character; The type of map background. One of
-"aerial" or "elevation"}
+"aerial", "elevation", or "none".}
 
 \item{xs_label_freq}{numeric; An integer indicating the frequency of
 cross section labels.}

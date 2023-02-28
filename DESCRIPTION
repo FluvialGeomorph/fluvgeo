@@ -44,6 +44,7 @@ Imports:
     grDevices,
     methods,
     Metrics,
+    maptiles,
     purrr,
     raster,
     RegionalCurve,
