@@ -66,7 +66,7 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                                        extent_factor = extent_factor)
 
   # Create bbox
-  elev_bbox<-sf::st_bbox(xs_extent,crs=sf::st_crs("EPSG:4326"))
+  sf_bbox<-sf::st_bbox(xs_extent,crs=sf::st_crs("EPSG:4326"))
 
   # Set Mapbox API key
   Sys.setenv(MAPBOX_API_KEY="pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
@@ -109,7 +109,7 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   # Aerial
   if(background == "aerial") {
     # Get aerial photos
-    aerial_photos<-maptiles::get_tiles(x=elev_bbox, provider="Esri.WorldImagery", crop=TRUE)
+    aerial_photos<-maptiles::get_tiles(x=sf_bbox, provider="Esri.WorldImagery", crop=TRUE)
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()

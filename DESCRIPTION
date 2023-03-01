@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.43
+Version: 0.1.44
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -11,6 +11,9 @@ Authors@R: c(
     person("Charles", "Theiling",
            email = "Charles.H.Theiling@usace.army.mil",
            role = c("aut")),
+    person("Barrie","Chileen Martinez",
+           email = "Barrie.V.Chileen@usace.army.mil",
+           role = c("aut","cre")),
     person("Davi", "Michl", role = c("ctb")),
     person("Thomas", "Darby", role = c("ctb"))
     )

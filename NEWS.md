@@ -1,3 +1,13 @@
+# fluvgeo v0.1.44 (2023-03-01)
+
+## Major changes
+* None  
+
+## Bug Fixes
+* Added `maptiles` get_tiles function to address `ceramic` display issues for aerial imagery in reports.
+See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
+
+
 # fluvgeo v0.1.43 (2023-02-09)
 
 ## Major changes
