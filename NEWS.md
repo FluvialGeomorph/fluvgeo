@@ -1,3 +1,13 @@
+# fluvgeo v0.1.45 (2023-03-21)
+
+## Major changes
+* None  
+
+## Bug Fixes
+* Added `terrainr` get_tiles function to address `ceramic` display issues for background elevation imagery in reports.
+See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
+
+
 # fluvgeo v0.1.44 (2023-03-01)
 
 ## Major changes

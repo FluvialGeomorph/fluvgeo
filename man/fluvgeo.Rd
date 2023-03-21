@@ -39,10 +39,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Michael Dougherty \email{Michael.P.Dougherty@usace.army.mil}
+\strong{Maintainer}: Barrie Chileen Martinez \email{Barrie.V.Chileen@usace.army.mil}
 
 Authors:
 \itemize{
+  \item Michael Dougherty \email{Michael.P.Dougherty@usace.army.mil}
   \item Christopher Haring \email{Christopher.P.Haring@usace.army.mil}
   \item Charles Theiling \email{Charles.H.Theiling@usace.army.mil}
 }
