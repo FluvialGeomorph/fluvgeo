@@ -37,7 +37,7 @@
 #'                             fluvgeo::sin_riffle_floodplain_dims_L3_sp)
 #' print(wdr_map)
 #'
-#' @importFrom sf st_crs st_transform st_bbox
+#' @importFrom sf st_crs st_transform st_bbox st_as_sfc
 #' @importFrom sp CRS
 #' @importFrom ceramic cc_location cc_elevation
 #' @importFrom raster terrain hillShade
@@ -45,6 +45,8 @@
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
 #' tm_scale_bar tm_layout
 #' @importFrom maptiles get_tiles
+#' @importFrom terrainr get_tiles
+#' @importFrom terra terrain shade
 #'
 map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                              xs_label_freq = 2,
@@ -122,8 +124,9 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   # Elevation
   if(background == "elevation") {
     # Get elevation
-    invisible(capture.output(elevation <- ceramic::cc_elevation(xs_extent),
-                             type = "message"))
+    elev_sfbbox<-sf::st_as_sfc(sf_bbox)
+    elev_tiles<-terrainr::get_tiles(elev_sfbbox, services="elevation", resolution=3)
+    elevation<-terra::rast(elev_tiles[[1]])
 
     # Create an esri-like topo color ramp
     esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
@@ -138,14 +141,15 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
 
     # Create a hillshade
     exaggerated <- elevation * exaggeration
-    slp <- raster::terrain(exaggerated, opt = "slope", unit = "radians")
-    asp <- raster::terrain(exaggerated, opt = "aspect", unit = "radians")
-    hill_270 <- raster::hillShade(slope = slp, aspect = asp,
-                                  angle = 30, direction = 270)
-    hill_315 <- raster::hillShade(slope = slp, aspect = asp,
-                                  angle = 30, direction = 315)
-    hill_355 <- raster::hillShade(slope = slp, aspect = asp,
-                                  angle = 30, direction = 355)
+    slp <- terra::terrain(exaggerated, v="slope", unit="radians")
+    asp<- terra::terrain(exaggerated, v="aspect", unit="radians")
+    hill_270<-terra::shade(slope=slp, aspect=asp,
+                           angle=30, direction=270)
+    hill_315 <- terra::shade(slope=slp, aspect=asp,
+                             angle=30, direction=315)
+    hill_355 <- terra::shade(slope=slp, aspect=asp,
+                             angle=30, direction=355)
+
 
     background_map <- tm_shape(shp = hill_270,
                                name = "Hillshade") +
