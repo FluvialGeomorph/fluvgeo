@@ -7,6 +7,9 @@
 * Added `terrainr` get_tiles function to address `ceramic` display issues for background elevation imagery in reports.
 See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 
+##Minor changes
+* Added `terra` functions to replace `raster` functions in elevation map hillshade generation.
+
 
 # fluvgeo v0.1.44 (2023-03-01)
 
