@@ -39,7 +39,6 @@
 #'
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
 #' @importFrom sp CRS
-#' @importFrom ceramic cc_location cc_elevation
 #' @importFrom raster terrain hillShade
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
@@ -69,9 +68,6 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
 
   # Create bbox
   sf_bbox<-sf::st_bbox(xs_extent,crs=sf::st_crs("EPSG:4326"))
-
-  # Set Mapbox API key
-  Sys.setenv(MAPBOX_API_KEY="pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
 
   # Determine cross section label frequency
   labeled_xs <- ((xs_dimensions_sf$Seq + xs_label_freq) %% xs_label_freq) == 0

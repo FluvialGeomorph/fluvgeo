@@ -39,7 +39,6 @@ VignetteBuilder: knitr
 Imports: 
     arcgisbinding,
     assertthat,
-    ceramic,
     conicfit,
     dplyr,
     ggplot2,
@@ -61,6 +60,7 @@ Imports:
     stats,
     stringr,
     terra,
+    terrainr,
     testthat,
     tidyr,
     tmap,
