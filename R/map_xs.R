@@ -17,7 +17,6 @@
 #' @return a tmap object
 #'
 #' @importFrom arcgisbinding arc.open arc.raster
-#' @importFrom rgdal showSRID
 #' @importFrom raster extent as.raster raster crop resample terrain hillShade
 #' @importFrom grDevices colorRampPalette grey
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
@@ -47,7 +46,7 @@ map_xs <- function(cross_section, xs_number, dem,
   }
 
   # Get valid DEM spatial reference system
-  dem_wkt2 <- rgdal::showSRID(dem@crs@projargs)          # convert to valid WKT2
+  dem_wkt2 <- sf::st_crs(dem)          # convert to valid WKT2
   dem_CRS <- sp::CRS(SRS_string = dem_wkt2)
 
   # Reproject so all layers in the same coordinate system as the DEM
@@ -61,7 +60,7 @@ map_xs <- function(cross_section, xs_number, dem,
 
   # Calculate the map extent for the current cross section
   xs_extent <- fluvgeo::feature_extent(feature = xs_i,
-                                        extent_factor = extent_factor)
+                                       extent_factor = extent_factor)
   xs_extent_esri <- c(xmin = xs_extent@xmin,
                       ymin = xs_extent@ymin,
                       xmax = xs_extent@xmax,
@@ -77,58 +76,58 @@ map_xs <- function(cross_section, xs_number, dem,
 
   # Create a topo color ramp
   esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
-                                                  "chartreuse4", "goldenrod1",
-                                                  "orangered4", "saddlebrown",
-                                                  "gray70", "white"),
+                                                      "chartreuse4", "goldenrod1",
+                                                      "orangered4", "saddlebrown",
+                                                      "gray70", "white"),
                                            bias = 1,
                                            space = "Lab",
                                            interpolate = "linear")
   # Create the cross section map
   xs_map <- tm_shape(shp = hill,
-                      name = "Hillshade") +
-               tm_raster(style = "cont",
-                         palette = gray.colors(100, 0, 1),
-                         legend.show = FALSE) +
-            tm_shape(shp = dem_i,
-                     name = "Elevation",
-                     unit = "ft",
-                     is.master = TRUE) +
-              tm_raster(col = "Band_1",
-                        style = "cont",
-                        palette = esri_topo(1000),
-                        alpha = 0.7,
-                        title = "Elevation (NAVD88, ft)",
-                        legend.show = TRUE) +
-            tm_shape(shp = cross_section_dem,
-                     name = "Cross Section") +
-              tm_lines(col = "grey50", lwd = 7) +
-              tm_text(text = "Seq",
-                      col = "black",
-                      size = 1.2,
-                      fontface = "bold",
-                      remove.overlap = FALSE,
-                      shadow = TRUE,
-                      #along.lines = TRUE,                # appears to be broken
-                      #overwrite.lines = TRUE             # appears to be broken
-                      ) +
-            tm_compass(type = "arrow",
-                       position = c("right", "bottom")) +
-            tm_scale_bar(width = 0.25,
-                         position = c("left", "bottom")) +
-            tm_layout(main.title = paste("Cross Section", xs_number),
-                      legend.outside = TRUE,
-                      legend.outside.position = "right",
-                      frame.lwd = 3)
+                     name = "Hillshade") +
+    tm_raster(style = "cont",
+              palette = gray.colors(100, 0, 1),
+              legend.show = FALSE) +
+    tm_shape(shp = dem_i,
+             name = "Elevation",
+             unit = "ft",
+             is.master = TRUE) +
+    tm_raster(col = "Band_1",
+              style = "cont",
+              palette = esri_topo(1000),
+              alpha = 0.7,
+              title = "Elevation (NAVD88, ft)",
+              legend.show = TRUE) +
+    tm_shape(shp = cross_section_dem,
+             name = "Cross Section") +
+    tm_lines(col = "grey50", lwd = 7) +
+    tm_text(text = "Seq",
+            col = "black",
+            size = 1.2,
+            fontface = "bold",
+            remove.overlap = FALSE,
+            shadow = TRUE,
+            #along.lines = TRUE,                # appears to be broken
+            #overwrite.lines = TRUE             # appears to be broken
+    ) +
+    tm_compass(type = "arrow",
+               position = c("right", "bottom")) +
+    tm_scale_bar(width = 0.25,
+                 position = c("left", "bottom")) +
+    tm_layout(main.title = paste("Cross Section", xs_number),
+              legend.outside = TRUE,
+              legend.outside.position = "right",
+              frame.lwd = 3)
 
   if(!is.null(banklines)) {
     banklines_map <- tm_shape(shp = banklines_dem,
                               name = "Banklines") +
-                       tm_lines(col = "blue", lwd = 1,
-                                legend.lwd.show = ) +
-                       tm_add_legend(type = "line",
-                                     labels = "Bankfull",
-                                     col = "blue",
-                                     lwd = 1)
+      tm_lines(col = "blue", lwd = 1,
+               legend.lwd.show = ) +
+      tm_add_legend(type = "line",
+                    labels = "Bankfull",
+                    col = "blue",
+                    lwd = 1)
   }
 
   # Return the plot
