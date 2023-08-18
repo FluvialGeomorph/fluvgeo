@@ -21,7 +21,7 @@
 #' @importFrom grDevices colorRampPalette grey
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
 #' tm_compass tm_scale_bar tm_layout
-#'
+#'test
 map_xs <- function(cross_section, xs_number, dem,
                    banklines = NULL,
                    extent_factor = 1) {
@@ -134,3 +134,4 @@ map_xs <- function(cross_section, xs_number, dem,
   if(!is.null(banklines)) return(xs_map + banklines_map)
   if(is.null(banklines)) return(xs_map)
 }
+
