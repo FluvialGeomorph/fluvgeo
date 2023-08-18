@@ -12,27 +12,23 @@
 #'
 #' @importFrom arcgisbinding arc.open as.raster arc.raster
 #' @importFrom raster crs
-#' @importFrom rgdal showSRID
-#' @importFrom sp CRS
+#' @importFrom sf st_crs
 #'
 esri_raster2RasterLayer <- function(raster_path) {
   # Open the path the the esri raster
   raster_arc <- arcgisbinding::arc.open(raster_path)
 
   # Convert the esri raster's CRS to valis WKT2
-  raster_wkt2 <- rgdal::showSRID(raster_arc@sr$WKT)
-
-  # Check spatial reference system WKT2 string
-  testthat::expect_true(rgdal::checkCRSArgs_ng(raster_wkt2)[[1]])
+  raster_wkt2 <-raster::crs(raster_arc@sr$WKT)
 
   # Create CRS
-  raster_CRS <- sp::CRS(SRS_string = raster_wkt2)
+  raster_CRS <- sf::st_crs(raster_wkt2)
 
   # Convert to RasterLayer
   raster_layer <- arcgisbinding::as.raster(arcgisbinding::arc.raster(raster_arc))
 
   # Assign the correct CRS to the raster
-  raster::crs(raster_layer) <- raster_CRS
+  raster::crs(raster_layer) <- raster_CRS$wkt
 
   return(raster_layer)
 }
