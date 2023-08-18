@@ -51,7 +51,6 @@ Imports:
     raster,
     RegionalCurve,
     reshape2,
-    rgdal,
     rlang,
     rmarkdown,
     scales,

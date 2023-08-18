@@ -1,6 +1,5 @@
 library(fluvgeo)
 library(sp)
-library(rgdal)
 context("slope_sinuosity")
 
 # horiz. units: meters
