@@ -1,7 +1,5 @@
 library(fluvgeo)
 library(raster)
-library(rgdal)
-library(sp)
 context("esri_raster2RasterLayer")
 
 # The `map_xs` function needs `arcgisbinding` to read a file geodatabase raster.
@@ -15,8 +13,7 @@ skip_if_no_arc <- function() {
 load_libraries <- function() {
   library(fluvgeo)
   library(raster)
-  library(rgdal)
-  library(sp)
+  library(sf)
   library(arcgisbinding)
   arcgisbinding::arc.check_product()
 }
