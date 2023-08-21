@@ -1,3 +1,16 @@
+# fluvgeo v0.1.46 (2023-08-21)
+
+## Major changes
+* None  
+
+## Bug Fixes
+* Removed immediate dependencies on `rgdal` to address issues with the Level 1 Reports failing.
+See [Issue 26](https://github.com/FluvialGeomorph/fluvgeo/issues/26)
+
+##Minor changes
+* None
+
+
 # fluvgeo v0.1.45 (2023-03-21)
 
 ## Major changes
