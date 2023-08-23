@@ -1,5 +1,5 @@
 library(fluvgeo)
-context("arc2sp")
+context("arc2sf")
 
 load_libraries <- function() {
   library(sp)
@@ -20,38 +20,38 @@ bad_path <- file.path("c:", "bogus", "path")
 test_that("data type the same?", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  fc_sp <- arc2sp(fc_path = fc_path)
-  expect_equal(class(fc_sp)[1], "SpatialLinesDataFrame")
+  fc_sf <- arc2sf(fc_path = fc_path)
+  expect_equal(class(fc_sf)[1], "sf")
 })
 
 test_that("double backslash path", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  fc_sp <- arc2sp(fc_path = double_backslash_path)
-  expect_equal(class(fc_sp)[1], "SpatialLinesDataFrame")
+  fc_sf <- arc2sf(fc_path = double_backslash_path)
+  expect_equal(class(fc_sf)[1], "sf")
 })
 
 test_that("bad path", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  expect_error(arc2sp(fc_path = bad_path))
+  expect_error(arc2sf(fc_path = bad_path))
 })
 
 test_that("verify CRS via EPSG code", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  fc_sp <- arc2sp(fc_path = fc_path)
-  sp_known_crs <- sp::CRS(SRS_string = "EPSG:26915")
-  sp_output_crs <- fc_sp@proj4string
-  expect_true(raster::compareCRS(sp_known_crs, sp_output_crs))
+  fc_sf <- arc2sf(fc_path = fc_path)
+  sf_known_crs <- sf::st_crs("EPSG:26915")
+  sf_output_crs <- st_crs(fc_sf)
+  expect_true(raster::compareCRS(sf_known_crs, sf_output_crs))
 })
 
 test_that("verify CRS via WKT string", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
-  fc_sp  <- arc2sp(fc_path = fc_path)
+  fc_sf  <- arc2sf(fc_path = fc_path)
   fc_wkt <- get_arc_wkt(fc_path)
-  fc_crs <- sp::CRS(SRS_string = fc_wkt)
-  sp_crs <- fc_sp@proj4string
-  expect_true(raster::compareCRS(fc_crs, sp_crs))
+  fc_crs <- sf::st_crs(fc_wkt)
+  sf_crs <- st_crs(fc_sf)
+  expect_true(raster::compareCRS(fc_crs, sf_crs))
 })
