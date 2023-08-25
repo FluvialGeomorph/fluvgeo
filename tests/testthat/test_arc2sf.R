@@ -2,7 +2,6 @@ library(fluvgeo)
 context("arc2sf")
 
 load_libraries <- function() {
-  library(sp)
   library(sf)
   library(arcgisbinding)
   arc.check_product()

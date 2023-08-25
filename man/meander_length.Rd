@@ -7,7 +7,7 @@
 meander_length(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; a fluvgeo bankline_points
+\item{bankline_points}{data.frame; a fluvgeo bankline_points
 data structure.}
 }
 \value{
@@ -19,6 +19,6 @@ Calculates the meander length (wavelength) for each loop in the
 input `bankline_points` data frame.
 }
 \examples{
-meander_length(fluvgeo::sin_bankline_points_sp)
+meander_length(fluvgeo::sin_bankline_points_sf)
 
 }

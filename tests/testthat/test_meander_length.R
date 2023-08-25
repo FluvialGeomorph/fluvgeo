@@ -1,7 +1,7 @@
 library(fluvgeo)
 context("meander_length")
 
-bankline_points <- fluvgeo::sin_bankline_points_sp
+bankline_points <- fluvgeo::sin_bankline_points_sf
 
 ml <- meander_length(bankline_points = bankline_points)
 
@@ -33,5 +33,5 @@ test_that("check meander_length output data structure", {
 
 test_that("check output", {
   expect_equal(length(ml$loop),
-               length(unique(na.omit(fluvgeo::sin_bankline_points_sp$loop))) )
+               length(unique(na.omit(fluvgeo::sin_bankline_points_sf$loop))) )
 })

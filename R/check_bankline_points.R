@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param bankline_points   SpatialPointsDataFrame; a `bankline_points` data
+#' @param bankline_points   sf; a `bankline_points` data
 #'                          structure used by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `bankline_points` data structure matches the
@@ -17,60 +17,60 @@
 check_bankline_points <- function(bankline_points) {
   name <- deparse(substitute(bankline_points))
 
-  assert_that(class(bankline_points)[1] == "SpatialPointsDataFrame",
-              msg = paste(name, " must be a SpatialPointsDataFrame"))
-  assert_that(is.data.frame(bankline_points@data),
+  assert_that(class(bankline_points)[1] == "sf",
+              msg = paste(name, " must be a sf object"))
+  assert_that(is.data.frame(bankline_points),
               msg = paste(name, " must be a data frame"))
-  assert_that("ReachName" %in% colnames(bankline_points@data) &
-                is.character(bankline_points@data$ReachName),
+  assert_that("ReachName" %in% colnames(bankline_points) &
+                is.character(bankline_points$ReachName),
               msg = paste("Character field 'ReachName' missing from", name))
-  assert_that("bank" %in% colnames(bankline_points@data) &
-                is.character(bankline_points@data$bank),
+  assert_that("bank" %in% colnames(bankline_points) &
+                is.character(bankline_points$bank),
               msg = paste("Numeric field 'bank' missing from ", name))
-  assert_that("DEM_Z" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$DEM_Z),
+  assert_that("DEM_Z" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$DEM_Z),
               msg = paste("Numeric field 'DEM_Z' missing from ", name))
-  assert_that("loop" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$loop),
+  assert_that("loop" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$loop),
               msg = paste("Numeric field 'loop' missing from ", name))
-  assert_that("bend" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$bend),
+  assert_that("bend" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bend),
               msg = paste("Numeric field 'bend' missing from ", name))
-  assert_that("position" %in% colnames(bankline_points@data) &
-                is.character(bankline_points@data$position),
+  assert_that("position" %in% colnames(bankline_points) &
+                is.character(bankline_points$position),
               msg = paste("Numeric field 'position' missing from ", name))
-  assert_that("bank_POINT_X" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$bank_POINT_X),
+  assert_that("bank_POINT_X" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_X),
               msg = paste("Numeric field 'bank_POINT_X' missing from ", name))
-  assert_that("bank_POINT_Y" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$bank_POINT_Y),
+  assert_that("bank_POINT_Y" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_Y),
               msg = paste("Numeric field 'bank_POINT_Y' missing from ", name))
-  assert_that("bank_POINT_M" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$bank_POINT_M),
+  assert_that("bank_POINT_M" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$bank_POINT_M),
               msg = paste("Numeric field 'bank_POINT_M' missing from ", name))
-  assert_that("valley_POINT_X" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$valley_POINT_X),
+  assert_that("valley_POINT_X" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_X),
               msg = paste("Numeric field 'valley_POINT_X' missing from ", name))
-  assert_that("valley_POINT_Y" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$valley_POINT_Y),
+  assert_that("valley_POINT_Y" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_Y),
               msg = paste("Numeric field 'valley_POINT_Y' missing from ", name))
-  assert_that("valley_POINT_M" %in% colnames(bankline_points@data) &
-                is.numeric(bankline_points@data$valley_POINT_M),
+  assert_that("valley_POINT_M" %in% colnames(bankline_points) &
+                is.numeric(bankline_points$valley_POINT_M),
               msg = paste("Numeric field 'valley_POINT_M' missing from ", name))
 
   # Check that the `ReachName` field is populated
-  assert_that(nchar(unique(bankline_points@data$ReachName)[1]) > 0,
+  assert_that(nchar(unique(bankline_points$ReachName)[1]) > 0,
               msg = paste("Field `ReachName` is empty in", name))
 
   # Check that the `bank` field is populated
-  assert_that(all(unique(bankline_points@data$bank) %in%
+  assert_that(all(unique(bankline_points$bank) %in%
                    c("right descending", "left descending")),
               msg = paste("Field `bank` in", name, "must contain a `right
                           descending` bank and a `left descending` bank."))
 
   # Check each bankline is digitized from the downstream end to the upstream end
   ## Right descending bank
-  bp_r <- bankline_points[bankline_points@data$bank == "right descending", ]
+  bp_r <- bankline_points[bankline_points$bank == "right descending", ]
 
   ### Right bank m-value min and max
   r_m_min <- min(bp_r$bank_POINT_M)
@@ -85,7 +85,7 @@ check_bankline_points <- function(bankline_points) {
                           "is not digitized in the upstream direction."))
 
   ## Left descending bank
-  bp_l <- bankline_points[bankline_points@data$bank == "left descending", ]
+  bp_l <- bankline_points[bankline_points$bank == "left descending", ]
 
   ### Left bank m-value min and max
   l_m_min <- min(bp_l$bank_POINT_M)
@@ -106,10 +106,10 @@ check_bankline_points <- function(bankline_points) {
   last_loop_bank <- ""
 
   # Iterate through loops
-  for(l in sort(unique(na.omit(bankline_points@data$loop)))) {
+  for(l in sort(unique(na.omit(bankline_points$loop)))) {
     print(paste("Loop", l))
     ## Subset for the current loop
-    bl_pts_loop <- bankline_points@data[bankline_points@data$loop == l, ]
+    bl_pts_loop <- bankline_points[bankline_points$loop == l, ]
 
     ## Subset points without loop and bend assignments
     bl_pts_lb <- na.omit(bl_pts_loop)
