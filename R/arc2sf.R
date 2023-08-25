@@ -42,7 +42,6 @@
 #' }
 #'
 #' @importFrom arcgisbinding arc.data2sp arc.select arc.open
-#' @importFrom sp CRS wkt
 #' @importFrom sf st_crs st_as_text
 #' @importFrom stringr str_replace
 #' @importFrom methods slot<-
@@ -61,7 +60,6 @@ arc2sf <- function(fc_path) {
   arcobj_crs <- sf::st_crs(x = arcobj_wkt)
 
   # Convert WKT unicode to ascii (https://github.com/r-spatial/sf/issues/1341)
-  #arcobj_wkt <- sp::wkt(arcobj_crs)
   #arcobj_wkt_ascii <- stringr::str_replace(arcobj_wkt, "°|º", "\\\u00b0")
   #arcobj_crs_ascii <- sp::CRS(SRS_string = arcobj_wkt_ascii)
 
