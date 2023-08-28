@@ -24,8 +24,8 @@ create_temp_gdb <- function(temp_folder_num = 1) {
 }
 
 # Get sf objects
-point_sf <- sf::st_as_sf(fluvgeo::sin_features_sp)
-line_sf  <- sf::st_as_sf(fluvgeo::sin_flowline_sp)
+point_sf <- fluvgeo::sin_features_sf
+line_sf  <- fluvgeo::sin_flowline_sf
 
 # testing variable
 sf_object <- line_sf
