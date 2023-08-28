@@ -27,14 +27,14 @@ meander_length <- function(bankline_points) {
   # channel_features' coordinate system. Distances calculated using them are
   # converted to feet in this function by the `horiz_con_factor`.
 
-  # Set the horizontal unit conversion factor to calculate feet
-  if(any(grep("units=m", sf::st_crs(bankline_points)$proj4string)) == 1) {
+  # Set the horizontal unit conversion factor to calculate feet\
+  if(any(grep("metre", sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 3.28084}
 
-  if(any(grep("units=ft", sf::st_crs(bankline_points)$proj4string)) == 1) {
+  if(any(grep("foot", sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 1}
 
-  if(any(grep("units=us-ft", sf::st_crs(bankline_points)$proj4string)) == 1) {
+  if(any(grep("US survey foot", sf::st_crs(bankline_points)$proj4string)) == 1) {
     horiz_con_factor <- 0.999998000004}
 
   #Make sf object a data frame
