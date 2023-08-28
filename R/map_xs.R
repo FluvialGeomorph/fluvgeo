@@ -45,8 +45,8 @@ map_xs <- function(cross_section, xs_number, dem,
   }
 
   # Get valid DEM spatial reference system
-  dem_wkt2 <- sf::st_crs(dem)          # convert to valid WKT2
-  dem_CRS <- sp::CRS(SRS_string = dem_wkt2)
+  dem_CRS <- sf::st_crs(dem)          # convert to valid WKT2
+
 
   # Reproject so all layers in the same coordinate system as the DEM
   cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_CRS)

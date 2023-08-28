@@ -45,12 +45,12 @@ extent_factor <- 1.2
 
 
 # sp
-cross_section_sp <- fluvgeo::sin_riffle_floodplain_dims_L3_sp
-banklines_sp     <- fluvgeo::sin_banklines_sp
+cross_section_sf <- fluvgeo::sin_riffle_floodplain_dims_L3_sf
+banklines_sf     <- fluvgeo::sin_banklines_sf
 
 # sp to sf
-xs_sp_sf <- sf::st_as_sf(cross_section_sp)
-bl_sp_sf <- sf::st_as_sf(banklines_sp)
+xs_sp_sf <- cross_section_sf
+bl_sp_sf <- banklines_sf
 
 
 
@@ -152,3 +152,4 @@ test_that("check map_xs with different coordinate system inputs", {
   expect_true("tmap" %in% class(xs_map_sf_il))
   expect_error(print(xs_map_sf_il), NA)
 })
+
