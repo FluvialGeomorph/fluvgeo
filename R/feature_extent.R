@@ -4,7 +4,7 @@
 #' map extent multiplying factor.
 #'
 #' @export
-#' @param feature             sp::Spatial* feature or sf; A feature class.
+#' @param feature             sf; A feature class.
 #' @param extent_factor       numeric; A numeric value used to expand the extent
 #'                            of the supplied feature class.
 #'
