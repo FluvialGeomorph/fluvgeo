@@ -71,4 +71,3 @@ arc2sf <- function(fc_path) {
 
   return(sf)
 }
-

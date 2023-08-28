@@ -54,4 +54,3 @@ test_that("verify CRS via WKT string", {
   sf_crs <- st_crs(fc_sf)
   expect_true(raster::compareCRS(fc_crs, sf_crs))
 })
-
