@@ -38,9 +38,9 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
 
   # Reproject features to LatLong
   flowline_sf_ll      <- sf::st_transform(flowline_sf,
-                                      crs = sp::CRS(SRS_string = "EPSG:4326"))
+                                      crs = sf::st_crs("EPSG:4326"))
   cross_section_sf_ll <- sf::st_transform(cross_section_sf,
-                                      crs = sp::CRS(SRS_string = "EPSG:4326"))
+                                      crs = sf::st_crs("EPSG:4326"))
 
   # Set extent
   xs_extent <- fluvgeo::feature_extent(cross_section_sf_ll,

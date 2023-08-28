@@ -58,9 +58,9 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
 
   # Reproject features to LatLong
   flowline_sf_ll      <- sf::st_transform(flowline_sf,
-                                          crs = sp::CRS(SRS_string = "EPSG:4326"))
+                                          crs = sf::st_crs("EPSG:4326"))
   xs_dimensions_sf_ll <- sf::st_transform(xs_dimensions_sf,
-                                          crs = sp::CRS(SRS_string = "EPSG:4326"))
+                                          crs = sf::st_crs("EPSG:4326"))
 
   # Set extent
   xs_extent <- fluvgeo::feature_extent(xs_dimensions_sf_ll,
