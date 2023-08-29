@@ -4,7 +4,7 @@
 #' `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo bankline_points
+#' @param bankline_points  sf data frame; an fluvgeo bankline_points
 #'                         data structure
 #'
 #' @return Returns a data frame of bends with the calculated raduis of
@@ -18,7 +18,7 @@ bend_radius <- function(bankline_points) {
   expect_true(check_bankline_points(bankline_points))
 
   # Convert Spatial*DataFrame to a data frame
-  bankline_points <- bankline_points@data
+  bankline_points <- data.frame(bankline_points)
 
   # Remove bankline_points not assigned to loops
   bankline_points <- bankline_points[!is.na(bankline_points$loop), ]

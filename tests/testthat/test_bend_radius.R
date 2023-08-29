@@ -1,7 +1,7 @@
 library(fluvgeo)
 context("bend_radius")
 
-bankline_points <- fluvgeo::sin_bankline_points_sp
+bankline_points <- fluvgeo::sin_bankline_points_sf
 
 br <- bend_radius(bankline_points)
 
@@ -20,3 +20,4 @@ test_that("check bend_radius data structure", {
   expect_true(is.numeric(br$bend_POINT_Y))
   expect_true(is.numeric(br$bend_radius))
 })
+
