@@ -59,10 +59,6 @@ arc2sf <- function(fc_path) {
   # Create CRS object
   arcobj_crs <- sf::st_crs(x = arcobj_wkt)
 
-  # Convert WKT unicode to ascii (https://github.com/r-spatial/sf/issues/1341)
-  #arcobj_wkt_ascii <- stringr::str_replace(arcobj_wkt, "°|º", "\\\u00b0")
-  #arcobj_crs_ascii <- sp::CRS(SRS_string = arcobj_wkt_ascii)
-
   # Make a selection of the ArcGIS data (all data) returned in arc.data format
   arc <- arcgisbinding::arc.select(arcobj)
 
