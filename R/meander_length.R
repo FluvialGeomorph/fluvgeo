@@ -4,7 +4,7 @@
 #' input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  data.frame; a fluvgeo bankline_points
+#' @param bankline_points  sf data.frame; a fluvgeo bankline_points
 #'                         data structure.
 #'
 #' @return Returns a data frame of loops with the calculated meander length in
@@ -13,7 +13,7 @@
 #' @examples
 #' meander_length(fluvgeo::sin_bankline_points_sf)
 #'
-#' @importFrom sf st_zm
+#' @importFrom sf st_crs
 #' @importFrom testthat expect_true
 #' @importFrom stats aggregate
 #' @importFrom dplyr last lead lag
@@ -30,11 +30,9 @@ meander_length <- function(bankline_points) {
   # Set the horizontal unit conversion factor to calculate feet\
   if(any(grep("metre", sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 3.28084}
-
   if(any(grep("foot", sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 1}
-
-  if(any(grep("US survey foot", sf::st_crs(bankline_points)$proj4string)) == 1) {
+  if(any(grep("US survey foot", sf::st_crs(bankline_points)$units_gdal)) == 1) {
     horiz_con_factor <- 0.999998000004}
 
   #Make sf object a data frame
