@@ -2,7 +2,9 @@ library(fluvgeo)
 library(dplyr)
 context("planform")
 
-pf <- planform(fluvgeo::sin_bankline_points_sp)
+bankline_points <- fluvgeo::sin_bankline_points_sf
+
+pf <- planform(fluvgeo::sin_bankline_points_sf)
 
 test_that("check data structure", {
   expect_true(is.data.frame(pf))
