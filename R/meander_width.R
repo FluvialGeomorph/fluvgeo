@@ -4,14 +4,14 @@
 #' in the input `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; a fluvgeo bankline_points data
+#' @param bankline_points  sf data.frame; a fluvgeo bankline_points data
 #'                         structure
 #'
 #' @return Returns a data frame of loops with the calculated meander width in
 #' units feet.
 #'
 #' @examples
-#' meander_width(fluvgeo::sin_bankline_points_sp)
+#' meander_width(fluvgeo::sin_bankline_points_sf)
 #'
 #' @importFrom testthat expect_true
 #' @importFrom stats aggregate
@@ -27,15 +27,15 @@ meander_width <- function(bankline_points) {
   # converted to feet in this function by the `horiz_con_factor`.
 
   # Set the horizontal unit conversion factor to calculate feet
-  if(any(grep("units=m", sp::proj4string(bankline_points))) == 1) {
+  if(any(grep("metre",sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 3.28084}
-  if(any(grep("units=ft", sp::proj4string(bankline_points))) == 1) {
+  if(any(grep("foot", sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 1}
-  if(any(grep("units=us-ft", sp::proj4string(bankline_points))) == 1) {
+  if(any(grep("US survey foot",sf::st_crs(bankline_points, parameters=TRUE)$units_gdal)) == 1) {
     horiz_con_factor <- 0.999998000004}
 
-  # Convert Spatial*DataFrame to a data frame
-  bankline_points <- bankline_points@data
+  # Convert sf data frame to a data frame
+  bankline_points <- data.frame(bankline_points)
 
   # Select loop apex points
   loop_apex_points <- bankline_points[bankline_points$position == "apex", ]
