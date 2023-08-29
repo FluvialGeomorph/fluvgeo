@@ -50,7 +50,7 @@ meander_length <- function(bankline_points) {
                   "bank_POINT_M",
                   "DEM_Z",
                   "valley_POINT_X", "valley_POINT_Y",
-                  "valley_POINT_M","loop")
+                  "valley_POINT_M", "loop")
 
   # Aggregate multiple apex loop points into a single apex point feature
 
@@ -79,5 +79,11 @@ meander_length <- function(bankline_points) {
                                                        loop_apex$downstream_y),
                                             lonlat = FALSE) * horiz_con_factor
 
+  loop_apex <-  loop_apex %>%
+    dplyr::select("bank_POINT_X", "bank_POINT_Y",
+                  "bank_POINT_M",
+                  "DEM_Z",
+                  "valley_POINT_X", "valley_POINT_Y",
+                  "valley_POINT_M", "loop", "meander_length")
   return(loop_apex)
 }
