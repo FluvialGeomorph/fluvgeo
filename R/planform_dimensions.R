@@ -4,9 +4,9 @@
 #'   input xs_dims data frame.
 #'
 #' @export
-#' @param xs_dimensions   SpatialLinesDataFrame; A `cross_section_dimensions`
+#' @param xs_dimensions   sf data frame; A `cross_section_dimensions`
 #'                        fluvgeo data structure.
-#' @param bankline_points SpatialPointsDataFrame; A `bankline_points` fluvgeo data
+#' @param bankline_points sf data frame; A `bankline_points` fluvgeo data
 #'                        data structure.
 #'
 #' @return Returns the input xs_dims data frame of cross sections with the
@@ -14,9 +14,9 @@
 #'
 #' @examples
 #' # Calculate cross section planform dimensions
-#' xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
-#'                                    fluvgeo::sin_bankline_points_sp)
-#' @importFrom sp merge
+#' xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sf,
+#'                                    fluvgeo::sin_bankline_points_sf)
+#' @importFrom dplyr left_join
 #'
 planform_dimensions <- function(xs_dimensions, bankline_points) {
   # Check parameters
@@ -27,8 +27,6 @@ planform_dimensions <- function(xs_dimensions, bankline_points) {
   bends_planform <- planform(bankline_points)
 
   # Join planform dimensions to xs_dimension
-  xs_dims <- sp::merge(xs_dimensions, bends_planform,
-                       by.x = c("loop", "bend"), by.y = c("loop", "bend"))
-
+  xs_dims<- dplyr::left_join(x=xs_dimensions, y= bends_planform, by=c("loop","bend"))
   return(xs_dims)
 }

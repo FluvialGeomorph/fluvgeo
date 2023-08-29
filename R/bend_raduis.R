@@ -1,6 +1,6 @@
 #' @title Calculate the bend radius of curvature
 #'
-#' @description Calculates the raduis of curvature for each bend in the input
+#' @description Calculates the radius of curvature for each bend in the input
 #' `bankline_points` data frame.
 #'
 #' @export
@@ -19,6 +19,8 @@ bend_radius <- function(bankline_points) {
 
   # Convert Spatial*DataFrame to a data frame
   bankline_points <- data.frame(bankline_points)
+
+
 
   # Remove bankline_points not assigned to loops
   bankline_points <- bankline_points[!is.na(bankline_points$loop), ]
@@ -72,5 +74,5 @@ bend_radius <- function(bankline_points) {
     }
   }
   # Append the list of bend dimension data frames into a single data frame
-  bend_dimensions <- dplyr::bind_rows(bend_dims)
+  bend_dimensions_sf <- dplyr::bind_rows(bend_dims)
 }
