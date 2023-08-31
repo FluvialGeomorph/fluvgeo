@@ -1,9 +1,9 @@
 library(fluvgeo)
 context("xs_metrics")
 
-# Extract attribute data from the fluvgeo::sin_riffle_floodplain_points_sp
-# SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sp@data
+# Extract attribute data from the fluvgeo::sin_riffle_floodplain_points_sf
+# sf object
+sin_xs_points_df <- fluvgeo::sin_riffle_floodplain_points_sf
 
 # Call the xs_metrics function
 sin_4 <- xs_metrics(xs_points = sin_xs_points_df,
@@ -141,3 +141,4 @@ test_that("Check dimensions from known stream", {
   expect_equal(sin_4$bankfull_elev,         645.68, tolerance = 1e-2)
   expect_equal(sin_4$floodprone_elev,       649.18, tolerance = 1e-2)
 })
+
