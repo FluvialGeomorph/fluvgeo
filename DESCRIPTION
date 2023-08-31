@@ -1,21 +1,20 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.46
+Version: 0.1.47
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
-           role = c("aut")),
+           role = c("aut"),
+           comment = c(ORCID = "0000-0002-1465-5927")),
     person("Christopher", "Haring",
            email = "Christopher.P.Haring@usace.army.mil",
            role = c("aut")),
-    person("Charles", "Theiling",
-           email = "Charles.H.Theiling@usace.army.mil",
-           role = c("aut")),
     person("Barrie","Chileen Martinez",
            email = "Barrie.V.Chileen@usace.army.mil",
-           role = c("aut","cre")),
-    person("Davi", "Michl", role = c("ctb")),
-    person("Thomas", "Darby", role = c("ctb"))
+           role = c("aut","cre"),
+           comment = c(ORCID = "0000-0002-6960-8167")),
+    person("Thomas", "Darby", role = c("ctb")), 
+    person("Davi", "Michl", role = c("ctb"))
     )
 Description: This package contains a wide range of functions for performing
     fluvial geomorphic analysis. This package is designed for use with the 
