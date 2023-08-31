@@ -4,7 +4,7 @@
 #' meets the requirements for this data structure.
 #'
 #' @export
-#' @param xs_points       SpatialPointsDataFrame; a `cross_section_points`
+#' @param xs_points       sf; a `cross_section_points`
 #'                        data structure used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "station_points", "loop_bend"
@@ -23,51 +23,51 @@ check_cross_section_points <- function(xs_points,
 
   # Step: station_points
   if(step %in% c("station_points", "loop_bend")) {
-    assert_that(class(xs_points)[1] == "SpatialPointsDataFrame",
-                msg = paste(name, " must be a SpatialPointsDataFrame"))
-    assert_that(is.data.frame(xs_points@data),
+    assert_that(class(xs_points)[1] == "sf",
+                msg = paste(name, " must be a sf object"))
+    assert_that(is.data.frame(xs_points),
                 msg = paste(name, " must be a data frame"))
-    assert_that("Seq" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$Seq),
+    assert_that("Seq" %in% colnames(xs_points) &
+                  is.numeric(xs_points$Seq),
                 msg = paste("Numeric field 'Seq' missing from ", name))
-    assert_that("POINT_X" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$POINT_X),
+    assert_that("POINT_X" %in% colnames(xs_points) &
+                  is.numeric(xs_points$POINT_X),
                 msg = paste("Numeric field 'POINT_X' missing from ", name))
-    assert_that("POINT_Y" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$POINT_Y),
+    assert_that("POINT_Y" %in% colnames(xs_points) &
+                  is.numeric(xs_points$POINT_Y),
                 msg = paste("Numeric field 'POINT_Y' missing from ", name))
-    assert_that("POINT_M" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$POINT_M),
+    assert_that("POINT_M" %in% colnames(xs_points) &
+                  is.numeric(xs_points$POINT_M),
                 msg = paste("Numeric field 'POINT_M' missing from ", name))
-    assert_that("Watershed_Area_SqMile" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$Watershed_Area_SqMile),
+    assert_that("Watershed_Area_SqMile" %in% colnames(xs_points) &
+                  is.numeric(xs_points$Watershed_Area_SqMile),
                 msg = paste("Numeric field 'Watershed_Area_SqMile' missing from ",
                             name))
-    assert_that("ReachName" %in% colnames(xs_points@data) &
-                  is.character(xs_points@data$ReachName),
+    assert_that("ReachName" %in% colnames(xs_points) &
+                  is.character(xs_points$ReachName),
                 msg = paste("Character field 'ReachName' missing from", name))
-    assert_that("km_to_mouth" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$km_to_mouth),
+    assert_that("km_to_mouth" %in% colnames(xs_points) &
+                  is.numeric(xs_points$km_to_mouth),
                 msg = paste("Numeric field 'km_to_mouth' missing from ", name))
-    assert_that("DEM_Z" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$DEM_Z),
+    assert_that("DEM_Z" %in% colnames(xs_points) &
+                  is.numeric(xs_points$DEM_Z),
                 msg = paste("Numeric field 'DEM_Z' missing from ", name))
-    assert_that("Detrend_DEM_Z" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$Detrend_DEM_Z),
+    assert_that("Detrend_DEM_Z" %in% colnames(xs_points) &
+                  is.numeric(xs_points$Detrend_DEM_Z),
                 msg = paste("Numeric field 'Detrend_DEM_Z' missing from ", name))
 
     # Check the `ReachName` field is not empty
-    assert_that(nchar(unique(xs_points@data$ReachName[1])) > 0,
+    assert_that(nchar(unique(xs_points$ReachName[1])) > 0,
                 msg = paste("Field `ReachName` is empty in", name))
 
     # Check cross sections numbered in upstream direction
-    min_seq <- min(xs_points@data$Seq)
-    max_seq <- max(xs_points@data$Seq)
+    min_seq <- min(xs_points$Seq)
+    max_seq <- max(xs_points$Seq)
 
-    xs_1 <- xs_points@data[xs_points@data$Seq == min_seq, ]
+    xs_1 <- xs_points[xs_points$Seq == min_seq, ]
     min_seq_elevation <- min(xs_1$DEM_Z)
 
-    xs_n <- xs_points@data[xs_points@data$Seq == max_seq, ]
+    xs_n <- xs_points[xs_points$Seq == max_seq, ]
     max_seq_elevation <- min(xs_n$DEM_Z)
 
     assert_that(min_seq_elevation < max_seq_elevation,
@@ -76,11 +76,11 @@ check_cross_section_points <- function(xs_points,
   }
   # Step: loop_bend
   if(step %in% c("loop_bend")) {
-    assert_that("loop" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$loop),
+    assert_that("loop" %in% colnames(xs_points) &
+                  is.numeric(xs_points$loop),
                 msg = paste("Numeric field 'loop' missing from ", name))
-    assert_that("bend" %in% colnames(xs_points@data) &
-                  is.numeric(xs_points@data$bend),
+    assert_that("bend" %in% colnames(xs_points) &
+                  is.numeric(xs_points$bend),
                 msg = paste("Numeric field 'bend' missing from ", name))
   }
 
