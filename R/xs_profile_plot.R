@@ -4,9 +4,9 @@
 #' of the input stream reach.
 #'
 #' @export
-#' @param reach_xs_dims_sp SpatialPointsDataFrame of cross section
+#' @param reach_xs_dims_sf sf data frame of cross section
 #'                         dimensions.
-#' @param features_sp      SpatialPointsDataFrame of infrastructure features
+#' @param features_sf      sf data frame of infrastructure features
 #' @param label_xs         logical; Draw the cross section labels?
 #' @param xs_label_freq    numeric; An integer indicating the frequency of
 #'                         cross section labels.
@@ -22,8 +22,8 @@
 #'
 #' @examples
 #' # Create cross section profile plot
-#' profile_plot <- xs_profile_plot(reach_xs_dims_sp = fluvgeo::sin_riffle_floodplain_dims_L3_sp,
-#'                                 features_sp = fluvgeo::sin_features_sp,
+#' profile_plot <- xs_profile_plot(reach_xs_dims_sf = fluvgeo::sin_riffle_floodplain_dims_L3_sf,
+#'                                 features_sf = fluvgeo::sin_features_sf,
 #'                                 label_xs = TRUE)
 #'
 #' # Print the plot
@@ -37,14 +37,14 @@
 #' theme_bw alpha theme element_rect element_blank element_line labs
 #'
 #'
-xs_profile_plot <- function(reach_xs_dims_sp,
-                            features_sp = NULL,
+xs_profile_plot <- function(reach_xs_dims_sf,
+                            features_sf = NULL,
                             label_xs = TRUE,
                             xs_label_freq = 10,
                             profile_units = "kilometers") {
   # Check parameters
-  check_cross_section_dimensions(reach_xs_dims_sp, "cross_section_dimensions")
-  check_features(features_sp)
+  check_cross_section_dimensions(reach_xs_dims_sf, "cross_section_dimensions")
+  check_features(features_sf)
   assert_that(is.logical(label_xs),
               msg = "label_xs must be logical")
   assert_that(profile_units %in% c("kilometers", "meters", "miles", "feet"),
@@ -59,8 +59,8 @@ xs_profile_plot <- function(reach_xs_dims_sp,
                       "feet"       = 3280.84)
 
   # Convert to data frames for ggplot
-  reach_xs_dims <- reach_xs_dims_sp@data
-  features      <- features_sp@data
+  reach_xs_dims <- reach_xs_dims_sf
+  features      <- features_sf
 
   # Gather data by water levels for plotting
   xs_dims <- gather(reach_xs_dims,
