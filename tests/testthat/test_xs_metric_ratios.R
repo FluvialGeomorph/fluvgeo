@@ -2,8 +2,8 @@ library(fluvgeo)
 context("xs_metric_ratios")
 
 # Calculate cross section planform dimensions
-xs_dims_L2 <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
-                                  fluvgeo::sin_bankline_points_sp)
+xs_dims_L2 <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sf,
+                                  fluvgeo::sin_bankline_points_sf)
 
 # Calculate cross section metric ratios
 xs_dims_ratios <- xs_metric_ratios(xs_dimensions = xs_dims_L2)
