@@ -4,7 +4,7 @@
 #' features.
 #'
 #' @export
-#' @param channel_features Spatial*DataFrame; a `fluvgeo` data structure of
+#' @param channel_features sf object; a `fluvgeo` data structure of
 #'                         channel features (i.e., cross section, flowline
 #'                         points, etc.) Must have the following fields:
 #'                         `ReachName`, `POINT_X`, `POINT_Y`, `POINT_M`, `Z`
@@ -27,12 +27,12 @@
 #'
 #' @examples
 #' # Call the slope_sinuosity function for a flowline
-#' sin_flowline_ss <- slope_sinuosity(fluvgeo::sin_flowline_points_sp,
+#' sin_flowline_ss <- slope_sinuosity(fluvgeo::sin_flowline_points_sf,
 #'                                    lead_n = 100, lag_n = 0,
 #'                                    vert_units = "ft")
 #'
 #' # Call the slope_sinuosity function for a cross section
-#' sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sp,
+#' sin_riffle_channel_ss <- slope_sinuosity(fluvgeo::sin_riffle_channel_sf,
 #'                                          lead_n = 3, lag_n = 0,
 #'                                          loess_span = 0.5,
 #'                                          vert_units = "ft")
@@ -42,7 +42,6 @@
 #' @importFrom stats loess predict
 #' @importFrom dplyr first last lead lag
 #' @importFrom raster pointDistance
-#' @importFrom sp proj4string
 #'
 slope_sinuosity <-function(channel_features, lead_n, lag_n,
                            use_smoothing = TRUE,
@@ -51,22 +50,22 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   name <- deparse(substitute(channel_features))
 
   # Check data structure
-  assert_that(is.data.frame(channel_features@data),
+  assert_that(is.data.frame(channel_features),
               msg = paste(name, " must be a data frame"))
-  assert_that("ReachName" %in% colnames(channel_features@data) &
-                is.character(channel_features@data$ReachName),
+  assert_that("ReachName" %in% colnames(channel_features) &
+                is.character(channel_features$ReachName),
               msg = paste("Character field 'ReachName' missing from", name))
-  assert_that("POINT_X" %in% colnames(channel_features@data) &
-                is.numeric(channel_features@data$POINT_X),
+  assert_that("POINT_X" %in% colnames(channel_features) &
+                is.numeric(channel_features$POINT_X),
               msg = paste("Numeric field 'POINT_X' missing from ", name))
-  assert_that("POINT_Y" %in% colnames(channel_features@data) &
-                is.numeric(channel_features@data$POINT_Y),
+  assert_that("POINT_Y" %in% colnames(channel_features) &
+                is.numeric(channel_features$POINT_Y),
               msg = paste("Numeric field 'POINT_Y' missing from ", name))
-  assert_that("POINT_M" %in% colnames(channel_features@data) &
-                is.numeric(channel_features@data$POINT_M),
+  assert_that("POINT_M" %in% colnames(channel_features) &
+                is.numeric(channel_features$POINT_M),
               msg = paste("Numeric field 'POINT_M' missing from ", name))
-  assert_that("Z" %in% colnames(channel_features@data) &
-                is.numeric(channel_features@data$Z),
+  assert_that("Z" %in% colnames(channel_features) &
+                is.numeric(channel_features$Z),
               msg = paste("Numeric field 'Z' missing from ", name))
 
   # Check parameters
@@ -105,8 +104,6 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
   if(vert_units == "ft") vert_con_factor <- 1
   if(vert_units == "us-ft") vert_con_factor <- 0.999998000004
 
-  # Convert Spatial*DataFrame to a data frame
-  channel_features <- channel_features@data
 
   # Add new columns to hold calculated values
   channel_features$Z_smooth      <- 0
