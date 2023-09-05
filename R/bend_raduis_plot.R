@@ -4,7 +4,7 @@
 #' loop and bend using a `bankline_points` data frame.
 #'
 #' @export
-#' @param bankline_points  SpatialPointsDataFrame; an fluvgeo `bankline_points`
+#' @param bankline_points  sf data frame; an fluvgeo `bankline_points`
 #'                         data structure
 #' @param loop             numeric; the loop to plot
 #' @param bend             numeric; the bend to plot
@@ -25,7 +25,7 @@ bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
   expect_true(check_bankline_points(bankline_points))
 
   # Convert Spatial*DataFrame to a data frame
-  bankline_points <- bankline_points@data
+  bankline_points <- data.frame(bankline_points)
 
   # Subset bankline_points the for the input loop and bend
   bend_pts <- bankline_points[which(bankline_points$loop ==

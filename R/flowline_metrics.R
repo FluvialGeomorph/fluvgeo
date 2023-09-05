@@ -4,8 +4,8 @@
 #' elevation, slope, and sinuosity) for the input stream reach.
 #'
 #' @export
-#' @param gradient_sp     SpatialPointsDataFrame of gradient points.
-#' @param features_sp     SpatialPointsDataFrame of infrastructure features
+#' @param gradient_sf     sf data frame of gradient points.
+#' @param features_sf     sf data frame of infrastructure features
 #'
 #' @return A ggplot2 object.
 #'
@@ -16,13 +16,14 @@
 #' @importFrom ggplot2 ggplot aes geom_line scale_color_manual scale_x_reverse
 #' theme_bw theme labs vars label_wrap_gen
 #'
-flowline_metrics <- function(gradient_sp, features_sp) {
+flowline_metrics <- function(gradient_sf, features_sf) {
   # Check parameters
-  fluvgeo::check_features(features_sp)
+  fluvgeo::check_features(features_sf)
 
   # Convert to data frames for ggplot
-  gradient <- gradient_sp@data
-  features <- features_sp@data
+  gradient <- gradient_sf
+  features <- features_sf
+
 
   # Define `metrics` factor levels
   metrics_levels <- c("Z_smooth",

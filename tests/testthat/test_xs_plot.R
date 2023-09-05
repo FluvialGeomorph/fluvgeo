@@ -1,9 +1,9 @@
 library(fluvgeo)
 context("xs_plot")
 
-# Extract attribute data from the fluvgeo::sin_riffle_channel_points_sp
+# Extract attribute data from the fluvgeo::sin_riffle_channel_points_sf
 # SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Call the xs_plot function
 sin_4_plot <- fluvgeo::xs_plot(xs_points = sin_xs_points_df,
