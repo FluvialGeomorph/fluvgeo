@@ -85,17 +85,16 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
     # Get aerial photos
     aerial_photos <- ceramic::cc_location(xs_extent,
                                            type = "mapbox.satellite")
-    aerial_bbox<-sf::st_as_sfc(sf_bbox, crs= sf::st_crs("EPSG:4326"))
-    test_tiles<-mapboxapi::get_static_tiles(location=aerial_bbox,
-      style_id = "satellite-streets-v12", zoom=9,
-      username = "bchileen",buffer_dist=5
-    )
-
-
-
-    test<-ceramic::read_tiles(x=xs_extent, base_url="mapbox://styles/mapbox/satellite-streets-v12")
+    # aerial_bbox<-sf::st_as_sfc(sf_bbox, crs= sf::st_crs("EPSG:4326"))
+    # test_tiles<-mapboxapi::get_static_tiles(location=aerial_bbox,
+    #   style_id = "satellite-streets-v12", zoom=9,
+    #   username = "bchileen",buffer_dist=5
+    # )
+    #
+    #
+    #
+    # test<-ceramic::read_tiles(x=xs_extent, base_url="mapbox://styles/mapbox/satellite-streets-v12")
     #aerial_photos<-maptiles::get_tiles(x=sf_bbox, provider="Esri.WorldImagery", crop=TRUE)
-    satellite-streets-v12
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()
