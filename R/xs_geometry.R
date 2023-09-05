@@ -28,7 +28,7 @@
 #' @details The cross section points used as input to this function must
 #'    represent only one cross section. See the documentation for the example
 #'    \code{sin_xs_points} data frame for the specification of this input
-#'    \code{sp::SpatialPointsDataFrame} object.
+#'    \code{sf::sf} object.
 #'
 #' @seealso
 #' The \code{xs_geometry} function is called by the \code{\link{xs_metrics}}
