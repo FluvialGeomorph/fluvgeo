@@ -19,8 +19,8 @@
 #' @return A ggplot object.
 #'
 #' @examples
-#' # Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-#' sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@@data
+#' # Extract attribute data from the fluvgeo::sin_xs_points sf
+#' sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 #'
 #' # Set variable values
 #' streams <- "Sinsinawa"
@@ -129,7 +129,7 @@ reach_rhg_graph <- function(xs_dims, streams, bf_elevation, xs_trend = FALSE,
                          y = 'measure',
                          color = 'xs_type')) +
     scale_color_brewer(palette = "Set1", name = "Regional Curves") +
-    facet_grid(facets = stats ~ .,
+    facet_grid(rows = stats ~ .,
                scales = "free",
                labeller = as_labeller(stat_names)) +
     theme_bw() +
