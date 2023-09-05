@@ -3,8 +3,8 @@ context("check_cross_section_dimensions")
 
 # Create testing data
 ## Step: cross_section_dimensions
-xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
-                                    xs_points = fluvgeo::sin_riffle_channel_points_sp,
+xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sf,
+                                    xs_points = fluvgeo::sin_riffle_channel_points_sf,
                                     bankfull_elevation = 103,
                                     lead_n = 1,
                                     use_smoothing = TRUE,
@@ -20,8 +20,8 @@ xs_dims_sp <- stream_power(xs_dims_ss,
                            drainage_area = 41)
 
 ## Step: planform
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
-                                    fluvgeo::sin_bankline_points_sp)
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sf,
+                                    fluvgeo::sin_bankline_points_sf)
 
 ## Step: metric_ratios
 xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)

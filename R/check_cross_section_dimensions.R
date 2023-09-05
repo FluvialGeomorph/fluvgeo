@@ -5,7 +5,7 @@
 #' meets the requirements for this data structure.
 #'
 #' @export
-#' @param cross_section_dimensions   data frame, SpatialLinesDataFrame, sf: A
+#' @param cross_section_dimensions   data frame, sf: A
 #'                                   `cross_section_dimension` data structure
 #'                                   used by the fluvgeo package.
 #' @param step            character; Last completed processing step. One of
@@ -25,8 +25,8 @@
 #'
 #' @examples
 #' # Step: cross_section_dimensions
-#' xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
-#'                                        xs_points = fluvgeo::sin_riffle_channel_points_sp,
+#' xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sf,
+#'                                        xs_points = fluvgeo::sin_riffle_channel_points_sf,
 #'                                        bankfull_elevation = 103,
 #'                                        lead_n = 1,
 #'                                        use_smoothing = TRUE,
