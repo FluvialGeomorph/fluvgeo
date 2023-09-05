@@ -18,7 +18,6 @@
 #' @return a tmap object
 #'
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
-#' @importFrom sp CRS
 #' @importFrom raster terrain hillShade
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
@@ -26,6 +25,7 @@
 #' @importFrom maptiles get_tiles
 #' @importFrom terrainr get_tiles
 #' @importFrom terra shade terrain
+#' @importFrom ceramic
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
                                background = "none",
@@ -83,8 +83,19 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Aerial
   if(background == "aerial") {
     # Get aerial photos
-    aerial_photos<-maptiles::get_tiles(x=sf_bbox, provider="Esri.WorldImagery", crop=TRUE)
+    aerial_photos <- ceramic::cc_location(xs_extent,
+                                           type = "mapbox.satellite")
+    aerial_bbox<-sf::st_as_sfc(sf_bbox, crs= sf::st_crs("EPSG:4326"))
+    test_tiles<-mapboxapi::get_static_tiles(location=aerial_bbox,
+      style_id = "satellite-streets-v12", zoom=9,
+      username = "bchileen",buffer_dist=5
+    )
 
+
+
+    test<-ceramic::read_tiles(x=xs_extent, base_url="mapbox://styles/mapbox/satellite-streets-v12")
+    #aerial_photos<-maptiles::get_tiles(x=sf_bbox, provider="Esri.WorldImagery", crop=TRUE)
+    satellite-streets-v12
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()
