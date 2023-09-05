@@ -4,9 +4,9 @@
 #' cross section feature class.
 #'
 #' @export
-#' @param xs                  SpatialLinesDataFrame; the full path to a
+#' @param xs                  sf; the full path to a
 #'                            cross section line feature class
-#' @param xs_points           SpatialPointsDataFrame; the full path to a
+#' @param xs_points           sf data frame; the full path to a
 #'                            cross section points feature class
 #' @param bankfull_elevation  numeric; The bankfull elevation (in feet) that is
 #'                            used to calculate hydraulic geometry.
@@ -40,11 +40,11 @@ cross_section_dimensions_L2 <- function(xs, xs_points, bankfull_elevation,
   xs_geoms    <- list()
 
   # Iterate through xs ReachNames
-  for (g in unique(xs_points@data$ReachName)) {
-    print(unique(xs_points@data$ReachName))
+  for (g in unique(xs_points$ReachName)) {
+    print(unique(xs_points$ReachName))
 
     # Subset xs for the current reach
-    xs_reach <- xs[xs@data$ReachName == g, ]
+    xs_reach <- xs[xs$ReachName == g, ]
 
     # Calculate slope and sinuosity for xs_reach
     xs_reach_ss <- fluvgeo::slope_sinuosity(xs_reach,
@@ -56,9 +56,9 @@ cross_section_dimensions_L2 <- function(xs, xs_points, bankfull_elevation,
     message("slope and sinuosity complete")
 
     # Iterate through xs's and calculate dimensions
-    for (i in xs[xs@data$ReachName == g, ]$Seq) {
+    for (i in xs[xs$ReachName == g, ]$Seq) {
       # Subset for the current stream and convert to data frame
-      xs_pts <- xs_points@data[xs_points@data$ReachName == g, ]
+      xs_pts <- xs_points[xs_points$ReachName == g, ]
       # Calculate xs dimensions
       dims <- fluvgeo::xs_metrics(xs_points = xs_pts,
                               stream = g,
