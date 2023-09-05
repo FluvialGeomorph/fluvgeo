@@ -1,8 +1,8 @@
 library(fluvgeo)
 context("xs_regional_metrics")
 
-# Extract attribute data from the fluvgeo::sin_riffle_channel_points_sp
-# SpatialPointsDataFrame
+
+# sf data frame
 sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Call the xs_metrics function
