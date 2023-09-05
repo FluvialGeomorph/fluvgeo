@@ -51,10 +51,9 @@
 #' \code{\link{xs_dimensions}} function.
 #'
 #' @examples
-#' # Extract attribute data from the fluvgeo::sin_riffle_channel_points_sp
-#' # SpatialPointsDataFrame
-#' sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@@data
-#'
+#' # Extract attribute data from the fluvgeo::sin_riffle_channel_points_sf
+#' # sf object
+#' sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 #' # Call the xs_metrics function
 #' sin_4 <- xs_regional_metrics(xs_points = sin_xs_points_df,
 #'                              stream = "Sinsinawa",
