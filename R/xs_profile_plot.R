@@ -66,8 +66,8 @@ xs_profile_plot <- function(reach_xs_dims_sf,
   xs_dims <- gather(reach_xs_dims,
                     key = "water_levels",
                     value = "elevations",
-                    .data$bankfull_elev,
-                    .data$watersurface_elev)
+                    bankfull_elev,
+                    watersurface_elev)
 
   # Determine min y value
   plot_min_y <- min(xs_dims$elevations)
@@ -85,7 +85,7 @@ xs_profile_plot <- function(reach_xs_dims_sf,
   xs_lines <- tidyr::gather(reach_xs_dims,
                             key = "elevations",
                             value = "values",
-                            .data$elev_min, .data$elev_max)
+                            elev_min, elev_max)
 
   # Determine cross section label frequency
   labeled_xs <- ((xs_lines$Seq + xs_label_freq) %% xs_label_freq) == 0
@@ -113,7 +113,7 @@ xs_profile_plot <- function(reach_xs_dims_sf,
         legend.justification = c("left", "top"),
         legend.background = element_rect(fill = alpha('white', 0.6)),
         legend.title = element_blank(),
-        panel.grid.major = element_line(colour = "grey", size = 0.1)) +
+        panel.grid.major = element_line(colour = "grey",linewidth = 0.1)) +
   labs(title = unique(reach_xs_dims$ReachName),
        x     = profile_units,
        y     = "Elevation (NAVD88 feet)")
