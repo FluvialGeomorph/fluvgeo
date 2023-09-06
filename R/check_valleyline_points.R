@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param valleyline_points   SpatialPointsDataFrame: a `valleyline_points`
+#' @param valleyline_points   sf: a `valleyline_points`
 #'                            data structure used by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `valleyline_points` data structure matches the
@@ -18,24 +18,24 @@ check_valleyline_points <- function(valleyline_points) {
   name <- deparse(substitute(valleyline_points))
 
   # Check data structure
-  assert_that(class(valleyline_points)[1] == "SpatialPointsDataFrame",
-              msg = paste(name, "must be a SpatialPointsDataFrame"))
-  assert_that(is.data.frame(valleyline_points@data),
+  assert_that(class(valleyline_points)[1] == "sf",
+              msg = paste(name, "must be sf"))
+  assert_that(is.data.frame(valleyline_points),
               msg = paste(name, "must be a data frame"))
-  assert_that("ReachName" %in% colnames(valleyline_points@data) &
-                is.character(valleyline_points@data$ReachName),
+  assert_that("ReachName" %in% colnames(valleyline_points) &
+                is.character(valleyline_points$ReachName),
               msg = paste("Character field 'ReachName' missing from ", name))
-  assert_that("POINT_X" %in% colnames(valleyline_points@data) &
-                is.numeric(valleyline_points@data$POINT_X),
+  assert_that("POINT_X" %in% colnames(valleyline_points) &
+                is.numeric(valleyline_points$POINT_X),
               msg = paste("Numeric field 'POINT_X' missing from ", name))
-  assert_that("POINT_Y" %in% colnames(valleyline_points@data) &
-                is.numeric(valleyline_points@data$POINT_Y),
+  assert_that("POINT_Y" %in% colnames(valleyline_points) &
+                is.numeric(valleyline_points$POINT_Y),
               msg = paste("Numeric field 'POINT_Y' missing from ", name))
-  assert_that("POINT_M" %in% colnames(valleyline_points@data) &
-                is.numeric(valleyline_points@data$POINT_M),
+  assert_that("POINT_M" %in% colnames(valleyline_points) &
+                is.numeric(valleyline_points$POINT_M),
               msg = paste("Numeric field 'POINT_M' missing from ", name))
 
   # Check the field `ReachName` is not empty
-  assert_that(nchar(unique(valleyline_points@data$ReachName[1])) > 0,
+  assert_that(nchar(unique(valleyline_points$ReachName[1])) > 0,
               msg = paste("Field `ReachName` is empty in", name))
 }
