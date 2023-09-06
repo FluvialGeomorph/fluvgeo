@@ -71,9 +71,7 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
                           paste(steps, collapse = ", ")))
 
 
-  if(class(cross_section_dimensions)[1] == "SpatialLinesDataFrame") {
-    cross_section_dimensions_df <- cross_section_dimensions@data
-  }
+
   if(class(cross_section_dimensions)[1] == "sf") {
     cross_section_dimensions_df <- cross_section_dimensions
   }

@@ -20,10 +20,6 @@ check_flowline <- function(flowline,
                            step = c("create_flowline", "profile_points")) {
 
   name <- deparse(substitute(flowline))
-
-  if(class(flowline)[1] == "SpatialLinesDataFrame") {
-    flowline_df <- flowline@data
-  }
   if(class(flowline)[1] == "sf") {
     flowline_df <- flowline
   }
