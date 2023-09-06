@@ -19,7 +19,7 @@ check_flowline_points <- function(flowline_points) {
 
   # Check data structure
   assert_that(class(flowline_points)[1] == "sf",
-              msg = paste(name, "must be a SpatialPointsDataFrame"))
+              msg = paste(name, "must be a sf object"))
   assert_that(is.data.frame(flowline_points),
               msg = paste(name, "must be a data frame"))
   assert_that("ReachName" %in% colnames(flowline_points) &
