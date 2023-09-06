@@ -77,7 +77,7 @@ test_that("The output docx report exists", {
 })
 
 test_that("The output docx report exists", {
-  network_dir <- "//mvrdfs.mvr.ds.usace.army.mil/EGIS/Work/FluvialGeomorph"
+  network_dir <- "//mvd/mvr/EGIS/Work/FluvialGeomorph"
   output_dir <- file.path(network_dir, "temp")
   dir.create(output_dir, showWarnings = FALSE)
   expected_report <- file.path(output_dir, paste0("Cole_Creek_R1_105_",
