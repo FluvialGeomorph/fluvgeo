@@ -10,7 +10,7 @@ banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
 banklines_sf <- fluvgeo::fc2sf(banklines_fc)
 
 
-# sp
+# sf
 test_that("check banklines", {
   expect_true(check_banklines(fluvgeo::sin_banklines_sf))
 })
