@@ -63,8 +63,8 @@ to calculate the mean absolute error statistic.
 Add a description of how the goodness of fit calculation is made.
 }
 \examples{
-# Extract attribute data from fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+# Extract attribute data from fluvgeo::sin_xs_points sf object
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Set variable values
 streams <- c("Sinsinawa")

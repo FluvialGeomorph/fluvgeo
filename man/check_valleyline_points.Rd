@@ -7,7 +7,7 @@
 check_valleyline_points(valleyline_points)
 }
 \arguments{
-\item{valleyline_points}{SpatialPointsDataFrame: a `valleyline_points`
+\item{valleyline_points}{sf: a `valleyline_points`
 data structure used by the fluvgeo package.}
 }
 \value{

@@ -7,7 +7,7 @@
 check_loop_points(loop_points)
 }
 \arguments{
-\item{loop_points}{SpatialPointsDataFrame; a `loop_points` data structure
+\item{loop_points}{sf object; a `loop_points` data structure
 used by the fluvgeo package.}
 }
 \value{

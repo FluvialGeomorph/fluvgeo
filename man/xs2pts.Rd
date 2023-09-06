@@ -4,14 +4,14 @@
 \alias{xs2pts}
 \title{XS lines to points}
 \usage{
-xs2pts(xs_sp)
+xs2pts(xs_sf)
 }
 \arguments{
-\item{xs_sp}{SpatialLinesDataFrame; a cross section data structure
+\item{xs_sf}{sf data frame; a cross section data structure
 created by the fluvgeo package.}
 }
 \value{
-Returns a sp::SpatialPointsDataFrame of cross section lines converted
+Returns a sf::sf data frame of cross section lines converted
 to points.
 }
 \description{
@@ -20,9 +20,9 @@ to points.
 }
 \examples{
 # Retrieve a cross section data structure
-xs_sp <- fluvgeo::sin_riffle_floodplain_dims_L3_sp
+xs_sf <- fluvgeo::sin_riffle_floodplain_dims_L3_sf
 
 # Call the xs2pts function for a cross section
-xs_pts <- xs2pts(xs_sp)
+xs_pts <- xs2pts(xs_sf)
 
 }

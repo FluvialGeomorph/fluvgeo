@@ -5,18 +5,18 @@
 \title{Plot stream longitudinal profile}
 \usage{
 xs_profile_plot(
-  reach_xs_dims_sp,
-  features_sp = NULL,
+  reach_xs_dims_sf,
+  features_sf = NULL,
   label_xs = TRUE,
   xs_label_freq = 10,
   profile_units = "kilometers"
 )
 }
 \arguments{
-\item{reach_xs_dims_sp}{SpatialPointsDataFrame of cross section
+\item{reach_xs_dims_sf}{sf data frame of cross section
 dimensions.}
 
-\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
+\item{features_sf}{sf data frame of infrastructure features}
 
 \item{label_xs}{logical; Draw the cross section labels?}
 
@@ -35,8 +35,8 @@ of the input stream reach.
 }
 \examples{
 # Create cross section profile plot
-profile_plot <- xs_profile_plot(reach_xs_dims_sp = fluvgeo::sin_riffle_floodplain_dims_L3_sp,
-                                features_sp = fluvgeo::sin_features_sp,
+profile_plot <- xs_profile_plot(reach_xs_dims_sf = fluvgeo::sin_riffle_floodplain_dims_L3_sf,
+                                features_sf = fluvgeo::sin_features_sf,
                                 label_xs = TRUE)
 
 # Print the plot

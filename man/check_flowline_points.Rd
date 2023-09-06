@@ -7,7 +7,7 @@
 check_flowline_points(flowline_points)
 }
 \arguments{
-\item{flowline_points}{SpatialPointsDataFrame; a `flowline_points` data
+\item{flowline_points}{sf object; a `flowline_points` data
 structure used by the fluvgeo package.}
 }
 \value{

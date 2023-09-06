@@ -15,10 +15,10 @@ cross_section_dimensions_L2(
 )
 }
 \arguments{
-\item{xs}{SpatialLinesDataFrame; the full path to a
+\item{xs}{sf; the full path to a
 cross section line feature class}
 
-\item{xs_points}{SpatialPointsDataFrame; the full path to a
+\item{xs_points}{sf data frame; the full path to a
 cross section points feature class}
 
 \item{bankfull_elevation}{numeric; The bankfull elevation (in feet) that is

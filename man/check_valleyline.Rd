@@ -7,7 +7,7 @@
 check_valleyline(valleyline)
 }
 \arguments{
-\item{valleyline}{SpatialLinesDataFrame: a `valleyline` data structure
+\item{valleyline}{sf object: a `valleyline` data structure
 used by the fluvgeo package.}
 }
 \value{

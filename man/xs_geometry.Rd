@@ -38,11 +38,11 @@ Calculates the hydraulic geometry (width, depth, area, and
 The cross section points used as input to this function must
    represent only one cross section. See the documentation for the example
    \code{sin_xs_points} data frame for the specification of this input
-   \code{sp::SpatialPointsDataFrame} object.
+   \code{sf::sf} object.
 }
 \examples{
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+# Extract attribute data from the fluvgeo::sin_xs_points sf object
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Subset sin_xs_points to contain only one cross section (Seq = 4)
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4,]

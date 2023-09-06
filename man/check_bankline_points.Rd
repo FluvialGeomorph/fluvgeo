@@ -7,7 +7,7 @@
 check_bankline_points(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; a `bankline_points` data
+\item{bankline_points}{sf; a `bankline_points` data
 structure used by the fluvgeo package.}
 }
 \value{

@@ -7,7 +7,7 @@
 planform(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; a `bankline_points` data
+\item{bankline_points}{sf data frame; a `bankline_points` data
 structure used by the fluvgeo package.}
 }
 \value{
@@ -20,6 +20,6 @@ meander wavelength, and meander belt width) for each bend and loop in the
 input `bankline_points` data frame.
 }
 \examples{
-pf <- planform(fluvgeo::sin_bankline_points_sp)
+pf <- planform(fluvgeo::sin_bankline_points_sf)
 
 }

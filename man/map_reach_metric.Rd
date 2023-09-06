@@ -51,8 +51,8 @@ wdr <- new(Class = "FluvialGeomorphicMetric",
 
 # Create the reach metric map
 wdr_map <- map_reach_metric(wdr,
-                            fluvgeo::sin_flowline_sp,
-                            fluvgeo::sin_riffle_floodplain_dims_L3_sp)
+                            fluvgeo::sin_flowline_sf,
+                            fluvgeo::sin_riffle_floodplain_dims_L3_sf)
 print(wdr_map)
 }
 \description{

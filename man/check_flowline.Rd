@@ -7,7 +7,7 @@
 check_flowline(flowline, step = c("create_flowline", "profile_points"))
 }
 \arguments{
-\item{flowline}{SpatialLinesDataFrame: a `flowline` data structure
+\item{flowline}{sf: a `flowline` data structure
 used by the fluvgeo package.}
 
 \item{step}{character; last completed processing step. One of
