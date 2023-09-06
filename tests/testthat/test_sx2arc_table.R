@@ -24,11 +24,11 @@ create_temp_gdb <- function(temp_folder_num = 1) {
 }
 
 # Get sf objects
-line_sf  <- sf::st_as_sf(fluvgeo::sin_flowline_sp)
-line_sp  <- fluvgeo::sin_riffle_channel_sp
+line_sf  <- sf::st_as_sf(fluvgeo::sin_flowline_sf)
+line_sf  <- fluvgeo::sin_riffle_channel_sf
 
 # testing variable
-sx_object <- line_sp
+sx_object <- line_sf
 
 test_that("sf: check output gdb table exists", {
   testthat::skip_if_not_installed("arcgisbinding")
@@ -52,7 +52,7 @@ test_that("sp: check output gdb table exists", {
                                                 round(stats::runif(1, 1, 10000),
                                                       digits = 0)))
   print(table_path)
-  sx2arc_table(sx_object = line_sp, table_path = table_path)
+  sx2arc_table(sx_object = line_sf, table_path = table_path)
   arcobj <- arcgisbinding::arc.open(table_path)
   expect_true(exists("arcobj"))
   expect_true(arcobj@path == table_path)
