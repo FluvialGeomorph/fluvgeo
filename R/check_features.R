@@ -16,10 +16,6 @@
 #'
 check_features <- function(features) {
   name <- deparse(substitute(features))
-
-  if(class(features)[1] == "SpatialPointsDataFrame") {
-    features_df <- features@data
-  }
   if(class(features)[1] == "sf") {
     features_df <- features
   }
