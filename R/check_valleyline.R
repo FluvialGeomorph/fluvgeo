@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param valleyline   SpatialLinesDataFrame: a `valleyline` data structure
+#' @param valleyline   sf object: a `valleyline` data structure
 #'                     used by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `valleyline` data structure matches the
@@ -18,8 +18,8 @@ check_valleyline <- function(valleyline) {
   name <- deparse(substitute(valleyline))
 
   # Check data structure
-  assert_that(class(valleyline)[1] == "SpatialLinesDataFrame",
-              msg = paste(name, " must be a SpatialLinesDataFrame"))
+  assert_that(class(valleyline)[1] == "sf",
+              msg = paste(name, " must be a sf object"))
   assert_that(is.data.frame(valleyline@data),
               msg = paste(name, " must be a data frame"))
   assert_that("ReachName" %in% colnames(valleyline@data) &

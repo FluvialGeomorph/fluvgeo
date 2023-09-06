@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param features   SpatialPointsDataFrame; a `features` data structure used
+#' @param features   sf object; a `features` data structure used
 #'                   by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `features` data structure matches the
@@ -24,9 +24,8 @@ check_features <- function(features) {
     features_df <- features
   }
 
-  assert_that((class(features)[1] == "SpatialPointsDataFrame" |
-               class(features)[1] == "sf"),
-              msg = paste(name, " must be 'SpatialPointsDataFrame' or 'sf'"))
+  assert_that((class(features)[1] == "sf"),
+              msg = paste(name, " must be  'sf'"))
   assert_that(is.data.frame(features_df),
               msg = paste(name, " must be a data frame"))
   assert_that("Name" %in% colnames(features_df) &

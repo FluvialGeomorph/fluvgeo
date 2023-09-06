@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param loop_points   SpatialPointsDataFrame; a `loop_points` data structure
+#' @param loop_points   sf object; a `loop_points` data structure
 #'                      used by the fluvgeo package.
 #'
 #' @details Cross section feature classes evolve as different steps are
