@@ -25,7 +25,6 @@
 #' @importFrom maptiles get_tiles
 #' @importFrom terrainr get_tiles
 #' @importFrom terra shade terrain
-#' @importFrom ceramic
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
                                background = "none",
