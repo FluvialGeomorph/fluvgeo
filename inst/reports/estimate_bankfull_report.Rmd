@@ -139,14 +139,8 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 ## Longitudinal Profile
 ```{r, longitudinal_profile_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Longitudinal Profile Plot"}
 
-# Convert to sp
-xs_dims_sf_zm  <- sf::st_zm(params$xs_dims_sf, what = "ZM")
-xs_dims_sp     <- sf::as_Spatial(xs_dims_sf_zm)
-features_sf_zm <- sf::st_zm(params$features_sf, what = "ZM")
-features_sp    <- sf::as_Spatial(features_sf_zm)
-
-print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sp, 
-                               features = features_sp, 
+print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sf, 
+                               features = features_sf, 
                                label_xs = params$label_xs,
                                xs_label_freq = params$xs_label_freq,
                                profile_units = params$profile_units))
