@@ -1,7 +1,7 @@
 library(fluvgeo)
 context("flowline_metrics")
 
-# Extract the gradient and features SpatialPointsDataFrames
+# Extract the gradient and features sf
 sin_gradient_sp <- fluvgeo::sin_gradient_sf
 sin_features_sp <- fluvgeo::sin_features_sf
 

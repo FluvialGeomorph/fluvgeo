@@ -1,7 +1,7 @@
 library(fluvgeo)
 context("build_gof_stats")
 
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
+# Extract attribute data from the fluvgeo::sin_xs_points sf object
 sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Set variable values
