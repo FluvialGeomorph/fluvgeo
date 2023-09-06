@@ -47,9 +47,9 @@ flowline_metrics <- function(gradient_sf, features_sf) {
   flowline <- gather(gradient,
                      key = "metrics",
                      value = "values",
-                     .data$Z_smooth,
-                     .data$slope,
-                     .data$sinuosity)
+                     Z_smooth,
+                     slope,
+                     sinuosity)
 
   # Set factor levels to control labelling
   flowline$metrics <- factor(flowline$metrics,
