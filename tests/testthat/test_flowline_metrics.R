@@ -2,8 +2,8 @@ library(fluvgeo)
 context("flowline_metrics")
 
 # Extract the gradient and features sf
-sin_gradient_sp <- fluvgeo::sin_gradient_sf
-sin_features_sp <- fluvgeo::sin_features_sf
+sin_gradient_sf <- fluvgeo::sin_gradient_sf
+sin_features_sf <- fluvgeo::sin_features_sf
 
 # Call the flowline_metrics plot function
 sin_flowline_metrics <- flowline_metrics(gradient_sf = sin_gradient_sf,
