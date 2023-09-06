@@ -2,7 +2,7 @@
 #'
 #' @title Sinsinawa Creek, IL stream bankline points
 #'
-#' @description  A \code{sp::SpatialPointsDataFrame} object containing stream
+#' @description  A `sf` object containing stream
 #' bankline points for Sinsinawa Creek, IL. These points represent the bankfull
 #' bankline extracted from a LiDAR terrain surface.
 #'
