@@ -18,6 +18,7 @@
 #' @importFrom stats aggregate
 #' @importFrom dplyr last lead lag
 #' @importFrom terra distance
+#' @importFrom magrittr %>%
 #'
 meander_length <- function(bankline_points) {
   # Check parameters
