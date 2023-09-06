@@ -23,21 +23,21 @@ check_loop_points <- function(loop_points) {
   name <- deparse(substitute(loop_points))
 
   # Check data structure
-  assert_that(class(loop_points)[1] == "SpatialPointsDataFrame",
-              msg = paste(name, "must be a SpatialPointsDataFrame"))
-  assert_that(is.data.frame(loop_points@data),
+  assert_that(class(loop_points)[1] == "sf",
+              msg = paste(name, "must be a sf object"))
+  assert_that(is.data.frame(loop_points),
               msg = paste(name, "must be a data frame"))
-  assert_that("ReachName" %in% colnames(loop_points@data) &
-                is.character(loop_points@data$ReachName),
+  assert_that("ReachName" %in% colnames(loop_points) &
+                is.character(loop_points$ReachName),
               msg = paste("Character field 'ReachName' missing from", name))
-  assert_that("loop" %in% colnames(loop_points@data) &
-                is.numeric(loop_points@data$loop),
+  assert_that("loop" %in% colnames(loop_points) &
+                is.numeric(loop_points$loop),
               msg = paste("Numeric field 'loop' missing from", name))
-  assert_that("bend" %in% colnames(loop_points@data) &
-                is.numeric(loop_points@data$bend),
+  assert_that("bend" %in% colnames(loop_points) &
+                is.numeric(loop_points$bend),
               msg = paste("Numeric field 'bend' missing from", name))
-  assert_that("position" %in% colnames(loop_points@data) &
-                is.character(loop_points@data$position),
+  assert_that("position" %in% colnames(loop_points) &
+                is.character(loop_points$position),
               msg = paste("Character field 'position' missing from", name))
 
   # ReachName is not empty
@@ -71,10 +71,10 @@ check_loop_points <- function(loop_points) {
   print("Diagnostic report of loop points (count of records)")
 
   ## Iterate through loops
-  for(l in sort(unique(loop_points@data$loop))) {
+  for(l in sort(unique(loop_points$loop))) {
     print(paste("Loop", l))
     ## Subset for the current loop
-    loop_pts <- loop_points@data[loop_points@data$loop == l, ]
+    loop_pts <- loop_points[loop_points$loop == l, ]
 
     ## Check apex points
     apex_length <- length(loop_pts[loop_pts$position == "apex", ]$bend)
