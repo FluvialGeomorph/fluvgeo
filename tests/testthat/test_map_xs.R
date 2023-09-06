@@ -44,11 +44,11 @@ xs_number <- 1
 extent_factor <- 1.2
 
 
-# sp
+# sf
 cross_section_sf <- fluvgeo::sin_riffle_floodplain_dims_L3_sf
 banklines_sf     <- fluvgeo::sin_banklines_sf
 
-# sp to sf
+# rename sf inputs
 xs_sp_sf <- cross_section_sf
 bl_sp_sf <- banklines_sf
 
