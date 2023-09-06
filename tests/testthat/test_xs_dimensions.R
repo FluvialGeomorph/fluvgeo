@@ -1,8 +1,8 @@
 library(fluvgeo)
 context("xs_dimension")
 
-# Extract attribute data from SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+# Extract attribute data from sf object
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Call the xs_dimensions function with test data
 streams <- c("Sinsinawa")
