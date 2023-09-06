@@ -63,20 +63,20 @@ xs_metrics_plot_L3 <- function(xs_dims_sf,
                                 labels = metrics_labels)
 
   # Determine min y value
-  plot_min_y <- min(na.omit(xs_dims_sf$rc_bfw_ratio_10))
+  plot_min_y <- min(na.omit(xs_dims_sf$rc_bfw_ratio_lte_10))
 
   # Gather data by metrics for plotting
   xs_dims <- tidyr::gather(xs_dims_sf,
                            key = "metrics",
                            value = "values",
                            na.rm = TRUE,
-                          .data$xs_width_depth_ratio_gte_one,
-                          .data$xs_entrenchment_ratio_gte_one,
-                          .data$slope_gte_zero,
-                          .data$sinuosity_gte_one,
-                          .data$shear_stress_weight_gte_zero,
-                          .data$unit_stream_power_gte_zero,
-                          .data$rc_bfw_ratio_lte_10)
+                          xs_width_depth_ratio_gte_one,
+                          xs_entrenchment_ratio_gte_one,
+                          slope_gte_zero,
+                          sinuosity_gte_one,
+                          shear_stress_weight_gte_zero,
+                          unit_stream_power_gte_zero,
+                          rc_bfw_ratio_lte_10)
 
   # Set factor levels to control labeling
   xs_dims$metrics <- factor(xs_dims$metrics,
@@ -105,12 +105,12 @@ xs_metrics_plot_L3 <- function(xs_dims_sf,
                   color = .data$metrics,
                   label = .data$Seq)) +
     geom_point(size = 3) +
-    geom_line(size = 1) +
+    geom_line(linewidth = 1) +
     scale_color_manual(values = metrics_cols) +
     theme_bw() +
     theme(legend.position = "none",
           legend.title = element_blank(),
-          panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+          panel.grid.major = element_line(colour = "grey10", linewidth = 0.1)) +
     facet_grid(rows = vars(.data$metrics),
                labeller = label_wrap_gen(width = 15),
                scales = "free") +
