@@ -54,7 +54,6 @@ Imports:
     rmarkdown,
     scales,
     sf,
-    sp,
     stats,
     stringr,
     terra,
