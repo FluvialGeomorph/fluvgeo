@@ -41,5 +41,5 @@ test_that("check meander_length output data structure", {
 
 test_that("check output", {
   expect_equal(length(mw$loop),
-               length(unique(na.omit(fluvgeo::sin_bankline_points_sp$loop))) )
+               length(unique(na.omit(fluvgeo::sin_bankline_points_sf$loop))) )
 })
