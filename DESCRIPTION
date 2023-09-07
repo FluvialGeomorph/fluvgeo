@@ -43,6 +43,7 @@ Imports:
     ggplot2,
     ggrepel,
     grDevices,
+    magrittr,
     methods,
     Metrics,
     maptiles,
