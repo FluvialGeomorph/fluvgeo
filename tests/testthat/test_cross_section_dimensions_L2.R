@@ -15,10 +15,6 @@ xs_points_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
 xs  <- fluvgeo::fc2sf(xs_dims_fc)
 xs_points <- fluvgeo::fc2sf(xs_points_fc)
 
-# # Convert from sf to sp
-# xs        <- sf::as_Spatial(xs_dims_sf)
-# xs_points <- sf::as_Spatial(sf::st_zm(xs_points_sf, what = "ZM"))
-
 # Set parameters
 bankfull_elevation <- 104
 lead_n <- 3

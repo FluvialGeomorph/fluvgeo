@@ -13,7 +13,7 @@ Place some other package details here. And then some more.
 }
 \section{Installation}{
 
-The functions \code{\link{arc2sp}} and \code{\link{sp2arc}} require the
+The functions \code{\link{arc2sf}} and \code{\link{sf2arc}} require the
 prior installation of the \code{arcgisbinding} package AND a licensed
 installation of the commercial GIS software ESRI \code{ArcGIS Desktop}
 or \code{ArcGIS Pro}. The \code{arcgisbinding} package can be installed

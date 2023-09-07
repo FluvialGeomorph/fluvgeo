@@ -20,7 +20,6 @@
 #' @return A new cross section data frame with the Level 1 hydraulic geometry
 #' dimensions added.
 #'
-#' @importFrom sf as_Spatial
 #'
 cross_section_dimensions_L1 <- function(xs_sf, lead_n,
                                      use_smoothing, loess_span = 0.5,

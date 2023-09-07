@@ -41,7 +41,7 @@
 #' fc_sf <- arc2sf(fc_path = fc_path_in)
 #' }
 #'
-#' @importFrom arcgisbinding arc.data2sp arc.select arc.open
+#' @importFrom arcgisbinding arc.data2sf arc.select arc.open
 #' @importFrom sf st_crs st_as_text
 #' @importFrom stringr str_replace
 #' @importFrom methods slot<-
