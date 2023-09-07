@@ -1,8 +1,8 @@
 library(fluvgeo)
 context("reach_rhg_graph")
 
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+# Extract attribute data from the fluvgeo::sin_xs_points sf object
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Set variable values
 streams <- "Sinsinawa"
@@ -105,3 +105,4 @@ test_that("Check the plot's layer geom with 'log_scale' and
   expect_equal(class(t$layers[[1]]$geom)[1],
                "GeomLine")
 })
+

@@ -44,13 +44,13 @@ xs_number <- 1
 extent_factor <- 1.2
 
 
-# sp
+# sf
 cross_section_sf <- fluvgeo::sin_riffle_floodplain_dims_L3_sf
 banklines_sf     <- fluvgeo::sin_banklines_sf
 
-# sp to sf
-xs_sp_sf <- cross_section_sf
-bl_sp_sf <- banklines_sf
+# rename sf inputs
+xs_sf <- cross_section_sf
+bl_sf <- banklines_sf
 
 
 
@@ -85,53 +85,6 @@ test_that("check map_xs with no banklines", {
   expect_error(print(xs_map_nb), NA)
 })
 
-test_that("check map_xs with sp inputs", {
-  skip_if_no_arc()
-  load_libraries()
-  dem <- fluvgeo::esri_raster2RasterLayer(raster_path = dem_path)
-  # Create map
-  xs_map_sp <- map_xs(cross_section = cross_section_sp,
-                      xs_number = xs_number,
-                      dem = dem,
-                      banklines = banklines_sp,
-                      extent_factor = extent_factor)
-  print(xs_map_sp)
-
-  expect_true("tmap" %in% class(xs_map_sp))
-  expect_error(print(xs_map_sp), NA)
-})
-
-test_that("check map_xs with sp inputs converted to sf", {
-  skip_if_no_arc()
-  load_libraries()
-  dem <- fluvgeo::esri_raster2RasterLayer(raster_path = dem_path)
-  # Create map
-  xs_map_fc_sf <- map_xs(cross_section = xs_sp_sf,
-                         xs_number = xs_number,
-                         dem = dem,
-                         banklines = bl_sp_sf,
-                         extent_factor = extent_factor)
-  print(xs_map_fc_sf)
-
-  expect_true("tmap" %in% class(xs_map_fc_sf))
-  expect_error(print(xs_map_fc_sf), NA)
-})
-
-test_that("check map_xs with sf and sp inputs", {
-  skip_if_no_arc()
-  load_libraries()
-  dem <- fluvgeo::esri_raster2RasterLayer(raster_path = dem_path)
-  # Create map
-  xs_map_sf_sp <- map_xs(cross_section = cross_section_sp,
-                         xs_number = xs_number,
-                         dem = dem,
-                         banklines = banklines,
-                         extent_factor = extent_factor)
-  print(xs_map_sf_sp)
-
-  expect_true("tmap" %in% class(xs_map_sf_sp))
-  expect_error(print(xs_map_sf_sp), NA)
-})
 
 test_that("check map_xs with different coordinate system inputs", {
   skip_if_no_arc()

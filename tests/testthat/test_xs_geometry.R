@@ -1,8 +1,8 @@
 library(fluvgeo)
 context("xs_geometry")
 
-# Extract attribute data from the fluvgeo::sin_xs_points SpatialPointsDataFrame
-sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sp@data
+# Extract attribute data from the fluvgeo::sin_xs_points sf
+sin_xs_points_df <- fluvgeo::sin_riffle_channel_points_sf
 
 # Subset sin_xs_points_df to contain only one cross section (Seq = 4)
 sin_xs_points_4 <- sin_xs_points_df[sin_xs_points_df$Seq == 4, ]

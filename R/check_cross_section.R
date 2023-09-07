@@ -27,10 +27,6 @@ check_cross_section <- function(cross_section,
                                          "river_position", "station_points",
                                          "loop_bend")) {
   name <- deparse(substitute(cross_section))
-
-  if(class(cross_section)[1] == "SpatialLinesDataFrame") {
-    cross_section_df <- cross_section@data
-  }
   if(class(cross_section)[1] == "sf") {
     cross_section_df <- cross_section
   }
@@ -38,9 +34,8 @@ check_cross_section <- function(cross_section,
   # Step: assign_ids
   if(step %in% c("assign_ids", "watershed_area", "river_position",
              "station_points", "loop_bend")) {
-    assert_that((class(cross_section)[1] == "SpatialLinesDataFrame") |
-                (class(cross_section)[1] == "sf"),
-                msg = paste(name, "must be a SpatialLinesDataFrame of sf"))
+    assert_that((class(cross_section)[1] == "sf"),
+                msg = paste(name, "must be sf"))
     assert_that(is.data.frame(cross_section_df),
                 msg = paste(name, "must be a data frame"))
     assert_that("ReachName" %in% colnames(cross_section_df) &

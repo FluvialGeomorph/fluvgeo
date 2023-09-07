@@ -6,7 +6,7 @@ bankline_points <- fluvgeo::sin_bankline_points_sf
 # Create some bad data
 ## Simulate the loop = 3, bend = 2, position = start point missing
 bad1 <- bankline_points
-#bad1_df <- bad1@data
+
 bad1[!is.na(bad1$loop) &
           (bad1$loop == 3 & bad1$bend == 2 &
           !(bad1$position %in% c("apex", "end"))), ]$position <- NA
@@ -18,7 +18,7 @@ bad1[!is.na(bad1$loop) &
              bad1$position %in% "apex"), ]$bend <- 0
 bad1[!is.na(bad1$loop) &
             (bad1$loop == 3 & is.na(bad1$bend)), ]$loop <- NA
-#bad1_df <- bad1@data
+
 
 
 test_that("check bankline points", {

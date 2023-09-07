@@ -46,7 +46,7 @@ multiple surveys.
 }
 \seealso{
 This function requires a
-\code{flowline_points} SpatialPointsDataFrames. See the
-\code{sin_flowline_points_sp} package dataset for an example of this format
+\code{flowline_points} sf object. See the
+\code{sin_flowline_points_sf} package dataset for an example of this format
 of cross section data produced by the \code{FluvialGeomorph} ArcGIS toolbox.
 }

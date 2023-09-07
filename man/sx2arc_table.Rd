@@ -2,12 +2,12 @@
 % Please edit documentation in R/sx2arc_table.R
 \name{sx2arc_table}
 \alias{sx2arc_table}
-\title{Save `sf` or `sp` object to an ArcGIS table.}
+\title{Save `sf` object to an ArcGIS table.}
 \usage{
 sx2arc_table(sx_object, table_path)
 }
 \arguments{
-\item{sx_object}{`sp` or `sf` object; The object whose data will be saved
+\item{sx_object}{`sf` object; The object whose data will be saved
 as a table.}
 
 \item{table_path}{character; Path to the ArcGIS output geodatabase table.}
@@ -17,5 +17,5 @@ Writes the `sx_object` as a geodatabase table specified by
 `table_path`
 }
 \description{
-Save `sf` or `sp` object to an ArcGIS table.
+Save `sf` object to an ArcGIS table.
 }

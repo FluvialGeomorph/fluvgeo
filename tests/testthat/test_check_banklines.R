@@ -10,15 +10,15 @@ banklines_fc <- file.path(system.file("extdata", "testing_data.gdb",
 banklines_sf <- fluvgeo::fc2sf(banklines_fc)
 
 
-# sp
+# sf
 test_that("check banklines", {
-  expect_true(check_banklines(fluvgeo::sin_banklines_sp))
+  expect_true(check_banklines(fluvgeo::sin_banklines_sf))
 })
 
 test_that("not bankline points", {
-  expect_error(check_banklines(fluvgeo::sin_flowline_sp))
-  expect_error(check_banklines(fluvgeo::sin_loop_points_sp))
-  expect_error(check_banklines(fluvgeo::sin_bankline_points_sp))
+  expect_error(check_banklines(fluvgeo::sin_flowline_sf))
+  expect_error(check_banklines(fluvgeo::sin_loop_points_sf))
+  expect_error(check_banklines(fluvgeo::sin_bankline_points_sf))
 })
 
 # sf

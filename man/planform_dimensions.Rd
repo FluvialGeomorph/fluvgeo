@@ -7,10 +7,10 @@
 planform_dimensions(xs_dimensions, bankline_points)
 }
 \arguments{
-\item{xs_dimensions}{SpatialLinesDataFrame; A `cross_section_dimensions`
+\item{xs_dimensions}{sf data frame; A `cross_section_dimensions`
 fluvgeo data structure.}
 
-\item{bankline_points}{SpatialPointsDataFrame; A `bankline_points` fluvgeo data
+\item{bankline_points}{sf data frame; A `bankline_points` fluvgeo data
 data structure.}
 }
 \value{
@@ -23,6 +23,6 @@ Calculates planform dimensions for each cross section in the
 }
 \examples{
 # Calculate cross section planform dimensions
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
-                                   fluvgeo::sin_bankline_points_sp)
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sf,
+                                   fluvgeo::sin_bankline_points_sf)
 }

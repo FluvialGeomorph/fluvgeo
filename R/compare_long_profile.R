@@ -69,7 +69,7 @@ compare_long_profile <- function(stream, flowline_pts_sf_list,
               aes(x = .data$POINT_M * unit_coef,
                   y = .data$Z,
                   color = .data$Survey)) +
-  geom_line(size = 1.0) +
+  geom_line(linewidth = 1.0) +
   scale_color_manual(values = cols) +
   #scale_x_reverse() +
   theme_bw() +

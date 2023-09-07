@@ -12,7 +12,7 @@ check_cross_section_dimensions(
 )
 }
 \arguments{
-\item{cross_section_dimensions}{data frame, SpatialLinesDataFrame, sf: A
+\item{cross_section_dimensions}{data frame, sf: A
 `cross_section_dimension` data structure
 used by the fluvgeo package.}
 
@@ -39,8 +39,8 @@ changing set of requirements for the `cross section_dimension` data structure.
 }
 \examples{
 # Step: cross_section_dimensions
-xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sp,
-                                       xs_points = fluvgeo::sin_riffle_channel_points_sp,
+xs_dims <- cross_section_dimensions_L2(xs = fluvgeo::sin_riffle_channel_sf,
+                                       xs_points = fluvgeo::sin_riffle_channel_points_sf,
                                        bankfull_elevation = 103,
                                        lead_n = 1,
                                        use_smoothing = TRUE,

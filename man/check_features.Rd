@@ -7,7 +7,7 @@
 check_features(features)
 }
 \arguments{
-\item{features}{SpatialPointsDataFrame; a `features` data structure used
+\item{features}{sf object; a `features` data structure used
 by the fluvgeo package.}
 }
 \value{

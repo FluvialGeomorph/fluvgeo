@@ -55,10 +55,6 @@ wdr_map_L3_sf <- map_reach_metric(metric = wdr,
                                   extent_factor = extent_factor)
 print(wdr_map_L3_sf)
 
-# test_that("check map_reach_metric using sp input", {
-#   expect_true("tmap" %in% class(wdr_map_sp))
-#   expect_error(print(wdr_map_sp), NA)
-# })
 
 test_that("check map_reach_metric using sf input, Level 2", {
   expect_true("tmap" %in% class(wdr_map_L2_sf))

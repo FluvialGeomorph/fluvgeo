@@ -17,7 +17,8 @@
 #' @importFrom testthat expect_true
 #' @importFrom stats aggregate
 #' @importFrom dplyr last lead lag
-#' @importFrom raster pointDistance
+#' @importFrom terra distance
+#' @importFrom magrittr %>%
 #'
 meander_length <- function(bankline_points) {
   # Check parameters
@@ -73,17 +74,16 @@ meander_length <- function(bankline_points) {
                                  default = downstream_y_lag)
 
   # Calculate meander length
-  loop_apex$meander_length <- pointDistance(p1 = cbind(loop_apex$bank_POINT_X,
-                                                       loop_apex$bank_POINT_Y),
-                                            p2 = cbind(loop_apex$downstream_x,
-                                                       loop_apex$downstream_y),
-                                            lonlat = FALSE) * horiz_con_factor
+  loop_apex$meander_length <-terra::distance(x=cbind(loop_apex$bank_POINT_X,
+                          loop_apex$bank_POINT_Y), y=cbind(loop_apex$downstream_x,
+                                                           loop_apex$downstream_y), lonlat=FALSE, pairwise=TRUE) * horiz_con_factor
+
 
   loop_apex <-  loop_apex %>%
     dplyr::select("bank_POINT_X", "bank_POINT_Y",
                   "bank_POINT_M",
                   "DEM_Z",
                   "valley_POINT_X", "valley_POINT_Y",
-                  "valley_POINT_M", "loop", "meander_length")
+                  "valley_POINT_M", "loop","downstream_x","downstream_y", "meander_length")
   return(loop_apex)
 }

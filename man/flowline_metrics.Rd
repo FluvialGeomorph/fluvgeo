@@ -4,12 +4,12 @@
 \alias{flowline_metrics}
 \title{Level 1 longitudinal metrics}
 \usage{
-flowline_metrics(gradient_sp, features_sp)
+flowline_metrics(gradient_sf, features_sf)
 }
 \arguments{
-\item{gradient_sp}{SpatialPointsDataFrame of gradient points.}
+\item{gradient_sf}{sf data frame of gradient points.}
 
-\item{features_sp}{SpatialPointsDataFrame of infrastructure features}
+\item{features_sf}{sf data frame of infrastructure features}
 }
 \value{
 A ggplot2 object.

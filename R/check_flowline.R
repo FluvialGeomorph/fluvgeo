@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param flowline        SpatialLinesDataFrame: a `flowline` data structure
+#' @param flowline        sf: a `flowline` data structure
 #'                        used by the fluvgeo package.
 #' @param step            character; last completed processing step. One of
 #'                        "create_flowline", "profile_points"
@@ -20,19 +20,14 @@ check_flowline <- function(flowline,
                            step = c("create_flowline", "profile_points")) {
 
   name <- deparse(substitute(flowline))
-
-  if(class(flowline)[1] == "SpatialLinesDataFrame") {
-    flowline_df <- flowline@data
-  }
   if(class(flowline)[1] == "sf") {
     flowline_df <- flowline
   }
 
   # Step: create_flowline
   if(step %in% c("create_flowline", "profile_points")) {
-  assert_that((class(flowline)[1] == "SpatialLinesDataFrame") |
-              (class(flowline)[1] == "sf"),
-              msg = paste(name, "must be a SpatialLinesDataFrame or sf object"))
+  assert_that((class(flowline)[1] == "sf"),
+              msg = paste(name, "must be a sf object"))
   assert_that(is.data.frame(flowline_df),
               msg = paste(name, "must be a data frame"))
   assert_that("ReachName" %in% colnames(flowline_df) &

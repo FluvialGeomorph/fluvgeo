@@ -68,7 +68,7 @@ test_that("report completed - local path", {
 })
 
 test_that("report completed - network path", {
-  network_dir <- "//mvrdfs.mvr.ds.usace.army.mil/EGIS/Work/FluvialGeomorph"
+  network_dir <- "//mvd/mvr/EGIS/Work/FluvialGeomorph"
   output_dir <- file.path(network_dir, "temp")
   dir.create(output_dir, showWarnings = FALSE)
   expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report.docx")

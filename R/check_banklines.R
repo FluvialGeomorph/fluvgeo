@@ -4,7 +4,7 @@
 #' the requirements for this data structure.
 #'
 #' @export
-#' @param banklines   SpatialLinesDataFrame; a `banklines` data structure used
+#' @param banklines   sf object; a `banklines` data structure used
 #'                    by the fluvgeo package.
 #'
 #' @return Returns TRUE if the `banklines` data structure matches the
@@ -16,17 +16,12 @@
 #'
 check_banklines <- function(banklines) {
   name <- deparse(substitute(banklines))
-
-  if(class(banklines)[1] == "SpatialLinesDataFrame") {
-    banklines_df <- banklines@data
-  }
   if(class(banklines)[1] == "sf") {
     banklines_df <- banklines
   }
 
-  assert_that((class(banklines)[1] == "SpatialLinesDataFrame") |
-              (class(banklines)[1] == "sf")  ,
-              msg = paste(name, " must be a SpatialLinesDataFrame or sf"))
+  assert_that((class(banklines)[1] == "sf")  ,
+              msg = paste(name, " must be sf"))
   assert_that(is.data.frame(banklines_df),
               msg = paste(name, " must be a data frame"))
   assert_that("ReachName" %in% colnames(banklines_df) &

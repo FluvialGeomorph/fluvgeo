@@ -7,7 +7,7 @@
 meander_width(bankline_points)
 }
 \arguments{
-\item{bankline_points}{SpatialPointsDataFrame; a fluvgeo bankline_points data
+\item{bankline_points}{sf data.frame; a fluvgeo bankline_points data
 structure}
 }
 \value{
@@ -19,6 +19,6 @@ Calculates the meander width (channel belt width) for each loop
 in the input `bankline_points` data frame.
 }
 \examples{
-meander_width(fluvgeo::sin_bankline_points_sp)
+meander_width(fluvgeo::sin_bankline_points_sf)
 
 }

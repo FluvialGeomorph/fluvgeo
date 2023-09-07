@@ -4,12 +4,12 @@
 #' section.
 #'
 #' @export
-#' @param cross_section       SpatialLinesDataFrame or sf; A cross section lines
+#' @param cross_section       sf; A cross section lines
 #'                            feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
 #' @param dem                 RasterLayer; A dem raster.
-#' @param banklines           SpatialLinesDataFrame or sf; A banklines feature
+#' @param banklines           sf; A banklines feature
 #'                            class (optional).
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.
@@ -31,14 +31,8 @@ map_xs <- function(cross_section, xs_number, dem,
   }
 
   # Convert to sf
-  if(class(cross_section)[1] == "SpatialLinesDataFrame") {
-    cross_section_sf <- sf::st_as_sf(cross_section)
-  }
   if(class(cross_section)[1] == "sf") {
     cross_section_sf <- cross_section
-  }
-  if(!is.null(banklines) & class(banklines)[1] == "SpatialLinesDataFrame") {
-    banklines_sf <- sf::st_as_sf(banklines)
   }
   if(!is.null(banklines) & class(banklines)[1] == "sf") {
     banklines_sf <- banklines

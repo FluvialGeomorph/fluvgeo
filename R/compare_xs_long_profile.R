@@ -24,8 +24,8 @@
 #' multiple surveys.
 #'
 #' @seealso This function requires a
-#' \code{flowline_points} SpatialPointsDataFrames. See the
-#' \code{sin_flowline_points_sp} package dataset for an example of this format
+#' \code{flowline_points} sf object. See the
+#' \code{sin_flowline_points_sf} package dataset for an example of this format
 #' of cross section data produced by the \code{FluvialGeomorph} ArcGIS toolbox.
 #'
 #' @importFrom assertthat assert_that
@@ -43,7 +43,7 @@ compare_xs_long_profile <- function(stream, xs_pts_sf_list, features_sf = NULL,
                                     profile_units = "feet", label_xs = TRUE,
                                     xs_label_freq = 10) {
   # Check parameters
-  #check_features(features_sp)
+  #check_features(features_sf)
   assert_that(is.logical(label_xs), msg = "label_xs must be logical")
 
   # Extract data frames (for ggplot2) from the sf objects

@@ -7,7 +7,7 @@
 meander_length(bankline_points)
 }
 \arguments{
-\item{bankline_points}{data.frame; a fluvgeo bankline_points
+\item{bankline_points}{sf data.frame; a fluvgeo bankline_points
 data structure.}
 }
 \value{

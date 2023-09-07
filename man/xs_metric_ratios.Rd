@@ -7,7 +7,7 @@
 xs_metric_ratios(xs_dimensions)
 }
 \arguments{
-\item{xs_dimensions}{SpatialLinesDataFrame; A `cross_section_dimensions`
+\item{xs_dimensions}{sf oject; A `cross_section_dimensions`
 fluvgeo data structure.}
 }
 \value{
@@ -20,8 +20,8 @@ Calculates metric ratios for each cross section in the input
 }
 \examples{
 # Calculate cross section planform dimensions
-xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sp,
-                                    fluvgeo::sin_bankline_points_sp)
+xs_dims_plan <- planform_dimensions(fluvgeo::sin_riffle_floodplain_dims_L2_sf,
+                                    fluvgeo::sin_bankline_points_sf)
 
 # Calculate cross section metric ratios
 xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
