@@ -11,7 +11,6 @@ skip_if_no_arc <- function() {
 }
 
 load_libraries <- function() {
-  library(sp)
   library(sf)
   library(raster)
   library(tmap)

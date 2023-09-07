@@ -2,7 +2,6 @@ library(fluvgeo)
 context("get_arc_wkt")
 
 load_libraries <- function() {
-  library(sp)
   library(arcgisbinding)
   arc.check_product()
 }

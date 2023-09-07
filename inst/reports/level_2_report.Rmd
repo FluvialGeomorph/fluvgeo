@@ -24,7 +24,6 @@ params:
 
 ```{r library, eval=TRUE, include=FALSE}
 library(sf)
-library(sp)
 library(dplyr)
 library(knitr)
 library(pander)

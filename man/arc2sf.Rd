@@ -36,7 +36,7 @@ fc_path_in <- file.path(system.file("extdata", "testing_data.gdb",
                         package = "fluvgeo"),
                         "feature_dataset/riffle_channel")
 
-# Convert the ArcGIS polyline feature class to an `sp` object
+# Convert the ArcGIS polyline feature class to an `sf` object
 fc_sf <- arc2sf(fc_path = fc_path_in)
 }
 
