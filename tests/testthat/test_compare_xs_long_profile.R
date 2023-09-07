@@ -36,7 +36,7 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 # Convert list of survey paths to list of sf objects
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
-# Convert features to sp
+# Convert features to sf
 features_sf <- fluvgeo::fc2sf(features_fc)
 
 # Call the graph function

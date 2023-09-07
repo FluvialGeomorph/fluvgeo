@@ -1,7 +1,7 @@
 library(fluvgeo)
 context("check_features")
 
-# sp
+# sf
 test_that("check features", {
   expect_true(check_features(fluvgeo::sin_features_sf))
 })
