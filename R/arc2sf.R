@@ -37,7 +37,7 @@
 #'                         package = "fluvgeo"),
 #'                         "feature_dataset/riffle_channel")
 #'
-#' # Convert the ArcGIS polyline feature class to an `sp` object
+#' # Convert the ArcGIS polyline feature class to an `sf` object
 #' fc_sf <- arc2sf(fc_path = fc_path_in)
 #' }
 #'
@@ -62,7 +62,7 @@ arc2sf <- function(fc_path) {
   # Make a selection of the ArcGIS data (all data) returned in arc.data format
   arc <- arcgisbinding::arc.select(arcobj)
 
-  # Convert the arc.data format to the sp format
+  # Convert the arc.data format to the sf format
   sf <- arcgisbinding::arc.data2sf(arc)
 
   return(sf)

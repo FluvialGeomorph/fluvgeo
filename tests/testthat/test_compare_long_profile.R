@@ -35,7 +35,7 @@ flowline_points_paths <- purrr::discard(flowline_points_paths, is.null)
 # Convert list of survey paths to list of sf objects
 flowline_pts_sf_list <- purrr::map(flowline_points_paths, fluvgeo::fc2sf)
 
-# Convert features_fc to an sp object
+# Convert features_fc to an sf object
 features_sf <- fluvgeo::fc2sf(features_fc)
 
 # Call the graph function

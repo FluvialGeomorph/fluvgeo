@@ -90,8 +90,8 @@ test_that("check map_xs with different coordinate system inputs", {
   skip_if_no_arc()
   load_libraries()
   dem <- fluvgeo::esri_raster2RasterLayer(raster_path = dem_path)
-  # Reproject to IL SP W USFT
-  ilspwusft <- st_crs(3436)
+  # Reproject to IL Sf W USFT
+  ilspwusft <- sf::st_crs(3436)
   cross_section_il <- sf::st_transform(cross_section, crs = ilspwusft)
 
   # Create map

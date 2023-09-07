@@ -66,10 +66,6 @@ xs_ft_sf_ss <- slope_sinuosity(xs_ft_sf,
                                loess_span = 0.5,
                                vert_units = "ft")
 
-test_that("Check sp data horz units meters", {
-  expect_true(check_slope_sinuosity(sin_fl_pts_ss))
-  expect_true(check_slope_sinuosity(sin_riffle_channel_ss))
-})
 
 test_that("Check sf data horz units meters", {
   expect_true(check_slope_sinuosity(fl_pts_m_sf_ss))

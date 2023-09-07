@@ -33,7 +33,7 @@ xs_points_paths <- setNames(xs_points_paths, survey_names)
 # Eliminate empty surveys
 xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 
-# Convert list of survey paths to list of sp objects
+# Convert list of survey paths to list of sf objects
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Convert features to sp
