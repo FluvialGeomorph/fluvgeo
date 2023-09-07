@@ -44,16 +44,3 @@ test_that("sf: check output gdb table exists", {
   expect_true(arcobj@path == table_path)
 })
 
-test_that("sp: check output gdb table exists", {
-  testthat::skip_if_not_installed("arcgisbinding")
-  load_libraries()
-  temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
-  table_path <- file.path(temp_gdb_path, paste0("temp_line",
-                                                round(stats::runif(1, 1, 10000),
-                                                      digits = 0)))
-  print(table_path)
-  sx2arc_table(sx_object = line_sf, table_path = table_path)
-  arcobj <- arcgisbinding::arc.open(table_path)
-  expect_true(exists("arcobj"))
-  expect_true(arcobj@path == table_path)
-})

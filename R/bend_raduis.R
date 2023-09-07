@@ -17,7 +17,7 @@ bend_radius <- function(bankline_points) {
   # Check parameters
   expect_true(check_bankline_points(bankline_points))
 
-  # Convert Spatial*DataFrame to a data frame
+  # Convert sf to a data frame
   bankline_points <- data.frame(bankline_points)
 
 

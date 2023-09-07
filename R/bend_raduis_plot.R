@@ -24,7 +24,7 @@ bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
   # Check parameters
   expect_true(check_bankline_points(bankline_points))
 
-  # Convert Spatial*DataFrame to a data frame
+  # Convert sf to a data frame
   bankline_points <- data.frame(bankline_points)
 
   # Subset bankline_points the for the input loop and bend
