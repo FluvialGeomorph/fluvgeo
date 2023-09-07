@@ -12,7 +12,8 @@ flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
 cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
 xs_label_freq = 2
 exaggeration = 1
-extent_factor = 1.5
+extent_factor = 1.1
+background = "aerial"
 
 # Create the aerial map
 map <- map_reach_overview(flowline_sf = flowline_sf,
@@ -21,7 +22,7 @@ map <- map_reach_overview(flowline_sf = flowline_sf,
                           xs_label_freq = xs_label_freq,
                           extent_factor = extent_factor)
 
-print(map)
+#print(map)
 
 # Create the aerial map
 aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
@@ -30,7 +31,7 @@ aerial_map <- map_reach_overview(flowline_sf = flowline_sf,
                               xs_label_freq = xs_label_freq,
                               extent_factor = extent_factor)
 
-print(aerial_map)
+#print(aerial_map)
 
 # Create the elevation map
 elevation_map <- map_reach_overview(flowline_sf = flowline_sf,
@@ -40,7 +41,7 @@ elevation_map <- map_reach_overview(flowline_sf = flowline_sf,
                                     exaggeration = exaggeration,
                                     extent_factor = extent_factor)
 
-print(elevation_map)
+#print(elevation_map)
 
 test_that("check map_reach_overview aerial", {
   expect_true("tmap" %in% class(map))
