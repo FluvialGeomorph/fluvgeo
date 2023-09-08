@@ -1,6 +1,3 @@
-library(fluvgeo)
-context("map_reach_metric")
-
 # Define geomorphic metric
 wdr <- new(Class = "FluvialGeomorphicMetric",
            metric = "Width Depth Ratio",
@@ -26,10 +23,11 @@ xs_dimensions_L3_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                  "feature_dataset/xs_50_dims_L3")
 
 # Convert feature classes to an sf objects
-flowline_sf         <- fluvgeo::fc2sf(flowline_fc)
-xs_dimensions_L2_sf <- fluvgeo::fc2sf(xs_dimensions_L2_fc)
-xs_dimensions_L3_sf <- fluvgeo::fc2sf(xs_dimensions_L3_fc)
+flowline_sf         <- fluvgeo::fc2sf(flowline_fc, quiet = TRUE)
+xs_dimensions_L2_sf <- fluvgeo::fc2sf(xs_dimensions_L2_fc, quiet = TRUE)
+xs_dimensions_L3_sf <- fluvgeo::fc2sf(xs_dimensions_L3_fc, quiet = TRUE)
 
+xs_dimensions_sf = xs_dimensions_L2_sf
 xs_label_freq = 2
 background = "aerial"
 exaggeration = 20
@@ -38,9 +36,9 @@ extent_factor = 1.1
 # Create the reach metric map using sf input, Level 2
 wdr_map_L2_sf <- map_reach_metric(metric = wdr,
                                   flowline_sf = flowline_sf,
-                                  xs_dimensions = xs_dimensions_L2_sf,
+                                  xs_dimensions_sf = xs_dimensions_L2_sf,
                                   xs_label_freq = xs_label_freq,
-                                  background = background,
+                                  background = "aerial",
                                   exaggeration = exaggeration,
                                   extent_factor = extent_factor)
 print(wdr_map_L2_sf)
@@ -48,7 +46,7 @@ print(wdr_map_L2_sf)
 # Create the reach metric map using sf input, Level 3
 wdr_map_L3_sf <- map_reach_metric(metric = wdr,
                                   flowline_sf = flowline_sf,
-                                  xs_dimensions = xs_dimensions_L3_sf,
+                                  xs_dimensions_sf = xs_dimensions_L3_sf,
                                   xs_label_freq = xs_label_freq,
                                   background = "elevation",
                                   exaggeration = exaggeration,

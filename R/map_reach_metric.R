@@ -37,14 +37,12 @@
 #'                             fluvgeo::sin_riffle_floodplain_dims_L3_sf)
 #' print(wdr_map)
 #'
-#' @importFrom sf st_crs st_transform st_bbox st_as_sfc
-#' @importFrom raster terrain hillShade
+#' @importFrom sf st_crs st_transform st_as_sf st_as_sfc
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
-#' tm_scale_bar tm_layout
-#' @importFrom maptiles get_tiles
+#'             tm_scale_bar tm_layout
 #' @importFrom terrainr get_tiles
-#' @importFrom terra terrain shade
+#' @importFrom terra terrain shade rast
 #'
 map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                              xs_label_freq = 2,
@@ -62,11 +60,9 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                                           crs = sf::st_crs("EPSG:4326"))
 
   # Set extent
-  xs_extent <- fluvgeo::feature_extent(xs_dimensions_sf_ll,
-                                       extent_factor = extent_factor)
-
-  # Create bbox
-  sf_bbox<-sf::st_bbox(xs_extent,crs=sf::st_crs("EPSG:4326"))
+  xs_extent <- fluvgeo::map_extent(xs_dimensions_sf_ll,
+                                   extent_factor = extent_factor)
+  xs_extent_poly <- sf::st_as_sf(sf::st_as_sfc(xs_extent))
 
   # Determine cross section label frequency
   labeled_xs <- ((xs_dimensions_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
@@ -106,7 +102,16 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   # Aerial
   if(background == "aerial") {
     # Get aerial photos
-    aerial_photos<-maptiles::get_tiles(x=sf_bbox, provider="Esri.WorldImagery", crop=TRUE)
+    aerial_photos <- mapboxapi::get_static_tiles(
+      location = xs_extent_poly,
+      zoom = 15,
+      style_id = "satellite-streets-v12",
+      style_url = "mapbox://styles/mapbox/satellite-streets-v12",
+      scaling_factor = "2x",
+      buffer_dist = 0,
+      crop = TRUE,
+      username = "mikedoc",
+      access_token = "pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()
@@ -119,9 +124,10 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   # Elevation
   if(background == "elevation") {
     # Get elevation
-    elev_sfbbox<-sf::st_as_sfc(sf_bbox)
-    elev_tiles<-terrainr::get_tiles(elev_sfbbox, services="elevation", resolution=3)
-    elevation<-terra::rast(elev_tiles[[1]])
+    elev_tiles <- terrainr::get_tiles(xs_extent_poly,
+                                      services = "elevation",
+                                      resolution = 3)
+    elevation <- terra::rast(elev_tiles[[1]])
 
     # Create an esri-like topo color ramp
     esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
@@ -136,14 +142,14 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
 
     # Create a hillshade
     exaggerated <- elevation * exaggeration
-    slp <- terra::terrain(exaggerated, v="slope", unit="radians")
-    asp<- terra::terrain(exaggerated, v="aspect", unit="radians")
-    hill_270<-terra::shade(slope=slp, aspect=asp,
-                           angle=30, direction=270)
-    hill_315 <- terra::shade(slope=slp, aspect=asp,
-                             angle=30, direction=315)
-    hill_355 <- terra::shade(slope=slp, aspect=asp,
-                             angle=30, direction=355)
+    slp <- terra::terrain(exaggerated, v = "slope", unit = "radians")
+    asp <- terra::terrain(exaggerated, v = "aspect", unit = "radians")
+    hill_270 <- terra::shade(slope = slp, aspect = asp,
+                             angle = 30, direction = 270)
+    hill_315 <- terra::shade(slope = slp, aspect = asp,
+                             angle = 30, direction = 315)
+    hill_355 <- terra::shade(slope = slp, aspect = asp,
+                             angle = 30, direction = 355)
 
 
     background_map <- tm_shape(shp = hill_270,
