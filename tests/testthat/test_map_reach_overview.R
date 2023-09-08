@@ -1,5 +1,3 @@
-library(fluvgeo)
-library(tmap)
 context("map_reach_overview")
 
 flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
@@ -8,8 +6,8 @@ flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
 cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
                               "feature_dataset/riffle_floodplain")
-flowline_sf      <- fluvgeo::fc2sf(flowline_fc)
-cross_section_sf <- fluvgeo::fc2sf(cross_section_fc)
+flowline_sf      <- fluvgeo::fc2sf(flowline_fc, quiet = TRUE)
+cross_section_sf <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
 xs_label_freq = 2
 exaggeration = 1
 extent_factor = 1.1

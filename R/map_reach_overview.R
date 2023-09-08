@@ -40,7 +40,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                       crs = sf::st_crs("EPSG:4326"))
 
   # Set extent
-  xs_extent <- fluvgeo::feature_extent(cross_section_sf_ll,
+  xs_extent <- fluvgeo::map_extent(cross_section_sf_ll,
                                        extent_factor = extent_factor)
   # Create sf bbox
   sf_bbox <- sf::st_bbox(xs_extent, crs = sf::st_crs("EPSG:4326"))
