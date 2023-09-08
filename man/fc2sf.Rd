@@ -4,11 +4,14 @@
 \alias{fc2sf}
 \title{Convert ESRI .gdb feature class to `sf`}
 \usage{
-fc2sf(fc_path)
+fc2sf(fc_path, quiet = FALSE)
 }
 \arguments{
 \item{fc_path}{character; Path to the feature class (e.g.,
 "C:/folder/geodatabase.gdb/feature_dataset/feature_class").}
+
+\item{quiet}{logical; suppress info on name, driver, size and spatial
+reference, or signaling no or multiple layers (sf::st_read)}
 }
 \value{
 An `sf` object.
