@@ -8,7 +8,7 @@
 #'                            feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
-#' @param dem                 RasterLayer; A dem raster.
+#' @param dem                 terra SpatRaster; A dem raster.
 #' @param banklines           sf; A banklines feature
 #'                            class (optional).
 #' @param extent_factor       numeric; A numeric value used to expand the map
@@ -16,11 +16,12 @@
 #'
 #' @return a tmap object
 #'
-#' @importFrom arcgisbinding arc.open arc.raster
-#' @importFrom raster extent as.raster raster crop resample terrain hillShade
-#' @importFrom grDevices colorRampPalette grey
+#' @importFrom dplyr %>% filter
+#' @importFrom terra crop terrain shade
+#' @importFrom grDevices colorRampPalette grey.colors
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
-#' tm_compass tm_scale_bar tm_layout
+#'             tm_compass tm_scale_bar tm_layout
+#'
 map_xs <- function(cross_section, xs_number, dem,
                    banklines = NULL,
                    extent_factor = 1) {
@@ -30,42 +31,33 @@ map_xs <- function(cross_section, xs_number, dem,
     check_banklines(banklines)
   }
 
-  # Convert to sf
-  if(class(cross_section)[1] == "sf") {
-    cross_section_sf <- cross_section
-  }
-  if(!is.null(banklines) & class(banklines)[1] == "sf") {
-    banklines_sf <- banklines
-  }
-
-  # Get valid DEM spatial reference system
-  dem_CRS <- sf::st_crs(dem)          # convert to valid WKT2
-
+  # Get DEM spatial reference system
+  dem_CRS <- sf::st_crs(dem)
 
   # Reproject so all layers in the same coordinate system as the DEM
-  cross_section_dem <- sf::st_transform(cross_section_sf, crs = dem_CRS)
+  cross_section_dem <- sf::st_transform(cross_section, crs = dem_CRS)
   if(!is.null(banklines)) {
-    banklines_dem <- sf::st_transform(banklines_sf, crs = dem_CRS)
+    banklines_dem <- sf::st_transform(banklines, crs = dem_CRS)
   }
 
   # Subset cross_section for the requested xs_number
-  xs_i <- cross_section_dem[cross_section_dem$Seq == xs_number, ]
+  xs_i <- cross_section_dem %>%
+    filter(Seq == xs_number)
 
   # Calculate the map extent for the current cross section
-  xs_extent <- fluvgeo::feature_extent(feature = xs_i,
-                                       extent_factor = extent_factor)
-  xs_extent_esri <- c(xmin = xs_extent@xmin,
-                      ymin = xs_extent@ymin,
-                      xmax = xs_extent@xmax,
-                      ymax = xs_extent@ymax)
+  xs_extent <- fluvgeo::map_extent(feature = xs_i,
+                                   extent_factor = extent_factor)
+  xs_extent_poly <- sf::st_as_sf(sf::st_as_sfc(xs_extent))
 
-  # Clip the dem to the cross section map extent
-  dem_i <- raster::crop(dem, xs_extent)
+  # Crop the dem to the cross section map extent
+  dem_i <- terra::crop(x = dem,
+                       y = terra::ext(xs_extent_poly),
+                       snap = "out")
 
   # Create a hillshade from dem_i
-  slp <- raster::terrain(dem_i, opt = "slope", unit = "radians")
-  asp <- raster::terrain(dem_i, opt = "aspect", unit = "radians")
-  hill <- raster::hillShade(slope = slp, aspect = asp)
+  slp <- terra::terrain(dem_i, v = "slope", unit = "radians")
+  asp <- terra::terrain(dem_i, v = "aspect", unit = "radians")
+  hill <- terra::shade(slope = slp, aspect = asp)
 
   # Create a topo color ramp
   esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
@@ -99,10 +91,7 @@ map_xs <- function(cross_section, xs_number, dem,
             size = 1.2,
             fontface = "bold",
             remove.overlap = FALSE,
-            shadow = TRUE,
-            #along.lines = TRUE,                # appears to be broken
-            #overwrite.lines = TRUE             # appears to be broken
-    ) +
+            shadow = TRUE) +
     tm_compass(type = "arrow",
                position = c("right", "bottom")) +
     tm_scale_bar(width = 0.25,

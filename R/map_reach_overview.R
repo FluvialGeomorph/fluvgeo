@@ -42,8 +42,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Set extent
   xs_extent <- fluvgeo::map_extent(cross_section_sf_ll,
                                        extent_factor = extent_factor)
-  # Create sf bbox
-  sf_bbox <- sf::st_bbox(xs_extent, crs = sf::st_crs("EPSG:4326"))
+  xs_extent_poly <- sf::st_as_sf(sf::st_as_sfc(xs_extent))
 
   # Determine cross section label frequency
   labeled_xs <- ((cross_section_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
@@ -81,7 +80,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   if(background == "aerial") {
     # Get aerial photos
     aerial_photos <- mapboxapi::get_static_tiles(
-      location = sf_bbox,
+      location = xs_extent_poly,
       zoom = 15,
       style_id = "satellite-streets-v12",
       style_url = "mapbox://styles/mapbox/satellite-streets-v12",
@@ -99,8 +98,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   # Elevation
   if(background == "elevation") {
     # Get elevation
-    elev_sfbbox <- sf::st_as_sfc(sf_bbox)
-    elev_tiles <- terrainr::get_tiles(elev_sfbbox,
+    elev_tiles <- terrainr::get_tiles(xs_extent_poly,
                                       services = "elevation",
                                       resolution = 3)
     elevation <- terra::rast(elev_tiles[[1]])
@@ -121,8 +119,8 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
     exaggerated <- elevation * exaggeration
     slp <- terra::terrain(exaggerated, v = "slope", unit = "radians")
     asp <- terra::terrain(exaggerated, v = "aspect", unit = "radians")
-    hill_270 <-terra::shade(slope = slp, aspect = asp,
-                            angle = 30, direction = 270)
+    hill_270 <- terra::shade(slope = slp, aspect = asp,
+                             angle = 30, direction = 270)
     hill_315 <- terra::shade(slope = slp, aspect = asp,
                              angle = 30, direction = 315)
     hill_355 <- terra::shade(slope = slp, aspect = asp,
