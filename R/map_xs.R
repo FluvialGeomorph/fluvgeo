@@ -49,10 +49,9 @@ map_xs <- function(cross_section, xs_number, dem,
                                    extent_factor = extent_factor)
   xs_extent_poly <- sf::st_as_sf(sf::st_as_sfc(xs_extent))
 
-  # Crop the dem to the cross section map extent
+  # Crop the dem to the cross section map extent (+ 20 pixels)
   dem_i <- terra::crop(x = dem,
-                       y = terra::ext(xs_extent_poly),
-                       snap = "out")
+                       y = terra::ext(xs_extent_poly) + 20)
 
   # Create a hillshade from dem_i
   slp <- terra::terrain(dem_i, v = "slope", unit = "radians")
@@ -75,8 +74,7 @@ map_xs <- function(cross_section, xs_number, dem,
               legend.show = FALSE) +
     tm_shape(shp = dem_i,
              name = "Elevation",
-             unit = "ft",
-             is.master = TRUE) +
+             unit = "ft") +
     tm_raster(col = "Band_1",
               style = "cont",
               palette = esri_topo(1000),
@@ -84,7 +82,9 @@ map_xs <- function(cross_section, xs_number, dem,
               title = "Elevation (NAVD88, ft)",
               legend.show = TRUE) +
     tm_shape(shp = cross_section_dem,
-             name = "Cross Section") +
+             name = "Cross Section",
+             bbox = xs_extent,
+             is.master = TRUE) +
     tm_lines(col = "grey50", lwd = 7) +
     tm_text(text = "Seq",
             col = "black",

@@ -12,7 +12,7 @@ cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
 banklines     <- fluvgeo::fc2sf(banklines_fc, quiet = TRUE)
 dem           <- terra::rast(dem_path)
 xs_number <- 3
-extent_factor <- 1.5
+extent_factor <- 1.8
 
 test_that("check map_xs with sf inputs", {
   xs_map_sf <- fluvgeo::map_xs(cross_section = cross_section,
