@@ -1,3 +1,16 @@
+# fluvgeo v0.1.48 (2023-09-07)
+
+## Major changes
+* Removed all dependencies on the `sp` package ahead of its decommissioning in favor of the R package `sf`. This included converting all package data, tests, checks, and documentation. 
+
+## Bug Fixes
+* Migrated to the `mapboxapi` R package to display aerial photos with labels on overview maps. 
+
+## Minor changes
+* Continued substituting `terra` functions to replace `raster` functions ahead of its decommissioning. 
+
+
+
 # fluvgeo v0.1.46 (2023-08-21)
 
 ## Major changes
@@ -7,8 +20,9 @@
 * Removed immediate dependencies on `rgdal` to address issues with the Level 1 Reports failing.
 See [Issue 26](https://github.com/FluvialGeomorph/fluvgeo/issues/26)
 
-##Minor changes
+## Minor changes
 * None
+
 
 
 # fluvgeo v0.1.45 (2023-03-21)
@@ -20,8 +34,9 @@ See [Issue 26](https://github.com/FluvialGeomorph/fluvgeo/issues/26)
 * Added `terrainr` get_tiles function to address `ceramic` display issues for background elevation imagery in reports.
 See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 
-##Minor changes
+## Minor changes
 * Added `terra` functions to replace `raster` functions in elevation map hillshade generation.
+
 
 
 # fluvgeo v0.1.44 (2023-03-01)
@@ -34,6 +49,7 @@ See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 
 
+
 # fluvgeo v0.1.43 (2023-02-09)
 
 ## Major changes
@@ -41,6 +57,7 @@ See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 
 ## Bug Fixes
 * The R package `ceramic` is passing GDAL output that is interrupting the display of maps in reports. 
+
 
 
 # fluvgeo v0.1.42 (2023-01-21)
@@ -60,12 +77,14 @@ See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 * If the `arcgisbinging` team addresses these issues, we may choose to go back to trusting the writing of file geodatabase feature classes using `arc.write`.  
 
 
+
 # fluvgeo v0.1.38 (2023-01-21)
 
 ## Bug Fixes
 * Updated the fc2sf function to enforce feature dataset usage. 
 * Updated all test functions to reference test data in feature datasets.  
 * Updated test data to use feature dataset for vector feature class storage. This implements the corrdinate reference system workaround. 
+
 
 
 # fluvgeo v0.1.37 (2023-01-03)
