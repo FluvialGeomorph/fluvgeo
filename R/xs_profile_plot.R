@@ -66,8 +66,8 @@ xs_profile_plot <- function(reach_xs_dims_sf,
   xs_dims <- gather(reach_xs_dims,
                     key = "water_levels",
                     value = "elevations",
-                    bankfull_elev,
-                    watersurface_elev)
+                    .data$bankfull_elev,
+                    .data$watersurface_elev)
 
   # Determine min y value
   plot_min_y <- min(xs_dims$elevations)
@@ -85,7 +85,7 @@ xs_profile_plot <- function(reach_xs_dims_sf,
   xs_lines <- tidyr::gather(reach_xs_dims,
                             key = "elevations",
                             value = "values",
-                            elev_min, elev_max)
+                            .data$elev_min, .data$elev_max)
 
   # Determine cross section label frequency
   labeled_xs <- ((xs_lines$Seq + xs_label_freq) %% xs_label_freq) == 0

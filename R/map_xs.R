@@ -42,7 +42,7 @@ map_xs <- function(cross_section, xs_number, dem,
 
   # Subset cross_section for the requested xs_number
   xs_i <- cross_section_dem %>%
-    filter(Seq == xs_number)
+    filter(.data$Seq == xs_number)
 
   # Calculate the map extent for the current cross section
   xs_extent <- fluvgeo::map_extent(feature = xs_i,
