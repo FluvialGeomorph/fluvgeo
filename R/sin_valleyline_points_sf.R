@@ -1,0 +1,39 @@
+#' @docType data
+#'
+#' @title Sinsinawa Creek, IL stream valleyline points
+#'
+#' @description  A \code{sf} object containing stream
+#' gradient points for Sinsinawa Creek, IL. These points represent elevation
+#' values extracted from a LiDAR terrain surface along the valleyline of the
+#' stream.
+#'
+#' @format A \code{sf} with 3405 observations and 11
+#'     variables.
+#' \describe{
+#'     \item{OBJECTID}{numeric; The ArcGIS feature class assigned unique
+#'                     identifier for each point in the dataset.}
+#'     \item{Shape}{numeric; The ArcGIS feature class assigned unique
+#'                     identifier for each point in the dataset.}
+#'     \item{ReachName}{character; 	Name of the reach.}
+#'       \item{POINT_X}{numeric; The longitude or easting of the point.
+#'                    Coordinate system units can be determined by checking the
+#'                    \code{st_crs(sin_valleyline_points_sf)}.}
+#'     \item{POINT_Y}{numeric; The latitude or northing of the point.
+#'                    Coordinate system units can be determined by checking the
+#'                    \code{st_crs(sin_valleyline_points_sf)}.}
+#'     \item{POINT_M}{numeric; The route distance of this cross section from
+#'                    the upstream end of the reach. Coordinate system units
+#'                    can be determined by checking the
+#'                    \code{st_crs(sin_valleyline_points_sf)}.}
+#'     \item{ReachName_1}{character; 	Repeat of name of the reach.}
+#'     \item{from_measure}{numeric; .The start longitudinal stationing value for
+#'                       the reach in km.}
+#'     \item{to_measure}{numeric; The end longitudinal stationing value for the
+#'                        reach in km.}
+#' }
+#' @source This dataset was produced using the \code{FluvialGeomorph} ArcGIS
+#' toolbox.
+#'
+#' @keywords datasets
+#'
+"sin_valleyline_points_sf"
