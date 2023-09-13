@@ -2,7 +2,7 @@
 #'
 #' @title Sinsinawa Creek, IL stream riffle cross section lines
 #'
-#' @description  A \code{sf} object containing level 1 cross section dimensions
+#' @description  A \code{sf} object containing level 2 cross section dimensions
 #' for Sinsinawa Creek, IL. Cross section dimension polyline feature classes are
 #' used to store the hydraulic dimensions calculated for each cross section.
 #' @format A \code{sf} with 10 observations and 61 variables.
@@ -41,7 +41,7 @@
 #'     \item{upstream_m}{numeric; The m-coordinate value (route position) of the
 #'                      next upstream point in the moving window.}
 #'     \item{downstream_m}{numeric; The m-coordinate value (route position) of
-#'                        the next downstreampoint in the moving window.}
+#'                        the next downstream point in the moving window.}
 #'     \item{rise}{numeric; The elevation difference between the downstream and
 #'                upstream point in the moving window, units are in feet.}
 #'     \item{run}{numeric; The longitudinal distance along the stream network
@@ -84,10 +84,13 @@
 #'                    elevation, units: feet.}
 #'     \item{xs_width_depth_ratio}{numeric; The bankfull width to bankfull
 #'                                depth ratio.}
-#'
+#'     \item{xs_width_depth_ratio_gte_one}{numeric; The bankfull width to bankfull
+#'                                depth ratio, greater than or equal to one.}
 #'     \item{xs_entrenchment_ratio}{numeric; The entrenchment ratio (flood
 #'                                prone width) / (bankfull width).}
-#'
+#'     \item{xs_entrenchment_ratio_gte_one}{numeric; The entrenchment ratio (flood
+#'                                prone width) / (bankfull width), greater than
+#'                                or equal to one.}
 #'     \item{watersurface_elev}{numeric; The water surface elevation,
 #'                            units: NAVD88 feet.}
 #'     \item{bankfull_elev}{numeric; The bankfull elevation, units: NAVD88
