@@ -163,6 +163,7 @@ This section displays cross section profile graphs for each riffle cross section
 if(params$show_xs_map) {
   # Get dem raster
   dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+  dem_rast <- terra::rast(dem_raster)
 }
 
 # Ensure that cross sections are sequentially ordered
@@ -174,7 +175,7 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
     # Create the cross section plot
     print(fluvgeo::map_xs(cross_section = params$xs_dims_sf,
                           xs_number = j,
-                          dem = dem_raster,
+                          dem = dem_rast,
                           extent_factor = params$extent_factor * 3))
   }
   pander::pandoc.p('')
