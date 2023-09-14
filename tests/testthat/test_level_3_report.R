@@ -1,6 +1,3 @@
-library(fluvgeo)
-context("level_3_report")
-
 stream <- "Cole Creek R1"
 flowline_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
                                        package = "fluvgeo"),
