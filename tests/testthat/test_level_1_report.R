@@ -35,7 +35,7 @@ features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
 dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "dem_2016_hydro_50")
-show_xs_map <- FALSE
+show_xs_map <- TRUE
 profile_units <- "feet"
 aerial <- TRUE
 elevation = TRUE
