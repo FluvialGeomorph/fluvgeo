@@ -1,7 +1,3 @@
-library(fluvgeo)
-library(raster)
-context("esri_raster2RasterLayer")
-
 # The `map_xs` function needs `arcgisbinding` to read a file geodatabase raster.
 # No other means currently exist to read file geodatabase rasters into R.
 
