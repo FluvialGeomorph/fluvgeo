@@ -28,7 +28,6 @@ library(ggplot2)
 library(ggrepel)
 library(raster)
 library(tmap)
-library(maptiles)
 library(terra)
 library(terrainr)
 library(arcgisbinding)
@@ -87,6 +86,7 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 if(params$show_xs_map) {
   # Get dem raster
   dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+  dem_rast <- terra::rast(dem_raster)
 }
 
 # Ensure that cross sections are sequentially ordered
@@ -98,7 +98,7 @@ for(j in unique(cross_section$Seq)) {
     # Create the cross section plot
     print(fluvgeo::map_xs(cross_section = params$cross_section_sf,
                           xs_number = j,
-                          dem = dem_raster,
+                          dem = dem_rast,
                           extent_factor = params$extent_factor))
   }
   print(fluvgeo::xs_compare_plot_L1(stream = stream,
