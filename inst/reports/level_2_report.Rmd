@@ -145,6 +145,7 @@ This section displays cross section profile graphs for each riffle cross section
 if(params$show_xs_map) {
   # Get dem raster
   dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
+  dem_rast <- terra::rast(dem_raster)
 }
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
@@ -155,7 +156,7 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
   if(params$show_xs_map) {
     print(fluvgeo::map_xs(cross_section = params$xs_sf,
                           xs_number = j,
-                          dem = dem_raster,
+                          dem = dem_rast,
                           banklines = params$banklines_sf,
                           extent_factor = params$extent_factor))
   }
