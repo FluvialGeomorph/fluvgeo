@@ -19,6 +19,7 @@ Calculates the meander width (channel belt width) for each loop
 in the input `bankline_points` data frame.
 }
 \examples{
-meander_width(fluvgeo::sin_bankline_points_sf)
+bankline_points <- fluvgeo::sin_bankline_points_sf
+mw <- meander_width(bankline_points = bankline_points)
 
 }

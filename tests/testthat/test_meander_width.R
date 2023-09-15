@@ -1,6 +1,3 @@
-library(fluvgeo)
-context("meander_width")
-
 bankline_points <- fluvgeo::sin_bankline_points_sf
 
 mw <- meander_width(bankline_points = bankline_points)
