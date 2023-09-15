@@ -1,8 +1,4 @@
-library(fluvgeo)
-context("arc2sf")
-
 load_libraries <- function() {
-  library(sf)
   library(arcgisbinding)
   arc.check_product()
 }
@@ -41,8 +37,8 @@ test_that("verify CRS via EPSG code", {
   load_libraries()
   fc_sf <- arc2sf(fc_path = fc_path)
   sf_known_crs <- sf::st_crs("EPSG:26915")
-  sf_output_crs <- st_crs(fc_sf)
-  expect_true(raster::compareCRS(sf_known_crs, sf_output_crs))
+  sf_output_crs <- sf::st_crs(fc_sf)
+  expect_true(sf_known_crs == sf_output_crs)
 })
 
 test_that("verify CRS via WKT string", {
@@ -51,6 +47,6 @@ test_that("verify CRS via WKT string", {
   fc_sf  <- arc2sf(fc_path = fc_path)
   fc_wkt <- get_arc_wkt(fc_path)
   fc_crs <- sf::st_crs(fc_wkt)
-  sf_crs <- st_crs(fc_sf)
-  expect_true(raster::compareCRS(fc_crs, sf_crs))
+  sf_crs <- sf::st_crs(fc_sf)
+  expect_true(fc_crs == sf_crs)
 })
