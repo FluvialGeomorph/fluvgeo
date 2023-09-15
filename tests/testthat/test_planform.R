@@ -1,7 +1,3 @@
-library(fluvgeo)
-library(dplyr)
-context("planform")
-
 bankline_points <- fluvgeo::sin_bankline_points_sf
 
 pf <- planform(fluvgeo::sin_bankline_points_sf)
@@ -31,5 +27,6 @@ test_that("check data structure", {
 })
 
 test_that("check number of records", {
-  expect_that(length(pf$bend_num), equals(length(dplyr::count(pf, loop, bend)$loop)))
+  expect_equal(length(pf$bend_num),
+               length(dplyr::count(pf, loop, bend)$loop))
 })

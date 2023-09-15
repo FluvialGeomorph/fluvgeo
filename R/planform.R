@@ -15,8 +15,7 @@
 #' pf <- planform(fluvgeo::sin_bankline_points_sf)
 #'
 #' @importFrom testthat expect_true
-#' @importFrom dplyr lead lag right_join
-#' @importFrom raster pointDistance
+#' @importFrom dplyr right_join
 #'
 planform <- function(bankline_points) {
   # Check parameters
@@ -32,11 +31,12 @@ planform <- function(bankline_points) {
   loop_width <- meander_width(bankline_points)
 
   # Join loop_length to bends (loop_length attributes to bends )
-  bends_length <- dplyr::right_join(x = bends, y = loop_length, by = "loop")
+  bends_length <- dplyr::right_join(x = bends,
+                                    y = loop_length, by = "loop")
 
   # Join loop_width to bends
-  bends_length_width <-dplyr::right_join(x = bends_length, y = loop_width, by = "loop")
-
+  bends_length_width <-dplyr::right_join(x = bends_length,
+                                         y = loop_width, by = "loop")
 
   # Set fields to keep
   fields <- c("bend_num", "loop", "bend", "bend_POINT_X", "bend_POINT_Y",
