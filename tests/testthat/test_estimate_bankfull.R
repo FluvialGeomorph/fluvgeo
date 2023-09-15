@@ -35,7 +35,7 @@ features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
 dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "dem_2016_hydro_50")
-show_xs_map <- FALSE
+show_xs_map <- TRUE
 regions <- c("Eastern United States", "USA")
 bankfull_elevations <- seq(104, 106, 0.2)
 bf_estimate <- 105

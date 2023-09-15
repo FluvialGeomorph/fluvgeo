@@ -33,6 +33,8 @@ library(Metrics)
 library(ggplot2)
 library(ggrepel)
 library(reshape2)
+library(arcgisbinding)
+arcgisbinding::arc.check_product()
 ```
 
 ```{r, document_type, echo=FALSE}
@@ -162,8 +164,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.width=7, fig.height=4}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
-  dem_rast <- terra::rast(dem_raster)
+  dem_rast <- fluvgeo::esri_raster2SpatRaster(raster_path = params$dem)
 }
 
 # Ensure that cross sections are sequentially ordered
@@ -219,4 +220,4 @@ for (j in as.integer(levels(as.factor(cross_section$Seq)))) {
 ```
 
 
-version 0.1.35
+version 0.1.48

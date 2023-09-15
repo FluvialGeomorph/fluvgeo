@@ -29,7 +29,6 @@ library(knitr)
 library(pander)
 library(ggplot2)
 library(ggrepel)
-library(raster)
 library(tmap)
 library(arcgisbinding)
 arcgisbinding::arc.check_product()
@@ -171,8 +170,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
-  dem_rast <- terra::rast(dem_raster)
+  dem_rast <- fluvgeo::esri_raster2SpatRaster(raster_path = params$dem)
 }
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
@@ -221,4 +219,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-Version: 0.1.35
+Version: 0.1.48

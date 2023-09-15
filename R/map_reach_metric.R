@@ -117,8 +117,6 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                         tm_rgb()
 
     overview_map <- background_map + metric_map
-
-
   }
 
   # Elevation

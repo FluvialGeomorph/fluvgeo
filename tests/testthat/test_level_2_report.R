@@ -34,7 +34,7 @@ features_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
 bf_estimate   <- 103.5
 regions       <- c("USA", "Eastern United States")
 label_xs      <- TRUE
-show_xs_map   <- FALSE
+show_xs_map   <- TRUE
 profile_units <- "miles"
 aerial <- TRUE
 elevation = TRUE

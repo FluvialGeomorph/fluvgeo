@@ -29,7 +29,6 @@ library(knitr)
 library(pander)
 library(ggplot2)
 library(ggrepel)
-library(raster)
 library(tmap)
 library(arcgisbinding)
 arcgisbinding::arc.check_product()
@@ -51,6 +50,7 @@ if (params$output_format == "word_document") {
 ```
 
 ```{r set_background, echo=FALSE}
+if(params$aerial & params$elevation)   {background <- "aerial"}
 if(params$aerial & !params$elevation)  {background <- "aerial"}
 if(!params$aerial & params$elevation)  {background <- "elevation"}
 if(!params$aerial & !params$elevation) {background <- "none"}
@@ -59,10 +59,20 @@ if(!params$aerial & !params$elevation) {background <- "none"}
 
 ## Study Area Overview: `r params$stream`
 ```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
-if(params$show_xs_map) {
+if(params$show_xs_map & params$aerial) {
   print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
                                     cross_section = params$xs_dims_sf,
-                                    background = background,
+                                    background = "aerial",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(params$show_xs_map & params$elevation) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$xs_dims_sf,
+                                    background = "elevation",
                                     xs_label_freq = params$xs_label_freq,
                                     extent_factor = params$extent_factor))
 }
@@ -144,8 +154,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_raster <- fluvgeo::esri_raster2RasterLayer(raster_path = params$dem)
-  dem_rast <- terra::rast(dem_raster)
+  dem_rast <- fluvgeo::esri_raster2SpatRaster(raster_path = params$dem)
 }
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]
@@ -195,4 +204,4 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
 ```
 
 
-version 0.1.37
+version 0.1.48
