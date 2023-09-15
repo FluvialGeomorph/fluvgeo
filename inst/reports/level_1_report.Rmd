@@ -84,7 +84,7 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 ```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_rast <- fluvgeo::esri_raster2SpatRaster(raster_path = params$dem)
+  dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = params$dem)
 }
 
 # Ensure that cross sections are sequentially ordered

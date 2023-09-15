@@ -21,7 +21,7 @@
 #' @importFrom terra crs rast
 #' @importFrom sf st_crs
 #'
-esri_raster2SpatRaster <- function(raster_path) {
+arc_raster2SpatRaster <- function(raster_path) {
   # Open the path the the esri raster
   raster_arc <- arcgisbinding::arc.open(raster_path)
 

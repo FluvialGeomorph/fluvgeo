@@ -154,7 +154,7 @@ This section displays cross section profile graphs for each riffle cross section
 ```{r, xs_plots, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_rast <- fluvgeo::esri_raster2SpatRaster(raster_path = params$dem)
+  dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = params$dem)
 }
 # Get the xs_points for the base year survey
 xs_pts <- params$xs_pts_sf_list[[1]]

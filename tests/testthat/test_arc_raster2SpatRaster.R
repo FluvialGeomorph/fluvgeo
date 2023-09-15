@@ -1,4 +1,4 @@
-# The `esri_raster2SpatRaster` function needs `arcgisbinding` to read a file
+# The `arc_raster2SpatRaster` function needs `arcgisbinding` to read a file
 # geodatabase raster.
 
 # Helper functions
@@ -21,7 +21,7 @@ test_that("convert ESRI GDB raster to SpatRaster", {
   skip_if_no_arc()
   load_libraries()
 
-  gdb_raster <- esri_raster2SpatRaster(raster_path = raster_path)
+  gdb_raster <- arc_raster2SpatRaster(raster_path = raster_path)
   #plot(gdb_raster)
 
   expect_true("SpatRaster" %in% class(gdb_raster))
@@ -33,7 +33,7 @@ test_that("convert .tif raster to SpatRaster", {
   skip_if_no_arc()
   load_libraries()
 
-  tif_raster <- esri_raster2SpatRaster(raster_path = tif_path)
+  tif_raster <- arc_raster2SpatRaster(raster_path = tif_path)
   #plot(tif_raster)
 
   expect_true("SpatRaster" %in% class(tif_raster))
