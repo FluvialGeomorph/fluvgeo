@@ -1,8 +1,4 @@
-library(fluvgeo)
-context("sf2arc")
-
 load_libraries <- function() {
-  library(sf)
   library(arcgisbinding)
   arc.check_product()
 }
@@ -24,23 +20,35 @@ create_temp_gdb <- function(temp_folder_num = 1) {
 }
 
 # Get sf objects
-line_sf  <- sf::st_as_sf(fluvgeo::sin_flowline_sf)
-line_sf  <- fluvgeo::sin_riffle_channel_sf
+line_1_sf  <- fluvgeo::sin_flowline_sf
+line_2_sf  <- fluvgeo::sin_riffle_channel_sf
 
-# testing variable
-sx_object <- line_sf
-
-test_that("sf: check output gdb table exists", {
+test_that("sf: check output gdb table exists 1", {
   testthat::skip_if_not_installed("arcgisbinding")
   load_libraries()
+  sf_object <- line_1_sf
   temp_gdb_path <- create_temp_gdb(temp_folder_num = 1)
-  table_path <- file.path(temp_gdb_path, paste0("temp_line",
+  table_path <- file.path(temp_gdb_path, paste0("temp_line_",
                                              round(stats::runif(1, 1, 10000),
                                                    digits = 0)))
   print(table_path)
-  sx2arc_table(sx_object = line_sf, table_path = table_path)
+  sf2arc_table(sf_object = sf_object, table_path = table_path)
   arcobj <- arcgisbinding::arc.open(table_path)
   expect_true(exists("arcobj"))
   expect_true(arcobj@path == table_path)
 })
 
+test_that("sf: check output gdb table exists 2", {
+  testthat::skip_if_not_installed("arcgisbinding")
+  load_libraries()
+  sf_object <- line_2_sf
+  temp_gdb_path <- create_temp_gdb(temp_folder_num = 2)
+  table_path <- file.path(temp_gdb_path, paste0("temp_line_",
+                                                round(stats::runif(1, 1, 10000),
+                                                      digits = 0)))
+  print(table_path)
+  sf2arc_table(sf_object = sf_object, table_path = table_path)
+  arcobj <- arcgisbinding::arc.open(table_path)
+  expect_true(exists("arcobj"))
+  expect_true(arcobj@path == table_path)
+})
