@@ -8,7 +8,7 @@ slope_sinuosity(
   channel_features,
   lead_n,
   lag_n,
-  use_smoothing = TRUE,
+  use_smoothing = FALSE,
   loess_span = 0.5,
   vert_units
 )

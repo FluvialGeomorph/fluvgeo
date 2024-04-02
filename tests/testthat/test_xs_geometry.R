@@ -49,7 +49,7 @@ test_that("Check that output fields are of the correct data type", {
 
 test_that("Check dimensions from known stream", {
   expect_equal(sin_4$xs_width,    93.3, tolerance = 1e-2)
-  expect_equal(sin_4$xs_depth,    3.52, tolerance = 1e-2)
+  expect_equal(sin_4$xs_depth,    2.8, tolerance = 1e-2)
   expect_equal(sin_4$xs_area,     259.4, tolerance = 1e-2)
   expect_equal(sin_4$discharge,     0.0, tolerance = 1e-2)
   expect_equal(sin_4$ground_elev, 645.7, tolerance = 1e-2)

@@ -103,11 +103,12 @@ xs_geometry <- function(xs_points, detrend_elevation) {
   d1 <- f2(xs_stations)
   xs_width <- mean(diff(xs_stations)) * length(d1[d1 > 0])
 
-  # Calculate cross sectional max depth
-  xs_depth <- max(f1(xs_stations)[f1(xs_stations) > 0])
+  # Calculate cross sectional mean depth
+  xs_depth <- mean(f1(xs_stations)[f1(xs_stations) > 0])
 
-  # Check for missing max depth (-Inf). If so, set to zero
+  # Check for missing depth (-Inf, NaN). If so, set to zero
   if(is.infinite(xs_depth)) xs_depth <- 0
+  if(is.nan(xs_depth)) xs_depth <- 0
 
   # Set discharge (as a placeholder field for other functions)
   discharge <- 0

@@ -2,8 +2,8 @@
 % Please edit documentation in R/pkgname.R
 \docType{package}
 \name{fluvgeo}
-\alias{fluvgeo}
 \alias{fluvgeo-package}
+\alias{fluvgeo}
 \title{A Package for Fluvial Geomorphic Analysis}
 \description{
 This package contains a wide range of functions for performing fluvial geomorphic analysis. This package is designed for use with the FluvialGeomorph Python package. The FluvialGeomorph package contains an ArcGIS toolbox that can be used to extract spatial data from high- resolution terrain data. FluvialGeomorph uses functions in this package to perform a wide range of fluvial geomorphic analysis (e.g., extract stream channel dimensions, help choose bankfull elevation for ungaged streams).

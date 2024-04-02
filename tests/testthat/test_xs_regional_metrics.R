@@ -103,7 +103,7 @@ test_that("Check dimensions from known stream", {
   expect_equal(sin_4_xs$drainage_area,         40.27, tolerance = 1e-2)
   expect_equal(sin_4_xs$xs_area,               259.45, tolerance = 1e-2)
   expect_equal(sin_4_xs$xs_width,              93.32, tolerance = 1e-2)
-  expect_equal(sin_4_xs$xs_depth,              3.53, tolerance = 1e-2)
+  expect_equal(sin_4_xs$xs_depth,              2.8, tolerance = 1e-2)
   expect_equal(sin_4_xs$discharge,             0.0, tolerance = 1e-2)
 })
 

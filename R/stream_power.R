@@ -125,11 +125,13 @@ stream_power <- function(xs_dims,
   g <- 9.8
 
   # Discharge
+  num_xs = length(xs_dims$drainage_area)
   Q <- switch(discharge_method,
-              model_measure      = discharge_value,
-              regional_curve     = RegionalCurve::RHG(region,
-                                                      xs_dims$drainage_area,
-                                                      "discharge"),
+              model_measure  = discharge_value,
+              regional_curve = RegionalCurve::RHG(
+                                  region = rep(region, num_xs),
+                                  drainageArea = xs_dims$drainage_area,
+                                  dimensionType = rep("discharge", num_xs)),
               width_relationship = 0,
               stop("discharge_method parameter is specified incorrectly"))
 

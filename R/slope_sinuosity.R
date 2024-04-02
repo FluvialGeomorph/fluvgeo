@@ -44,7 +44,7 @@
 #' @importFrom raster pointDistance
 #'
 slope_sinuosity <-function(channel_features, lead_n, lag_n,
-                           use_smoothing = TRUE,
+                           use_smoothing = FALSE,
                            loess_span = 0.5,
                            vert_units) {
   name <- deparse(substitute(channel_features))
@@ -134,9 +134,16 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     # Subset flowline_pts for the current reach
     fl_pts <- flowline_pts[flowline_pts$ReachName == r, ]
 
-    # Calculate a smoothed z (and convert to feet).
-    smooth_z <- loess(Z ~ POINT_M, data = fl_pts, span = loess_span)
-    fl_pts$Z_smooth <- predict(smooth_z) * vert_con_factor
+    if (use_smoothing == FALSE) {
+      # Copy z (and convert to feet).
+      fl_pts$Z_smooth <- fl_pts$Z * vert_con_factor
+    }
+    if (use_smoothing == TRUE) {
+      # Calculate a smoothed z (and convert to feet).
+      smooth_z_model <- loess(Z ~ POINT_M, data = fl_pts, span = loess_span)
+      fl_pts$Z_smooth <- predict(smooth_z_model) * vert_con_factor
+    }
+
 
     # Calculate variable mins and maxs (ensure units in feet).
     # Used as default to lead/lag to prevent NAs being introduced at ends
@@ -145,26 +152,14 @@ slope_sinuosity <-function(channel_features, lead_n, lag_n,
     downstream_m_lag        <- min(fl_pts$POINT_M) * 3280.48
     upstream_z_smooth_lead  <- max(fl_pts$Z_smooth)
     downstream_z_smooth_lag <- min(fl_pts$Z_smooth)
-    upstream_z_lead         <- max(fl_pts$Z) * vert_con_factor
-    downstream_z_lag        <- min(fl_pts$Z) * vert_con_factor
 
     # Calculate upstream/downstream z values (ensure units in feet)
-    if (use_smoothing == TRUE) {
-      fl_pts$upstream_z   <- lead(x = fl_pts$Z_smooth,
-                                  n = lead_n,
-                                  default = upstream_z_smooth_lead)
-      fl_pts$downstream_z <- lag(x = fl_pts$Z_smooth,
-                                 n = lag_n,
-                                 default = downstream_z_smooth_lag)
-    }
-    if (use_smoothing == FALSE) {
-      fl_pts$upstream_z   <- lead(x = fl_pts$Z * vert_con_factor,
-                                  n = lead_n,
-                                  default = upstream_z_lead)
-      fl_pts$downstream_z <- lag(x = fl_pts$Z * vert_con_factor,
-                                 n = lag_n,
-                                 default = downstream_z_lag)
-    }
+    fl_pts$upstream_z   <- lead(x = fl_pts$Z_smooth,
+                                n = lead_n,
+                                default = upstream_z_smooth_lead)
+    fl_pts$downstream_z <- lag(x = fl_pts$Z_smooth,
+                               n = lag_n,
+                               default = downstream_z_smooth_lag)
 
     # Calculate upstream/downstream m-values (ensure units in feet).
     fl_pts$upstream_m   <- lead(x = fl_pts$POINT_M * 3280.48,
