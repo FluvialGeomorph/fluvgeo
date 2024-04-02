@@ -17,6 +17,11 @@ sin_riffle_channel_ss <- slope_sinuosity(sin_riffle_channel_sf,
                                          loess_span = 0.5,
                                          vert_units = "ft")
 
+sin_fl_pts_ss_nosmooth <- slope_sinuosity(sin_fl_pts_sf,
+                                          lead_n = 50, lag_n = 50,
+                                          use_smoothing = FALSE,
+                                          vert_units = "ft")
+
 # Get feature class test data
 fl_pts_m_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                       package = "fluvgeo"),
