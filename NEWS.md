@@ -1,3 +1,13 @@
+# fluvgeo v0.1.50 (2024-04-11)
+
+## Major changes
+* None 
+
+## Minor changes
+* Added the function `sf2csv` to eliminate the need for `arcgisbinding` functions to read and write data into file geodatabases. 
+
+***
+
 # fluvgeo v0.1.49 (2024-04-02)
 
 ## Major changes
