@@ -41,6 +41,7 @@ Imports:
     conicfit,
     dplyr,
     ggplot2,
+    ggplotify,
     ggrepel,
     grDevices,
     magrittr,
