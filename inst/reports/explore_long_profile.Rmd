@@ -1,0 +1,86 @@
+---
+title: "Explore Longitudinal Profile Report"
+params:
+  stream: ""
+  flowline_sf: ""
+  cross_section_sf: ""
+  features_sf: ""
+  flowline_points_sf_list: ""
+  xs_points_sf_list: ""
+  dem: ""
+  show_xs_map: FALSE
+  profile_units: ""
+  aerial: TRUE
+  elevation: FALSE
+  xs_label_freq: 5
+  exaggeration: 10
+  extent_factor: 1.1
+  output_format: ""
+---
+
+```{r}
+library(dygraphs)
+library(rlang)
+```
+
+
+## Interactive Longitudinal Profile
+```{r}
+# Create new field names to represent each survey 
+# r column names should start with a character
+z_1 <- rlang::parse_expr(paste0("Z_", survey_name_1))
+z_2 <- rlang::parse_expr(paste0("Z_", survey_name_2))
+z_3 <- rlang::parse_expr(paste0("Z_", survey_name_3))
+
+# Wrangle the flowline_points for each survey
+fl_pts_1 <- fl_pts_1_sf %>%
+  sf::st_drop_geometry() %>%
+  dplyr::mutate({{z_1}} := Z) %>%
+  dplyr::select(c(POINT_M, {{z_1}})) 
+
+fl_pts_2 <- fl_pts_2_sf %>%
+  sf::st_drop_geometry() %>%
+  dplyr::mutate({{z_2}} := Z) %>%
+  dplyr::select(c(POINT_M, {{z_2}})) 
+
+fl_pts_3 <- fl_pts_3_sf %>%
+  sf::st_drop_geometry() %>%
+  dplyr::mutate({{z_3}} := Z) %>%
+  dplyr::select(c(POINT_M, {{z_3}})) 
+
+# Assemble the flowline_points into single data frame
+fl_pts <- fl_pts_1 %>%
+  dplyr::full_join(fl_pts_2, by = dplyr::join_by(POINT_M)) %>%
+  dplyr::full_join(fl_pts_3, by = dplyr::join_by(POINT_M))
+
+# Wrangle features
+features <- features_sf %>%
+  sf::st_drop_geometry()
+```
+
+```{r, fig.width=6, fig.height=4}
+# Configure base graph
+p <- dygraph(fl_pts) %>%
+      dyAxis("x", label = "Distance (kilometers)") %>%
+      dyAxis("y", label = "Elevation (feet)") %>%
+      dyRangeSelector() %>%
+      dyLegend(show = "auto",
+               width = 100,
+               labelsSeparateLines = TRUE) %>%
+      dyOptions(colors = RColorBrewer::brewer.pal(8, "Dark2"), 
+                digitsAfterDecimal = 1,
+                labelsKMB = FALSE) %>%
+      dyCSS("dygraphs.css")
+
+# Configure dySeries
+
+
+# Add features as dyEvents
+for (i in 1:length(features$Name)) {
+  p <- p %>% dyEvent(x = features$km_to_mouth[i], 
+                     label = features$Name[i],
+                     labelLoc = "bottom")
+}
+
+p
+```
