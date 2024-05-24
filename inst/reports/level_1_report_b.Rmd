@@ -1,0 +1,151 @@
+---
+title: "FluvialGeomorph Level 1 Report"
+params:
+  stream: ""
+  flowline_sf: ""
+  cross_section_sf: ""
+  features_sf: ""
+  flowline_points_sf_list: ""
+  xs_points_sf_list: ""
+  dem: ""
+  show_xs_map: FALSE
+  profile_units: ""
+  aerial: TRUE
+  elevation: FALSE
+  xs_label_freq: 5
+  exaggeration: 10
+  extent_factor: 1.1
+  output_format: ""
+output: 
+  word_document:
+    reference_docx: word_template.docx
+---
+
+```{r library, eval=TRUE, include=FALSE}
+library(fluvgeo)
+library(sf)
+library(dplyr)
+library(knitr)
+library(pander)
+library(ggplot2)
+library(ggplotify)
+library(ggrepel)
+library(patchwork)
+library(tmap)
+library(terra)
+library(terrainr)
+library(arcgisbinding)
+arcgisbinding::arc.check_product()
+```
+
+```{r}
+knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
+```
+
+## Study Area Overview
+```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(aerial) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$cross_section_sf,
+                                    background = "aerial",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Elevation Map"}
+if(elevation) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$cross_section_sf,
+                                    background = "elevation",
+                                    xs_label_freq = params$xs_label_freq,
+                                    exaggeration = params$exaggeration,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+## Longitudinal Profile
+```{r long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="Longitudinal Profile Plot"}
+print(fluvgeo::compare_long_profile(stream = params$stream,
+                            flowline_pts_sf_list = flowline_pts_sf_list,
+                            features_sf = params$features_sf,
+                            profile_units = params$profile_units))
+```
+
+```{r xs_long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="XS Longitudinal Profile Plot"}
+print(fluvgeo::compare_xs_long_profile(stream = params$stream,
+                                     xs_pts_sf_list = params$xs_points_sf_list,
+                                     features_sf = params$features_sf,
+                                     xs_label_freq = params$xs_label_freq,
+                                     profile_units = params$profile_units))
+```
+
+## Cross Section Metrics
+```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot.", warning=FALSE}
+print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
+                                  features_sf = params$features_sf,
+                                  xs_label_freq = params$xs_label_freq,
+                                  profile_units = params$profile_units))
+```
+
+
+## Cross Section Profiles
+```{r cross_section_plots, echo=FALSE, results='asis', fig.width=c(4,4,7.5), fig.height=c(4,4,9), fig.show='hold', warning=FALSE, error=FALSE, message=FALSE}
+if(params$show_xs_map) {
+  # Get dem raster
+  dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
+}
+
+# Ensure that cross sections are sequentially ordered
+cross_section <- dplyr::arrange(report_params$cross_section_sf, Seq)
+
+# Iterate through cross sections
+for(j in unique(cross_section$Seq)) {
+  if(params$show_xs_map) {
+    # Create the cross section map
+    xs_map <- fluvgeo::map_xs(cross_section = cross_section_sf,
+                              xs_number = j,
+                              dem = dem_rast,
+                              extent_factor = extent_factor)
+    #xs_map
+    map_grb <- tmap::tmap_grob(xs_map)
+  }
+  else {
+    map_grb = NULL
+  }
+  # Create cross section plots
+  p_all <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                       xs_number = j,
+                                       xs_pts_sf_list = xs_pts_sf_list, 
+                                       extent = "all")
+  p_fl  <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                       xs_number = j,
+                                       xs_pts_sf_list = xs_pts_sf_list, 
+                                       extent = "floodplain")
+  p_ch <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                      xs_number = j,
+                                      xs_pts_sf_list = xs_pts_sf_list, 
+                                      extent = "channel")
+  p_xs <-  p_all + p_fl + p_ch + 
+    plot_layout(nrow = 3,
+                guides = "collect",
+                axes = "collect",
+                axis_titles = "collect") &
+    theme(legend.position = "right")
+  #p_xs
+  # Create figure
+  layout <- "
+  AAAA
+  BBBB
+  "
+  wrap_elements(full = map_grb, clip = FALSE) + p_xs + 
+    plot_layout(nrow = 2,
+                heights = unit(c(4, 4), c('in', 'in')))
+
+  # Insert vertical white space so that next figure in loop is recognized
+  #cat('\n')
+  # Must set chunk option`results='asis'` to ensure table is drawn properly
+}
+```
+
+Version: 0.1.50
