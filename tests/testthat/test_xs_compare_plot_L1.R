@@ -2,7 +2,7 @@ library(purrr)
 library(fluvgeo)
 
 stream <- "Cole Creek R1"
-xs_number <- 1
+xs_number <- 8
 xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
@@ -32,10 +32,22 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-p <- fluvgeo::xs_compare_plot_L1(stream = stream,
-                                 xs_number = xs_number,
-                                 xs_pts_sf_list = xs_pts_sf_list)
-print(p)
+p1 <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                  xs_number = xs_number,
+                                  xs_pts_sf_list = xs_pts_sf_list)
+print(p1)
+
+p2 <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                  xs_number = xs_number,
+                                  xs_pts_sf_list = xs_pts_sf_list,
+                                  extent = "channel")
+print(p2)
+
+p3 <- fluvgeo::xs_compare_plot_L1(stream = stream,
+                                  xs_number = xs_number,
+                                  xs_pts_sf_list = xs_pts_sf_list,
+                                  extent = "floodplain")
+print(p3)
 
 test_that("xs_compare_plot_L1 exists", {
   expect_true("ggplot" %in% class(p))
