@@ -8,9 +8,10 @@
 #' @param cross_section_dimensions   data frame, sf: A
 #'                                   `cross_section_dimension` data structure
 #'                                   used by the fluvgeo package.
-#' @param step            character; Last completed processing step. One of
+#' @param step            character; Last completed processing step. One of:
 #'                        "level_1",
-#'                        "cross_section_dimensions", "shear_stress,
+#'                        "cross_section_dimensions",
+#'                        "rosgen_class", "shear_stress,
 #'                        "stream_power", "planform", "metric_ratios"
 #'
 #' @details Cross section dimension feature classes evolve as different steps
@@ -53,6 +54,7 @@
 check_cross_section_dimensions <- function(cross_section_dimensions,
                                            step = c("level_1",
                                                     "cross_section_dimensions",
+                                                    "rosgen",
                                                     "shear_stress",
                                                     "stream_power",
                                                     "planform",
@@ -62,6 +64,7 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
   # Check parameters
   steps <- c("level_1",
              "cross_section_dimensions",
+             "rosgen",
              "shear_stress",
              "stream_power",
              "planform",
@@ -193,7 +196,14 @@ check_cross_section_dimensions <- function(cross_section_dimensions,
     assert_that("floodprone_elev" %in% names(cross_section_dimensions_df) &
                   is.numeric(cross_section_dimensions_df$floodprone_elev),
                 msg = paste("Numeric field 'floodprone_elev' missing from", name))
+  }
 
+  # Step: rosgen_class
+  if(step %in% c("rosgen_class",
+                 "shear_stress", "stream_power", "planform", "metric_ratios")) {
+    # assert_that("thread_class" %in% names(cross_section_dimensions_df) &
+    #               is.character(cross_section_dimensions_df$thread_class),
+    #             msg = paste("Character field 'thread_class' missing from", name))
   }
 
   # Step: shear_stress
