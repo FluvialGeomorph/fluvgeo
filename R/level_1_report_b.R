@@ -1,6 +1,6 @@
-#' @title Level 1 Report
+#' @title Level 1 Report, version b
 #'
-#' @description  Creates a FluvialGeomorph Level 1 report.
+#' @description  Creates a FluvialGeomorph Level 1 report, version b.
 #'
 #' @export
 #' @param stream             character; The stream name. The stream name must
@@ -57,7 +57,7 @@
 #' @importFrom purrr discard map
 #' @importFrom rmarkdown render
 #'
-level_1_report <- function(stream, flowline_fc, cross_section_fc,
+level_1_report_b <- function(stream, flowline_fc, cross_section_fc,
                            flowline_points_1, flowline_points_2,
                            flowline_points_3, flowline_points_4,
                            xs_points_1, xs_points_2, xs_points_3, xs_points_4,
@@ -112,7 +112,7 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
                         "extent_factor" = extent_factor,
                         "output_format" = output_format)
 
-  report_template <- system.file("reports", "level_1_report.Rmd",
+  report_template <- system.file("reports", "level_1_report_b.Rmd",
                                  package = "fluvgeo")
 
   # Construct output_file paths
@@ -121,9 +121,9 @@ level_1_report <- function(stream, flowline_fc, cross_section_fc,
   if (output_format == "pdf_document")  {extension <- ".pdf"}
   stream_name <- gsub(" ", "_", stream, fixed = TRUE)
   temp_file   <- file.path(tempdir(),  paste0(stream_name,
-                                              "_level_1_report", extension))
+                                              "_level_1_report_b", extension))
   output_file <- file.path(output_dir, paste0(stream_name,
-                                              "_level_1_report", extension))
+                                              "_level_1_report_b", extension))
 
   # Render the report to temp_file
   rmarkdown::render(input = report_template,
