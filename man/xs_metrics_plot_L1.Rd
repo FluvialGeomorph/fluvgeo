@@ -30,10 +30,6 @@ One of "kilometers", "meters", "miles", or "feet"}
 A ggplot2 object.
 }
 \description{
-Produces a longitudinal plot of cross section metrics for the
-input stream reach.
-}
-\seealso{
-The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-SimpleFeatures data frame.
+Produces a longitudinal plot of Level 1 cross section metrics
+for the input stream reach.
 }
