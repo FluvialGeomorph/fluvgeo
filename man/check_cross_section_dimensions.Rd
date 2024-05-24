@@ -7,8 +7,8 @@ structure}
 \usage{
 check_cross_section_dimensions(
   cross_section_dimensions,
-  step = c("level_1", "cross_section_dimensions", "shear_stress", "stream_power",
-    "planform", "metric_ratios")
+  step = c("level_1", "cross_section_dimensions", "rosgen", "shear_stress",
+    "stream_power", "planform", "metric_ratios")
 )
 }
 \arguments{
@@ -16,9 +16,10 @@ check_cross_section_dimensions(
 `cross_section_dimension` data structure
 used by the fluvgeo package.}
 
-\item{step}{character; Last completed processing step. One of
+\item{step}{character; Last completed processing step. One of:
 "level_1",
-"cross_section_dimensions", "shear_stress,
+"cross_section_dimensions",
+"rosgen_class", "shear_stress,
 "stream_power", "planform", "metric_ratios"}
 }
 \value{
