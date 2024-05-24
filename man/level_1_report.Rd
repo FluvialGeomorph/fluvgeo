@@ -40,8 +40,8 @@ other parameters.}
 
 \item{flowline_fc}{character; The path to a `flowline` feature class.}
 
-\item{cross_section_fc}{character; The path to a cross section feature
-class.}
+\item{cross_section_fc}{character; The path to a Level 1 cross section
+dimensions feature class.}
 
 \item{flowline_points_1}{character; The path to a `flowline_points` feature
 class for the first time period.}

@@ -1,7 +1,7 @@
 #' @title Plot Level 1 Cross Section Metrics
 #'
-#' @description Produces a longitudinal plot of cross section metrics for the
-#' input stream reach.
+#' @description Produces a longitudinal plot of Level 1 cross section metrics
+#' for the input stream reach.
 #'
 #' @export
 #' @param xs_dims_sf      SimpleFeatures data frame of Level 1 cross section
@@ -14,9 +14,6 @@
 #'                        One of "kilometers", "meters", "miles", or "feet"
 #'
 #' @return A ggplot2 object.
-#'
-#' @seealso The \code{xs_metrics_plot} function requires a \code{xs_dimensions}
-#' SimpleFeatures data frame.
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data

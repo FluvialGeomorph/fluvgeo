@@ -4,7 +4,7 @@
 #'   xs_dims data frame.
 #'
 #' @export
-#' @param xs_dimensions   sf oject; A `cross_section_dimensions`
+#' @param xs_dimensions   sf object; A `cross_section_dimensions`
 #'                        fluvgeo data structure.
 #'
 #' @return Returns the input xs_dims data frame of cross sections with the
