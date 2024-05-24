@@ -7,7 +7,7 @@
 xs_metric_ratios(xs_dimensions)
 }
 \arguments{
-\item{xs_dimensions}{sf oject; A `cross_section_dimensions`
+\item{xs_dimensions}{sf object; A `cross_section_dimensions`
 fluvgeo data structure.}
 }
 \value{

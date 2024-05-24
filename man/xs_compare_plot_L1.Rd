@@ -4,7 +4,7 @@
 \alias{xs_compare_plot_L1}
 \title{Overplot multiple cross section profile surveys}
 \usage{
-xs_compare_plot_L1(stream, xs_number, xs_pts_sf_list)
+xs_compare_plot_L1(stream, xs_number, xs_pts_sf_list, extent = "all")
 }
 \arguments{
 \item{stream}{character; The name of the stream.}
@@ -16,6 +16,9 @@ section points, one for each survey time period
 to be graphed. Survey list items must be tagged
 with the survey label to be used in the graph
 legend.}
+
+\item{extent}{character; The extent of the cross section to
+plot. One of "all", "floodplain", or "channel".}
 }
 \value{
 A ggplot2 object.
