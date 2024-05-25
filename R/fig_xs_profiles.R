@@ -3,7 +3,7 @@
 #' @description
 #' Constructs a figure of plots describing a single cross section.
 #'
-#'
+#' @export
 #' @param cross_section       sf; A cross section lines feature class.
 #' @param xs_number           integer; The cross section `Seq` number of the
 #'                            requested cross section.
@@ -20,39 +20,39 @@
 #' @return A patchwork figure.
 #'
 #' @importFrom tmap tmap_grob
-#' @importFrom ggplot2 theme unit
+#' @importFrom ggplot2 + theme unit
 #' @importFrom patchwork plot_layout
 #'
-fig_xs_plot <- function(cross_section, xs_number, dem,
-                        banklines = NULL, extent_factor = 1,
-                        xs_pts_sf_list) {
+fig_xs_profiles <- function(cross_section, xs_number, dem,
+                            banklines = NULL, extent_factor = 1,
+                            xs_pts_sf_list) {
 
   stream <- unique(cross_section$ReachName)[1]
 
   # Create the cross section map
-  xs_map <- fluvgeo::map_xs(cross_section = cross_section_sf,
-                            xs_number = j,
-                            dem = dem_rast,
+  xs_map <- fluvgeo::map_xs(cross_section = cross_section,
+                            xs_number = xs_number,
+                            dem = dem,
                             extent_factor = extent_factor)
   # Convert the tmap object to a graphics object
   map_grb <- tmap::tmap_grob(xs_map)
 
   # Create cross section plots for each extent
   p_all <- fluvgeo::xs_compare_plot_L1(stream = stream,
-                                       xs_number = j,
+                                       xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
                                        extent = "all")
   p_fl  <- fluvgeo::xs_compare_plot_L1(stream = stream,
-                                       xs_number = j,
+                                       xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
                                        extent = "floodplain")
   p_ch <- fluvgeo::xs_compare_plot_L1(stream = stream,
-                                      xs_number = j,
+                                      xs_number = xs_number,
                                       xs_pts_sf_list = xs_pts_sf_list,
                                       extent = "channel")
 
   # Assemble cross section plots
-  p_xs <-  p_all + p_fl + p_ch +
+  p_xs <- p_all + p_fl + p_ch +
     patchwork::plot_layout(nrow = 3,
                            guides = "collect",
                            axes = "collect",
@@ -60,12 +60,8 @@ fig_xs_plot <- function(cross_section, xs_number, dem,
     ggplot2::theme(legend.position = "right")
 
   # Create patchwork figure
-  layout <- "
-  AAAA
-  BBBB
-  "
-  wrap_elements(full = map_grb, clip = FALSE) + p_xs +
+  patchwork::wrap_elements(full = map_grb, clip = FALSE) + p_xs +
     patchwork::plot_layout(nrow = 2,
-                           heights = unit(c(4, 4), c('in', 'in')))
+                           heights = ggplot2::unit(c(4, 4), c('in', 'in')))
 
 }
