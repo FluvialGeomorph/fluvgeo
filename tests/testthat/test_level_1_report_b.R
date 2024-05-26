@@ -50,7 +50,7 @@ exaggeration = 30
 extent_factor = 1.5
 output_dir = Sys.getenv("HOME")
 output_format <- "word_document"
-j = 8
+#j = 8
 
 test_that("report completed - local path", {
   expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report_b.docx")

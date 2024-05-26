@@ -24,7 +24,7 @@ level_1_report_b(
   channel_fc,
   floodplain_fc,
   dem,
-  show_xs_map = FALSE,
+  show_xs_map = TRUE,
   profile_units,
   aerial = TRUE,
   elevation = FALSE,

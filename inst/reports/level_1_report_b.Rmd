@@ -30,7 +30,6 @@ library(dplyr)
 library(knitr)
 library(pander)
 library(ggplot2)
-library(ggplotify)
 library(ggrepel)
 library(patchwork)
 library(tmap)
@@ -38,10 +37,6 @@ library(terra)
 library(terrainr)
 library(arcgisbinding)
 arcgisbinding::arc.check_product()
-```
-
-```{r}
-knitr::knit_hooks$set(crop = knitr::hook_pdfcrop)
 ```
 
 ## Study Area Overview
@@ -93,24 +88,25 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 
 ## Cross Section Profiles
 ```{r cross_section_plots, echo=FALSE, results='asis',fig.width=7, fig.height=9, warning=FALSE, error=FALSE, message=FALSE}
-if(params$show_xs_map) {
-  # Get dem raster
-  dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
+# Get dem raster
+dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
 
-  # Ensure that cross sections are sequentially ordered
-  cross_section <- dplyr::arrange(report_params$cross_section_sf, Seq)
+# Ensure that cross sections are sequentially ordered
+cross_section <- dplyr::arrange(report_params$cross_section_sf, Seq)
 
-  # Iterate through cross sections
-  for(j in unique(cross_section$Seq)) {
-    # Create cross section profiles plot
-     print(fig_xs_profiles(cross_section = cross_section,
-                           xs_number = j,
-                           dem = dem_rast,
-                           channel = report_params$channel_sf,
-                           floodplain = report_params$floodplain_sf,
-                           extent_factor = extent_factor,
-                           xs_pts_sf_list = xs_pts_sf_list))
-  }
+# Iterate through cross sections
+for(j in unique(cross_section$Seq)) {
+  # Create cross section profiles plot
+  print(fig_xs_profiles(cross_section = cross_section,
+                        xs_number = j,
+                        dem = dem_rast,
+                        channel = report_params$channel_sf,
+                        floodplain = report_params$floodplain_sf,
+                        extent_factor = extent_factor,
+                        xs_pts_sf_list = xs_pts_sf_list))
+  # Insert vertical white space so that next figure in loop is recognized
+  cat('\n')
+  # Must set chunk option`results='asis'` to ensure table is drawn properly
 }
 ```
 
