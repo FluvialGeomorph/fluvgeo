@@ -166,7 +166,6 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
     print(fluvgeo::map_xs(cross_section = params$xs_sf,
                           xs_number = j,
                           dem = dem_rast,
-                          banklines = params$banklines_sf,
                           extent_factor = params$extent_factor))
   }
   pander::pandoc.p('')
