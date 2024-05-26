@@ -32,7 +32,13 @@ survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/features")
-dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
+channel_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                     package = "fluvgeo"),
+                         "feature_dataset/channel_103")
+floodplain_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                       package = "fluvgeo"),
+                           "feature_dataset/floodplain_112")
+dem         <- file.path(system.file("extdata","y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "dem_2016_hydro_50")
 show_xs_map <- TRUE
@@ -41,10 +47,10 @@ aerial <- TRUE
 elevation = TRUE
 xs_label_freq = 10
 exaggeration = 30
-extent_factor = 1.1
+extent_factor = 1.5
 output_dir = Sys.getenv("HOME")
 output_format <- "word_document"
-j = 8
+#j = 8
 
 test_that("report completed - local path", {
   expected_report <- file.path(output_dir, "Cole_Creek_R1_level_1_report_b.docx")
@@ -56,7 +62,8 @@ test_that("report completed - local path", {
                         xs_points_1, xs_points_2, xs_points_3, xs_points_4,
                         survey_name_1, survey_name_2,
                         survey_name_3, survey_name_4,
-                        features_fc, dem, show_xs_map, profile_units,
+                        features_fc, channel_fc, floodplain_fc,
+                        dem, show_xs_map, profile_units,
                         aerial, elevation,
                         xs_label_freq, exaggeration, extent_factor,
                         output_dir, output_format)
@@ -77,7 +84,8 @@ test_that("report completed - network path", {
                         xs_points_1, xs_points_2, xs_points_3, xs_points_4,
                         survey_name_1, survey_name_2,
                         survey_name_3, survey_name_4,
-                        features_fc, dem, show_xs_map, profile_units,
+                        features_fc, channel_fc, floodplain_fc,
+                        dem, show_xs_map, profile_units,
                         aerial, elevation,
                         xs_label_freq, exaggeration, extent_factor,
                         output_dir, output_format)

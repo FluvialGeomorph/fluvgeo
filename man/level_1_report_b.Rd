@@ -21,8 +21,10 @@ level_1_report_b(
   survey_name_3,
   survey_name_4,
   features_fc,
+  channel_fc,
+  floodplain_fc,
   dem,
-  show_xs_map = FALSE,
+  show_xs_map = TRUE,
   profile_units,
   aerial = TRUE,
   elevation = FALSE,
@@ -76,6 +78,12 @@ class for the fourth time period.}
 \item{survey_name_4}{character: The name or date of the fourth survey.}
 
 \item{features_fc}{character; The path to a `features` feature class.}
+
+\item{channel_fc}{character; The path to the `channel` polygon
+feature class.}
+
+\item{floodplain_fc}{character; The path to the `floodplain` polygon
+feature class.}
 
 \item{dem}{character; The path to the DEM raster.}
 

@@ -4,13 +4,12 @@
 #' section.
 #'
 #' @export
-#' @param cross_section       sf; A cross section lines
-#'                            feature class.
+#' @param cross_section       sf; A cross section lines feature class.
 #' @param xs_number           integer; The cross section identifier of the
 #'                            requested cross section.
 #' @param dem                 terra SpatRaster; A dem raster.
-#' @param banklines           sf; A banklines feature
-#'                            class (optional).
+#' @param channel             sf; A channel polygon feature class (optional).
+#' @param floodplain          sf; A floodplain polygon feature class (optional).
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.
 #'
@@ -20,24 +19,25 @@
 #' @importFrom terra crop terrain shade
 #' @importFrom grDevices colorRampPalette grey.colors
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
-#'             tm_compass tm_scale_bar tm_layout
+#'             tm_compass tm_scale_bar tm_layout tm_borders
 #'
 map_xs <- function(cross_section, xs_number, dem,
-                   banklines = NULL,
+                   channel = NULL,
+                   floodplain = NULL,
                    extent_factor = 1) {
   # Check data structure
   check_cross_section(cross_section, step = "assign_ids")
-  if(!is.null(banklines)) {
-    check_banklines(banklines)
-  }
 
   # Get DEM spatial reference system
   dem_CRS <- sf::st_crs(dem)
 
   # Reproject so all layers in the same coordinate system as the DEM
   cross_section_dem <- sf::st_transform(cross_section, crs = dem_CRS)
-  if(!is.null(banklines)) {
-    banklines_dem <- sf::st_transform(banklines, crs = dem_CRS)
+  if(!is.null(channel)) {
+    channel_dem <- sf::st_transform(channel, crs = dem_CRS)
+  }
+  if(!is.null(floodplain)) {
+    floodplain_dem <- sf::st_transform(floodplain, crs = dem_CRS)
   }
 
   # Subset cross_section for the requested xs_number
@@ -79,7 +79,7 @@ map_xs <- function(cross_section, xs_number, dem,
               style = "cont",
               palette = esri_topo(1000),
               alpha = 0.7,
-              title = "Elevation (NAVD88, ft)",
+              title = "Elevation \n (NAVD88, ft)",
               legend.show = TRUE) +
     tm_shape(shp = cross_section_dem,
              name = "Cross Section",
@@ -99,21 +99,31 @@ map_xs <- function(cross_section, xs_number, dem,
     tm_layout(main.title = paste("Cross Section", xs_number),
               legend.outside = TRUE,
               legend.outside.position = "right",
+              outer.bg.color = "white",
+              outer.margins = c(0, 0, 0, 0),
               frame.lwd = 3)
 
-  if(!is.null(banklines)) {
-    banklines_map <- tm_shape(shp = banklines_dem,
-                              name = "Banklines") +
-      tm_lines(col = "blue", lwd = 1,
-               legend.lwd.show = ) +
+  if(!is.null(channel)) {
+    channel_map <- tm_shape(shp = channel_dem,
+                            name = "Channel") +
+      tm_borders(col = "blue", lwd = 2) +
       tm_add_legend(type = "line",
-                    labels = "Bankfull",
+                    labels = "Channel",
                     col = "blue",
-                    lwd = 1)
+                    lwd = 2)
+  }
+  if(!is.null(floodplain)) {
+    floodplain_map <- tm_shape(shp = floodplain_dem,
+                               name = "Floodplain") +
+      tm_borders(col = "forestgreen", lwd = 2) +
+      tm_add_legend(type = "line",
+                    labels = "Floodplain",
+                    col = "forestgreen",
+                    lwd = 2)
   }
 
   # Return the plot
-  if(!is.null(banklines)) return(xs_map + banklines_map)
-  if(is.null(banklines)) return(xs_map)
+  if(!is.null(channel) & !is.null(floodplain)) return(xs_map + channel_map + floodplain_map)
+  if(is.null(channel)) return(xs_map)
 }
 

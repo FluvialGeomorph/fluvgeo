@@ -1,3 +1,17 @@
+# fluvgeo v0.1.51 (2024-05-26)
+
+## Major changes
+* Added the report `level_1_report_b` to enable a modification of the level 1 workflow and improve cross section figures. 
+* Added the new `fig_xs_profiles` figure to more compactly represent individual cross section maps and their plots. 
+* Updated the `map_xs` function to map the `channel` and `floodplain` polygons instead of the `banklines` line feature class. 
+* Extended the `xs_compare_plot_L1` function to support filtering of cross section station locations to either all, floodplain, or channel.
+
+## Minor changes
+* Fixed a bug in the `cross_section_dimensions_L2` function. 
+
+***
+
+
 # fluvgeo v0.1.50 (2024-04-11)
 
 ## Major changes
