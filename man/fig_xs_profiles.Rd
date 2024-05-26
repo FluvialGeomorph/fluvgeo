@@ -8,7 +8,8 @@ fig_xs_profiles(
   cross_section,
   xs_number,
   dem,
-  banklines = NULL,
+  channel = NULL,
+  floodplain = NULL,
   extent_factor = 1,
   xs_pts_sf_list
 )
@@ -21,7 +22,9 @@ requested cross section.}
 
 \item{dem}{terra SpatRaster; A dem raster.}
 
-\item{banklines}{sf; A banklines feature class (optional).}
+\item{channel}{sf; A channel polygon feature class (optional).}
+
+\item{floodplain}{sf; A floodplain polygon feature class (optional).}
 
 \item{extent_factor}{numeric; A numeric value used to expand the map
 extent around each cross section.'}
