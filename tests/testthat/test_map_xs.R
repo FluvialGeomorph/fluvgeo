@@ -1,24 +1,29 @@
-cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
+cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                           package = "fluvgeo"),
-                              "feature_dataset/riffle_channel")
-banklines_fc     <- file.path(system.file("extdata", "testing_data.gdb",
+                              "feature_dataset/xs_50")
+channel_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
                                           package = "fluvgeo"),
-                              "feature_dataset/banklines")
-dem_path        <- file.path(system.file("extdata",
-                                         package = "fluvgeo"),
-                             "dem_1m.tif")
+                              "feature_dataset/channel_103")
+floodplain_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                        package = "fluvgeo"),
+                            "feature_dataset/floodplain_112")
+dem_path       <- file.path(system.file("extdata",
+                                        package = "fluvgeo"),
+                            "dem_2016_hydro_50.tif")
 
 cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
-banklines     <- fluvgeo::fc2sf(banklines_fc, quiet = TRUE)
+channel       <- fluvgeo::fc2sf(channel_fc, quiet = TRUE)
+floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
 dem           <- terra::rast(dem_path)
-xs_number <- 3
-extent_factor <- 1.8
+xs_number <- 10
+extent_factor <- 1.5
 
 test_that("check map_xs with sf inputs", {
   xs_map_sf <- fluvgeo::map_xs(cross_section = cross_section,
                                xs_number = xs_number,
                                dem = dem,
-                               banklines = banklines,
+                               channel = channel,
+                               floodplain = floodplain,
                                extent_factor = extent_factor)
   print(xs_map_sf)
 
@@ -26,7 +31,7 @@ test_that("check map_xs with sf inputs", {
   expect_error(print(xs_map_sf), NA)
 })
 
-test_that("check map_xs with no banklines", {
+test_that("check map_xs with no channel and floodplain", {
   xs_map_nb <- map_xs(cross_section = cross_section,
                       xs_number = xs_number,
                       dem = dem,
@@ -47,7 +52,8 @@ test_that("check map_xs with different coordinate system inputs", {
   xs_map_sf_il <- map_xs(cross_section = cross_section_il,
                          xs_number = xs_number,
                          dem = dem,
-                         banklines = banklines,
+                         channel = channel,
+                         floodplain = floodplain,
                          extent_factor = extent_factor)
   print(xs_map_sf_il)
 
