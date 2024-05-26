@@ -1,4 +1,7 @@
 <PAMDataset>
+  <Metadata>
+    <MDI key="DataType">Generic</MDI>
+  </Metadata>
   <PAMRasterBand band="1">
     <Description>Band_1</Description>
     <Histograms>
@@ -13,8 +16,6 @@
     </Histograms>
     <Metadata>
       <MDI key="STATISTICS_COUNT">963132.000000</MDI>
-      <MDI key="STATISTICS_COVARIANCES">2.401009536586544e+76</MDI>
-      <MDI key="STATISTICS_EXCLUDEDVALUES"></MDI>
       <MDI key="STATISTICS_MAXIMUM">3.3999999521444e+38</MDI>
       <MDI key="STATISTICS_MEAN">1.0007197211119e+38</MDI>
       <MDI key="STATISTICS_MEDIAN">0.000000</MDI>
