@@ -8,7 +8,8 @@
 #' @param xs_number           integer; The cross section `Seq` number of the
 #'                            requested cross section.
 #' @param dem                 terra SpatRaster; A dem raster.
-#' @param banklines           sf; A banklines feature class (optional).
+#' @param channel             sf; A channel polygon feature class (optional).
+#' @param floodplain          sf; A floodplain polygon feature class (optional).
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.'
 #' @param xs_pts_sf_list      list; a list of `sf` objects of cross
@@ -24,18 +25,23 @@
 #' @importFrom patchwork plot_layout
 #'
 fig_xs_profiles <- function(cross_section, xs_number, dem,
-                            banklines = NULL, extent_factor = 1,
+                            channel = NULL, floodplain = NULL,
+                            extent_factor = 1,
                             xs_pts_sf_list) {
 
   stream <- unique(cross_section$ReachName)[1]
 
   # Create the cross section map
+  dev.new(width = 6, height = 4, noRStudioGD = TRUE)
   xs_map <- fluvgeo::map_xs(cross_section = cross_section,
                             xs_number = xs_number,
+                            channel = channel,
+                            floodplain = floodplain,
                             dem = dem,
                             extent_factor = extent_factor)
   # Convert the tmap object to a graphics object
   map_grb <- tmap::tmap_grob(xs_map)
+  dev.off()
 
   # Create cross section plots for each extent
   p_all <- fluvgeo::xs_compare_plot_L1(stream = stream,
@@ -60,8 +66,9 @@ fig_xs_profiles <- function(cross_section, xs_number, dem,
     ggplot2::theme(legend.position = "right")
 
   # Create patchwork figure
-  patchwork::wrap_elements(full = map_grb, clip = FALSE) + p_xs +
+  xs_fig <- patchwork::wrap_elements(panel = map_grb, clip = TRUE) + p_xs +
     patchwork::plot_layout(nrow = 2,
                            heights = ggplot2::unit(c(4, 4), c('in', 'in')))
 
+  return(xs_fig)
 }

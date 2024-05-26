@@ -1,18 +1,22 @@
 cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                           package = "fluvgeo"),
                               "feature_dataset/riffle_channel")
-banklines_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                          package = "fluvgeo"),
-                              "feature_dataset/banklines")
+channel_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                        package = "fluvgeo"),
+                            "feature_dataset/channel_103")
+floodplain_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                        package = "fluvgeo"),
+                            "feature_dataset/floodplain_112")
 dem_path        <- file.path(system.file("extdata",
                                          package = "fluvgeo"),
                              "dem_2016_hydro_50.tif")
 
 cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
-banklines     <- fluvgeo::fc2sf(banklines_fc, quiet = TRUE)
+channel       <- fluvgeo::fc2sf(channel_fc, quiet = TRUE)
+floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
 dem           <- terra::rast(dem_path)
-xs_number <- 3
-extent_factor <- 1.8
+xs_number <- 8
+extent_factor <- 2
 xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
@@ -42,12 +46,13 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-p1 <- fig_xs_profiles(cross_section = cross_section,
-                      xs_number = xs_number,
-                      dem = dem,
-                      banklines = banklines,
-                      extent_factor = extent_factor,
-                      xs_pts_sf_list = xs_pts_sf_list)
+p1 <- fluvgeo::fig_xs_profiles(cross_section = cross_section,
+                               xs_number = xs_number,
+                               dem = dem,
+                               channel = channel,
+                               floodplain = floodplain,
+                               extent_factor = extent_factor,
+                               xs_pts_sf_list = xs_pts_sf_list)
 print(p1)
 
 test_that("fig_xs_profiles a patchwork object", {
