@@ -27,8 +27,11 @@
 #'
 #' @importFrom tmap tmap_grob
 #' @importFrom ggplot2 + theme unit
-#' @importFrom dplyr %>% filter
-#' @importFrom patchwork plot_layout
+#' @importFrom dplyr %>% filter arrange distinct
+#' @importFrom grid textGrob grobHeight gpar
+#' @importFrom gtable gtable_add_rows gtable_add_grob
+#' @importFrom gridExtra ttheme_default tableGrob
+#' @importFrom patchwork wrap_elements plot_layout plot_spacer
 #'
 fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                                channel = NULL, floodplain = NULL,
@@ -51,15 +54,15 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
   dev.off()
 
   # Create cross section plots for each extent
-  p_all <- fluvgeo::xs_compare_plot_L2(stream = stream,
+  p_all <- fluvgeo::xs_compare_plot_L1(stream = stream,
                                        xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
                                        extent = "all")
-  p_fl  <- fluvgeo::xs_compare_plot_L2(stream = stream,
+  p_fl  <- fluvgeo::xs_compare_plot_L1(stream = stream,
                                        xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
                                        extent = "floodplain")
-  p_ch <- fluvgeo::xs_compare_plot_L2(stream = stream,
+  p_ch <- fluvgeo::xs_compare_plot_L1(stream = stream,
                                       xs_number = xs_number,
                                       xs_pts_sf_list = xs_pts_sf_list,
                                       extent = "channel")
@@ -74,19 +77,59 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                                  streams = unique(xs_pts_channel$ReachName),
                                  regions = regions,
                                  bankfull_elevations = bf_estimate)
+  # Create table
+  dims_table <- dims %>%
+    distinct() %>%
+    select(-c("reach_name", "cross_section", "bankfull_elevation",
+              "discharge")) %>%
+    mutate(across(2:5, \(x) round(x, 1))) %>%
+    mutate(xs_type = recode(xs_type,
+                            "DEM derived cross section" = "DEM derived")) %>%
+    arrange(xs_type) %>%
+    arrange(match(xs_type, c("DEM derived")))
+
+  tt <- ttheme_default(base_size = 10,
+                       padding = unit(c(3, 3), "mm"),
+                       core = list(
+                         fg_params = list(hjust = 0, x = 0.05)),
+                       colhead = list(
+                         fg_params = list(hjust = 0, x = 0.05, parse = TRUE)))
+
+  table <- tableGrob(dims_table, rows = NULL,
+                     cols = c("\nRegional Curve",
+                              "Drainage Area\n[sq miles]",
+                              "Area\n[sq feet]",
+                              "Width\n[feet]",
+                              "Depth\n[feet]"),
+                     theme = tt)
+  title <- textGrob("Cross Section Dimensions",
+                    hjust = 0, x = 0,
+                    gp = gpar(fontsize = 12, fontface = "bold"))
+  table <- gtable_add_rows(table,
+                           heights = grobHeight(title) + unit(2,"mm"),
+                           pos = 0)
+  table_grob <- gtable_add_grob(table, title,
+                                t = 1, l = 1, b = 1,
+                                r = ncol(table))
+  #grid::grid.draw(table_grob)
 
   # Assemble cross section plots
   p_xs <- p_all + p_fl + p_ch +
-    patchwork::plot_layout(nrow = 3,
-                           guides = "collect",
-                           axes = "collect",
-                           axis_titles = "collect") &
-    ggplot2::theme(legend.position = "right")
+    plot_layout(nrow = 3,
+                guides = "collect",
+                axes = "collect",
+                axis_titles = "collect") &
+    theme(legend.position = "right")
 
   # Create patchwork figure
-  xs_fig <- patchwork::wrap_elements(panel = map_grb, clip = TRUE) + p_xs +
-    patchwork::plot_layout(nrow = 2,
-                           heights = ggplot2::unit(c(4, 4), c('in', 'in')))
+  xs_fig <- wrap_elements(panel = map_grb, clip = TRUE) +
+    p_xs +
+    plot_spacer() +
+    wrap_elements(plot = table_grob, clip = FALSE) +
+    plot_layout(nrow = 4,
+                heights = unit(c(4, 4, 0.1, 1),
+                               rep('in', 4)))
 
+  #xs_fig
   return(xs_fig)
 }
