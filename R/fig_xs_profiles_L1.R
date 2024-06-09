@@ -24,10 +24,10 @@
 #' @importFrom ggplot2 theme unit
 #' @importFrom patchwork plot_layout
 #'
-fig_xs_profiles <- function(cross_section, xs_number, dem,
-                            channel = NULL, floodplain = NULL,
-                            extent_factor = 1,
-                            xs_pts_sf_list) {
+fig_xs_profiles_L1 <- function(cross_section, xs_number, dem,
+                               channel = NULL, floodplain = NULL,
+                               extent_factor = 1,
+                               xs_pts_sf_list) {
 
   stream <- unique(cross_section$ReachName)[1]
 

@@ -46,16 +46,16 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-p1 <- fluvgeo::fig_xs_profiles(cross_section = cross_section,
-                               xs_number = xs_number,
-                               dem = dem,
-                               channel = channel,
-                               floodplain = floodplain,
-                               extent_factor = extent_factor,
-                               xs_pts_sf_list = xs_pts_sf_list)
+p1 <- fluvgeo::fig_xs_profiles_L1(cross_section = cross_section,
+                                  xs_number = xs_number,
+                                  dem = dem,
+                                  channel = channel,
+                                  floodplain = floodplain,
+                                  extent_factor = extent_factor,
+                                  xs_pts_sf_list = xs_pts_sf_list)
 print(p1)
 
-test_that("fig_xs_profiles a patchwork object", {
+test_that("fig_xs_profiles_L1 returns a patchwork object", {
   expect_true("patchwork" %in% class(p1))
   expect_error(print(p1), NA)
 })
