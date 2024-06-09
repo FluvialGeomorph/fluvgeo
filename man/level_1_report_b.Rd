@@ -32,7 +32,7 @@ level_1_report_b(
   exaggeration = 10,
   extent_factor = 1.2,
   output_dir,
-  output_format
+  output_format = "word_document"
 )
 }
 \arguments{

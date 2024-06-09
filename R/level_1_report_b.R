@@ -72,8 +72,7 @@ level_1_report_b <- function(stream, flowline_fc, cross_section_fc,
                            aerial = TRUE, elevation = FALSE,
                            xs_label_freq = 5, exaggeration = 10,
                            extent_factor = 1.2,
-                           output_dir, output_format) {
-
+                           output_dir, output_format = "word_document") {
   # Create list of survey paths
   flowline_points_paths <- list(flowline_points_1, flowline_points_2,
                                 flowline_points_3, flowline_points_4)
