@@ -1,0 +1,167 @@
+---
+title: "FluvialGeomorph Level 2 Report"
+params:
+  stream: ""
+  flowline_sf:  ""
+  xs_sf: ""
+  xs_dims_sf: ""
+  xs_pts_sf_list: ""
+  dem: ""
+  banklines_sf: ""
+  features_sf: ""
+  bf_estimate: ""
+  regions: ""
+  label_xs: TRUE
+  show_xs_map: FALSE
+  profile_units: "kilometers"
+  aerial: TRUE
+  elevation: FALSE
+  xs_label_freq: 5
+  exaggeration: 10
+  extent_factor: 1.1
+output: 
+  word_document:
+    reference_docx: word_template.docx
+---
+
+```{r library, eval=TRUE, include=FALSE}
+library(fluvgeo)
+library(sf)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(ggrepel)
+library(patchwork)
+library(tmap)
+library(terra)
+library(terrainr)
+library(arcgisbinding)
+arcgisbinding::arc.check_product()
+```
+
+## Study Area Overview: `r params$stream`
+```{r aerial_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(params$show_xs_map & params$aerial) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$xs_dims_sf,
+                                    background = "aerial",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+```{r elevation_overview, echo=FALSE, warning=FALSE, message=FALSE, results="hide", fig.width=7, fig.height=7, fig.cap="Reach Overview Map"}
+if(params$show_xs_map & params$elevation) {
+  print(fluvgeo::map_reach_overview(flowline = params$flowline_sf, 
+                                    cross_section = params$xs_dims_sf,
+                                    background = "elevation",
+                                    xs_label_freq = params$xs_label_freq,
+                                    extent_factor = params$extent_factor))
+}
+```
+
+## Longitudinal Profile
+```{r, longitudinal_profile_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=7, fig.cap="Longitudinal Profile Plot"}
+
+print(fluvgeo::xs_profile_plot(reach_xs_dims = xs_dims_sf, 
+                               features = features_sf, 
+                               label_xs = params$label_xs,
+                               xs_label_freq = params$xs_label_freq,
+                               profile_units = params$profile_units))
+```
+
+## Cross Section Metrics
+```{r, xs_metrics_plot, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=9, fig.cap="Cross Section Metrics Plot. ", warning=FALSE}
+print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf, 
+                                  features_sf = params$features_sf,
+                                  label_xs = params$label_xs,
+                                  xs_label_freq = params$xs_label_freq,
+                                  profile_units = params$profile_units))
+```
+
+## Width Depth Ratio
+```{r, wdr, echo=FALSE}
+# Create the fluvgeo::FluvialGeomorphicMetric object
+wdr <- new(Class = "FluvialGeomorphicMetric",
+           metric = "Width Depth Ratio",
+           definition = "bankfull width / bankfull depth",
+           variable = "xs_width_depth_ratio",
+           threshold_breaks = c(0, 10, 20, Inf),
+           threshold_labels = c("Incised",
+                                "Stable",
+                                "Overwidened"),
+           source = "Dunn & Leopold, 1978")
+```
+
+```{r, wdr_map, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Width depth Ratio Map", warning=FALSE, message=FALSE}
+if(params$show_xs_map) {
+  # Set background
+  if(params$aerial & params$elevation)   {background <- "aerial"}
+  if(params$aerial & !params$elevation)  {background <- "aerial"}
+  if(!params$aerial & params$elevation)  {background <- "elevation"}
+  if(!params$aerial & !params$elevation) {background <- "none"}
+  print(fluvgeo::map_reach_metric(wdr,
+                                  flowline = params$flowline_sf,
+                                  xs_label_freq = params$xs_label_freq,
+                                  xs_dimensions = params$xs_dims_sf,
+                                  background = background))
+}
+```
+
+```{r wdr_plot, eval=TRUE, echo=FALSE, fig.width=7, fig.cap="Width Depth Ratio Graph", warning=FALSE}
+print(fluvgeo::xs_metric_plot(metric = wdr,
+                              reach_xs_dims = params$xs_dims_sf,
+                              label_xs = TRUE,
+                              xs_label_freq = params$xs_label_freq,
+                              profile_units = params$profile_units))
+```
+
+## Cross Section Geometry
+The figure below displays the selected regional hydraulic geometry curves plotted with the values for each of the cross sections in the current reach.
+
+```{r, regional_curve_graph, eval=TRUE, echo=FALSE, results='asis', fig.width=7, fig.height=8, fig.cap="Regional Hydraulic Geometry Curves"}
+# Calculate cross section dimensions
+xs_pts <- params$xs_pts_sf_list[[1]]
+
+# Calculate cross section dimensions for the reach regional curves graph
+xs_dims <- xs_dimensions(xs_points = xs_pts,
+                         streams = params$stream,
+                         regions = params$regions,
+                         bankfull_elevations = c(params$bf_estimate))
+
+# Draw reach regional curves graph
+print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
+                               streams = params$stream,
+                               bf_elevation = params$bf_estimate))
+```
+
+## Cross Section Profiles
+This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the the current cross section, while subsequent rows contain hydraulic geometry dimensions for selected regions.
+
+```{r cross_section_plots, echo=FALSE, results='asis',fig.width=7, fig.height=9, warning=FALSE, error=FALSE, message=FALSE}
+# Get dem raster
+dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
+
+# Ensure that cross sections are sequentially ordered
+cross_section <- dplyr::arrange(report_params$cross_section_sf, Seq)
+
+# Iterate through cross sections
+for(j in unique(cross_section$Seq)) {
+  # Create cross section profiles plot
+  print(fig_xs_profiles_L2(cross_section = cross_section,
+                           xs_number = j,
+                           dem = dem_rast,
+                           channel = params$channel_sf,
+                           floodplain = params$floodplain_sf,
+                           bf_estimate = params$bf_estimate,
+                           regions = params$regions,
+                           extent_factor = params$extent_factor,
+                           xs_pts_sf_list = params$xs_pts_sf_list))
+  # Insert vertical white space so that next figure in loop is recognized
+  cat('\n')
+  # Must set chunk option`results='asis'` to ensure table is drawn properly
+}
+```
+
+
+version 0.1.48
