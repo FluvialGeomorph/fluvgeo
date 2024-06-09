@@ -6,9 +6,10 @@ params:
   xs_sf: ""
   xs_dims_sf: ""
   xs_pts_sf_list: ""
-  dem: ""
-  banklines_sf: ""
   features_sf: ""
+  channel_sf: ""
+  floodplain_sf: ""
+  dem: ""
   bf_estimate: ""
   regions: ""
   label_xs: TRUE
@@ -19,6 +20,7 @@ params:
   xs_label_freq: 5
   exaggeration: 10
   extent_factor: 1.1
+  output_format: "word_document"
 output: 
   word_document:
     reference_docx: word_template.docx
