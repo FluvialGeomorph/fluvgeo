@@ -26,8 +26,8 @@
 #' @return A patchwork figure.
 #'
 #' @importFrom tmap tmap_grob
-#' @importFrom ggplot2 + theme unit
-#' @importFrom dplyr %>% filter arrange distinct
+#' @importFrom ggplot2 theme unit
+#' @importFrom dplyr %>% filter select arrange mutate recode across distinct
 #' @importFrom grid textGrob grobHeight gpar
 #' @importFrom gtable gtable_add_rows gtable_add_grob
 #' @importFrom gridExtra ttheme_default tableGrob
@@ -54,18 +54,32 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
   dev.off()
 
   # Create cross section plots for each extent
-  p_all <- fluvgeo::xs_compare_plot_L1(stream = stream,
+  p_all <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                        xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
+                                       bankfull_elevation = bf_estimate,
+                                       aspect_ratio = NULL,
                                        extent = "all")
-  p_fl  <- fluvgeo::xs_compare_plot_L1(stream = stream,
+  p_fl  <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                        xs_number = xs_number,
                                        xs_pts_sf_list = xs_pts_sf_list,
+                                       bankfull_elevation = bf_estimate,
+                                       aspect_ratio = NULL,
                                        extent = "floodplain")
-  p_ch <- fluvgeo::xs_compare_plot_L1(stream = stream,
+  p_ch <- fluvgeo::xs_compare_plot_L2(stream = stream,
                                       xs_number = xs_number,
                                       xs_pts_sf_list = xs_pts_sf_list,
+                                      bankfull_elevation = bf_estimate,
+                                      aspect_ratio = NULL,
                                       extent = "channel")
+  # Assemble cross section plots
+  p_xs <- p_all + p_fl + p_ch +
+    plot_layout(nrow = 3,
+                guides = "collect",
+                axes = "collect",
+                axis_titles = "collect") &
+    theme(legend.position = "right")
+  p_xs
 
   # Calculate cross section geometry
   latest_survey <- length(xs_pts_sf_list)
@@ -112,14 +126,6 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                                 t = 1, l = 1, b = 1,
                                 r = ncol(table))
   #grid::grid.draw(table_grob)
-
-  # Assemble cross section plots
-  p_xs <- p_all + p_fl + p_ch +
-    plot_layout(nrow = 3,
-                guides = "collect",
-                axes = "collect",
-                axis_titles = "collect") &
-    theme(legend.position = "right")
 
   # Create patchwork figure
   xs_fig <- wrap_elements(panel = map_grb, clip = TRUE) +
