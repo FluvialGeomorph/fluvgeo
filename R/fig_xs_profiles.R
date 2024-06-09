@@ -21,7 +21,7 @@
 #' @return A patchwork figure.
 #'
 #' @importFrom tmap tmap_grob
-#' @importFrom ggplot2 + theme unit
+#' @importFrom ggplot2 theme unit
 #' @importFrom patchwork plot_layout
 #'
 fig_xs_profiles <- function(cross_section, xs_number, dem,
