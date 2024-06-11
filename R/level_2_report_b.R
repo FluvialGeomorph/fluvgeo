@@ -58,7 +58,7 @@
 #' requested file format.
 #'
 #' @importFrom rmarkdown render
-#' @importFrom purrr discard
+#' @importFrom purrr discard map
 #'
 level_2_report_b <- function(stream, flowline_fc, xs_fc, xs_dims_fc,
                              xs_points_1, xs_points_2,xs_points_3, xs_points_4,
