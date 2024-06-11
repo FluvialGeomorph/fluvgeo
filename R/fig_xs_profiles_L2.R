@@ -10,11 +10,11 @@
 #' @param dem                 terra SpatRaster; A dem raster.
 #' @param channel             sf; A channel polygon feature class (optional).
 #' @param floodplain          sf; A floodplain polygon feature class (optional).
-#' @param bf_estimate        numeric; Detrended bankfull estimate (units:
-#'                           detrended feet).
-#' @param regions            character vector; Regions to calculate hydraulic
-#'                           dimensions for. See the `RegionalCurve` package for
-#'                           a list of regions.
+#' @param bf_estimate         numeric; Detrended bankfull estimate (units:
+#'                            detrended feet).
+#' @param regions             character vector; Regions to calculate hydraulic
+#'                            dimensions for. See the `RegionalCurve` package for
+#'                            a list of regions.
 #' @param extent_factor       numeric; A numeric value used to expand the map
 #'                            extent around each cross section.'
 #' @param xs_pts_sf_list      list; a list of `sf` objects of cross
@@ -79,60 +79,30 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                 axes = "collect",
                 axis_titles = "collect") &
     theme(legend.position = "right")
-  p_xs
+  #p_xs
 
-  # Calculate cross section geometry
+  # Create xs dimensions table
   latest_survey <- length(xs_pts_sf_list)
-  xs_pts_channel <- xs_pts_sf_list[[latest_survey]] %>%
-    filter(Seq == xs_number) %>%
-    filter(channel == 1)
+  xs_pts_sf <- xs_pts_sf_list[[latest_survey]]
 
-  dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_channel,
-                                 streams = unique(xs_pts_channel$ReachName),
-                                 regions = regions,
-                                 bankfull_elevations = bf_estimate)
-  # Create table
-  dims_table <- dims %>%
-    distinct() %>%
-    select(-c("reach_name", "cross_section", "bankfull_elevation",
-              "discharge")) %>%
-    mutate(across(2:5, \(x) round(x, 1))) %>%
-    mutate(xs_type = recode(xs_type,
-                            "DEM derived cross section" = "DEM derived")) %>%
-    arrange(xs_type) %>%
-    arrange(match(xs_type, c("DEM derived")))
-
-  tt <- ttheme_default(base_size = 10,
-                       padding = unit(c(3, 3), "mm"),
-                       core = list(
-                         fg_params = list(hjust = 0, x = 0.05)),
-                       colhead = list(
-                         fg_params = list(hjust = 0, x = 0.05, parse = TRUE)))
-
-  table <- tableGrob(dims_table, rows = NULL,
-                     cols = c("\nRegional Curve",
-                              "Drainage Area\n[sq miles]",
-                              "Area\n[sq feet]",
-                              "Width\n[feet]",
-                              "Depth\n[feet]"),
-                     theme = tt)
-  title <- textGrob("Cross Section Dimensions",
-                    hjust = 0, x = 0,
-                    gp = gpar(fontsize = 12, fontface = "bold"))
-  table <- gtable_add_rows(table,
-                           heights = grobHeight(title) + unit(2,"mm"),
-                           pos = 0)
-  table_grob <- gtable_add_grob(table, title,
-                                t = 1, l = 1, b = 1,
-                                r = ncol(table))
-  #grid::grid.draw(table_grob)
+  t1 <- table_xs_dimensions(xs_pts_sf = xs_pts_sf,
+                            xs_number = xs_number,
+                            bf_estimate = bf_estimate,
+                            regions = regions)
 
   # Create patchwork figure
+  layout <-"AAA
+            BBB
+            CCC
+            DDD"
   xs_fig <- wrap_elements(panel = map_grb, clip = TRUE) +
     p_xs +
     plot_spacer() +
-    wrap_elements(plot = table_grob, clip = FALSE) +
-    plot_layout(nrow = 4,
+    wrap_elements(full = t1, clip = TRUE) +
+    plot_layout(#nrow = 4,
+                design = layout,
+                #widths  = unit(c(7, 7, 7, 7),
+                #               rep('in', 4)),
                 heights = unit(c(4, 4, 0.1, 1),
                                rep('in', 4)))
 
