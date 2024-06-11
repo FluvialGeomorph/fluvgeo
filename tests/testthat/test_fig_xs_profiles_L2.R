@@ -14,11 +14,10 @@ dem_path        <- file.path(system.file("extdata",
 cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
 channel       <- fluvgeo::fc2sf(channel_fc, quiet = TRUE)
 floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
+dem           <- terra::rast(dem_path)
 bf_estimate   <- 103.5
 regions       <- c("USA", "Eastern United States")
-dem           <- terra::rast(dem_path)
 xs_number <- 8
-bf_estimate <- 103.5
 extent_factor <- 2
 xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),

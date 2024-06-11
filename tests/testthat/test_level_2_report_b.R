@@ -41,7 +41,7 @@ show_xs_map   <- TRUE
 profile_units <- "miles"
 aerial <- TRUE
 elevation = TRUE
-xs_label_freq = 10
+xs_label_freq =20
 exaggeration = 30
 extent_factor = 1.3
 output_dir    <- Sys.getenv("HOME")
