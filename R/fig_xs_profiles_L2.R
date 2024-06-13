@@ -51,6 +51,7 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                             extent_factor = extent_factor)
   # Convert the tmap object to a graphics object
   map_grb <- tmap::tmap_grob(xs_map)
+  #grid::grid.draw(map_grb)
   dev.off()
 
   # Create cross section plots for each extent
@@ -78,8 +79,9 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                 guides = "collect",
                 axes = "collect",
                 axis_titles = "collect") &
-    theme(legend.position = "right")
-  #p_xs
+    theme(legend.position = "right",
+          plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "cm"))
+  p_xs
 
   # Create xs dimensions table
   latest_survey <- length(xs_pts_sf_list)
@@ -89,6 +91,7 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
                             xs_number = xs_number,
                             bf_estimate = bf_estimate,
                             regions = regions)
+  #grid::grid.draw(t1)
 
   # Create patchwork figure
   layout <-"AAA
@@ -100,12 +103,12 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
     plot_spacer() +
     wrap_elements(full = t1, clip = TRUE) +
     plot_layout(#nrow = 4,
+                #ncol = 1,
+                #byrow = TRUE,
                 design = layout,
-                #widths  = unit(c(7, 7, 7, 7),
-                #               rep('in', 4)),
-                heights = unit(c(4, 4, 0.1, 1),
+                heights = unit(c(4, 3.5, 0.1, 1),
                                rep('in', 4)))
 
-  #xs_fig
+  xs_fig
   return(xs_fig)
 }

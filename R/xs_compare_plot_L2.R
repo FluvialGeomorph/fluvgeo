@@ -110,7 +110,9 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey", size = 0.1),
-          plot.title = element_text(hjust = 0)
+          plot.title = element_text(hjust = 0,
+                                    size = 10,
+                                    face = "bold")
           ) +
     labs(title = paste0("Cross Section ",
                         as.character(xs_number),
