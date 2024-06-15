@@ -10,8 +10,8 @@ t1 <- table_xs_dimensions(xs_pts_sf = xs_pts_sf,
                           xs_number = xs_number,
                           bf_estimate = bf_estimate,
                           regions = regions)
-#grid.newpage()
-#grid::grid.draw(t1)
+
+grid::grid.draw(t1)
 
 test_that("check that table_xs_dimensions returns a gtable object", {
   expect_true("gtable" %in% class(t1))
