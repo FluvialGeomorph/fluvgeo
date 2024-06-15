@@ -112,8 +112,7 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
           panel.grid.major = element_line(colour = "grey", size = 0.1),
           plot.title = element_text(hjust = 0,
                                     size = 10,
-                                    face = "bold")
-          ) +
+                                    face = "bold")) +
     labs(title = paste0("Cross Section ",
                         as.character(xs_number),
                         " (", as.character(extent), " stations)"),
