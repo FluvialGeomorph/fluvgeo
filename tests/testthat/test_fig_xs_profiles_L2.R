@@ -15,6 +15,8 @@ cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
 channel       <- fluvgeo::fc2sf(channel_fc, quiet = TRUE)
 floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
 dem           <- terra::rast(dem_path)
+bf_estimate   <- 103.5
+regions       <- c("USA", "Eastern United States")
 xs_number <- 8
 extent_factor <- 2
 xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
@@ -46,13 +48,15 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
 # Call the graph function
-p1 <- fluvgeo::fig_xs_profiles(cross_section = cross_section,
-                               xs_number = xs_number,
-                               dem = dem,
-                               channel = channel,
-                               floodplain = floodplain,
-                               extent_factor = extent_factor,
-                               xs_pts_sf_list = xs_pts_sf_list)
+p1 <- fluvgeo::fig_xs_profiles_L2(cross_section = cross_section,
+                                  xs_number = xs_number,
+                                  dem = dem,
+                                  channel = channel,
+                                  floodplain = floodplain,
+                                  bf_estimate = bf_estimate,
+                                  regions = regions,
+                                  extent_factor = extent_factor,
+                                  xs_pts_sf_list = xs_pts_sf_list)
 print(p1)
 
 test_that("fig_xs_profiles a patchwork object", {

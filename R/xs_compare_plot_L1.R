@@ -28,7 +28,9 @@
 #' @importFrom purrr map
 #' @importFrom dplyr filter bind_rows
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggplot geom_line scale_y_continuous
+#'               scale_color_manual theme_bw theme element_rect
+#'               element_blank element_line element_text labs
 #'
 xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list,
                                extent = "all") {
@@ -89,8 +91,9 @@ xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list,
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey", size = 0.1),
-          plot.title = element_text(hjust = 0),
-          ) +
+          plot.title = element_text(hjust = 0,
+                                    size = 10,
+                                    face = "bold")) +
     labs(title = paste0("Cross Section ",
                        as.character(xs_number),
                        " (", as.character(extent), " stations)"),

@@ -1,6 +1,3 @@
-library(purrr)
-library(fluvgeo)
-
 stream <- "Cole Creek R1"
 xs_number <- 8
 xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
@@ -49,7 +46,17 @@ p3 <- fluvgeo::xs_compare_plot_L1(stream = stream,
                                   extent = "floodplain")
 print(p3)
 
-test_that("xs_compare_plot_L1 exists", {
-  expect_true("ggplot" %in% class(p))
-  expect_error(print(p), NA)
+test_that("xs_compare_plot_L1 extent = all exists", {
+  expect_true("ggplot" %in% class(p1))
+  expect_error(print(p1), NA)
+})
+
+test_that("xs_compare_plot_L1 extent = channel exists", {
+  expect_true("ggplot" %in% class(p2))
+  expect_error(print(p2), NA)
+})
+
+test_that("xs_compare_plot_L1 extent = floodplain exists", {
+  expect_true("ggplot" %in% class(p3))
+  expect_error(print(p3), NA)
 })

@@ -21,26 +21,35 @@
 #' @return A patchwork figure.
 #'
 #' @importFrom tmap tmap_grob
-#' @importFrom ggplot2 + theme unit
-#' @importFrom patchwork plot_layout
+#' @importFrom ggplot2 theme unit
+#' @importFrom gtable gtable gtable_add_grob
+#' @importFrom patchwork plot_layout wrap_elements
 #'
-fig_xs_profiles <- function(cross_section, xs_number, dem,
-                            channel = NULL, floodplain = NULL,
-                            extent_factor = 1,
-                            xs_pts_sf_list) {
+fig_xs_profiles_L1 <- function(cross_section, xs_number, dem,
+                               channel = NULL, floodplain = NULL,
+                               extent_factor = 1,
+                               xs_pts_sf_list) {
 
   stream <- unique(cross_section$ReachName)[1]
 
   # Create the cross section map
-  dev.new(width = 6, height = 4, noRStudioGD = TRUE)
+  dev.new(width = 6, height = 4, noRStudioGD = TRUE)        # control tmap size
   xs_map <- fluvgeo::map_xs(cross_section = cross_section,
                             xs_number = xs_number,
                             channel = channel,
                             floodplain = floodplain,
                             dem = dem,
                             extent_factor = extent_factor)
-  # Convert the tmap object to a graphics object
+  # Convert the tmap object to a grob and align using a gtable
   map_grb <- tmap::tmap_grob(xs_map)
+  gt <- gtable(widths = unit(6, c("in")),
+               heights = unit(4, c("in")),
+               name = "map")
+  map_gtable <- gtable_add_grob(gt,
+                                grobs = map_grb,
+                                t = 1, l = 1)
+  map_left <- justify_gtable(map_gtable, hjust = "left", vjust = "top")
+  #grid::grid.draw(map_left)
   dev.off()
 
   # Create cross section plots for each extent
@@ -59,16 +68,18 @@ fig_xs_profiles <- function(cross_section, xs_number, dem,
 
   # Assemble cross section plots
   p_xs <- p_all + p_fl + p_ch +
-    patchwork::plot_layout(nrow = 3,
-                           guides = "collect",
-                           axes = "collect",
-                           axis_titles = "collect") &
-    ggplot2::theme(legend.position = "right")
+    plot_layout(nrow = 3,
+                guides = "collect",
+                axes = "collect",
+                axis_titles = "collect") &
+    theme(legend.position = "right",
+          plot.margin = unit(c(0.01, 0.01, 0.01, 0.01), "cm"))
 
   # Create patchwork figure
-  xs_fig <- patchwork::wrap_elements(panel = map_grb, clip = TRUE) + p_xs +
-    patchwork::plot_layout(nrow = 2,
-                           heights = ggplot2::unit(c(4, 4), c('in', 'in')))
+  xs_fig <- wrap_elements(panel = map_left, clip = TRUE) +
+    p_xs +
+    plot_layout(nrow = 2,
+                heights = unit(c(4, 4), c('in', 'in')))
 
   return(xs_fig)
 }

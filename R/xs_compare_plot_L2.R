@@ -15,6 +15,8 @@
 #'                            feet) that is used to calculate hydraulic
 #'                            geometry.
 #' @param aspect_ratio        numeric; The aspect ratio of the graph.
+#' @param extent              character; The extent of the cross section to
+#'                            plot. One of "all", "floodplain", or "channel".
 #'
 #' @return A ggplot2 object.
 #'
@@ -30,19 +32,36 @@
 #' @importFrom purrr map
 #' @importFrom dplyr filter bind_rows
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggplot geom_line scale_y_continuous sec_axis
+#'               scale_color_manual geom_hline theme_bw theme element_rect
+#'               element_blank element_line element_text labs
 #'
 xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
-                               bankfull_elevation, aspect_ratio = 0.5) {
-  # Determine the base survey
-  base_survey <- names(xs_pts_sf_list)[1]
+                               bankfull_elevation, aspect_ratio = 0.5,
+                               extent = "all") {
+  # Check parameters
 
   # Extract data frames (for ggplot2) from the sf objects
   xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
-  # Filter for the current reach and xs_number
-  xs_current <- purrr::map(xs_pts_df,
-                           ~dplyr::filter(.x, ReachName == stream & Seq == xs_number))
+  # Filter for the current reach, xs_number, extent
+  if(extent == "all") {
+    xs_current <- purrr::map(xs_pts_df,
+                             ~dplyr::filter(.x, ReachName == stream &
+                                              Seq == xs_number))
+  }
+  if(extent == "floodplain") {
+    xs_current <- purrr::map(xs_pts_df,
+                             ~dplyr::filter(.x, ReachName == stream &
+                                              Seq == xs_number &
+                                              floodplain == 1))
+  }
+  if(extent == "channel") {
+    xs_current <- purrr::map(xs_pts_df,
+                             ~dplyr::filter(.x, ReachName == stream &
+                                              Seq == xs_number &
+                                              channel == 1))
+  }
 
   # Combine surveys
   xs_pts <- dplyr::bind_rows(xs_current, .id = "Survey")
@@ -55,11 +74,15 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
                           labels = survey_levels,
                           ordered = TRUE)
 
+  # Determine the base survey
+  base_survey <- names(xs_pts_sf_list)[1]
+
   # Filter for the base_survey
   xs_pts_base_survey <- dplyr::filter(xs_pts, .data$Survey == base_survey)
 
   # Calculate the transform between actual elevation and detrend elevation
-  eg <- mean(xs_pts_base_survey$Detrend_DEM_Z - xs_pts_base_survey$DEM_Z)
+  transform <- mean(xs_pts_base_survey$Detrend_DEM_Z -
+                      xs_pts_base_survey$DEM_Z)
 
   # Define colors
   cols <- c("coral3", "darkslategray4", "darkolivegreen", "mediumpurple4")
@@ -74,11 +97,11 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
                   y = .data$DEM_Z,
                   color = .data$Survey)) +
     geom_line(size = 1.25) +
-    scale_y_continuous(sec.axis = sec_axis(~. + eg,
+    scale_y_continuous(sec.axis = sec_axis(~. + transform,
                                            name = "Detrended Elevation (feet)"),
                        minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
-    geom_hline(yintercept = bankfull_elevation - eg,
+    geom_hline(yintercept = bankfull_elevation - transform,
                colour = "blue", size = 1) +
     theme_bw() +
     theme(aspect.ratio = aspect_ratio,
@@ -87,9 +110,12 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey", size = 0.1),
-          plot.title = element_text(hjust = 0)
-          ) +
-    labs(title = paste("Cross Section", as.character(xs_number)),
+          plot.title = element_text(hjust = 0,
+                                    size = 10,
+                                    face = "bold")) +
+    labs(title = paste0("Cross Section ",
+                        as.character(xs_number),
+                        " (", as.character(extent), " stations)"),
          x = "Station Distance (feet, from left descending bank, looking downstream)",
          y = "Elevation (NAVD88 feet)")
   return(p)
