@@ -29,7 +29,7 @@
 #' @importFrom ggplot2 theme unit
 #' @importFrom dplyr %>% filter select arrange mutate recode across distinct
 #' @importFrom grid textGrob grobHeight gpar
-#' @importFrom gtable gtable_add_rows gtable_add_grob
+#' @importFrom gtable gtable gtable_add_rows gtable_add_grob
 #' @importFrom gridExtra ttheme_default tableGrob
 #' @importFrom patchwork wrap_elements plot_layout plot_spacer
 #'
@@ -42,16 +42,23 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
   stream <- unique(cross_section$ReachName)[1]
 
   # Create the cross section map
-  dev.new(width = 6, height = 4, noRStudioGD = TRUE)
+  dev.new(width = 6, height = 4, noRStudioGD = TRUE)        # control tmap size
   xs_map <- fluvgeo::map_xs(cross_section = cross_section,
                             xs_number = xs_number,
                             channel = channel,
                             floodplain = floodplain,
                             dem = dem,
                             extent_factor = extent_factor)
-  # Convert the tmap object to a graphics object
+  # Convert the tmap object to a grob and align using a gtable
   map_grb <- tmap::tmap_grob(xs_map)
-  #grid::grid.draw(map_grb)
+  gt <- gtable(widths = unit(6, c("in")),
+               heights = unit(4, c("in")),
+               name = "map")
+  map_gtable <- gtable_add_grob(gt,
+                                grobs = map_grb,
+                                t = 1, l = 1)
+  map_left <- justify_gtable(map_gtable, hjust = "left", vjust = "top")
+  #grid::grid.draw(map_left)
   dev.off()
 
   # Create cross section plots for each extent
@@ -98,15 +105,12 @@ fig_xs_profiles_L2 <- function(cross_section, xs_number, dem,
             BBB
             CCC
             DDD"
-  xs_fig <- wrap_elements(panel = map_grb, clip = TRUE) +
+  xs_fig <- wrap_elements(full = map_left, clip = TRUE) +
     p_xs +
     plot_spacer() +
     wrap_elements(full = t1, clip = TRUE) +
-    plot_layout(#nrow = 4,
-                #ncol = 1,
-                #byrow = TRUE,
-                design = layout,
-                heights = unit(c(4, 3.5, 0.1, 1),
+    plot_layout(design = layout,
+                heights = unit(c(4, 3.5, 0.001, 1),
                                rep('in', 4)))
 
   xs_fig

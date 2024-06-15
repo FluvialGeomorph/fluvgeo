@@ -18,7 +18,7 @@
 #'
 #' @importFrom dplyr filter distinct select mutate across recode arrange
 #' @importFrom ggplot2 unit
-#' @importFrom grid textGrob
+#' @importFrom grid viewport textGrob
 #' @importFrom gtable gtable_add_rows gtable_add_grob
 #' @importFrom gridExtra tableGrob ttheme_default
 #'
@@ -46,30 +46,35 @@ table_xs_dimensions <- function(xs_pts_sf, xs_number, bf_estimate, regions) {
     arrange(match(xs_type, c("DEM derived")))
 
   # Create the table
-  tt <- ttheme_default(base_size = 10,
-                       padding = unit(c(3, 3), "mm"),
+  tt <- ttheme_default(base_size = 9,
+                       padding = unit(c(2, 2), "mm"),
                        core = list(
                          fg_params = list(hjust = 0, x = 0.05)),
                        colhead = list(
                          fg_params = list(hjust = 0, x = 0.05, parse = TRUE)))
 
+  col_header <- c("\nRegional Curve",
+                  "Drainage Area\n[sq miles]",
+                  "Area\n[sq feet]",
+                  "Width\n[feet]",
+                  "Depth\n[feet]")
+
   table <- tableGrob(dims_table,
                      rows = NULL,
-                     cols = c("\nRegional Curve",
-                              "Drainage Area\n[sq miles]",
-                              "Area\n[sq feet]",
-                              "Width\n[feet]",
-                              "Depth\n[feet]"),
+                     cols = col_header,
                      theme = tt)
+  #grid::grid.draw(table)
+
   # Add a title
   title <- textGrob("Cross Section Dimensions",
                     hjust = 0, x = 0,
-                    gp = gpar(fontsize = 12, fontface = "bold"))
+                    gp = gpar(fontsize = 10, fontface = "bold"))
   table <- gtable_add_rows(table,
                            heights = grobHeight(title) + unit(2,"mm"),
                            pos = 0)
   table_grob <- gtable_add_grob(table, title,
                                 t = 1, l = 1, b = 1,
                                 r = ncol(table))
-  return(table_grob)
+  table_left <- justify_gtable(table_grob, hjust = "left", vjust = "top")
+  return(table_left)
 }
