@@ -140,7 +140,7 @@ print(fluvgeo::reach_rhg_graph(xs_dims = xs_dims,
 ## Cross Section Profiles
 This section displays cross section profile graphs for each riffle cross section in this stream reach. A table of cross section hydraulic geometry dimensions appears under each cross section profile. The first row contains the hydraulic geometry dimensions for the the current cross section, while subsequent rows contain hydraulic geometry dimensions for selected regions.
 
-```{r cross_section_plots, echo=FALSE, results='asis',fig.width=6, fig.height=10, warning=FALSE, error=FALSE, message=FALSE}
+```{r cross_section_plots, echo=FALSE, results='asis',fig.width=7, fig.height=10, warning=FALSE, error=FALSE, message=FALSE}
 # Get dem raster
 dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
 
