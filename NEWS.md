@@ -1,3 +1,18 @@
+# fluvgeo v0.1.52 (2024-06-15)
+
+## Major changes
+* Added the new Level 2 Report "b" version. This report sports new a cross section figure which is more compact and information dense. Updated the hydraulic dimensions table to only use cross section stations from within the channel portion of the cross section.  
+* Updated the Level 1 Report "b" version. This report also sports a new cross section figure which is more compact information dense. 
+* Refactored the `fig_xs_profiles` function into two functions, each specialized for either L1 or L2 reports. These figures were made more compact to ensure they fit on a single page. 
+* Refactored the `xs_compare_plot_L1` and `xs_compare_plot_L2` functions to be more compact. 
+* Added a new function `table_xs_dimensions` that returns a `gtable` object of hydraulic dimensions for a cross section. 
+
+## Minor changes
+* Added the helper function `justify_gtable` to improve formatting of gtables. 
+
+***
+
+
 # fluvgeo v0.1.51 (2024-05-26)
 
 ## Major changes
