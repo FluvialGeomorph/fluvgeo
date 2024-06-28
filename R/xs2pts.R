@@ -22,11 +22,8 @@
 xs2pts <- function(xs_sf) {
   sf_df<-st_drop_geometry(xs_sf)
 
-
   xs_pts <- sf_df %>%
     sf::st_as_sf(coords=c('POINT_X','POINT_Y')) %>%
     sf::st_geometry()%>%
     sf::st_sf(sf_df, crs=st_crs(xs_sf))
-
-
 }

@@ -1,6 +1,3 @@
-library(purrr)
-library(fluvgeo)
-
 stream <- "Cole Creek R1"
 xs_number <- 1
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
@@ -18,7 +15,7 @@ survey_name_2 <- "2010"
 survey_name_3 <- "2006"
 survey_name_4 <- NULL
 bankfull_elevation <- 103
-aspect_ratio = 0.4
+aspect_ratio = 0.25
 
 # Create list of survey paths
 xs_points_paths <- list(xs_points_1, xs_points_2, xs_points_3, xs_points_4)

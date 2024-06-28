@@ -98,7 +98,7 @@ print(fluvgeo::xs_metrics_plot_L2(xs_dims_sf = params$xs_dims_sf,
 ```
 
 ## Width Depth Ratio
-```{r, wdr}
+```{r, wdr, echo=FALSE}
 # Create the fluvgeo::FluvialGeomorphicMetric object
 wdr <- new(Class = "FluvialGeomorphicMetric",
            metric = "Width Depth Ratio",
@@ -166,7 +166,6 @@ for (j in as.integer(levels(as.factor(xs_pts$Seq)))) {
     print(fluvgeo::map_xs(cross_section = params$xs_sf,
                           xs_number = j,
                           dem = dem_rast,
-                          banklines = params$banklines_sf,
                           extent_factor = params$extent_factor))
   }
   pander::pandoc.p('')

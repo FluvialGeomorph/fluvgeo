@@ -9,7 +9,8 @@ xs_compare_plot_L2(
   xs_number,
   xs_pts_sf_list,
   bankfull_elevation,
-  aspect_ratio = 0.5
+  aspect_ratio = 0.5,
+  extent = "all"
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ feet) that is used to calculate hydraulic
 geometry.}
 
 \item{aspect_ratio}{numeric; The aspect ratio of the graph.}
+
+\item{extent}{character; The extent of the cross section to
+plot. One of "all", "floodplain", or "channel".}
 }
 \value{
 A ggplot2 object.

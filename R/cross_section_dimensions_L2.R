@@ -47,8 +47,8 @@ cross_section_dimensions_L2 <- function(xs, xs_points, bankfull_elevation,
     xs_reach <- xs[xs$ReachName == g, ]
 
     # Calculate slope and sinuosity for xs_reach
-    xs_reach_ss <- fluvgeo::slope_sinuosity(xs_reach,
-                                            lead_n = lead_n, lag_n = 0,
+    xs_reach_ss <- fluvgeo::slope_sinuosity(channel_features = xs_reach,
+                                            lead_n = lead_n, lag_n = lead_n,
                                             use_smoothing = use_smoothing,
                                             loess_span = loess_span,
                                             vert_units = vert_units)
@@ -88,4 +88,7 @@ cross_section_dimensions_L2 <- function(xs, xs_points, bankfull_elevation,
   # Remove unneeded fields
   unneeded_names <- c("reach_name", "xs_type")
   dims_join_reduced <- dplyr::select(dims_join, -unneeded_names)
+
+  # Rosgen classification
+
 }

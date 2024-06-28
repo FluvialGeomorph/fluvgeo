@@ -11,6 +11,8 @@
 #'                            to be graphed. Survey list items must be tagged
 #'                            with the survey label to be used in the graph
 #'                            legend.
+#' @param extent              character; The extent of the cross section to
+#'                            plot. One of "all", "floodplain", or "channel".
 #'
 #' @return A ggplot2 object.
 #'
@@ -26,15 +28,35 @@
 #' @importFrom purrr map
 #' @importFrom dplyr filter bind_rows
 #' @importFrom rlang .data
-#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggplot geom_line scale_y_continuous
+#'               scale_color_manual theme_bw theme element_rect
+#'               element_blank element_line element_text labs
 #'
-xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list) {
+xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list,
+                               extent = "all") {
+  # Check parameters
+
   # Extract data frames (for ggplot2) from the sf objects
   xs_pts_df <- purrr::map(xs_pts_sf_list, sf::st_drop_geometry)
 
-  # Filter for the current reach and xs_number
-  xs_current <- purrr::map(xs_pts_df,
-                    ~dplyr::filter(.x, ReachName == stream & Seq == xs_number))
+  # Filter for the current reach, xs_number, extent
+  if(extent == "all") {
+    xs_current <- purrr::map(xs_pts_df,
+                    ~dplyr::filter(.x, ReachName == stream &
+                                       Seq == xs_number))
+  }
+  if(extent == "floodplain") {
+    xs_current <- purrr::map(xs_pts_df,
+                             ~dplyr::filter(.x, ReachName == stream &
+                                                Seq == xs_number &
+                                                floodplain == 1))
+  }
+  if(extent == "channel") {
+    xs_current <- purrr::map(xs_pts_df,
+                             ~dplyr::filter(.x, ReachName == stream &
+                                              Seq == xs_number &
+                                              channel == 1))
+  }
 
   # Combine surveys
   xs_pts <- dplyr::bind_rows(xs_current, .id = "Survey")
@@ -63,15 +85,18 @@ xs_compare_plot_L1 <- function(stream, xs_number, xs_pts_sf_list) {
     scale_y_continuous(minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
     theme_bw() +
-    theme(aspect.ratio = 2/5,
+    theme(#aspect.ratio = 2/7,
           legend.direction = "vertical",
           legend.position = c(0.07,0.2),
           legend.background = element_rect(fill = alpha('white', 0.6)),
           legend.title = element_blank(),
           panel.grid.major = element_line(colour = "grey", size = 0.1),
-          plot.title = element_text(hjust = 0),
-          ) +
-    labs(title = paste("Cross Section ", as.character(xs_number)),
+          plot.title = element_text(hjust = 0,
+                                    size = 10,
+                                    face = "bold")) +
+    labs(title = paste0("Cross Section ",
+                       as.character(xs_number),
+                       " (", as.character(extent), " stations)"),
          x = "Station Distance (feet, from left descending bank, looking downstream)",
          y = "Elevation (NAVD88 feet)")
   return(p)

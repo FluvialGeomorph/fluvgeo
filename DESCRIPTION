@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.50
+Version: 0.1.52
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -41,6 +41,7 @@ Imports:
     conicfit,
     dplyr,
     ggplot2,
+    ggplotify,
     ggrepel,
     grDevices,
     magrittr,
