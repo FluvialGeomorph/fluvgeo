@@ -37,7 +37,7 @@ test_that("check output points gdb fc exists", {
   fc_path <- file.path(temp_gdb_path, paste0("temp_line",
                                              round(stats::runif(1, 1, 10000),
                                                    digits = 0)))
-  print(fc_path)
+  #print(fc_path)
   sf2arc(sf_object = line_sf, fc_path = fc_path)
   arcobj <- arcgisbinding::arc.open(fc_path)
   expect_true(exists("arcobj"))

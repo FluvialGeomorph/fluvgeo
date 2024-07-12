@@ -8,6 +8,10 @@
 #' @return Writes the `sf_object` as a csv file specified by
 #' `csv_path`
 #'
+#' @importFrom assertthat assert_that
+#' @importFrom sf st_drop_geometry
+#' @importFrom readr write_csv
+#'
 sf2csv <- function(sf_object, csv_path) {
   # Check parameters
   assert_that("sf" %in% class(sf_object),

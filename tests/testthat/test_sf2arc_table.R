@@ -31,7 +31,7 @@ test_that("sf: check output gdb table exists 1", {
   table_path <- file.path(temp_gdb_path, paste0("temp_line_",
                                              round(stats::runif(1, 1, 10000),
                                                    digits = 0)))
-  print(table_path)
+  #print(table_path)
   sf2arc_table(sf_object = sf_object, table_path = table_path)
   arcobj <- arcgisbinding::arc.open(table_path)
   expect_true(exists("arcobj"))
@@ -46,7 +46,7 @@ test_that("sf: check output gdb table exists 2", {
   table_path <- file.path(temp_gdb_path, paste0("temp_line_",
                                                 round(stats::runif(1, 1, 10000),
                                                       digits = 0)))
-  print(table_path)
+  #print(table_path)
   sf2arc_table(sf_object = sf_object, table_path = table_path)
   arcobj <- arcgisbinding::arc.open(table_path)
   expect_true(exists("arcobj"))

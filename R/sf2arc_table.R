@@ -8,6 +8,10 @@
 #' @return Writes the `sf_object` as a geodatabase table specified by
 #' `table_path`
 #'
+#' @importFrom assertthat assert_that
+#' @importFrom sf st_drop_geometry
+#' @importFrom arcgisbinding arc.write
+#'
 sf2arc_table <- function(sf_object, table_path) {
   # Check parameters
   assert_that("sf" %in% class(sf_object),

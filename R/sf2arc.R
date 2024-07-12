@@ -28,7 +28,8 @@
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom stringr str_detect
-#' @importFrom arcgisbinding arc.write
+#' @importFrom sf st_geometry_type
+#' @importFrom arcgisbinding arc.open arc.write
 #'
 sf2arc <- function(sf_object, fc_path) {
   # Check parameters
@@ -62,7 +63,6 @@ sf2arc <- function(sf_object, fc_path) {
   # Write the sf object to a geodatabase feature class
   arcgisbinding::arc.write(path = fc_path,
                            data = sf_object,
-                           #coords = colnames(sf_object),
                            shape_info = shape_info,
                            validate = TRUE,
                            overwrite = TRUE)

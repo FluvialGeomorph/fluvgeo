@@ -1,10 +1,7 @@
 #' @title Explore Longitudinal Profile Report
 #'
-#' @description
+#' @description Interactive longitudinal profile report
 #'
-#' @param
-#'
-#' @return
 #'
 explore_long_profile <- function() {
 

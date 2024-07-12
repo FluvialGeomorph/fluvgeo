@@ -41,15 +41,18 @@ Imports:
     conicfit,
     dplyr,
     ggplot2,
-    ggplotify,
     ggrepel,
     grDevices,
+    gridExtra,
+    gtable,
     magrittr,
     methods,
     Metrics,
     mapboxapi,
+    patchwork,
     purrr,
     raster,
+    readr,
     RegionalCurve,
     reshape2,
     rlang,
@@ -64,4 +67,4 @@ Imports:
     tidyr,
     tmap,
     utils
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
