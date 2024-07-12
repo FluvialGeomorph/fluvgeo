@@ -71,12 +71,13 @@ compare_long_profile <- function(stream, flowline_pts_sf_list,
                   color = .data$Survey)) +
   geom_line(linewidth = 1.0) +
   scale_color_manual(values = cols) +
-  #scale_x_reverse() +
   theme_bw() +
-  theme(legend.position = c(.1, .9),
+  theme(legend.position = "inside",
+        legend.position.inside = c(.1, .9),
         legend.background = element_rect(fill = alpha('white', 0.6)),
         legend.title = element_blank(),
-        panel.grid.major = element_line(colour = "grey10", size = 0.1)) +
+        panel.grid.major = element_line(colour = "grey10",
+                                        linewidth = 0.1)) +
   labs(title = unique(flowline_pts$ReachName),
        x     = profile_units,
        y     = "Elevation (NAVD88 feet)")
