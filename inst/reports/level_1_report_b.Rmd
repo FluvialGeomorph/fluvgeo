@@ -7,7 +7,7 @@ params:
   features_sf: ""
   channel_sf: ""
   floodplain_sf: ""
-  flowline_points_sf_list: ""
+  flowline_pts_sf_list: ""
   xs_points_sf_list: ""
   dem: ""
   show_xs_map: FALSE
