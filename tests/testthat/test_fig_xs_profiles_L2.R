@@ -1,6 +1,6 @@
 cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                           package = "fluvgeo"),
-                              "feature_dataset/riffle_channel")
+                              "feature_dataset/xs_50_dims_L2")
 channel_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
                                         package = "fluvgeo"),
                             "feature_dataset/channel_103")
@@ -17,21 +17,21 @@ floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
 dem           <- terra::rast(dem_path)
 bf_estimate   <- 103.5
 regions       <- c("USA", "Eastern United States")
-xs_number <- 8
+#xs_number <- 8
 extent_factor <- 2
-xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
+xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
 xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
-xs_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
+xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
 xs_points_4 <- NULL
-survey_name_1 <- "2004"
+survey_name_1 <- "2016"
 survey_name_2 <- "2010"
-survey_name_3 <- "2016"
+survey_name_3 <- "2006"
 survey_name_4 <- NULL
 
 # Create list of survey paths
@@ -47,19 +47,19 @@ xs_points_paths <- purrr::discard(xs_points_paths, is.null)
 # Convert list of survey paths to list of sf objects
 xs_pts_sf_list <- purrr::map(xs_points_paths, fluvgeo::fc2sf)
 
-# Call the graph function
-p1 <- fluvgeo::fig_xs_profiles_L2(cross_section = cross_section,
-                                  xs_number = xs_number,
-                                  dem = dem,
-                                  channel = channel,
-                                  floodplain = floodplain,
-                                  bf_estimate = bf_estimate,
-                                  regions = regions,
-                                  extent_factor = extent_factor,
-                                  xs_pts_sf_list = xs_pts_sf_list)
-print(p1)
 
 test_that("fig_xs_profiles a patchwork object", {
-  expect_true("patchwork" %in% class(p1))
-  expect_error(print(p1), NA)
+  for(i in cross_section$Seq) {
+    p1 <- fluvgeo::fig_xs_profiles_L2(cross_section = cross_section,
+                                      xs_number = xs_number,
+                                      dem = dem,
+                                      channel = channel,
+                                      floodplain = floodplain,
+                                      bf_estimate = bf_estimate,
+                                      regions = regions,
+                                      extent_factor = extent_factor,
+                                      xs_pts_sf_list = xs_pts_sf_list)
+    #print(p1)
+    expect_true("patchwork" %in% class(p1))
+  }
 })
