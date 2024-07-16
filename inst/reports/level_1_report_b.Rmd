@@ -8,7 +8,7 @@ params:
   channel_sf: ""
   floodplain_sf: ""
   flowline_pts_sf_list: ""
-  xs_points_sf_list: ""
+  xs_pts_sf_list: ""
   dem: ""
   show_xs_map: FALSE
   profile_units: "kilometers"
@@ -70,7 +70,7 @@ print(fluvgeo::compare_long_profile(stream = params$stream,
 
 ```{r xs_long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="XS Longitudinal Profile Plot"}
 print(fluvgeo::compare_xs_long_profile(stream = params$stream,
-                                     xs_pts_sf_list = params$xs_points_sf_list,
+                                     xs_pts_sf_list = params$xs_pts_sf_list,
                                      features_sf = params$features_sf,
                                      xs_label_freq = params$xs_label_freq,
                                      profile_units = params$profile_units))
@@ -87,13 +87,13 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 ## Cross Section Profiles
 ```{r cross_section_plots, echo=FALSE, results='asis',fig.width=7, fig.height=9, warning=FALSE, error=FALSE, message=FALSE}
 # Get dem raster
-dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = report_params$dem)
+dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = params$dem)
 
 # Ensure that cross sections are sequentially ordered
-cross_section <- dplyr::arrange(report_params$cross_section_sf, Seq)
+cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
 
 # Iterate through cross sections
-for(j in unique(cross_section$Seq)) {
+for(j in cross_section$Seq) {
   # Create cross section profiles plot
   print(fig_xs_profiles_L1(cross_section = cross_section,
                            xs_number = j,
