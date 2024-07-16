@@ -1,18 +1,18 @@
 stream <- "Cole Creek R1"
 xs_number <- 8
-xs_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
+xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
 xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
-xs_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
+xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                      package = "fluvgeo"),
                          "feature_dataset/xs_50_points")
 xs_points_4 <- NULL
-survey_name_1 <- "2004"
+survey_name_1 <- "2016"
 survey_name_2 <- "2010"
-survey_name_3 <- "2016"
+survey_name_3 <- "2006"
 survey_name_4 <- NULL
 
 # Create list of survey paths
