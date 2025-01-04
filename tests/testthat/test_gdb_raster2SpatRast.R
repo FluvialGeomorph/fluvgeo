@@ -10,6 +10,7 @@ test_that("convert geodatabase raster to SpatRast", {
   expect_equal(1887, terra::nrow(raster))
   expect_equal(1142, terra::ncol(raster))
   expect_equal(1,    terra::nlyr(raster))
+  expect_equal(26915, sf::st_crs(raster)$epsg)
 })
 
 test_that("convert file raster to SpatRast", {
@@ -22,5 +23,6 @@ test_that("convert file raster to SpatRast", {
   expect_equal(1887, terra::nrow(raster))
   expect_equal(1142, terra::ncol(raster))
   expect_equal(1,    terra::nlyr(raster))
+  expect_equal(26915, sf::st_crs(raster)$epsg)
 })
 
