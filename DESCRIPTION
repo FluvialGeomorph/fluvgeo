@@ -53,7 +53,7 @@ Imports:
     purrr,
     raster,
     readr,
-    RegionalCurve,
+    RegionalCurve (>= 0.1.6),
     reshape2,
     rlang,
     rmarkdown,
@@ -65,6 +65,9 @@ Imports:
     terrainr,
     testthat,
     tidyr,
-    tmap,
+    tmap (>= 3.99.9003),
     utils
 RoxygenNote: 7.3.2
+Remotes: 
+    FluvialGeomorph/RegionalCurve,
+    r-tmap/tmap
