@@ -142,7 +142,7 @@ This section displays cross section profile graphs for each riffle cross section
 
 ```{r cross_section_plots, echo=FALSE, results='asis',fig.width=7, fig.height=10, warning=FALSE, error=FALSE, message=FALSE}
 # Get dem raster
-dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = params$dem)
+dem_rast <- fluvgeo::gdb_raster2SpatRast(raster_path = params$dem)
 
 # Ensure that cross sections are sequentially ordered
 cross_section <- dplyr::arrange(params$xs_sf, Seq)
