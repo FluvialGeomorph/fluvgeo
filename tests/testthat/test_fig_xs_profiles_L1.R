@@ -7,14 +7,14 @@ channel_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
 floodplain_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
                                         package = "fluvgeo"),
                             "feature_dataset/floodplain_112")
-dem_path        <- file.path(system.file("extdata",
-                                         package = "fluvgeo"),
-                             "dem_2016_hydro_50.tif")
+dem_path <- file.path(system.file("extdata", "y2016_R1.gdb",
+                                  package = "fluvgeo"),
+                      "dem_2016_hydro_50")
 
 cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
 channel       <- fluvgeo::fc2sf(channel_fc, quiet = TRUE)
 floodplain    <- fluvgeo::fc2sf(floodplain_fc, quiet = TRUE)
-dem           <- terra::rast(dem_path)
+dem           <- gdb_raster2SpatRast(dem_path)
 xs_number <- 8
 extent_factor <- 2
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",

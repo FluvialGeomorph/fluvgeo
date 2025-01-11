@@ -27,6 +27,7 @@ flowline_sf         <- fluvgeo::fc2sf(flowline_fc, quiet = TRUE)
 xs_dimensions_L2_sf <- fluvgeo::fc2sf(xs_dimensions_L2_fc, quiet = TRUE)
 xs_dimensions_L3_sf <- fluvgeo::fc2sf(xs_dimensions_L3_fc, quiet = TRUE)
 
+metric = wdr
 xs_dimensions_sf = xs_dimensions_L2_sf
 xs_label_freq = 2
 background = "aerial"
