@@ -19,8 +19,9 @@
 #'
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
 #' @importFrom grDevices colorRampPalette gray.colors
-#' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
-#'                  tm_scale_bar tm_layout tm_raster
+#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_scale_continuous
+#'             tm_layout tm_legend tm_pos_out opt_tm_text
+#'             tm_compass tm_scalebar tm_title_out
 #' @importFrom terrainr get_tiles
 #' @importFrom terra shade terrain rast
 #'
@@ -49,32 +50,40 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
   xs_labels_sf <- cross_section_sf_ll[labeled_xs, ]
 
   # Create thematic layers
-  thematic_map <- tm_shape(shp = flowline_sf_ll,
-                           name = "Flowline",
-                           unit = "mi",
-                           bbox = xs_extent,
-                           is.master = TRUE) +
-                    tm_lines(col = "blue",
-                             lwd = 3) +
-                  tm_shape(shp = cross_section_sf_ll,
-                           name = "Cross Sections") +
-                     tm_lines(col = "red3",
-                              lwd = 3) +
-                  tm_shape(shp = xs_labels_sf,
-                           name = "Cross Section labels") +
-                     tm_symbols(col = "white",
-                                size = 1.0) +
-                     tm_text(text = "Seq",
-                             col = "black",
-                             size = 0.5,
-                             remove.overlap = TRUE) +
-                  tm_compass(type = "arrow",
-                             position = c("right", "bottom")) +
-                  tm_scale_bar(width = 0.25,
-                               position = c("left", "bottom")) +
-                  tm_layout(main.title = unique(flowline_sf_ll$ReachName),
-                            frame.lwd = 3,
-                            saturation = 1.2)
+  # tmap_design_mode()
+  thematic_map <-
+    tm_shape(shp = flowline_sf_ll,
+             name = "Flowline",
+             unit = "mi",
+             bbox = xs_extent,
+             is.main = TRUE) +
+    tm_lines(col = "blue",
+             lwd = 3) +
+    tm_shape(shp = cross_section_sf_ll,
+             name = "Cross Sections") +
+    tm_lines(col = "red3",
+             lwd = 3) +
+    tm_shape(shp = xs_labels_sf,
+             name = "Cross Section labels") +
+    tm_symbols(col = "white",
+               size = 1.0) +
+    tm_text(text = "Seq",
+            col = "black",
+            size = 0.5,
+            options = opt_tm_text(remove_overlap = TRUE)) +
+    tm_compass(type = "arrow",
+               position = c("right", "bottom")) +
+    tm_scalebar(width = 25,
+                position = c("left", "bottom")) +
+    tm_title_out(text = unique(flowline_sf_ll$ReachName),
+                 fontface = "bold",
+                 padding = c(0, 0.01, 0, 0)) +
+    tm_layout(outer.margins = c(0, 0, 0, 0),
+              meta.margins = c(0, 0, 0.03, 0),
+              outer.bg.color = "white",
+              frame.lwd = 3,
+              saturation = 1.2)
+  #thematic_map
 
   # Aerial
   if(background == "aerial") {
@@ -93,6 +102,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
     background_map <- tm_shape(aerial_photos, raster.downsample = TRUE) +
                         tm_rgb()
     overview_map <- background_map + thematic_map
+    #overview_map
   }
 
   # Elevation
@@ -106,15 +116,6 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
     # Convert elevation meters to feet
     elev_ft <- elevation * 3.28084
 
-    # Create an esri-like topo color ramp
-    esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
-                                                      "chartreuse4", "goldenrod1",
-                                                      "orangered4", "saddlebrown",
-                                                      "gray70", "white"),
-                                             bias = 1,
-                                             space = "Lab",
-                                             interpolate = "linear")
-
     # Create a hillshade
     exaggerated <- elevation * exaggeration
     slp <- terra::terrain(exaggerated, v = "slope", unit = "radians")
@@ -126,35 +127,51 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
     hill_355 <- terra::shade(slope = slp, aspect = asp,
                              angle = 30, direction = 355)
 
-    background_map <- tm_shape(shp = hill_270,
-                               name = "Hillshade") +
-                        tm_raster(style = "cont",
-                                  palette = gray.colors(100, 0, 1),
-                                  alpha = 1,
-                                  legend.show = FALSE) +
-                      tm_shape(shp = hill_315,
-                               name = "Hillshade 315") +
-                        tm_raster(style = "cont",
-                                  palette = gray.colors(100, 0, 1),
-                                  alpha = 0.5,
-                                  legend.show = FALSE) +
-                      tm_shape(shp = hill_355,
-                               name = "Hillshade 355") +
-                        tm_raster(style = "cont",
-                                  palette = gray.colors(100, 0, 1),
-                                  alpha = 0.5,
-                                  legend.show = FALSE) +
-                      tm_shape(elev_ft,
-                               name = "Elevation",
-                               unit = "ft") +
-                        tm_raster(style = "cont",
-                                  palette = esri_topo(1000),
-                                  alpha = 0.6,
-                                  title = "Elevation (NAVD88, ft)",
-                                  legend.show = TRUE)+
-                        tm_layout(legend.outside = TRUE)
+    # Create an esri-like topo color ramp
+    esri_topo <- grDevices::colorRampPalette(colors = c("cadetblue2", "khaki1",
+                                                        "chartreuse4", "goldenrod1",
+                                                        "orangered4", "saddlebrown",
+                                                        "gray70", "white"),
+                                             bias = 1,
+                                             space = "Lab",
+                                             interpolate = "linear")
+
+    # Specify legend position
+    legend_pos <- tm_pos_out(cell.h = "right",
+                             cell.v = "center",
+                             pos.v = "top",
+                             pos.h = "left")
+
+    background_map <-
+      tm_shape(shp = hill_270,
+               name = "Hillshade") +
+      tm_raster(col.scale = tm_scale_continuous(values = "hcl.grays"),
+                col.legend = tm_legend(show = FALSE),
+                col_alpha = 1) +
+      tm_shape(shp = hill_315,
+               name = "Hillshade 315") +
+      tm_raster(col.scale = tm_scale_continuous(values = "hcl.grays"),
+                col.legend = tm_legend(show = FALSE),
+                col_alpha = 0.5) +
+      tm_shape(shp = hill_355,
+               name = "Hillshade 355") +
+      tm_raster(col.scale = tm_scale_continuous(values = "hcl.grays"),
+                col.legend = tm_legend(show = FALSE),
+                col_alpha = 0.5) +
+      tm_shape(shp = elev_ft,
+               name = "Elevation",
+               unit = "ft") +
+      tm_raster(col.scale = tm_scale_continuous(values = esri_topo(1000)),
+                col_alpha = 0.6,
+                col.legend = tm_legend(
+                  title = "Elevation \n(NAVD88, ft)",
+                  reverse = TRUE,
+                  frame = FALSE,
+                  position = legend_pos)) +
+      tm_layout(legend.outside = TRUE)
 
     overview_map <- background_map + thematic_map
+    #overview_map
   }
 
   # No background

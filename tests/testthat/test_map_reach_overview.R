@@ -1,5 +1,3 @@
-context("map_reach_overview")
-
 flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
                                           package = "fluvgeo"),
                               "feature_dataset/flowline")
