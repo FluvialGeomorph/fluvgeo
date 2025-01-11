@@ -40,7 +40,8 @@
 #' @importFrom sf st_crs st_transform st_as_sf st_as_sfc
 #' @importFrom grDevices colorRampPalette gray.colors
 #' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
-#'             tm_scale_bar tm_layout
+#'             tm_legend tm_scalebar tm_layout tm_pos_out tm_scale_intervals
+#'             opt_tm_text
 #' @importFrom terrainr get_tiles
 #' @importFrom terra terrain shade rast
 #'
@@ -68,36 +69,48 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
   labeled_xs <- ((xs_dimensions_sf$Seq + xs_label_freq) %% xs_label_freq) == 0
   xs_labels_sf <- xs_dimensions_sf_ll[labeled_xs, ]
 
+  # Specify legend position
+  legend_pos <- tm_pos_out(cell.h = "right",
+                           cell.v = "center",
+                           pos.v = "top",
+                           pos.h = "left")
+
   # Create the reach metric map
-  metric_map <- tm_shape(shp = flowline_sf_ll,
-                         bbox = xs_extent,
-                         name = "Flowline") +
-                  tm_lines(col = "blue",
-                           lwd = 2) +
-                tm_shape(shp = xs_dimensions_sf_ll,
-                         name = "Cross Sections") +
-                  tm_lines(col = "red3",
-                           lwd = 2) +
-                  tm_symbols(col = metric@variable,
-                             title.col = metric@metric,
-                             size = 2,
-                             palette = fluvgeo::metric_colors(metric),
-                             style = "fixed",
-                             breaks = metric@threshold_breaks,
-                             interval.closure = "left") +
-                tm_shape(shp = xs_labels_sf,
-                         name = "Cross Section labels") +
-                  tm_text(text = "Seq",
-                          col = "black",
-                          size = 0.7,
-                          remove.overlap = TRUE) +
-                tm_compass(type = "arrow",
-                           position = c("right", "bottom")) +
-                tm_scale_bar(width = 0.25,
-                             position = c("left", "bottom")) +
-                tm_layout(legend.outside = TRUE,
-                          legend.outside.position = "right",
-                          frame.lwd = 3)
+  # tmap_design_mode()
+  metric_map <-
+    tm_shape(shp = flowline_sf_ll,
+             bbox = xs_extent,
+             name = "Flowline") +
+      tm_lines(col = "blue",
+               lwd = 2) +
+    tm_shape(shp = xs_dimensions_sf_ll,
+             name = "Cross Sections") +
+      tm_lines(col = "red3",
+               lwd = 1) +
+      tm_symbols(fill = metric@variable,
+                 size = 2,
+                 fill.scale = tm_scale_intervals(
+                               breaks = metric@threshold_breaks,
+                               values = fluvgeo::metric_colors(metric)),
+                 fill.legend = tm_legend(
+                                title = metric@metric,
+                                position = legend_pos,
+                                frame = FALSE)) +
+    tm_shape(shp = xs_labels_sf,
+             name = "Cross Section labels") +
+      tm_text(text = "Seq",
+              col = "black",
+              size = 0.7,
+              options = opt_tm_text(remove_overlap = TRUE)) +
+    tm_compass(type = "arrow",
+               position = c("left", "bottom")) +
+    tm_scalebar(width = 25,
+                position = c("right", "bottom")) +
+    tm_layout(outer.margins = c(0, 0, 0, 0),
+              meta.margins = c(0., 0, 0, 0.3),
+              outer.bg.color = "white",
+              frame.lwd = 3)
+  metric_map
 
   # Aerial
   if(background == "aerial") {
