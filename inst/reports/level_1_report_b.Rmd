@@ -34,8 +34,6 @@ library(patchwork)
 library(tmap)
 library(terra)
 library(terrainr)
-library(arcgisbinding)
-arcgisbinding::arc.check_product()
 ```
 
 ## Study Area Overview

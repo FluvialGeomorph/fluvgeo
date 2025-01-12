@@ -33,8 +33,6 @@ library(Metrics)
 library(ggplot2)
 library(ggrepel)
 library(reshape2)
-library(arcgisbinding)
-arcgisbinding::arc.check_product()
 ```
 
 ```{r, document_type, echo=FALSE}
