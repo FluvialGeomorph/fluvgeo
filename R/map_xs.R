@@ -17,8 +17,7 @@
 #'
 #' @importFrom dplyr %>% filter
 #' @importFrom terra crop terrain shade
-#' @importFrom grDevices colorRampPalette grey.colors
-#' @importFrom grDevices colorRampPalette grey.colors
+#' @importFrom grDevices colorRampPalette grey.colors pdf.options
 #' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_scale_continuous
 #'             tm_layout tm_legend tm_pos_out opt_tm_text
 #'             tm_compass tm_scalebar tm_title_out tm_add_legend tm_borders

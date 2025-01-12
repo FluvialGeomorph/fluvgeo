@@ -25,6 +25,7 @@
 #'
 #' @return A patchwork figure.
 #'
+#' @importFrom grDevices dev.new dev.off
 #' @importFrom tmap tmap_grob
 #' @importFrom ggplot2 theme unit
 #' @importFrom dplyr %>% filter select arrange mutate recode across distinct
