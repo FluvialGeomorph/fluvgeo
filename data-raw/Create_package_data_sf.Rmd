@@ -6,8 +6,6 @@ output: html_document
 ```{r library}
 library(fluvgeo)
 library(usethis)
-library(arcgisbinding)
-arc.check_product()
 ```
 
 # Study Area
@@ -24,37 +22,37 @@ Convert a file geodatabase feature class to an sf object
 data_path <- "C:/workspace/fluvgeo/inst/extdata/testing_data.gdb/feature_dataset/"
 
 # Import geospatial datasets
-sin_flowline_sf                 <- fluvgeo::arc2sf(paste0(data_path, 
+sin_flowline_sf                 <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "flowline"))
-sin_flowline_points_sf          <- fluvgeo::arc2sf(paste0(data_path, 
+sin_flowline_points_sf          <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "flowline_points"))
-sin_banklines_sf                <- fluvgeo::arc2sf(paste0(data_path, 
+sin_banklines_sf                <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "banklines"))
-sin_bankline_points_sf          <- fluvgeo::arc2sf(paste0(data_path, 
+sin_bankline_points_sf          <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "bankline_points"))
-sin_features_sf                 <- fluvgeo::arc2sf(paste0(data_path, 
+sin_features_sf                 <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "features"))
-sin_loop_points_sf              <- fluvgeo::arc2sf(paste0(data_path, 
+sin_loop_points_sf              <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "loop_points"))
-sin_riffle_channel_sf           <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_channel_sf           <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_channel"))
-sin_riffle_channel_points_sf    <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_channel_points_sf    <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_channel_points"))
-sin_riffle_floodplain_sf        <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_floodplain_sf        <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_floodplain"))
-sin_riffle_floodplain_points_sf <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_floodplain_points_sf <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_floodplain_points"))
-sin_riffle_floodplain_dims_L1_sf <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_floodplain_dims_L1_sf <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_floodplain_dims_L1"))
-sin_riffle_floodplain_dims_L2_sf <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_floodplain_dims_L2_sf <- fluvgeo::fc2sf(paste0(data_path, 
                                                 "riffle_floodplain_dims_L2"))
-sin_riffle_floodplain_dims_L3_sf <- fluvgeo::arc2sf(paste0(data_path, 
+sin_riffle_floodplain_dims_L3_sf <- fluvgeo::fc2sf(paste0(data_path, 
                                                  "riffle_floodplain_dims_L3"))
-sin_valleyline_sf               <- fluvgeo::arc2sf(paste0(data_path, 
+sin_valleyline_sf               <- fluvgeo::fc2sf(paste0(data_path, 
                                                  "valleyline"))
-sin_valleyline_points_sf        <- fluvgeo::arc2sf(paste0(data_path, 
+sin_valleyline_points_sf        <- fluvgeo::fc2sf(paste0(data_path, 
                                                  "valleyline_points"))
-sin_gradient_sf                 <- fluvgeo::arc2sf(paste0(data_path, 
+sin_gradient_sf                 <- fluvgeo::fc2sf(paste0(data_path, 
                                                  "gradient_1"))
 ```
 

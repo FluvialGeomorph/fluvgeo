@@ -14,7 +14,6 @@ devtools::use_build_ignore("create_package_steps.R")
 
 # Use packages needed by functions, vignettes, etc.
 usethis::use_package("RegionalCurve", "Imports")
-usethis::use_package("arcgisbinding", "Imports")
 usethis::use_package("dplyr", "Imports")
 usethis::use_package("assertthat", "Imports")
 usethis::use_package("testthat", "Imports")
