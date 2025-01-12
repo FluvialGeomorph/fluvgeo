@@ -7,18 +7,18 @@
 #' @details Place some other package details here. And then some more.
 #'
 #' @section Installation:
-#' The functions \code{\link{arc2sf}} and \code{\link{sf2arc}} require the
-#' prior installation of the \code{arcgisbinding} package AND a licensed
-#' installation of the commercial GIS software ESRI \code{ArcGIS Desktop}
-#' or \code{ArcGIS Pro}. The \code{arcgisbinding} package can be installed
-#' from within \code{ArcGIS Pro} or by following the instructions at
-#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html} for
-#' \code{ArcGIS Desktop} users. No other functions within this package
-#' require ESRI \code{ArcGIS Desktop} or \code{ArcGIS Pro}.
+#' The datasets used as input into this package can be created using the
+#' FluvialGeomorph-toolbox
+#' \url{https://github.com/FluvialGeomorph/FluvialGeomorph-toolbox} Python
+#' package. From within the GIS Windows application \code{ArcGIS Pro}, the
+#' \code{arcgisbinding} R package can be installed by following the
+#' instructions at
+#' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}.
+#' No other functions within this package require ESRI \code{ArcGIS Pro}.
 #'
 #' @references
 #' \describe{
-#'   \item{ESRI ArcGIS Desktop, ArcGIS Pro}{\url{https://pro.arcgis.com/}}
+#'   \item{{ArcGIS Pro}{\url{https://pro.arcgis.com/}}
 #'   \item{\code{arcgisbinding}}{
 #'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
 #' }
