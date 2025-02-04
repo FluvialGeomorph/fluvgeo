@@ -1,20 +1,17 @@
-library(purrr)
-library(fluvgeo)
-
 stream <- "Cole Creek R1"
-flowline_points_1 <- file.path(system.file("extdata", "y2006_R1.gdb",
+flowline_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
                                package = "fluvgeo"),
                                "feature_dataset/flowline_points")
 flowline_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
                                package = "fluvgeo"),
                                "feature_dataset/flowline_points")
-flowline_points_3 <- file.path(system.file("extdata", "y2016_R1.gdb",
+flowline_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
                                package = "fluvgeo"),
                                "feature_dataset/flowline_points")
 flowline_points_4 <- NULL
-survey_name_1 <- "2006"
+survey_name_1 <- "2016"
 survey_name_2 <- "2010"
-survey_name_3 <- "2016"
+survey_name_3 <- "2006"
 survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                      package = "fluvgeo"),
@@ -43,7 +40,7 @@ p <- fluvgeo::compare_long_profile(stream = stream,
                                    flowline_pts_sf_list = flowline_pts_sf_list,
                                    features_sf = features_sf,
                                    profile_units = profile_units)
-print(p)
+#print(p)
 
 test_that("compare_long_profile plot exists", {
   expect_true("ggplot" %in% class(p))

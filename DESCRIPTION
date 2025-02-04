@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.52
+Version: 0.1.53
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 
@@ -25,7 +25,7 @@ Description: This package contains a wide range of functions for performing
     stream channel dimensions, help choose bankfull elevation for ungaged 
     streams).
 License: file LICENSE
-URL: https://github.com/mpdougherty/fluvgeo
+URL: https://github.com/FluvialGeomorph/fluvgeo
 BugReports: https://github.com/FluvialGeomorph/fluvgeo/issues
 Depends: R (>= 2.10)
 Encoding: UTF-8
@@ -36,32 +36,35 @@ Suggests:
     pander
 VignetteBuilder: knitr
 Imports: 
-    arcgisbinding,
     assertthat,
     conicfit,
     dplyr,
     ggplot2,
-    ggplotify,
     ggrepel,
     grDevices,
+    gridExtra,
+    gtable,
     magrittr,
-    methods,
     Metrics,
     mapboxapi,
+    patchwork,
     purrr,
     raster,
-    RegionalCurve,
+    readr,
+    RegionalCurve (>= 0.1.6),
     reshape2,
     rlang,
     rmarkdown,
     scales,
     sf,
     stats,
-    stringr,
     terra,
     terrainr,
     testthat,
     tidyr,
-    tmap,
+    tmap (>= 3.99.9003),
     utils
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
+Remotes: 
+    FluvialGeomorph/RegionalCurve,
+    r-tmap/tmap

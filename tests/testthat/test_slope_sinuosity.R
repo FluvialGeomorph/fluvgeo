@@ -1,11 +1,15 @@
-library(fluvgeo)
-context("slope_sinuosity")
-
 # horiz. units: meters
 
 # Get sf test data
 sin_fl_pts_sf         <- fluvgeo::sin_flowline_points_sf
 sin_riffle_channel_sf <- fluvgeo::sin_riffle_channel_sf
+
+channel_features <- sin_riffle_channel_sf
+lead_n = 1
+lag_n = 1
+use_smoothing = FALSE
+loess_span = 0.5
+vert_units = "ft"
 
 sin_fl_pts_ss         <- slope_sinuosity(sin_fl_pts_sf,
                                          lead_n = 50, lag_n = 50,

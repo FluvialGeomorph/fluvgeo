@@ -17,9 +17,11 @@
 #'
 #' @importFrom dplyr %>% filter
 #' @importFrom terra crop terrain shade
-#' @importFrom grDevices colorRampPalette grey.colors
-#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_add_legend
-#'             tm_compass tm_scale_bar tm_layout tm_borders
+#' @importFrom grDevices colorRampPalette grey.colors pdf.options
+#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_scale_continuous
+#'             tm_layout tm_legend tm_pos_out opt_tm_text
+#'             tm_compass tm_scalebar tm_title_out tm_add_legend tm_borders
+#'
 #'
 map_xs <- function(cross_section, xs_number, dem,
                    channel = NULL,
@@ -66,64 +68,90 @@ map_xs <- function(cross_section, xs_number, dem,
                                            bias = 1,
                                            space = "Lab",
                                            interpolate = "linear")
+  # Set the encoding to handle multibyte symbols for flow direction indicator
+  pdf.options(encoding = 'CP1250')
+
+  # Specify legend position
+  legend_pos <- tm_pos_out(cell.h = "right",
+                           cell.v = "center",
+                           pos.v = "top",
+                           pos.h = "left")
+
   # Create the cross section map
-  xs_map <- tm_shape(shp = hill,
-                     name = "Hillshade") +
-    tm_raster(style = "cont",
-              palette = gray.colors(100, 0, 1),
-              legend.show = FALSE) +
+  # tmap_design_mode()
+  xs_map <-
+    tm_shape(shp = hill,
+             name = "Hillshade") +
+    tm_raster(col.scale = tm_scale_continuous(values = "hcl.grays"),
+              col.legend = tm_legend(show = FALSE)) +
     tm_shape(shp = dem_i,
              name = "Elevation",
              unit = "ft") +
-    tm_raster(col = "Band_1",
-              style = "cont",
-              palette = esri_topo(1000),
-              alpha = 0.7,
-              title = "Elevation \n (NAVD88, ft)",
-              legend.show = TRUE) +
+    tm_raster(col.scale = tm_scale_continuous(values = esri_topo(1000)),
+              col_alpha = 0.7,
+              col.legend = tm_legend(
+                title = "Elevation \n(NAVD88, ft)",
+                reverse = TRUE,
+                frame = FALSE,
+                position = legend_pos)) +
     tm_shape(shp = cross_section_dem,
              name = "Cross Section",
-             bbox = xs_extent,
-             is.master = TRUE) +
-    tm_lines(col = "grey50", lwd = 7) +
+             is.main = TRUE,
+             bbox = xs_extent) +
+    tm_lines(col = "grey40",
+             col_alpha = 0.5,
+             lwd = 7) +
+    tm_text(text = "\U25BC",    #\\dl, \\gr \\da \\#H0834 \\#H0854 \\U25BC
+            size = 3.5,
+            col = "dodgerblue",
+            col_alpha = 0.4,
+            ymod = -0.08,
+            options = opt_tm_text(along_lines = TRUE)) +
     tm_text(text = "Seq",
             col = "black",
-            size = 1.2,
+            size = 1.1,
             fontface = "bold",
-            remove.overlap = FALSE,
-            shadow = TRUE) +
-    tm_compass(type = "arrow",
-               position = c("right", "bottom")) +
-    tm_scale_bar(width = 0.25,
-                 position = c("left", "bottom")) +
-    tm_layout(main.title = paste("Cross Section", xs_number),
-              legend.outside = TRUE,
-              legend.outside.position = "right",
+            options = opt_tm_text(remove_overlap = FALSE,
+                                  shadow = FALSE)) +
+    tm_scalebar(width = 25,
+                text.size = 0.8,
+                position = c("right", "bottom"),
+                margins = c(0, 0, 0, 0)) +
+    tm_compass(position = c("left", "bottom"),
+               margins = c(0, 0, 0, 0)) +
+    tm_title_out(text = paste("Cross Section", xs_number),
+                 fontface = "bold",
+                 padding = c(0, 0.01, 0, 0)) +
+    tm_layout(outer.margins = c(0.01, 0, 0, 0),
               outer.bg.color = "white",
-              outer.margins = c(0, 0, 0, 0),
               frame.lwd = 3)
+  #xs_map
 
   if(!is.null(channel)) {
     channel_map <- tm_shape(shp = channel_dem,
                             name = "Channel") +
       tm_borders(col = "blue", lwd = 2) +
-      tm_add_legend(type = "line",
+      tm_add_legend(type = "lines",
                     labels = "Channel",
                     col = "blue",
-                    lwd = 2)
+                    lwd = 2,
+                    position = legend_pos)
   }
+  #xs_map + channel_map
+
   if(!is.null(floodplain)) {
     floodplain_map <- tm_shape(shp = floodplain_dem,
                                name = "Floodplain") +
-      tm_borders(col = "forestgreen", lwd = 2) +
-      tm_add_legend(type = "line",
+      tm_borders(col = "darkgreen", lwd = 2) +
+      tm_add_legend(type = "lines",
                     labels = "Floodplain",
-                    col = "forestgreen",
-                    lwd = 2)
+                    col = "darkgreen",
+                    lwd = 2,
+                    position = legend_pos)
   }
+  #xs_map + channel_map + floodplain_map
 
   # Return the plot
   if(!is.null(channel) & !is.null(floodplain)) return(xs_map + channel_map + floodplain_map)
   if(is.null(channel)) return(xs_map)
 }
-

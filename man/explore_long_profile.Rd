@@ -7,5 +7,5 @@
 explore_long_profile()
 }
 \description{
-Explore Longitudinal Profile Report
+Interactive longitudinal profile report
 }

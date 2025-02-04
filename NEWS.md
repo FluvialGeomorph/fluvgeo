@@ -1,3 +1,34 @@
+# fluvgeo v0.1.53 (2025-02-04)
+
+## Major changes
+
+* Converted all functions to tmap version 4 (well, v3.99). 
+* Discovered that the `arcgisbinding::arc.open` function now no longer works reliably (see issue [#91](https://github.com/R-ArcGIS/r-bridge/issues/91)).
+* Removed all remaining dependencies on the ESRI `arcgisbinding` R package as many of its primary IO functions are no longer reliably working. Removed remaining functions that relied on `arc.open` or `arc.write`:
+
+  * `arc_raster2SpatRaster` replaced by `gdb_raster2SpatRast`
+  * `arc2sf` replaced by `fc2fs`
+  * `get_arc_wkt`
+  * `sf2arc_table` 
+  * `sf2arc` 
+
+* Discovered that the GDAL v3.7+ OpenFileGDB driver can now read rasters. 
+* The `terra` package for rasters is currently bundled with > GDAL 3.7
+```
+> terra::gdal()
+[1] "3.9.3"
+>terra::gdal(drivers = TRUE) |> filter(name == 'OpenFileGDB')
+         name raster vector        can  vsi    long.name
+1 OpenFileGDB   TRUE   TRUE read/write TRUE ESRI FileGDB
+```
+* Added a test function to verify that the GDAL OpenFileGDB driver can replace `arcgisbindings`.
+
+## Minor changes
+* Fixed some broken test data. 
+
+***
+
+
 # fluvgeo v0.1.52 (2024-06-15)
 
 ## Major changes

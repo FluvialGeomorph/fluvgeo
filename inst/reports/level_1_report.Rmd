@@ -5,7 +5,7 @@ params:
   flowline_sf: ""
   cross_section_sf: ""
   features_sf: ""
-  flowline_points_sf_list: ""
+  flowline_pts_sf_list: ""
   xs_points_sf_list: ""
   dem: ""
   show_xs_map: FALSE
@@ -29,8 +29,6 @@ library(ggrepel)
 library(tmap)
 library(terra)
 library(terrainr)
-library(arcgisbinding)
-arcgisbinding::arc.check_product()
 ```
 
 ## Study Area Overview
@@ -58,7 +56,7 @@ if(elevation) {
 ## Longitudinal Profile
 ```{r long_profile, echo=FALSE, fig.width=7, fig.height=5, fig.cap="Longitudinal Profile Plot"}
 print(fluvgeo::compare_long_profile(stream = params$stream,
-                            flowline_pts_sf_list = flowline_pts_sf_list,
+                            flowline_pts_sf_list = params$flowline_pts_sf_list,
                             features_sf = params$features_sf,
                             profile_units = params$profile_units))
 ```
@@ -84,7 +82,7 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 ```{r cross_section_plots, echo=FALSE, results='asis', fig.width=7, fig.height=4, warning=FALSE, error=FALSE, message=FALSE}
 if(params$show_xs_map) {
   # Get dem raster
-  dem_rast <- fluvgeo::arc_raster2SpatRaster(raster_path = params$dem)
+  dem_rast <- fluvgeo::gdb_raster2SpatRast(raster_path = params$dem)
 }
 
 # Ensure that cross sections are sequentially ordered

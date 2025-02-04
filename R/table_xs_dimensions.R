@@ -16,7 +16,7 @@
 #'
 #' @return a `gtable` object
 #'
-#' @importFrom dplyr filter distinct select mutate across recode arrange
+#' @importFrom dplyr filter .data distinct select mutate across recode arrange
 #' @importFrom ggplot2 unit
 #' @importFrom grid viewport textGrob
 #' @importFrom gtable gtable_add_rows gtable_add_grob
@@ -26,8 +26,8 @@ table_xs_dimensions <- function(xs_pts_sf, xs_number, bf_estimate, regions) {
 
   # Get the channel portion of the current cross section
   xs_pts_channel <- xs_pts_sf %>%
-    filter(Seq == xs_number) %>%
-    filter(channel == 1)
+    filter(.data$Seq == xs_number) %>%
+    filter(.data$channel == 1)
 
   # Calculate channel dimensions
   dims <- fluvgeo::xs_dimensions(xs_points = xs_pts_channel,
@@ -42,7 +42,7 @@ table_xs_dimensions <- function(xs_pts_sf, xs_number, bf_estimate, regions) {
     mutate(across(2:5, \(x) round(x, 1))) %>%
     mutate(xs_type = recode(xs_type,
                             "DEM derived cross section" = "DEM derived")) %>%
-    arrange(xs_type) %>%
+    arrange(.data$xs_type) %>%
     arrange(match(xs_type, c("DEM derived")))
 
   # Create the table
