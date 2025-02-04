@@ -26,14 +26,15 @@ No other functions within this package require ESRI \code{ArcGIS Pro}.
 \references{
 \describe{
   \item{{ArcGIS Pro}\url{https://pro.arcgis.com/}}
-  \item{\code{arcgisbinding}
-  \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+  \item{\code{arcgisbinding}}
+  \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
 }
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/FluvialGeomorph/fluvgeo}
+  \item \url{https://fluvialgeomorph.github.io/fluvgeo/}
   \item Report bugs at \url{https://github.com/FluvialGeomorph/fluvgeo/issues}
 }
 

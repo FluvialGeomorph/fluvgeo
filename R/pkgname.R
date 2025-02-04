@@ -19,8 +19,8 @@
 #' @references
 #' \describe{
 #'   \item{{ArcGIS Pro}\url{https://pro.arcgis.com/}}
-#'   \item{\code{arcgisbinding}
-#'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}}
+#'   \item{\code{arcgisbinding}}
+#'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
 #' }
 #'
 #' @keywords internal
