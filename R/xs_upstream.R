@@ -5,7 +5,7 @@
 #'
 #' @param cross_section   sf line object, The cross section feature.
 #'
-#' @return
+#' @return sf line object
 #' @export
 #'
 #' @importFrom dplyr %>% arrange select one_of left_join mutate lead last

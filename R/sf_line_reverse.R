@@ -4,9 +4,6 @@
 #'
 #' @param line_sf       sf object of type MULTILINESTRING, LINESTRING
 #'
-#' @details Taken from Edzer's response in:
-#' [sf/issues/1246](https://github.com/r-spatial/sf/issues/1246).
-#'
 #' @return sf object
 #' @export
 #'
