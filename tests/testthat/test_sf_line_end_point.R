@@ -1,4 +1,4 @@
-test_that("", {
+test_that("check line end point start", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                             package = "fluvgeo"),
                                 "feature_dataset/xs_50")
@@ -15,7 +15,7 @@ test_that("", {
   expect_true(is.numeric(pt$x_start))
 })
 
-test_that("", {
+test_that("check line end point end", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
                                             package = "fluvgeo"),
                                 "feature_dataset/xs_50")

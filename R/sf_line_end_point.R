@@ -30,5 +30,5 @@ sf_line_end_point <- function(line, end) {
     mutate(ReachName = line$ReachName) %>%
     mutate(Seq = line$Seq) %>%
     # write attributes to sf object
-    fluvgeo::sf_point_attributes(., names = field_names)
+    fluvgeo::sf_point_attributes(., field_names = field_names)
 }
