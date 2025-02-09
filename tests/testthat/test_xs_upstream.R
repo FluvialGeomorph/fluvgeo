@@ -45,3 +45,30 @@ test_that("", {
 
   expect_true("sf" %in% class(xs_update))
 })
+
+## Unused approach for identifying left-right descending bank
+# # Create left and right bank polygons
+# xs_area <- dplyr::bind_rows(xs_start, xs_end) %>%
+#   st_union() %>%
+#   st_concave_hull(., ratio = 0, allow_holes = FALSE) %>%
+#   st_as_sf()
+#
+# fl_pts <- xs_update %>%
+#   st_drop_geometry() %>%
+#   st_as_sf(., coords = c("POINT_X", "POINT_Y"),
+#            crs = st_crs(.))
+#
+# fl_line <- fl_pts %>%
+#   arrange(Seq) %>%
+#   summarise(do_union = FALSE) %>%
+#   st_cast("LINESTRING") %>%
+#   mutate(ReachName = unique(fl_pts$ReachName))
+#
+# fl_start <- sf_line_end_point(fl_line, end = "start")
+# fl_end   <- sf_line_end_point(fl_line, end = "end")
+#
+# xs_area_split <- xs_area %>%
+#   st_buffer(., dist = -1) %>%
+#   lwgeom::st_split(., fl_line) %>%
+#   st_collection_extract("POLYGON") %>%
+#   st_buffer(., dist = 1.5)
