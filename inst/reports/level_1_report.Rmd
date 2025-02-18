@@ -85,8 +85,10 @@ if(params$show_xs_map) {
   dem_rast <- fluvgeo::gdb_raster2SpatRast(raster_path = params$dem)
 }
 
-# Ensure that cross sections are sequentially ordered
-cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
+# Calculate cross section bearings and sequentially order
+cross_section <- params$cross_section_sf %>%
+  fluvgeo::xs_bearing() %>%
+  dplyr::arrange(Seq)
 
 # Iterate through cross sections
 for(j in unique(cross_section$Seq)) {
