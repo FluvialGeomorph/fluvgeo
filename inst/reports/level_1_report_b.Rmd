@@ -87,8 +87,10 @@ print(fluvgeo::xs_metrics_plot_L1(xs_dims_sf = params$cross_section_sf,
 # Get dem raster
 dem_rast <- fluvgeo::gdb_raster2SpatRast(raster_path = params$dem)
 
-# Ensure that cross sections are sequentially ordered
-cross_section <- dplyr::arrange(params$cross_section_sf, Seq)
+# Calculate cross section bearings and sequentially order
+cross_section <- params$cross_section_sf %>%
+  fluvgeo::xs_bearing() %>%
+  dplyr::arrange(Seq)
 
 # Iterate through cross sections
 for(j in cross_section$Seq) {

@@ -49,6 +49,7 @@ output_format <- "word_document"
 
 
 test_that("check level 2 report_b, without xs map", {
+
   expected_report <- file.path(output_dir,
                                "Cole_Creek_R1_103_5_level_2_report_b.docx")
   if (file.exists(expected_report)) file.remove(expected_report)
