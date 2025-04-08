@@ -1,3 +1,19 @@
+# fluvgeo v0.1.54 (2025-04-08)
+
+## Major changes
+* Updated reports to use a series of new functions to improve data quality and labeling. 
+* Added a series of functions to streamline the editing and drawing of cross sections in the sf format. 
+
+  * `start_left` - Determines if a cross section starts to the left of the flowline. 
+  * `sf_line_end_point` - Returns the x,y corrdinates of the start or end of a line. 
+  * `sf_point_attributes` - Write the x and y coordinate values into columns.
+  * `xs_upstream` - Determine the upstream cross section and write its vlues into new columns.   * `xs_bearing` - Calculate the bearing of a cross section. 
+
+## Minor changes
+* None.
+
+***
+
 # fluvgeo v0.1.53 (2025-02-04)
 
 ## Major changes
