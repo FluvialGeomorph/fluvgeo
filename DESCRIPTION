@@ -13,8 +13,8 @@ Authors@R: c(
            email = "Barrie.V.Chileen@usace.army.mil",
            role = c("aut","cre"),
            comment = c(ORCID = "0000-0002-6960-8167")),
-    person("Thomas", "Darby", role = c("ctb")), 
-    person("Davi", "Michl", role = c("ctb"))
+    person("Thomas", "Darby", role = c("rev")), 
+    person("Davi", "Michl", role = c("rev"))
     )
 Description: This package contains a wide range of functions for performing
     fluvial geomorphic analysis. This package is designed for use with the 
