@@ -36,6 +36,7 @@ Imports:
     grid,
     gridExtra,
     gtable,
+    knitr,
     leafem,
     leaflegend,
     leaflet,
@@ -67,8 +68,6 @@ Imports:
 Suggests: 
     httr2,
     fluvgeodata
-VignetteBuilder: 
-    knitr
 Remotes: 
     FluvialGeomorph/RegionalCurve
     FluvialGeomorph/fluvgeodata

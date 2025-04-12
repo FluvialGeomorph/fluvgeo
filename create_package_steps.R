@@ -59,7 +59,7 @@ devtools::document()
 
 ## Teach
 # Create the vignette infrastructure
-usethis::use_vignette()
+
 
 # Build the vignette (re-run after each set of edits)
 devtools::build_vignettes()
@@ -70,6 +70,7 @@ devtools::build_vignettes()
 # network drive
 devtools::check()
 
+result <- rcmdcheck::rcmdcheck(error_on = "never")
 
 ## Continuous Integration
 # https://bookdown.org/rdpeng/RProgDA/continuous-integration.html

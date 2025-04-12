@@ -16,12 +16,5 @@
 #' \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}.
 #' No other functions within this package require ESRI \code{ArcGIS Pro}.
 #'
-#' @references
-#' \describe{
-#'   \item{{ArcGIS Pro}\url{https://pro.arcgis.com/}}
-#'   \item{\code{arcgisbinding}}
-#'   \url{https://r-arcgis.github.io/assets/arcgisbinding-vignette.html}
-#' }
-#'
 #' @keywords internal
 "_PACKAGE"

@@ -9,7 +9,7 @@ sf_point_attributes(points, field_names = c("X", "Y"))
 \arguments{
 \item{points}{sf object of type POINT, The input point features.}
 
-\item{fieldnames}{character, Provide custom names for the coordinate
+\item{field_names}{character, Provide custom names for the coordinate
 fields to be created. Names must be provided in the
 sf Dimension order (i.e,, XY, XTM, XYZ, XYZM).}
 }

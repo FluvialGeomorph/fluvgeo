@@ -1,9 +1,9 @@
 #' Calculate x and y coordinate values as new fields.
 #'
-#' @param points      sf object of type POINT, The input point features.
-#' @param fieldnames  character, Provide custom names for the coordinate
-#'                    fields to be created. Names must be provided in the
-#'                    sf Dimension order (i.e,, XY, XTM, XYZ, XYZM).
+#' @param points       sf object of type POINT, The input point features.
+#' @param field_names  character, Provide custom names for the coordinate
+#'                     fields to be created. Names must be provided in the
+#'                     sf Dimension order (i.e,, XY, XTM, XYZ, XYZM).
 #'
 #' @details based on jmlondon suggestion for an `sf_as_cols` function:
 #' [sf/issues/231](https://github.com/r-spatial/sf/issues/231)
