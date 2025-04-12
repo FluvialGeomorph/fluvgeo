@@ -1,52 +1,48 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 0.1.54
+Version: 2025.04.12
 Authors@R: c(
-    person("Michael", "Dougherty", 
-           email = "Michael.P.Dougherty@usace.army.mil", 
-           role = c("aut"),
+    person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", role = "aut",
            comment = c(ORCID = "0000-0002-1465-5927")),
-    person("Christopher", "Haring",
-           email = "Christopher.P.Haring@usace.army.mil",
-           role = c("aut")),
-    person("Barrie","Chileen Martinez",
-           email = "Barrie.V.Chileen@usace.army.mil",
-           role = c("aut","cre"),
+    person("Christopher", "Haring", , "Christopher.P.Haring@usace.army.mil", role = "aut"),
+    person("Barrie", "Chileen Martinez", , "Barrie.V.Chileen@usace.army.mil", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6960-8167")),
-    person("Thomas", "Darby", role = c("rev")), 
-    person("Davi", "Michl", role = c("rev"))
-    )
-Description: This package contains a wide range of functions for performing
-    fluvial geomorphic analysis. This package is designed for use with the 
-    FluvialGeomorph Python package. The FluvialGeomorph package contains an 
-    ArcGIS toolbox that can be used to extract spatial data from high-
-    resolution terrain data. FluvialGeomorph uses functions in this package 
-    to perform a wide range of fluvial geomorphic analysis (e.g., extract 
-    stream channel dimensions, help choose bankfull elevation for ungaged 
-    streams).
+    person("Thomas", "Darby", role = "rev"),
+    person("Davi", "Michl", role = "rev")
+  )
+Description: This package contains a wide range of functions for
+    performing fluvial geomorphic analysis. This package is designed for
+    use with the FluvialGeomorph Python package. The FluvialGeomorph
+    package contains an ArcGIS toolbox that can be used to extract spatial
+    data from high- resolution terrain data. FluvialGeomorph uses
+    functions in this package to perform a wide range of fluvial
+    geomorphic analysis (e.g., extract stream channel dimensions, help
+    choose bankfull elevation for ungaged streams).
 License: file LICENSE
-URL: https://github.com/FluvialGeomorph/fluvgeo, https://fluvialgeomorph.github.io/fluvgeo/
+URL: https://github.com/FluvialGeomorph/fluvgeo,
+    https://fluvialgeomorph.github.io/fluvgeo/
 BugReports: https://github.com/FluvialGeomorph/fluvgeo/issues
-Depends: R (>= 2.10)
-Encoding: UTF-8
-LazyData: true
-Suggests: 
-    knitr,
-    kableExtra,
-    pander
-VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
 Imports: 
+    arcgislayers,
+    arcgisutils,
     assertthat,
     conicfit,
     dplyr,
     ggplot2,
     ggrepel,
     grDevices,
+    grid,
     gridExtra,
     gtable,
+    leafem,
+    leaflegend,
+    leaflet,
+    leaflet.extras,
     magrittr,
-    Metrics,
     mapboxapi,
+    Metrics,
     patchwork,
     purrr,
     raster,
@@ -54,17 +50,27 @@ Imports:
     RegionalCurve (>= 0.1.6),
     reshape2,
     rlang,
+    rLFT,
     rmarkdown,
     scales,
     sf,
+    smoothr,
     stats,
     terra,
     terrainr,
     testthat,
+    tibble,
     tidyr,
-    tmap (>= 3.99.9003),
+    tieredassessment,
+    tmap,
+    tools,
     utils
-RoxygenNote: 7.3.2
+Suggests: 
+    httr2
+VignetteBuilder: 
+    knitr
 Remotes: 
-    FluvialGeomorph/RegionalCurve,
-    r-tmap/tmap
+    FluvialGeomorph/RegionalCurve
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
