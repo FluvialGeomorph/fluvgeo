@@ -1,5 +1,6 @@
 .Rproj.user
 .Rhistory
+.Renviron
 .RData
 inst/doc
 Rplots.pdf
