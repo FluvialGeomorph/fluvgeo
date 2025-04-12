@@ -20,7 +20,7 @@ xs_upstream <- function(cross_section) {
   xs_update <- cross_section %>%
     arrange(Seq) %>%
     select(-one_of("x_start", "y_start", "x_end", "y_end",
-                   "from_measure", "to_measure", "ReachName")) %>%
+                   "ReachName")) %>%
     left_join(y = st_drop_geometry(xs_start), by = "Seq") %>%
     select(-one_of("ReachName")) %>%
     left_join(y = st_drop_geometry(xs_end), by = "Seq") %>%
