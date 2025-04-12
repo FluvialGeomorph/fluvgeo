@@ -1,3 +1,28 @@
+# fluvgeo 2025.04.12
+
+## Major changes
+* Start using the new data package `FluvialGeomorph/fluvgeodata` for testing newly added functions. 
+* Added new functions to support `fluvgeo` use in shiny apps:
+
+  * `flowline` - Create a valid flowline object from raw linework. 
+  * `flowline_points` - Create a valid flowline_points object from a flowline object. 
+  * `cross_section` - Create a valid cross_section object from raw linework. 
+  * `cross_section_points` - Create a valid cross_section_points object from a cross_section object.
+  * `dem2rem` - Convert a DEM to an REM. 
+  * `get_dem` - Get a DEM from the latest ESRI terrain image server.
+  * `get_leaflet` - Get a basic leaflet object.
+  * `get_results_leaflet` - Get a leaflet objet with fluvgeo objects. 
+  * `get_terrain_leaflet` - Get a leaflet object with a DEM. 
+  * `arcgis_auth` - Authorize to an AGOL service. 
+  * `check_crs_3857` - Check if sf or terra objects are CRS 3857.
+  * `sf_fix_crs` - Fix sf objects that might have mis-specified CRS's 3857 and 4326.
+  * `sf_get_z` - Get z value from an elevation model for an sf object. 
+
+## Minor changes
+* Swiched to using `tmap` v4 from CRAN. 
+
+***
+
 # fluvgeo v0.1.54 (2025-04-08)
 
 ## Major changes

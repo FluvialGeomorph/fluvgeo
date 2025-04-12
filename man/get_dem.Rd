@@ -13,6 +13,6 @@ get_dem(xs)
 terra::SpatRaster
 }
 \description{
-Get a DEM from the ESRI WorldElevation Terrain Image Service 
+Get a DEM from the ESRI WorldElevation Terrain Image Service
 that covers the extent of the input features.
 }

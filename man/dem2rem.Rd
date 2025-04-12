@@ -13,15 +13,15 @@ dem2rem(dem, flowline, flowline_points, buffer_distance)
 
 \item{flowline_points}{sf object; A flowline_points feature.}
 
-\item{buffer_distance}{numeric; Distance the flowline feature class 
-will be buffered to define the extent of the output 
-REM. Units are defined by the coordinate system of 
+\item{buffer_distance}{numeric; Distance the flowline feature class
+will be buffered to define the extent of the output
+REM. Units are defined by the coordinate system of
 the DEM.}
 }
 \value{
 a terra SpatRaster object representing the REM
 }
 \description{
-Converts a Digital Elevation Model (DEM) to a Relative 
+Converts a Digital Elevation Model (DEM) to a Relative
               Elevation Model (REM). An REM is a DEM normalized
 }

@@ -65,11 +65,13 @@ Imports:
     tools,
     utils
 Suggests: 
-    httr2
+    httr2,
+    fluvgeodata
 VignetteBuilder: 
     knitr
 Remotes: 
     FluvialGeomorph/RegionalCurve
+    FluvialGeomorph/fluvgeodata
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
