@@ -50,8 +50,8 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Thomas Darby [contributor]
-  \item Davi Michl [contributor]
+  \item Thomas Darby [reviewer]
+  \item Davi Michl [reviewer]
 }
 
 }
