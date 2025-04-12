@@ -1,7 +1,8 @@
 rem_plot <- function(flowline_points, dem, rem) {
-  plot(dem)
-  points(flowline_points)
+  plot(rem < 102)
+  lines(flowline, col = "blue")
 }
+
 test_that("DEM 2 REM", {
   fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
@@ -14,6 +15,6 @@ test_that("DEM 2 REM", {
   flowline_points <- flowline_points(flowline, dem, station_distance)
   buffer_distance <- 300
   rem <- dem2rem(dem, flowline, flowline_points, buffer_distance)
-
+  #rem_plot(flowline, dem, rem)
   expect_true("SpatRaster" %in% class(rem))
 })
