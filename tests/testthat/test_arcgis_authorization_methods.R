@@ -62,7 +62,7 @@ test_that("Does 'auth_client' function for auth work?", {
   secret = Sys.getenv("ARCGIS_CLIENTSECRET"),
   host = Sys.getenv("ARCGIS_HOST"),
   expiration = 120)
-  
+
   arcgisutils::set_arc_token(token = perm_token)
   token <- arcgisutils::arc_token()
   expect_true("httr2_token" %in% class(token))

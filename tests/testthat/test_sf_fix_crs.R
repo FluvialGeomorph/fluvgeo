@@ -1,7 +1,7 @@
 test_that("fixes 4326 incorrecly set to 3857", {
   # Features saved from mapedit module
-  xs_mapedit <- sf::st_read(system.file("extdata", "xs_mapedit.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   sf::st_crs(xs_mapedit) <- 3857        # simulates mapedit::editMod crs = 3857
   obj <- xs_mapedit
   sf::st_crs(obj)$epsg                  # 3857, but this is incorrect, see bbox
@@ -18,8 +18,8 @@ test_that("fixes 4326 incorrecly set to 3857", {
 })
 test_that("fixes 4326 incorrecly set to 3857", {
   # Features saved from mapedit module
-  fl_mapedit <- sf::st_read(system.file("extdata", "fl_mapedit.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   sf::st_crs(fl_mapedit) <- 3857        # simulates mapedit::editMod crs = 3857
   obj <- fl_mapedit
   sf::st_crs(obj)$epsg                  # 3857, but this is incorrect, see bbox
@@ -35,8 +35,8 @@ test_that("fixes 4326 incorrecly set to 3857", {
   expect_equal(sf::st_crs(fl_3857)$epsg, 3857)
 })
 test_that("fixes 3857 incorrectly set to 4326", {
-  xs <- sf::st_read(system.file("extdata", "xs.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  xs <- sf::st_read(system.file("extdata", "shiny", "xs.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   sf::st_crs(xs) <- 4326                # hypothetical case, not observed
   obj <- xs
   sf::st_crs(obj)$epsg                  # 4326, but this is incorrect, see bbox
@@ -52,12 +52,12 @@ test_that("fixes 3857 incorrectly set to 4326", {
   expect_equal(sf::st_crs(xs_4326)$epsg, 4326)
 })
 test_that("handles 3857 already set correctly", {
-  xs <- sf::st_read(system.file("extdata", "xs.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  xs <- sf::st_read(system.file("extdata", "shiny", "xs.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   obj <- xs
   sf::st_crs(obj)$epsg                  # 3857, see bbox
   sf::st_bbox(obj)                      # bbox is meters
-  fixed_obj <- sf_fix_crs(obj)     
+  fixed_obj <- sf_fix_crs(obj)
   sf::st_crs(fixed_obj)$epsg            # 3857, see bbox
   sf::st_bbox(fixed_obj)                # bbox is meters
   expect_equal(sf::st_crs(xs)$epsg, sf::st_crs(fixed_obj)$epsg)
@@ -68,12 +68,12 @@ test_that("handles 3857 already set correctly", {
   expect_equal(sf::st_crs(xs_4326)$epsg, 4326)
 })
 test_that("handles 4326 already set correctly", {
-  xs_mapedit <- sf::st_read(system.file("extdata", "xs_mapedit.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   obj <- xs_mapedit
   sf::st_crs(obj)$epsg                  # 4326, see bbox
   sf::st_bbox(obj)                      # bbox is latlon dd
-  fixed_obj <- sf_fix_crs(obj)     
+  fixed_obj <- sf_fix_crs(obj)
   sf::st_crs(fixed_obj)$epsg            # 4326, see bbox
   sf::st_bbox(fixed_obj)                # bbox is latlon dd
   expect_equal(sf::st_crs(xs_mapedit)$epsg, sf::st_crs(fixed_obj)$epsg)

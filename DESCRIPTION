@@ -61,7 +61,6 @@ Imports:
     testthat,
     tibble,
     tidyr,
-    tieredassessment,
     tmap,
     tools,
     utils

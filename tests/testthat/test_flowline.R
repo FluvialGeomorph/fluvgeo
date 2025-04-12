@@ -8,11 +8,11 @@ fl_dir_plot <- function(og_fl, fixed_fl, dem) {
 }
 
 test_that("fl_mapedit digitized in the upstream direction", {
-  fl_mapedit <- sf::st_read(system.file("extdata", "fl_mapedit.shp", 
-                                package = "tieredassessment"), quiet = TRUE)
+  fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
+                                package = "fluvgeodata"), quiet = TRUE)
   fl_fix <- sf_fix_crs(fl_mapedit)
   flowline <- sf::st_transform(fl_fix, crs = 3857) # Web Mercator
-  reach_name <- "current stream" 
+  reach_name <- "current stream"
   dem <- get_dem(flowline)
   fl <- flowline(flowline, reach_name, dem)
   #fl_dir_plot(flowline, fl, dem)
@@ -22,8 +22,8 @@ test_that("fl_mapedit digitized in the upstream direction", {
   expect_true(start_z <= end_z)
 })
 test_that("fl_mapedit digitized in the downstream direction", {
-  fl_mapedit <- sf::st_read(system.file("extdata", "fl_mapedit.shp", 
-                                        package = "tieredassessment"), quiet = TRUE)
+  fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
+                                        package = "fluvgeodata"), quiet = TRUE)
   fl_fix <- sf_fix_crs(fl_mapedit)
   fl_3857 <- sf::st_transform(fl_fix, crs = 3857) # Web Mercator
   # Purposely reverse a correctly digitized flowline to test function

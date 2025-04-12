@@ -1,6 +1,6 @@
 #' Get DEM
-#' 
-#' @description Get a DEM from the ESRI WorldElevation Terrain Image Service 
+#'
+#' @description Get a DEM from the ESRI WorldElevation Terrain Image Service
 #' that covers the extent of the input features.
 #'
 #' @param xs      sf object
@@ -14,10 +14,10 @@
 #' @importFrom assertthat assert_that
 get_dem <- function(xs) {
   assert_that(check_crs_3857(xs), msg = "xs CRS must be 3857")
-  
+
   # authenticate to AGOL
-  tieredassessment:::arcgis_auth()
-  
+  fluvgeo:::arcgis_auth()
+
   # Define the terrain service
   dem_url <- "https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer"
   dem_service  <- arc_open(dem_url)
@@ -28,20 +28,20 @@ get_dem <- function(xs) {
   xs_bbox <- fluvgeo::map_extent(xs_dem, extent_factor = 1.2)
   xs_bbox
 
-  dem <- arc_raster(dem_service, 
+  dem <- arc_raster(dem_service,
                     # only get the extent of the xs
-                    xmin = xs_bbox$xmin, 
+                    xmin = xs_bbox$xmin,
                     ymin = xs_bbox$ymin,
                     xmax = xs_bbox$xmax,
                     ymax = xs_bbox$ymax)
-  
+
   # Convert elevations from meters to feet
   dem_m <- dem * 3.28084
-  
+
   # Transform the dem to the xs crs (3857)
   dem_3857 <- project(dem_m, "EPSG:3857")
   assert_that(check_crs_3857(dem_3857), msg = "output dem CRS must be 3857")
-  
+
   return(dem_3857)
-}  
+}
 
