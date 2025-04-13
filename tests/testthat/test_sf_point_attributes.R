@@ -1,6 +1,6 @@
 test_that("", {
   flowline_points <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                             package = "fluvgeo"),
+                                             package = "fluvgeodata"),
                                  "feature_dataset/flowline_points")
   points <- fc2sf(flowline_points)
   field_names = c("x_coord","y_coord", "m")
@@ -13,7 +13,7 @@ test_that("", {
 
 test_that("", {
   flowline_points <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                           package = "fluvgeo"),
+                                           package = "fluvgeodata"),
                                "feature_dataset/flowline_points")
   points <- fc2sf(flowline_points)
   field_names = c("x_coord","y_coord")

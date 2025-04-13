@@ -9,7 +9,7 @@ create_temp_gdb <- function(temp_folder_num = 1) {
   temp_folder <- file.path(temp_dir, temp_folder_num)
   dir.create(temp_folder, showWarnings = FALSE)
   gdb_path <- file.path(system.file("extdata", "testing_data.gdb",
-                                    package = "fluvgeo"))
+                                    package = "fluvgeodata"))
   file.copy(from = gdb_path, to = temp_folder, recursive = TRUE)
   temp_gdb_path <- file.path(temp_folder, "testing_data.gdb")
   return(temp_gdb_path)
@@ -18,7 +18,7 @@ create_temp_gdb <- function(temp_folder_num = 1) {
 
 test_that("read gdb feature class and convert to sf", {
   fc_path <- file.path(system.file("extdata", "testing_data.gdb",
-                                   package = "fluvgeo"),
+                                   package = "fluvgeodata"),
                        "feature_dataset", "flowline")
   # rename to `gdb_fc2sf`
   sf <- fc2sf(fc_path)
@@ -27,14 +27,14 @@ test_that("read gdb feature class and convert to sf", {
 
 test_that("read gdb table and convert to data frame using sf", {
   table_path <- file.path(system.file("extdata", "testing_data.gdb",
-                                      package = "fluvgeo"),
+                                      package = "fluvgeodata"),
                           "riffle_floodplain_dims_L1_table")
   # add `gdb_table2df`
 })
 
 test_that("read gdb raster and convert to terra::SpatRast", {
   raster_path <- file.path(system.file("extdata", "testing_raster.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "dem_1m")
 
   raster <- gdb_raster2SpatRast(raster_path)

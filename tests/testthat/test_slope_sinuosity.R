@@ -28,10 +28,10 @@ sin_fl_pts_ss_nosmooth <- slope_sinuosity(sin_fl_pts_sf,
 
 # Get feature class test data
 fl_pts_m_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                      package = "fluvgeo"),
+                                      package = "fluvgeodata"),
                           "feature_dataset/flowline_points")
 xs_m_fc      <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                      package = "fluvgeo"),
+                                      package = "fluvgeodata"),
                           "feature_dataset/xs_50")
 
 # Convert to sf
@@ -53,10 +53,10 @@ xs_m_sf_ss <- slope_sinuosity(xs_m_sf,
 
 # Get feature class test data
 fl_pts_ft_fc <- file.path(system.file("extdata", "state_plane.gdb",
-                                      package = "fluvgeo"),
+                                      package = "fluvgeodata"),
                           "feature_dataset/flowline_points")
 xs_ft_fc     <- file.path(system.file("extdata", "state_plane.gdb",
-                                      package = "fluvgeo"),
+                                      package = "fluvgeodata"),
                           "feature_dataset/XS_R1_2016")
 
 # Convert to sf

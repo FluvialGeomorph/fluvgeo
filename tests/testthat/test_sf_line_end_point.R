@@ -1,6 +1,6 @@
 test_that("check line end point start", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   line <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   end <- "start"
@@ -17,7 +17,7 @@ test_that("check line end point start", {
 
 test_that("check line end point end", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   line <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   end <- "end"

@@ -1,8 +1,8 @@
 flowline_fc      <- file.path(system.file("extdata", "testing_data.gdb",
-                                          package = "fluvgeo"),
+                                          package = "fluvgeodata"),
                               "feature_dataset/flowline")
 cross_section_fc <- file.path(system.file("extdata", "testing_data.gdb",
-                                          package = "fluvgeo"),
+                                          package = "fluvgeodata"),
                               "feature_dataset/riffle_floodplain")
 flowline_sf      <- fluvgeo::fc2sf(flowline_fc, quiet = TRUE)
 cross_section_sf <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)

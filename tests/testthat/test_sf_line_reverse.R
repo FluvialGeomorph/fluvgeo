@@ -9,7 +9,7 @@ test_that("does st_reverse flip st_linestring input", {
 
 test_that("reverses sf input", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   line_sf <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   line_sf_2 <- sf_line_reverse(line_sf)

@@ -1,21 +1,21 @@
 stream <- "Cole Creek R1"
 flowline_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/flowline")
 xs_fc         <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/xs_50")
 xs_dims_fc    <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/xs_50_dims_L2")
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2016"
@@ -23,16 +23,16 @@ survey_name_2 <- "2010"
 survey_name_3 <- "2006"
 survey_name_4 <- NULL
 dem           <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "dem_2016_hydro_50")
 features_fc   <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/features")
 channel_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/channel_103")
 floodplain_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/floodplain_112")
 bf_estimate   <- 103.5
 regions       <- c("USA", "Eastern United States")

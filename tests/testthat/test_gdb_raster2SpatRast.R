@@ -1,7 +1,7 @@
 
 test_that("convert geodatabase raster to SpatRast", {
   raster_path <- file.path(system.file("extdata", "testing_raster.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "dem_1m")
 
   raster <- gdb_raster2SpatRast(raster_path)
@@ -15,7 +15,7 @@ test_that("convert geodatabase raster to SpatRast", {
 
 test_that("convert file raster to SpatRast", {
   raster_path <- file.path(system.file("extdata", "dem_1m.tif",
-                                       package = "fluvgeo"))
+                                       package = "fluvgeodata"))
 
   raster <- gdb_raster2SpatRast(raster_path)
   expect_true("SpatRaster" %in% class(raster))

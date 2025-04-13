@@ -17,7 +17,7 @@ validation_plot <- function(cross_section, xs_start, xs_end) {
 
 test_that("xs_upstream has correct fields", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   xs_update <- xs_upstream(cross_section)
@@ -29,7 +29,7 @@ test_that("xs_upstream has correct fields", {
 
 test_that("", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   # before

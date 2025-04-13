@@ -1,14 +1,14 @@
 cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                          package = "fluvgeo"),
+                                          package = "fluvgeodata"),
                               "feature_dataset/xs_50_dims_L2")
 channel_fc     <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                        package = "fluvgeo"),
+                                        package = "fluvgeodata"),
                             "feature_dataset/channel_103")
 floodplain_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                        package = "fluvgeo"),
+                                        package = "fluvgeodata"),
                             "feature_dataset/floodplain_112")
 dem_path <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                  package = "fluvgeo"),
+                                  package = "fluvgeodata"),
                       "dem_2016_hydro_50")
 
 cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
@@ -20,13 +20,13 @@ regions       <- c("USA", "Eastern United States")
 xs_number <- 8
 extent_factor <- 2
 xs_points_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/xs_50_points")
 xs_points_4 <- NULL
 survey_name_1 <- "2016"

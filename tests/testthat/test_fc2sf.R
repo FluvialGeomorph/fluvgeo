@@ -11,7 +11,7 @@ create_temp_gdb <- function(temp_folder_num = 1) {
   temp_folder <- file.path(temp_dir, temp_folder_num)
   dir.create(temp_folder, showWarnings = FALSE)
   gdb_path <- file.path(system.file("extdata", "testing_data.gdb",
-                                    package = "fluvgeo"))
+                                    package = "fluvgeodata"))
   file.copy(from = gdb_path, to = temp_folder, recursive = TRUE)
   temp_gdb_path <- file.path(temp_folder, "testing_data.gdb", "feature_dataset")
   return(temp_gdb_path)

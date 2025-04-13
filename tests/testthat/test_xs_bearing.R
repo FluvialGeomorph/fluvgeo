@@ -18,7 +18,7 @@ validation_plot <- function(cross_section, xs_start, xs_end) {
 
 test_that("", {
   cross_section_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                            package = "fluvgeo"),
+                                            package = "fluvgeodata"),
                                 "feature_dataset/xs_50")
   cross_section <- fluvgeo::fc2sf(cross_section_fc, quiet = TRUE)
   xs_dims <- xs_bearing(cross_section)

@@ -29,7 +29,7 @@ xs_dims_ratios <- xs_metric_ratios(xs_dims_plan)
 
 # sf
 xs_dims_fc <- file.path(system.file("extdata", "testing_data.gdb",
-                                    package = "fluvgeo"),
+                                    package = "fluvgeodata"),
                         "feature_dataset/riffle_floodplain_dims_L2")
 xs_dims_sf <- fluvgeo::fc2sf(xs_dims_fc)
 

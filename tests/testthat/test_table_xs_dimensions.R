@@ -1,5 +1,5 @@
 xs_pts_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                    package = "fluvgeo"),
+                                    package = "fluvgeodata"),
                         "feature_dataset/xs_50_points")
 xs_number   <- 8
 bf_estimate <- 103.5

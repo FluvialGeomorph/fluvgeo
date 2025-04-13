@@ -14,7 +14,7 @@ test_that("not features points", {
 
 # sf
 features_fc   <- file.path(system.file("extdata", "testing_data.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                            "feature_dataset/features")
 features_sf  <- fluvgeo::fc2sf(features_fc)
 

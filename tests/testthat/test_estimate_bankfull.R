@@ -1,28 +1,28 @@
 stream <- "Cole Creek R1"
 flowline_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/flowline")
 xs_dims_fc  <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                       package = "fluvgeo"),
+                                       package = "fluvgeodata"),
                          "feature_dataset/riffle_channel_dims_L2")
 xs_points_ch_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                             "feature_dataset/riffle_channel_points")
 xs_points_ch_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                             "feature_dataset/riffle_channel_points")
 xs_points_ch_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                             "feature_dataset/riffle_channel_points")
 xs_points_ch_4 <- NULL
 xs_points_fp_1 <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                        package = "fluvgeo"),
+                                        package = "fluvgeodata"),
                             "feature_dataset/riffle_floodplain_points")
 xs_points_fp_2 <- file.path(system.file("extdata", "y2010_R1.gdb",
-                                        package = "fluvgeo"),
+                                        package = "fluvgeodata"),
                             "feature_dataset/riffle_floodplain_points")
 xs_points_fp_3 <- file.path(system.file("extdata", "y2006_R1.gdb",
-                                        package = "fluvgeo"),
+                                        package = "fluvgeodata"),
                             "feature_dataset/riffle_floodplain_points")
 xs_points_fp_4 <- NULL
 survey_name_1 <- "2016"
@@ -30,10 +30,10 @@ survey_name_2 <- "2010"
 survey_name_3 <- "2006"
 survey_name_4 <- NULL
 features_fc <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "feature_dataset/features")
 dem         <- file.path(system.file("extdata", "y2016_R1.gdb",
-                                     package = "fluvgeo"),
+                                     package = "fluvgeodata"),
                          "dem_2016_hydro_50")
 show_xs_map <- TRUE
 regions <- c("Eastern United States", "USA")
