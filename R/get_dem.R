@@ -16,7 +16,7 @@ get_dem <- function(xs) {
   assert_that(check_crs_3857(xs), msg = "xs CRS must be 3857")
 
   # authenticate to AGOL
-  fluvgeo:::arcgis_auth()
+  arcgis_auth()
 
   # Define the terrain service
   dem_url <- "https://elevation.arcgis.com/arcgis/rest/services/WorldElevation/Terrain/ImageServer"

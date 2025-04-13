@@ -70,6 +70,11 @@ devtools::build_vignettes()
 # network drive
 devtools::check()
 
+devtools::check(
+  args = c("--no-examples", "--no-tests", "--ignore-vignettes", "--timings"),
+  check_dir = "c:/workflow/FluvialGeomorph/",
+  error_on = "never")
+
 result <- rcmdcheck::rcmdcheck(error_on = "never")
 
 ## Continuous Integration
