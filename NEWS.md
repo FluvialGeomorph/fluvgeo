@@ -1,3 +1,10 @@
+# fluvgeo 2025.04.14
+
+## Bug fix
+* Fixed documentation mistake which prevented building package from source on linux. 
+
+***
+
 # fluvgeo 2025.04.12
 
 ## Major changes
