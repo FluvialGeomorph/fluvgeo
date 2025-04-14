@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.54</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.04.12</span>
       </span>
     </div>
 
@@ -47,6 +47,46 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2025.04.12" id="fluvgeo-20250412">fluvgeo 2025.04.12<a class="anchor" aria-label="anchor" href="#fluvgeo-20250412"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-2025-04-12">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2025-04-12"></a></h3>
+<ul><li><p>Start using the new data package <code>FluvialGeomorph/fluvgeodata</code> for testing newly added functions.</p></li>
+<li>
+<p>Added new functions to support <code>fluvgeo</code> use in shiny apps:</p>
+<ul><li>
+<code>flowline</code> - Create a valid flowline object from raw linework.</li>
+<li>
+<code>flowline_points</code> - Create a valid flowline_points object from a flowline object.</li>
+<li>
+<code>cross_section</code> - Create a valid cross_section object from raw linework.</li>
+<li>
+<code>cross_section_points</code> - Create a valid cross_section_points object from a cross_section object.</li>
+<li>
+<code>dem2rem</code> - Convert a DEM to an REM.</li>
+<li>
+<code>get_dem</code> - Get a DEM from the latest ESRI terrain image server.</li>
+<li>
+<code>get_leaflet</code> - Get a basic leaflet object.</li>
+<li>
+<code>get_results_leaflet</code> - Get a leaflet objet with fluvgeo objects.</li>
+<li>
+<code>get_terrain_leaflet</code> - Get a leaflet object with a DEM.</li>
+<li>
+<code>arcgis_auth</code> - Authorize to an AGOL service.</li>
+<li>
+<code>check_crs_3857</code> - Check if sf or terra objects are CRS 3857.</li>
+<li>
+<code>sf_fix_crs</code> - Fix sf objects that might have mis-specified CRS’s 3857 and 4326.</li>
+<li>
+<code>sf_get_z</code> - Get z value from an elevation model for an sf object.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-changes-2025-04-12">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2025-04-12"></a></h3>
+<ul><li>Swiched to using <code>tmap</code> v4 from CRAN.</li>
+</ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.54" id="fluvgeo-v0154-2025-04-08">fluvgeo v0.1.54 (2025-04-08)<a class="anchor" aria-label="anchor" href="#fluvgeo-v0154-2025-04-08"></a></h2>
 <div class="section level3">
