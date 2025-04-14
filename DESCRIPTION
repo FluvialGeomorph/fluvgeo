@@ -69,7 +69,7 @@ Suggests:
     httr2,
     knitr
 Remotes: 
-    FluvialGeomorph/RegionalCurve
+    FluvialGeomorph/RegionalCurve,
     FluvialGeomorph/fluvgeodata
 Encoding: UTF-8
 LazyData: true
