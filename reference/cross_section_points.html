@@ -46,7 +46,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Cross Section Points</h1>
-    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/v2025.04.14/R/cross_section_points.R" class="external-link"><code>R/cross_section_points.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/R/cross_section_points.R" class="external-link"><code>R/cross_section_points.R</code></a></small>
     <div class="hidden name"><code>cross_section_points.Rd</code></div>
     </div>
 
@@ -57,7 +57,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cross_section_points</span><span class="op">(</span><span class="va">cross_section</span>, <span class="va">dem</span>, <span class="va">detrend</span>, <span class="va">station_distance</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cross_section_points</span><span class="op">(</span><span class="va">cross_section</span>, <span class="va">dem</span>, <span class="va">rem</span>, <span class="va">station_distance</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,12 +72,12 @@
 <dd><p>terra SpatRast object; A DEM.</p></dd>
 
 
-<dt id="arg-detrend">detrend<a class="anchor" aria-label="anchor" href="#arg-detrend"></a></dt>
-<dd><p>terra SpatRast object; A Detrend DEM.</p></dd>
+<dt id="arg-rem">rem<a class="anchor" aria-label="anchor" href="#arg-rem"></a></dt>
+<dd><p>terra SpatRast object; An REM (aka detrended DEM).</p></dd>
 
 
 <dt id="arg-station-distance">station_distance<a class="anchor" aria-label="anchor" href="#arg-station-distance"></a></dt>
-<dd><p>numeric; Disired distance between the
+<dd><p>numeric; Desired distance between the
 flowline_points (units: meters)</p></dd>
 
 </dl></div>
