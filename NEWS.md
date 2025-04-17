@@ -1,3 +1,11 @@
+# fluvgeo 2025.04.17
+
+## Bug fix
+* Remediation of apparent `terra::SpatRaster` object corruption. Was getting error: "expansion is not yet allowed" when nothing seemed to be wrong with the extent, crs, or resolution of the object. 
+
+***
+
+
 # fluvgeo 2025.04.14
 
 ## Bug fix

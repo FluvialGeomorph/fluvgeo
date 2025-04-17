@@ -4,23 +4,23 @@
 \alias{cross_section_points}
 \title{Cross Section Points}
 \usage{
-cross_section_points(cross_section, dem, detrend, station_distance)
+cross_section_points(cross_section, dem, rem, station_distance)
 }
 \arguments{
 \item{cross_section}{sf object; A cross_section object.}
 
 \item{dem}{terra SpatRast object; A DEM.}
 
-\item{detrend}{terra SpatRast object; A Detrend DEM.}
+\item{rem}{terra SpatRast object; An REM (aka detrended DEM).}
 
-\item{station_distance}{numeric; Disired distance between the 
+\item{station_distance}{numeric; Desired distance between the
 flowline_points (units: meters)}
 }
 \value{
 an sf object containing a cross_section_points object
 }
 \description{
-Converts a cross section object into a cross section points 
+Converts a cross section object into a cross section points
              object by creating a series of points along each cross section
              at the specified station distance.
 }
