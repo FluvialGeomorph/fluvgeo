@@ -15,23 +15,24 @@ xs_pts_plot <- function(fl, xs_pts, dem) {
 }
 
 test_that("check for valid flowline points", {
+  xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
+                                        package = "fluvgeodata"), quiet = TRUE)
+  xs_fix <- sf_fix_crs(xs_mapedit)
+  xs <- sf::st_transform(xs_fix, crs = 3857) # Web Mercator
   fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   fl_fix <- sf_fix_crs(fl_mapedit)
   fl_3857 <- sf::st_transform(fl_fix, crs = 3857) # Web Mercator
   reach_name <- "current stream"
-  dem <- get_dem(fl_3857)
+  dem <- get_dem(xs)
   flowline <- flowline(fl_3857, reach_name, dem)
   station_distance = 5
   flowline_points <- flowline_points(flowline, dem, station_distance)
-  xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
-                                        package = "fluvgeodata"), quiet = TRUE)
-  xs_fix <- sf_fix_crs(xs_mapedit)
-  xs <- sf::st_transform(xs_fix, crs = 3857) # Web Mercator
+  rem <- dem2rem(dem, flowline, flowline_points, buffer_distance = 300)
   cross_section <- cross_section(xs, flowline_points)
-  detrend <- dem              # bogus move until I get detrend function working
   station_distance = 5
-  xs_pts <- cross_section_points(cross_section, dem, detrend, station_distance)
-  #xs_pts_plot(flowline, xs_pts, dem)
+  xs_pts <- cross_section_points(cross_section, dem, rem, station_distance)
+
+  xs_pts_plot(flowline, xs_pts, dem)
   expect_true(fluvgeo::check_cross_section_points(xs_pts, "station_points"))
 })
