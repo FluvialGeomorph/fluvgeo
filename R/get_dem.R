@@ -24,9 +24,8 @@ get_dem <- function(xs) {
   dem_crs <- dem_service$spatialReference$latestWkid
   # Transform xs to the crs of the dem to get the bbox in the dem crs
   xs_dem  <- st_transform(xs, crs = dem_crs)
-  xs_dem
-  xs_bbox <- fluvgeo::map_extent(xs_dem, extent_factor = 1.2)
-  xs_bbox
+
+  xs_bbox <- fluvgeo::map_extent(xs_dem, extent_factor = 1.5)
 
   dem <- arc_raster(dem_service,
                     # only get the extent of the xs
@@ -39,7 +38,7 @@ get_dem <- function(xs) {
   dem_m <- dem * 3.28084
 
   # Transform the dem to the xs crs (3857)
-  dem_3857 <- project(dem_m, "EPSG:3857")
+  dem_3857 <- project(x = dem_m, y = "EPSG:3857", threads = TRUE)
   assert_that(check_crs_3857(dem_3857), msg = "output dem CRS must be 3857")
 
   return(dem_3857)

@@ -1,9 +1,14 @@
+dem_plot <- function(dem, sf_lines) {
+  terra::plot(dem)
+  terra::lines(vect(sf_lines))
+}
+
 test_that("WGS84 input - dem is a terra::SpatRaster", {
   xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
                                 package = "fluvgeodata"), quiet = TRUE)
   xs <- sf::st_transform(xs_mapedit, crs = 3857) # Web Mercator
   dem <- get_dem(xs)
-  #terra::plot(dem)
+  #dem_plot(dem, xs)
   expect_true("SpatRaster" %in% class(dem))
 })
 
