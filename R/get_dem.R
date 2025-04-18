@@ -27,6 +27,9 @@ get_dem <- function(xs) {
 
   xs_bbox <- fluvgeo::map_extent(xs_dem, extent_factor = 1.5)
 
+  # Verify that requested extent is within service extent
+  #xs_bbox within dem_service$extent
+
   dem <- arc_raster(dem_service,
                     # only get the extent of the xs
                     xmin = xs_bbox$xmin,
