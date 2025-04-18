@@ -19,8 +19,8 @@ test_that("check detrend", {
   flowline_points <- flowline_points(flowline, dem, station_distance)
   buffer_distance <- 300
   detrend <- detrend(dem, flowline, flowline_points, buffer_distance)
-  rem_plot(flowline, detrend$rem, 102)
-  trend_plot(flowline, detrend$trend)
+  #rem_plot(flowline, detrend$rem, 102)
+  #trend_plot(flowline, detrend$trend)
   expect_true("SpatRaster" %in% class(detrend$rem))
   expect_true("SpatRaster" %in% class(detrend$trend))
 })

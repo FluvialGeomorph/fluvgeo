@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @importFrom dplyr %>% rename select
-#' @importFrom sf st_buffer
+#' @importFrom sf st_buffer st_simplify st_drop_geometry
 #' @importFrom terra crop interpIDW focal
 #'
 detrend <- function(dem, flowline, flowline_points, buffer_distance) {
@@ -36,7 +36,13 @@ detrend <- function(dem, flowline, flowline_points, buffer_distance) {
               msg = "buffer_distance must be numeric")
 
   # Buffer the flowline to establish the extent
-  fl_buffer <- st_buffer(flowline, dist = buffer_distance)
+  fl_buffer <- flowline %>%
+    # Simplify flowline to be able to trim reach ends flat
+    ## this prevents the trend surface from extending beyond the flowline
+    st_simplify(dTolerance = 40) %>%                            # units meters
+    st_buffer(dist = buffer_distance, endCapStyle = "FLAT") %>%
+    # Add a little extra room for cross sections
+    st_buffer(dist = 10)
 
   # Crop the DEM by the flowline buffer
   dem_crop <- crop(dem, fl_buffer, mask = TRUE)
@@ -49,13 +55,15 @@ detrend <- function(dem, flowline, flowline_points, buffer_distance) {
     select(x, y, z) %>%
     st_drop_geometry()
 
-  trend <- interpIDW(dem, as.matrix(fl_pts),
-                     radius = buffer_distance,
-                     power = 0,
-                     smooth = 0)
+  trend <- dem_crop %>%
+    interpIDW(as.matrix(fl_pts),
+              radius = buffer_distance) %>%
+    crop(fl_buffer, mask = TRUE)
 
   # Smooth the trend raster
-  trend_smooth <- terra::focal(trend, w = 55, fun = "mean", na.rm = TRUE)
+  trend_smooth <- trend %>%
+    focal(w = 55, fun = "mean", na.rm = TRUE) %>%
+    crop(fl_buffer, mask = TRUE)
 
   # create the detrended raster
   rem <- (dem_crop - trend_smooth) + 100
