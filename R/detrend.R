@@ -1,6 +1,7 @@
-#' @title Convert DEM to REM
+#' @title Detrend DEM
 #' @description  Converts a Digital Elevation Model (DEM) to a Relative
-#'               Elevation Model (REM). An REM is a DEM normalized
+#'               Elevation Model (REM). An REM is a DEM normalized to the
+#'               baseline elevation of the stream reach.
 #' @param dem              terra SpatRast object; A DEM.
 #' @param flowline         sf object; A flowline object.
 #' @param flowline_points  sf object; A flowline_points feature.
@@ -9,14 +10,18 @@
 #'                         REM. Units are defined by the coordinate system of
 #'                         the DEM.
 #'
-#' @return a terra SpatRaster object representing the REM
+#' @return a list containing two terra SpatRaster objects:
+#' * rem   - A raster Relative Elevation Model (REM) representing elevation
+#'           above the baseline elevation of the reach.
+#' * trend - A raster trend surface representing the baseline elevation of
+#'           the flowline_points for the reach.
 #' @export
 #'
 #' @importFrom dplyr %>% rename select
 #' @importFrom sf st_buffer
 #' @importFrom terra crop interpIDW focal
 #'
-dem2rem <- function(dem, flowline, flowline_points, buffer_distance) {
+detrend <- function(dem, flowline, flowline_points, buffer_distance) {
   assert_that("sf" %in% class(flowline),
               msg = "flowline must be an sf object")
   assert_that("sf" %in% class(flowline_points),
@@ -55,10 +60,6 @@ dem2rem <- function(dem, flowline, flowline_points, buffer_distance) {
   # create the detrended raster
   rem <- (dem_crop - trend_smooth) + 100
 
-  # plot(trend)
-  # plot(trend_smooth)
-  # plot(rem < 102)
-  # #plot(dem)
-  # lines(flowline, col = "blue")
-  return(rem)
+  return(list(rem   = rem,
+              trend = trend_smooth))
 }
