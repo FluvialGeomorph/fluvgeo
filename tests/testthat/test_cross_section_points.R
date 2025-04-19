@@ -14,7 +14,7 @@ xs_pts_plot <- function(fl, xs_pts, dem) {
          col = "red")
 }
 
-test_that("check for valid flowline points", {
+test_that("check for valid cross section points", {
   xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   xs_fix <- sf_fix_crs(xs_mapedit)
@@ -28,11 +28,11 @@ test_that("check for valid flowline points", {
   flowline <- flowline(fl_3857, reach_name, dem)
   station_distance = 5
   flowline_points <- flowline_points(flowline, dem, station_distance)
-  rem <- dem2rem(dem, flowline, flowline_points, buffer_distance = 300)
+  detrend <- detrend(dem, flowline, flowline_points, buffer_distance = 300)
+  rem <- detrend$rem
   cross_section <- cross_section(xs, flowline_points)
   station_distance = 5
   xs_pts <- cross_section_points(cross_section, dem, rem, station_distance)
-
-  xs_pts_plot(flowline, xs_pts, dem)
+  #xs_pts_plot(flowline, xs_pts, dem)
   expect_true(fluvgeo::check_cross_section_points(xs_pts, "station_points"))
 })
