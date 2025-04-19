@@ -9,7 +9,7 @@
 #' in cubic meters.
 #' @export
 #'
-#' @importFrom terra not.na ifel linearUnits
+#' @importFrom terra not.na ifel cellSize values
 #'
 floodplain_volume <- function(dem, watersurface) {
   assert_that("SpatRaster" %in% class(dem),
@@ -17,7 +17,7 @@ floodplain_volume <- function(dem, watersurface) {
   assert_that("SpatRaster" %in% class(watersurface),
               msg = "watersurface must be a SpatRaster object")
 
-  # Set dem NA to match watersurface
+  # Set dem NAs to match watersurface raster NAs (make data areas match)
   dem_na <- ifel(not.na(watersurface), dem, NA)
 
   # Calculate difference between watersurface raster and dem raster
@@ -29,9 +29,12 @@ floodplain_volume <- function(dem, watersurface) {
   # Convert depth units from feet to meters
   depth_m <- depth_ft * 0.3048
 
-  # Calculate cell volume
-  cell_length_m <- linearUnits(dem)
-  cell_m3 <- cell_length_m ^ 3
+  # Calculate average cell area
+  cell_area_m <- mean(values(cellSize(dem, unit = "m")))
+
+  # Calculate cell volume (area * depth at 1 m)
+  cell_m3 <- cell_area_m * 1
+
   # cell depth * cell volume
   vol_m3 <- sum((values(depth_m) * cell_m3), na.rm = TRUE)
 
