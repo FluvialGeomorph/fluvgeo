@@ -18,7 +18,7 @@ test_that("check channel volume", {
   rem <- detrend$rem
   trend <- detrend$trend
   watersurface <- trend + 2                     # water depth = baseline + 2 ft
-  channel_plot(flowline, rem, 102)
+  #channel_plot(flowline, rem, 102)
   fpv <- floodplain_volume(dem, watersurface)
   expect_true(is.numeric(fpv))
 })
@@ -38,7 +38,7 @@ test_that("check floodplain volume", {
   rem <- detrend$rem
   trend <- detrend$trend
   watersurface <- trend + 18                   # water depth = baseline + 18 ft
-  channel_plot(flowline, rem, 118)
+  #channel_plot(flowline, rem, 118)
   fpv <- floodplain_volume(dem, watersurface)
   expect_true(is.numeric(fpv))
 })
@@ -57,15 +57,11 @@ test_that("check volume difference between channel and floodplain surfaces", {
   detrend <- detrend(dem, flowline, flowline_points, buffer_distance)
   rem <- detrend$rem
   trend <- detrend$trend
-  channel_watersurface <- trend + 2             # water depth = baseline +2 ft
-  floodplain_watersurface <- trend + 18         # water depth = baseline +18 ft
-  channel_surface    <- ifel(channel_watersurface > dem,
-                             channel_watersurface, dem)
-  floodplain_surface <- ifel(floodplain_watersurface > dem,
-                             floodplain_watersurface, dem)
-  channel_plot(flowline, rem, 118)
-  cv  <- floodplain_volume(dem, channel_surface)
-  fpv <- floodplain_volume(dem, floodplain_surface)
-  dif <- floodplain_volume(channel_surface, floodplain_surface)
+  channel_dem <- hydroflatten_dem(dem, trend, 2)
+  floodplain_dem <- hydroflatten_dem(dem, trend, 18)
+  #channel_plot(flowline, rem, 118)
+  cv  <- floodplain_volume(dem, channel_dem)
+  fpv <- floodplain_volume(dem, floodplain_dem)
+  dif <- floodplain_volume(channel_dem, floodplain_dem)
   expect_true(cv < fpv)
 })
