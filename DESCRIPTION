@@ -1,11 +1,14 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2025.04.14
+Version: 2025.04.19
 Authors@R: c(
-    person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", role = "aut",
+    person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
+           role = "aut",
            comment = c(ORCID = "0000-0002-1465-5927")),
-    person("Christopher", "Haring", , "Christopher.P.Haring@usace.army.mil", role = "aut"),
-    person("Barrie", "Chileen Martinez", , "Barrie.V.Chileen@usace.army.mil", role = c("aut", "cre"),
+    person("Christopher", "Haring", , "Christopher.P.Haring@usace.army.mil", 
+           role = "aut"),
+    person("Barrie", "Chileen Martinez", , "Barrie.V.Chileen@usace.army.mil", 
+           role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6960-8167")),
     person("Thomas", "Darby", role = "rev"),
     person("Davi", "Michl", role = "rev")

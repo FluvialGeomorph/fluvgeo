@@ -1,10 +1,30 @@
+# fluvgeo 2025.04.19
+
+## Major changes
+* Added several functions to support use in Shiny web apps:
+
+  * Renamed the `dem2rem` function to `detrend` to support the return of both an `rem` and `trend` surface. Trend surfaces can be used to model water surfaces. 
+  * `water_surface_area` - Derive a polygon representing the water surface area at a specified `rem` elevation. Eliminates disconnected off-channel areas and simplifies the geometry. Used to create `channel_poly` and `floodplain_poly` sf objects. 
+  * `xs_pts_classify` - Classifies cross_section_points as falling in the channel and floodplain. 
+  * `hydroflatten_dem` - Uses a `trend` surface to add a water surface to a dem. 
+  * `floodplain_volume` - Calculates the volume between two surfaces, such as a DEM and water surface. 
+
+* Updated the `detrend` function to not extend the interpolated `trend` surface beyond the extent of the input `flowline_points`. This was required to prevent extrapolation of the surface at each end of the reach beyond the available input data. In many cases, this extrapolation was distorting the `trend` surface at each end of the reach. 
+
+** Minor changes
+* Updated `get_dem` to enable multiple threads for download. 
+
+## Bug fix
+*
+
+***
+
 # fluvgeo 2025.04.17
 
 ## Bug fix
 * Remediation of apparent `terra::SpatRaster` object corruption. Was getting error: "expansion is not yet allowed" when nothing seemed to be wrong with the extent, crs, or resolution of the object. 
 
 ***
-
 
 # fluvgeo 2025.04.14
 
@@ -34,7 +54,7 @@
   * `sf_get_z` - Get z value from an elevation model for an sf object. 
 
 ## Minor changes
-* Swiched to using `tmap` v4 from CRAN. 
+* Switched to using `tmap` v4 from CRAN. 
 
 ***
 
