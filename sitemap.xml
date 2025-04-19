@@ -48,6 +48,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_terrain_leaflet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/gof_graph.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/gte.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/hydroflatten_dem.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/justify_gtable.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_1_report.html</loc></url>
@@ -92,6 +93,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/start_left.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/stream_power.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/table_xs_dimensions.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/water_surface_poly.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs2pts.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_bearing.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_compare_plot_L1.html</loc></url>
@@ -106,6 +108,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_metrics_plot_L3.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_plot.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_profile_plot.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_pts_classify.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_regional_metrics.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_upstream.html</loc></url>
 </urlset>

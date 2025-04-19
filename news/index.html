@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.04.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.04.19</span>
       </span>
     </div>
 
@@ -47,6 +47,30 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2025.04.19" id="fluvgeo-20250419">fluvgeo 2025.04.19<a class="anchor" aria-label="anchor" href="#fluvgeo-20250419"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-2025-04-19">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2025-04-19"></a></h3>
+<ul><li>
+<p>Added several functions to support use in Shiny web apps:</p>
+<ul><li>Renamed the <code>dem2rem</code> function to <code>detrend</code> to support the return of both an <code>rem</code> and <code>trend</code> surface. Trend surfaces can be used to model water surfaces.</li>
+<li>
+<code>water_surface_area</code> - Derive a polygon representing the water surface area at a specified <code>rem</code> elevation. Eliminates disconnected off-channel areas and simplifies the geometry. Used to create <code>channel_poly</code> and <code>floodplain_poly</code> sf objects.</li>
+<li>
+<code>xs_pts_classify</code> - Classifies cross_section_points as falling in the channel and floodplain.</li>
+<li>
+<code>hydroflatten_dem</code> - Uses a <code>trend</code> surface to add a water surface to a dem.</li>
+<li>
+<code>floodplain_volume</code> - Calculates the volume between two surfaces, such as a DEM and water surface.</li>
+</ul></li>
+<li><p>Updated the <code>detrend</code> function to not extend the interpolated <code>trend</code> surface beyond the extent of the input <code>flowline_points</code>. This was required to prevent extrapolation of the surface at each end of the reach beyond the available input data. In many cases, this extrapolation was distorting the <code>trend</code> surface at each end of the reach.</p></li>
+</ul><p>** Minor changes * Updated <code>get_dem</code> to enable multiple threads for download.</p>
+</div>
+<div class="section level3">
+<h3 id="bug-fix-2025-04-19">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-2025-04-19"></a></h3>
+<ul><li>
+</li></ul><hr></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2025.04.17" id="fluvgeo-20250417">fluvgeo 2025.04.17<a class="anchor" aria-label="anchor" href="#fluvgeo-20250417"></a></h2>
 <div class="section level3">
@@ -98,7 +122,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="minor-changes-2025-04-12">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2025-04-12"></a></h3>
-<ul><li>Swiched to using <code>tmap</code> v4 from CRAN.</li>
+<ul><li>Switched to using <code>tmap</code> v4 from CRAN.</li>
 </ul><hr></div>
 </div>
     <div class="section level2">
