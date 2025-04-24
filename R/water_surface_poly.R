@@ -7,12 +7,12 @@
 #' @param flowline                 sf object; A flowline object.
 #'
 #' @returns An sf polygon object representing the the water surface extent at
-#' the specified REM elevation.
+#'          the specified REM elevation.
 #' @export
 #'
-#' @importFrom terra values cellSize ifel as.polygons
-#' @importFrom sf st_as_sf st_cast st_intersects st_simplify
-#' @importFrom dplyr %>% rename filter mutate select
+#' @importFrom terra ifel as.polygons disagg
+#' @importFrom sf st_as_sf st_simplify st_intersects
+#' @importFrom dplyr %>% mutate select
 #'
 water_surface_poly <- function(rem, water_surface_elevation, flowline) {
   assert_that("SpatRaster" %in% class(rem),
@@ -22,27 +22,24 @@ water_surface_poly <- function(rem, water_surface_elevation, flowline) {
   assert_that("sf" %in% class(flowline),
               msg = "flowline must be an sf object")
 
-  cell_size_m <- mean(values(cellSize(rem, unit = "m")))
-
   # Subset the rem to the water surface elevation
-  ws_raster <- ifel(rem <= water_surface_elevation, 1, NA)
+  ws_raster <- terra::ifel(rem <= water_surface_elevation, 1, NA)
 
   # Convert the water surface raster to a polygon
-  ws_sf <- ws_raster %>%
-    as.polygons() %>%
-    st_as_sf() %>%
-    st_cast(to = "POLYGON", warn = FALSE) %>%        # esri "explode multipart"
-    rename(water = names(rem)[1])
+  ws_polys <- ws_raster %>%
+    terra::as.polygons() %>%
+    terra::disagg() %>%                    # terra "multi part to single part"
+    sf::st_as_sf()
 
   # Select only water surface polygon features that intersect the flowline
-  ws_fl <- ws_sf %>%
-    filter(st_intersects(x = ., y = flowline, sparse = FALSE)[, 1]) %>%
-    mutate(water_surface_elevation = water_surface_elevation)
+  ws_fl <- ws_polys %>%
+    filter(sf::st_intersects(x = ., y = flowline, sparse = FALSE)[, 1])
 
   # Simplify water surface polygon feature geometry
   ws_sm <- ws_fl %>%
-    st_simplify(dTolerance = 1) %>%
-    select(water, water_surface_elevation)
+    sf::st_simplify(dTolerance = 1) %>%
+    dplyr::mutate(water_surface_elevation = water_surface_elevation) %>%
+    dplyr::select(water_surface_elevation)
 
   return(ws_sm)
 }

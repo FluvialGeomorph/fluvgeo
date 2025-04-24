@@ -1,11 +1,11 @@
 rem_plot <- function(rem, water_surface_poly, flowline) {
   terra::plot(rem)
-  terra::polys(vect(water_surface_poly), col = "blue", alpha = 0.5)
+  terra::polys(water_surface_poly, col = "blue", alpha = 0.5)
   terra::lines(flowline, col = "blue")
 }
 dem_plot <- function(dem, water_surface_poly, flowline) {
   terra::plot(dem)
-  terra::polys(vect(water_surface_poly), col = "blue", alpha = 0.5)
+  terra::polys(water_surface_poly, col = "blue", alpha = 0.5)
   terra::lines(flowline, col = "blue")
 }
 
@@ -22,9 +22,10 @@ test_that("check detrend", {
   buffer_distance <- 300
   detrend <- detrend(dem, flowline, flowline_points, buffer_distance)
   rem <- detrend$rem
-  water_surface_elevation <- 120
+  water_surface_elevation <- 105
   wsp <- water_surface_poly(rem, water_surface_elevation, flowline)
   #rem_plot(rem, wsp, flowline)
   #dem_plot(dem, wsp, flowline)
   expect_true("sf" %in% class(wsp))
+  expect_true("water_surface_elevation" %in% colnames(wsp))
 })

@@ -16,7 +16,7 @@ surface.}
 }
 \value{
 An sf polygon object representing the the water surface extent at
-the specified REM elevation.
+         the specified REM elevation.
 }
 \description{
 Derives a water surface extent polygon from an REM at the
