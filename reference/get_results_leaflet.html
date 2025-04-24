@@ -44,7 +44,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get Results Leaflet</h1>
-    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/v2024.04.19/R/get_results_leaflet.R" class="external-link"><code>R/get_results_leaflet.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/R/get_results_leaflet.R" class="external-link"><code>R/get_results_leaflet.R</code></a></small>
     <div class="hidden name"><code>get_results_leaflet.Rd</code></div>
     </div>
 
@@ -53,7 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_results_leaflet</span><span class="op">(</span><span class="va">fl</span>, <span class="va">xs</span>, <span class="va">dem</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_results_leaflet</span><span class="op">(</span><span class="va">fl</span>, <span class="va">xs</span>, <span class="va">dem</span>, channel_poly <span class="op">=</span> <span class="cn">NULL</span>, floodplain_poly <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -61,15 +61,23 @@
 
 
 <dl><dt id="arg-fl">fl<a class="anchor" aria-label="anchor" href="#arg-fl"></a></dt>
-<dd><p>sf object;</p></dd>
+<dd><p>sf object; A flowline object.</p></dd>
 
 
 <dt id="arg-xs">xs<a class="anchor" aria-label="anchor" href="#arg-xs"></a></dt>
-<dd><p>sf object;</p></dd>
+<dd><p>sf object; A cross section object.</p></dd>
 
 
 <dt id="arg-dem">dem<a class="anchor" aria-label="anchor" href="#arg-dem"></a></dt>
-<dd><p>terra SpatRast object;</p></dd>
+<dd><p>terra SpatRast object; A DEM raster.</p></dd>
+
+
+<dt id="arg-channel-poly">channel_poly<a class="anchor" aria-label="anchor" href="#arg-channel-poly"></a></dt>
+<dd><p>sf object; A channel polygon.</p></dd>
+
+
+<dt id="arg-floodplain-poly">floodplain_poly<a class="anchor" aria-label="anchor" href="#arg-floodplain-poly"></a></dt>
+<dd><p>sf object; A floodplain poly object.</p></dd>
 
 </dl></div>
     <div id="value">
