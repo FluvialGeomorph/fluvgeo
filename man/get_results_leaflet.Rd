@@ -4,14 +4,18 @@
 \alias{get_results_leaflet}
 \title{Get Results Leaflet}
 \usage{
-get_results_leaflet(fl, xs, dem)
+get_results_leaflet(fl, xs, dem, channel_poly = NULL, floodplain_poly = NULL)
 }
 \arguments{
-\item{fl}{sf object;}
+\item{fl}{sf object; A flowline object.}
 
-\item{xs}{sf object;}
+\item{xs}{sf object; A cross section object.}
 
-\item{dem}{terra SpatRast object;}
+\item{dem}{terra SpatRast object; A DEM raster.}
+
+\item{channel_poly}{sf object; A channel polygon.}
+
+\item{floodplain_poly}{sf object; A floodplain poly object.}
 }
 \value{
 a leaflet object
