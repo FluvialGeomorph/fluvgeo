@@ -11,7 +11,8 @@
 #'          falling inside the floodplain or channel.
 #' @export
 #'
-#' @importFrom dplyr select
+#' @importFrom terra vect buffer relate
+#' @importFrom dplyr mutate if_else
 #'
 xs_pts_classify <- function(xs_pts, channel_poly, floodplain_poly,
                             buffer_distance) {
@@ -25,27 +26,22 @@ xs_pts_classify <- function(xs_pts, channel_poly, floodplain_poly,
               msg = "buffer_distance must be numeric")
 
   # Buffer channel and floodplain polygons
-  channel_buf <- channel_poly %>%
-    st_buffer(dist = buffer_distance)
-
   floodplain_buf <- floodplain_poly %>%
-    st_buffer(dist = buffer_distance)
+    vect() %>%
+    buffer(width = buffer_distance)
+  channel_buf <- channel_poly %>%
+    vect() %>%
+    buffer(width = buffer_distance)
 
   # Identify xs_pts in floodplain
+  floodplain_pts <- relate(vect(xs_pts), floodplain_buf, "intersects")
   xs_pts_flood <- xs_pts %>%
-    st_zm() %>%
-    mutate(floodplain = 0) %>%
-    mutate(floodplain = if_else(st_intersects(x = ., y = st_zm(floodplain_buf),
-                                              sparse = FALSE)[, 1],
-                                1, 0))
-
+    mutate(floodplain = if_else(as.vector(floodplain_pts), 1, 0))
 
   # Identify xs_pts in channel
+  channel_pts <- relate(vect(xs_pts), channel_buf, "intersects")
   xs_pts_channel <- xs_pts_flood %>%
-    st_zm() %>%
-    mutate(channel = 0) %>%
-    mutate(channel = if_else(st_intersects(x = ., y = st_zm(channel_buf),
-                                           sparse = FALSE)[, 1],
-                             1, 0))
+    mutate(channel = if_else(as.vector(channel_pts), 1, 0))
+
   return(xs_pts_channel)
 }

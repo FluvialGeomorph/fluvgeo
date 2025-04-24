@@ -8,7 +8,7 @@ xs_pts_plot <- function(dem, cross_section, xs_pts_class,
   points(filter(xs_pts_class, channel == 1), col = "green", cex = 2)
 }
 
-test_that("check for valid flowline points", {
+test_that("check for valid xs points", {
   xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   xs_fix <- sf_fix_crs(xs_mapedit)
@@ -36,6 +36,10 @@ test_that("check for valid flowline points", {
   buffer_distance <- 5
   xs_pts_class <- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                                   buffer_distance)
-  #xs_pts_plot(dem, xs_pts_class)
-  expect_true(sf %in% class(xs_pts_class))
+  #xs_pts_plot(dem, cross_section, xs_pts_class, floodplain_poly, channel_poly)
+  expect_true("sf" %in% class(xs_pts_class))
+  expect_true("floodplain" %in% colnames(xs_pts_class))
+  expect_true("channel" %in% colnames(xs_pts_class))
+  expect_true(any(c(0, 1) %in% xs_pts_class$floodplain))
+  expect_true(any(c(0, 1) %in% xs_pts_class$channel))
 })
