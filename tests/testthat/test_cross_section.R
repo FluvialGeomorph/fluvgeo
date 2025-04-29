@@ -9,7 +9,7 @@ xs_plot <- function(xs, fl, fl_pts, dem) {
   points(vect(sf_line_end_point(xs, "end")), col = "red")
 }
 
-test_that("check for valid flowline points", {
+test_that("check for valid cross sections", {
   fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   fl_fix <- sf_fix_crs(fl_mapedit)
@@ -28,7 +28,7 @@ test_that("check for valid flowline points", {
   expect_true(fluvgeo::check_cross_section(xs_lines, "station_points"))
 })
 
-test_that("check for valid flowline points", {
+test_that("check for flipped cross sections", {
   fl_mapedit <- sf::st_read(system.file("extdata", "shiny", "fl_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   fl_fix <- sf_fix_crs(fl_mapedit)
