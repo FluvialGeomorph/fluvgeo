@@ -8,12 +8,12 @@ output: html_document
 library(nhdplusTools)
 library(sf)
 
-dataRetrieval::get_nldi_sources()
+sources <- dataRetrieval::get_nldi_sources()
 ```
 
 # NHDPlus
 ```{r}
-start_point <- st_sfc(st_point(c(-89.362239, 43.090266)), crs = 4326)
+start_point <- sf::st_sfc(st_point(c(-89.362239, 43.090266)), crs = 4326)
 start_comid <- discover_nhdplus_id(
   point = start_point, 
   nldi_feature = "comid",
@@ -24,7 +24,7 @@ flowline <- navigate_nldi(
        featureID = start_comid$comid[1]), 
   mode = "upstreamMain",
   data_source = "flowlines",
-  distance_km = 0.001)
+  distance_km = 0.01)
 
 nhd_sub <- subset_nhdplus(
   comids = as.integer(flowline$UM_flowlines$nhdplus_comid),
@@ -38,6 +38,27 @@ plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
 plot(nhd_sub$CatchmentSP$geometry, add = TRUE)
 plot(nhd_sub$NHDWaterbody$geometry, col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
 ```
+
+#3DHP
+```{r}
+point_sfc <- c(-89.441, 43.487) |>
+    sf::st_point() |>
+    sf::st_sfc(crs = 4326) 
+
+point_sf <- point |> sf::st_sf()
+
+start_comid <- discover_nhdplus_id(
+  point = point_sfc, 
+  nldi_feature = "comid",
+  raindrop = TRUE)
+
+flowline <- get_3dhp(point_sf, type = "flowline", buffer = 10)
+
+fl <- dataRetrieval::findNLDI(location =  c(-89.441, 43.487))
+
+
+```
+
 
 ## Get catchment characteristics
 ```{r}
