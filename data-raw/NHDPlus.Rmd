@@ -1,0 +1,70 @@
+---
+title: "NHDPlus"
+output: html_document
+---
+
+
+```{r}
+library(nhdplusTools)
+library(sf)
+
+dataRetrieval::get_nldi_sources()
+```
+
+# NHDPlus
+```{r}
+start_point <- st_sfc(st_point(c(-89.362239, 43.090266)), crs = 4326)
+start_comid <- discover_nhdplus_id(
+  point = start_point, 
+  nldi_feature = "comid",
+  raindrop = TRUE)
+
+flowline <- navigate_nldi(
+  list(featureSource = "comid", 
+       featureID = start_comid$comid[1]), 
+  mode = "upstreamMain",
+  data_source = "flowlines",
+  distance_km = 0.001)
+
+nhd_sub <- subset_nhdplus(
+  comids = as.integer(flowline$UM_flowlines$nhdplus_comid),
+  nhdplus_data = "download", 
+  flowline_only = FALSE,
+  return_data = TRUE,
+  out_prj = 4326)
+
+plot(nhd_sub$NHDFlowline_Network$geometry, col = "blue")
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+plot(nhd_sub$CatchmentSP$geometry, add = TRUE)
+plot(nhd_sub$NHDWaterbody$geometry, col = rgb(0, 0, 1, alpha = 0.5), add = TRUE)
+```
+
+## Get catchment characteristics
+```{r}
+cat_char_vars <- get_characteristics_metadata()
+varnames <- c("CAT_BFI", "ACC_BFI", "TOT_BFI")
+cat_char <- get_catchment_characteristics(
+  varname = varnames,
+  ids = start_comid$comid[1])
+
+```
+
+# NHDPlus HiRes
+```{r}
+huc <- get_huc(AOI = start_point, buffer = 1)
+
+plot(huc$geometry)
+plot(nhd_sub$NHDFlowline_Network$geometry, col = "blue", add = TRUE)
+plot(start_point, cex = 1.5, lwd = 2, col = "red", add = TRUE)
+
+work_dir <- file.path(getwd(), "data-raw", "nhdplus_hr")
+nhdplushr_dir <- download_nhdplushr(nhd_dir = work_dir, 
+                                    hu_list = huc$huc12)
+
+out_gpkg <- file.path(work_dir, "nhd_hr.gpkg")
+hr_data <- get_nhdplushr(hr_dir = work_dir, 
+                         out_gpkg = out_gpkg, 
+                         layers = c("NHDFlowline"), 
+                         overwrite = TRUE)
+
+```
