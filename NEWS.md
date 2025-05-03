@@ -1,3 +1,15 @@
+# fluvgeo 2025.05.03
+
+## Major changes
+* Adopted the `nhdplusTools` r package to gain access to USGS Network Linked Data Index (NLDI) services. 
+* Added the `pt_watershed_area` function to retrieve delineated watersheds from NHDPlus via the NLDI. 
+* Incorporated the `pt_watershed_area` function into the processing steps for cross sections to identify NHD reaches (reachcode, comid) and calculate upstream drainage basin areas. 
+
+## Minor changes
+* Added hillshading to the `get_terrain_leaflet` function. 
+* Added channel_ and floodplain_polys to the `get_results_leaflet` function. 
+
+
 # fluvgeo 2025.04.19
 
 ## Major changes
