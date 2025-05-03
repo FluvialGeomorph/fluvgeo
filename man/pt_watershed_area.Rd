@@ -10,7 +10,9 @@ pt_watershed_area(point_sf)
 \item{point_sf}{an sf object; The point to have a watershed determined.}
 }
 \value{
-a numeric value of the watershed area in units square miles
+a list of sf objects.
+ * pt - The point snapped to the NHD nearest downstream flowline
+ * drainage_basing - The upstream drainage area of the snapped point.
 }
 \description{
 Calculates the upstream watershed area for the specified point.

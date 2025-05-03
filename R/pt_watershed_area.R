@@ -1,9 +1,11 @@
 #' @title Point Watershed Area
 #' @description Calculates the upstream watershed area for the specified point.
 #' @param point_sf   an sf object; The point to have a watershed determined.
-#' @returns a numeric value of the watershed area in units square miles
+#' @returns a list of sf objects.
+#'  * pt - The point snapped to the NHD nearest downstream flowline
+#'  * drainage_basing - The upstream drainage area of the snapped point.
 #' @export
-#' @importFrom sf st_sfc st_point st_as_sfc st_as_sf
+#' @importFrom sf st_sfc st_point st_as_sfc st_as_sf st_area
 #' @importFrom nhdplusTools get_raindrop_trace get_split_catchment
 #' @importFrom dplyr mutate filter select
 #'
@@ -34,6 +36,8 @@ pt_watershed_area <- function(point_sf) {
     mutate(comid = trace$comid[1]) |>
     mutate(reachcode = trace$reachcode[1]) |>
     select(-catchmentID)
+
+  drainage_basin$area <- st_area(drainage_basin)
 
   # Project to 3857 on return
   return(list(
