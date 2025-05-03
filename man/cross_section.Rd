@@ -15,6 +15,6 @@ cross_section(xs, flowline_points)
 an sf object representing a valid set of cross section line features
 }
 \description{
-Creates a valid set of cross section features from newly 
+Creates a valid set of cross section features from newly
              digitized stream cross section lines.
 }

@@ -1,4 +1,4 @@
-xs_plot <- function(xs, fl, fl_pts, dem) {
+xs_line_plot <- function(xs, fl, fl_pts, dem) {
   plot(dem)
   lines(terra::vect(xs), col = "black")
   lines(terra::vect(fl), col = "blue")
