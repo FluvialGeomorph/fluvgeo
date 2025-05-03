@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.04.19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.05.03</span>
       </span>
     </div>
 
@@ -47,6 +47,20 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2025.05.03" id="fluvgeo-20250503">fluvgeo 2025.05.03<a class="anchor" aria-label="anchor" href="#fluvgeo-20250503"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-2025-05-03">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2025-05-03"></a></h3>
+<ul><li>Adopted the <code>nhdplusTools</code> r package to gain access to USGS Network Linked Data Index (NLDI) services.</li>
+<li>Added the <code>pt_watershed_area</code> function to retrieve delineated watersheds from NHDPlus via the NLDI.</li>
+<li>Incorporated the <code>pt_watershed_area</code> function into the processing steps for cross sections to identify NHD reaches (reachcode, comid) and calculate upstream drainage basin areas.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-changes-2025-05-03">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2025-05-03"></a></h3>
+<ul><li>Added hillshading to the <code>get_terrain_leaflet</code> function.</li>
+<li>Added channel_ and floodplain_polys to the <code>get_results_leaflet</code> function.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2025.04.19" id="fluvgeo-20250419">fluvgeo 2025.04.19<a class="anchor" aria-label="anchor" href="#fluvgeo-20250419"></a></h2>
 <div class="section level3">
