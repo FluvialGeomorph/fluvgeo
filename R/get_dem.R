@@ -13,6 +13,8 @@
 #' @importFrom terra project
 #' @importFrom assertthat assert_that
 get_dem <- function(xs) {
+  assert_that("sf" %in% class(xs),
+              msg = "xs must be an sf object")
   assert_that(check_crs_3857(xs), msg = "xs CRS must be 3857")
 
   # authenticate to AGOL

@@ -46,6 +46,7 @@ Imports:
     magrittr,
     mapboxapi,
     Metrics,
+    nhdplusTools,
     patchwork,
     purrr,
     raster,

@@ -25,3 +25,4 @@ test_that("get watershed area, crs:4326", {
                nrow(watershed_pt$pt),
                nrow(watershed_pt$drainage_basin))
 })
+
