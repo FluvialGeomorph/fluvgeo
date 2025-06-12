@@ -1,3 +1,10 @@
+# fluvgeo 2025.06.12
+
+## Minor Changes
+* For the `get_leaflet` function, exposed zoom as a parameter. 
+
+***
+
 # fluvgeo 2025.05.03
 
 ## Major changes
@@ -9,6 +16,7 @@
 * Added hillshading to the `get_terrain_leaflet` function. 
 * Added channel_ and floodplain_polys to the `get_results_leaflet` function. 
 
+***
 
 # fluvgeo 2025.04.19
 
