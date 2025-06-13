@@ -13,8 +13,27 @@ pt_watershed_area <- function(point_sf) {
   assert_that("sf" %in% class(point_sf),
               msg = "point_sf must be an sf object")
 
+  max_retries <- 5
+  retry_delay_seconds <- 5
+
   # Find the nearest downslope NHD flowline
-  trace <- get_raindrop_trace(st_as_sfc(point_sf))
+  for (i in 1:max_retries) {
+    tryCatch({
+      trace <- get_raindrop_trace(st_as_sfc(point_sf))
+      if(inherits(trace, "sf")) {
+        break
+      } else {
+        warning("get_raindrop_trace did not return an sf object, retrying...")
+      }
+    }, error = function(e) {
+      message(paste("Attempt", i, "failed:", e$message))
+      if(i < max_retries) {
+        Sys.sleep(retry_delay_seconds)
+      } else {
+        stop("Failed to get raindrop trace after multiple attempts.")
+      }
+    })
+  }
 
   # Extract the point located along the NHD network
   snap_point <- st_sfc(st_point(trace$intersection_point[[1]]),
@@ -27,6 +46,7 @@ pt_watershed_area <- function(point_sf) {
     mutate(raindrop_pathDist = trace$raindrop_pathDist[1])
 
   # Get the catchment and the upstream drainage basin
+  # add tryCatch for loop
   catchment <- get_split_catchment(st_as_sfc(snap_point),
                                    upstream = TRUE)
   # Create the drainage area polygon
