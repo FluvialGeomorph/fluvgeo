@@ -13,42 +13,16 @@ pt_watershed_area <- function(point_sf) {
   assert_that("sf" %in% class(point_sf),
               msg = "point_sf must be an sf object")
 
-  max_retries <- 5
-  retry_delay_seconds <- 5
-
   # Find the nearest downslope NHD flowline
-  for (i in 1:max_retries) {
-    tryCatch({
-      trace <- get_raindrop_trace(st_as_sfc(point_sf))
-      if(inherits(trace, "sf")) {
-        break
-      } else {
-        warning("get_raindrop_trace did not return an sf object, retrying...")
-      }
-    }, error = function(e) {
-      message(paste("Attempt", i, "failed:", e$message))
-      if(i < max_retries) {
-        Sys.sleep(retry_delay_seconds)
-      } else {
-        stop("Failed to get raindrop trace after multiple attempts.")
-      }
-    })
-  }
+  trace <- get_raindrop_trace(st_as_sfc(point_sf))
 
   # Extract the point located along the NHD network
   snap_point <- st_sfc(st_point(trace$intersection_point[[1]]),
-                       crs = 4326) |>
-    st_as_sf() |>
-    rename(geometry = x) |>
-    mutate(gnis_name = trace$gnis_name[1]) |>
-    mutate(comid = trace$comid[1]) |>
-    mutate(reachcode = trace$reachcode[1]) |>
-    mutate(raindrop_pathDist = trace$raindrop_pathDist[1])
+                       crs = 4326)
 
   # Get the catchment and the upstream drainage basin
-  # add tryCatch for loop
-  catchment <- get_split_catchment(st_as_sfc(snap_point),
-                                   upstream = TRUE)
+  catchment <- get_split_catchment(snap_point, upstream = TRUE)
+
   # Create the drainage area polygon
   drainage_basin <- catchment |>
     filter(id == "drainageBasin") |>
@@ -59,9 +33,17 @@ pt_watershed_area <- function(point_sf) {
 
   drainage_basin$area <- st_area(drainage_basin)
 
+  point <- snap_point |>
+    st_as_sf() |>
+    rename(geometry = x) |>
+    mutate(gnis_name = trace$gnis_name[1]) |>
+    mutate(comid = trace$comid[1]) |>
+    mutate(reachcode = trace$reachcode[1]) |>
+    mutate(raindrop_pathDist = trace$raindrop_pathDist[1])
+
   # Project to 3857 on return
   return(list(
-    pt             = st_transform(snap_point, crs = 3857),
+    pt             = st_transform(point, crs = 3857),
     drainage_basin = st_transform(drainage_basin, crs = 3857)
   ))
 }
