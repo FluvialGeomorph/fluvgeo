@@ -98,7 +98,7 @@ xs_compare_plot_L2 <- function(stream, xs_number, xs_pts_sf_list,
                   color = .data$Survey)) +
     geom_line(size = 1.25) +
     scale_y_continuous(sec.axis = sec_axis(~. + transform,
-                                           name = "Detrended Elevation (feet)"),
+                                           name = "Relative Elevation (feet)"),
                        minor_breaks = minor_breaks) +
     scale_color_manual(values = cols) +
     geom_hline(yintercept = bankfull_elevation - transform,

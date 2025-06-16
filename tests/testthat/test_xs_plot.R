@@ -19,5 +19,5 @@ test_that("Check the plot object", {
   expect_equal(sin_4_plot$labels$x,
                "Station Distance (feet, from right descending bank)")
   expect_equal(sin_4_plot$labels$y,
-               "Detrended Elevation (feet)")
+               "Relative Elevation (feet)")
 })

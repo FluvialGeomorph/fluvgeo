@@ -92,7 +92,7 @@ xs_plot <- function(xs_points, stream, xs_number, bankfull_elevation) {
     theme(aspect.ratio = 2/5) +
     labs(title = paste("Cross Section", as.character(xs_number)),
          x = "Station Distance (feet, from right descending bank)",
-         y = "Detrended Elevation (feet)") +
+         y = "Relative Elevation (feet)") +
     theme(plot.title = element_text(hjust = 0)
     )
   return(p)
