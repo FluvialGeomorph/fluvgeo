@@ -1,4 +1,4 @@
-# fluvgeo 2025.06.18
+# fluvgeo 2025.06.18.2
 
 ## Minor Changes
 * Updated terminology from "detrended elevation" to "relative elevation". 
