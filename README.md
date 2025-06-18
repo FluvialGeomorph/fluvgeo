@@ -13,8 +13,8 @@ An `R` Package for Performing **Fluv**ial **Geo**mrphology Analysis
 [![Project Status: Active The project has reached a stable, usable state
 and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![packageversion](https://img.shields.io/badge/Package%20version-20025.05.03-orange.svg?style=flat-square)](commits/main)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2025--06--12-yellowgreen.svg)](/commits/main)
+[![packageversion](https://img.shields.io/badge/Package%20version-20025.06.18-orange.svg?style=flat-square)](commits/main)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2025--06--18-yellowgreen.svg)](/commits/main)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 
 ## Description
