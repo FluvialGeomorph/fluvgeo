@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2025.06.18.2
+Version: 2025.06.18.3
 Authors@R: c(
     person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
            role = "aut",
@@ -39,6 +39,7 @@ Imports:
     grid,
     gridExtra,
     gtable,
+    httr2,
     leafem,
     leaflegend,
     leaflet,
@@ -59,6 +60,7 @@ Imports:
     scales,
     sf,
     smoothr,
+    stars,
     stats,
     terra,
     terrainr,
@@ -70,7 +72,6 @@ Imports:
     utils
 Suggests: 
     fluvgeodata,
-    httr2,
     knitr
 Remotes: 
     FluvialGeomorph/RegionalCurve,

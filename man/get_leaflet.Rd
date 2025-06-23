@@ -4,10 +4,12 @@
 \alias{get_leaflet}
 \title{Get Leaflet Map}
 \usage{
-get_leaflet(search = FALSE)
+get_leaflet(search = FALSE, zoom = 5)
 }
 \arguments{
 \item{search}{logical; Display a search bar?}
+
+\item{zoom}{numeric; Inital zoom level.}
 }
 \value{
 a leaflet map object
