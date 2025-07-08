@@ -1,3 +1,10 @@
+# fluvgeo 2025.07.08
+
+## Bug fix
+* Fixed a bug in the `floodplain_volume` and `hydroflatten_dem` functions when the input raster extents did not match. 
+
+***
+
 # fluvgeo 2025.06.18.3
 
 ## Minor Changes
