@@ -11,7 +11,7 @@
 #' the specified water depth.
 #' @export
 #'
-#' @importFrom terra ifel
+#' @importFrom terra resample ifel
 #'
 hydroflatten_dem <- function(dem, trend, relative_water_depth) {
   assert_that("SpatRaster" %in% class(dem),
@@ -21,11 +21,17 @@ hydroflatten_dem <- function(dem, trend, relative_water_depth) {
   assert_that(is.numeric(relative_water_depth),
               msg = "relative_water_depth must be numeric")
 
+  # Ensure the dem has the same extent, cell size, nrows, ncols as trend
+  dem_resample <- resample(dem, trend, method="bilinear")
+
+  # Set dem NAs to match watersurface raster NAs (make data areas match)
+  dem_na <- ifel(not.na(trend), dem_resample, NA)
+
   # Raise water level above the trend surface
   watersurface <- trend + relative_water_depth
 
   # Combine watersurface with dem
-  out_surface <- ifel(watersurface > dem, watersurface, dem)
+  out_surface <- ifel(watersurface > dem_na, watersurface, dem_na)
 
   return(out_surface)
 }

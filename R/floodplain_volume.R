@@ -9,7 +9,7 @@
 #' in cubic meters.
 #' @export
 #'
-#' @importFrom terra not.na ifel cellSize values
+#' @importFrom terra resample not.na ifel cellSize values
 #'
 floodplain_volume <- function(dem, watersurface) {
   assert_that("SpatRaster" %in% class(dem),
@@ -17,8 +17,11 @@ floodplain_volume <- function(dem, watersurface) {
   assert_that("SpatRaster" %in% class(watersurface),
               msg = "watersurface must be a SpatRaster object")
 
+  # Ensure the dem has the same extent, cell size, nrows, ncols as watersurface
+  dem_resample <- resample(dem, watersurface, method="bilinear")
+
   # Set dem NAs to match watersurface raster NAs (make data areas match)
-  dem_na <- ifel(not.na(watersurface), dem, NA)
+  dem_na <- ifel(not.na(watersurface), dem_resample, NA)
 
   # Calculate difference between watersurface raster and dem raster
   depth <- watersurface - dem_na
