@@ -73,7 +73,10 @@ remotes::install_github(repo = "FluvialGeomorph/fluvgeo@*release")
 ```
 
 ## Development Tools
-If you're developing with this package using Positron or VS Code, please note that this repository includes configuration for compatible extensions. See [.vscode/README.md](.vscode/README.md) for information about GitHub Copilot Chat compatibility with Positron OSS-Code 1.103.0.
+If you're developing with this package using Positron or VS Code, please 
+note that this repository includes configuration for compatible extensions. 
+See [.vscode/README.md](.vscode/README.md) for information about GitHub 
+Copilot Chat compatibility with Positron OSS-Code 1.103.0.
 
 ## Bug Reports
 If you find any bugs using `fluvgeo`, please open an [issue](https://github.com/FluvialGeomorph/fluvgeo/issues). 
