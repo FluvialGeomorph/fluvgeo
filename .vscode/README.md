@@ -47,8 +47,11 @@ If you're in a restricted environment without marketplace access:
 Given the compatibility challenges with OSS-Code 1.103.0:
 
 1. **If possible, upgrade Positron** to a version based on a newer VS Code engine (1.90+) that supports current Copilot Chat extensions
-2. **Alternative**: Use GitHub Copilot (without Chat) extension, which may have better compatibility
-3. **Alternative**: Consider using command-line GitHub Copilot tools or the GitHub Copilot API directly
+2. **Alternative**: Use GitHub Copilot (without Chat) extension (`github.copilot`), which may have better compatibility with older engine versions
+3. **Alternative**: Use GitHub Copilot via CLI or API:
+   - [GitHub Copilot CLI](https://githubnext.com/projects/copilot-cli) - Command-line interface for Copilot
+   - [GitHub Copilot API](https://docs.github.com/en/copilot) - Direct API access for integrations
+   - These tools don't require IDE extensions and work independently
 
 ### Why This Is Difficult
 
