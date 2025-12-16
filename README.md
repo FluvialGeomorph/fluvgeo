@@ -87,10 +87,14 @@ To install the `fluvgeo` package, install from GitHub using the
 
 If you're developing with this package using Positron or VS Code,
 please note that this repository includes configuration for recommended
-extensions. See [.vscode/README.md](.vscode/README.md) for information
-about GitHub Copilot Chat compatibility with Positron (OSS-Code
-1.103.0). The IDE will automatically install a compatible version of the
-extension.
+extensions.
+
+**Important for Positron Users**: If you're using Positron based on
+OSS-Code 1.103.0, please see [.vscode/README.md](.vscode/README.md) for
+important information about GitHub Copilot Chat compatibility
+limitations. Due to compatibility challenges between old engine versions
+and current Copilot services, you may need to upgrade Positron or use
+alternative tools.
 
 ## Bug Reports
 
