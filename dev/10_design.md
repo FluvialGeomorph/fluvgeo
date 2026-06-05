@@ -17,9 +17,9 @@ This document records the current stable architecture, operating assumptions, an
 ## Open questions
 - [ ] Add unresolved design questions here
 
-## Unit architecture
+## Unit architecture and display-unit API
 
-`fluvgeo` treats units as a layered architectural concern with three distinct systems:
+`fluvgeo` treats unit handling as a layered architectural concern with three distinct systems:
 
 ### 1. Geospatial data unit system
 This layer represents the units, datums, and coordinate reference properties of incoming geospatial data. The package must tolerate heterogeneous spatial inputs across space and time, including mixed coordinate systems and mixed vertical datums. `fluvgeo` does not assume that all source data can or should be reduced to one standard coordinate system.
@@ -31,13 +31,50 @@ This layer represents the units required by the scientific formulas implemented 
 This layer represents the user-facing unit system used in plots, tables, captions, legends, and reports. Display units must be selectable and may differ from both the geospatial input units and the native analysis units. Output functions should derive all rendered unit labels and display conversions from a single display-unit specification.
 
 ### Separation principle
-These three systems are intentionally independent. Geospatial input assumptions must not leak into display formatting. Display preferences must not alter the scientific definition of analysis functions. Analysis functions must not be responsible for presentation-layer decisions.
+These three systems are intentionally independent.
+
+- Geospatial input assumptions must not leak into display formatting.
+- Display preferences must not alter the scientific definition of analysis functions.
+- Analysis functions must not be responsible for presentation-layer decisions.
+
+### Public display-unit API
+The public display-unit interface should use a single parameter:
+
+- `unit_system`: one of `"USCS"` or `"SI"`
+
+This parameter controls how user-facing output is rendered, including:
+- axis labels
+- legend labels
+- figure captions
+- report narrative text
+- table headings
+- other display-only unit strings
+
+The default display system should preserve current behavior unless explicitly changed by the caller.
+
+### Internal display specification
+Implementation should resolve `unit_system` into an internal display specification object or list that centralizes:
+- length unit names and abbreviations
+- area unit names and abbreviations
+- elevation unit names and abbreviations
+- unit-bearing label templates
+- conversion factors used only for display
+- any other text fragments needed for plots and reports
+
+Output functions should use this shared display specification rather than hard-coded unit strings.
+
+### Analysis boundary
+Analysis functions may perform local conversions required by formulas, but those conversions must remain internal and testable. If a reference method requires native units or a specific functional form, the implementation should preserve that method’s scientific meaning and only convert at clearly defined boundaries.
+
+### Migration from legacy `profile_units`
+Existing functions that currently accept `profile_units` are part of the legacy display interface and should be migrated to `unit_system` as the primary contract. During transition, `profile_units` may be mapped internally to the new display specification where needed, but new code should prefer `unit_system`.
 
 ### Implementation implications
 - Unit-aware output functions should accept an explicit display-unit parameter.
 - Unit labels, axis titles, captions, and legend text should be generated from shared helpers rather than hard-coded strings.
-- Analysis functions may perform local conversions required by formulas, but those conversions must remain internal and testable.
 - Reports and plots should use the display unit system consistently across all figures, tables, and narrative text.
+- The same report should render correctly in both USCS and SI modes without changing the underlying analysis results.
+
 
 ## Architecture history and current transition state
 `fluvgeo` was originally developed as part of a hybrid ESRI + R architecture for fluvial geomorphology analysis.
