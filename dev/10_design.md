@@ -9,6 +9,9 @@ This document records the current stable architecture, operating assumptions, an
 - Vignettes: `vignettes/`
 - Data: `data/`
 - Development instructions: `dev/instructions/`
+- Development plan: `dev/05_plan.md`
+- Schemas: `dev/40_schemas.md`
+- Decisions: `dev/decisions/`
 - Sessions: `dev/sessions/`
 
 ## Open questions

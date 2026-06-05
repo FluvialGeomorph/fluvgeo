@@ -39,11 +39,13 @@ Read these files in order:
 2. `dev/instructions/goals.md`
 3. `dev/instructions/r-package.md`
 4. `dev/instructions/development-governance.md`
-5. `dev/instructions/fluvgeo-backend-context.md`  (custom module developed for this repo)
+
+Custom overlay module developed specifically for this repository:
+
+* `dev/instructions/fluvgeo-backend-context.md`
 
 ## If the assistant cannot read repository files
 If the chat platform cannot access repository files, paste the contents of:
 1) this file (`CHAT_INSTRUCTIONS.md`), then
 2) each of the modules listed above (in order),
 into the chat.
-
