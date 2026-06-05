@@ -17,6 +17,28 @@ This document records the current stable architecture, operating assumptions, an
 ## Open questions
 - [ ] Add unresolved design questions here
 
+## Unit architecture
+
+`fluvgeo` treats units as a layered architectural concern with three distinct systems:
+
+### 1. Geospatial data unit system
+This layer represents the units, datums, and coordinate reference properties of incoming geospatial data. The package must tolerate heterogeneous spatial inputs across space and time, including mixed coordinate systems and mixed vertical datums. `fluvgeo` does not assume that all source data can or should be reduced to one standard coordinate system.
+
+### 2. Analysis unit system
+This layer represents the units required by the scientific formulas implemented in the package. Fluvial geomorphology methods are derived from literature spanning many regions and time periods, and those methods are often defined in native unit conventions. Analysis functions should implement formulas in the units and functional form required by the source method, converting inputs only as needed to evaluate the formula correctly. Analysis code is responsible for scientific correctness, not display formatting.
+
+### 3. Display unit system
+This layer represents the user-facing unit system used in plots, tables, captions, legends, and reports. Display units must be selectable and may differ from both the geospatial input units and the native analysis units. Output functions should derive all rendered unit labels and display conversions from a single display-unit specification.
+
+### Separation principle
+These three systems are intentionally independent. Geospatial input assumptions must not leak into display formatting. Display preferences must not alter the scientific definition of analysis functions. Analysis functions must not be responsible for presentation-layer decisions.
+
+### Implementation implications
+- Unit-aware output functions should accept an explicit display-unit parameter.
+- Unit labels, axis titles, captions, and legend text should be generated from shared helpers rather than hard-coded strings.
+- Analysis functions may perform local conversions required by formulas, but those conversions must remain internal and testable.
+- Reports and plots should use the display unit system consistently across all figures, tables, and narrative text.
+
 ## Architecture history and current transition state
 `fluvgeo` was originally developed as part of a hybrid ESRI + R architecture for fluvial geomorphology analysis.
 
