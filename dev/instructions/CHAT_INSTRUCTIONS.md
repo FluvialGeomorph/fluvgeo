@@ -40,9 +40,9 @@ Read these files in order:
 3. `dev/instructions/r-package.md`
 4. `dev/instructions/development-governance.md`
 
-Custom overlay module developed specifically for this repository:
+After reading these base modules, also read the following repository-specific overlay module:
 
-* `dev/instructions/fluvgeo-backend-context.md`
+5. `dev/instructions/fluvgeo-backend-context.md`
 
 ## If the assistant cannot read repository files
 If the chat platform cannot access repository files, paste the contents of:
