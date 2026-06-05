@@ -1,15 +1,14 @@
-# Design
+# Current design and architecture
 
-Last updated: 2026-06-05
+This document records the current stable architecture, operating assumptions, and design boundaries for `fluvgeo`.
 
-## Purpose
-This document records the current stable architecture, operating assumptions, and capability boundaries for the repository.
-
-## Document map
-- Plan: `dev/05_plan.md`
-- Schemas: `dev/40_schemas.md`
-- Decisions: `dev/decisions/`
-- Instructions: `dev/instructions/`
+## Repository structure
+- Package code: `R/`
+- Documentation: `man/`
+- Tests: `tests/`
+- Vignettes: `vignettes/`
+- Data: `data/`
+- Development instructions: `dev/instructions/`
 - Sessions: `dev/sessions/`
 
 ## Open questions
@@ -31,6 +30,8 @@ The package is therefore in a transition state:
 - some workflows still depend on proprietary upstream geospatial input generation
 - some geospatial functionality now exists inside `fluvgeo`, but coverage is partial
 - the long-term direction is to prefer open-source implementations where they are viable and scientifically appropriate
+
+The package has stable current behavior, but its geospatial input boundary is still evolving as open-source implementations replace proprietary steps where feasible.
 
 ### Design implications
 This transition affects how the package should evolve:

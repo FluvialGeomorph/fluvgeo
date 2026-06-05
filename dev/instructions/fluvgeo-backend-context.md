@@ -52,9 +52,10 @@ When making changes, consider downstream impacts on:
 - Over time, some geospatial functionality has been reimplemented with open-source tools inside `fluvgeo`.
 - The package remains partially dependent on proprietary upstream geospatial input generation, so it is not fully standalone for all workflows.
 - This transition is ongoing, and future development should account for partial coverage of geospatial functionality inside the R package.
+- Treat the current architecture as a mixed-state system: some workflows still rely on upstream ArcGIS-derived inputs, while others are now supported directly in R.
 
 ## Preference for open source
-When multiple viable approaches exist, prefer open-source solutions over proprietary ones, especially when they:
+When multiple viable approaches exist, prefer open-source solutions over proprietary ones when they satisfy the scientific, operational, and maintenance requirements, especially when they:
 - preserve or improve scientific validity
 - reduce licensing burden
 - improve portability and adoption
@@ -79,6 +80,11 @@ When diagnosing problems, prioritize:
 - documentation and examples matching actual package behavior
 - packaging, installation, and release failures
 
+When troubleshooting or designing changes, first determine whether the issue belongs to:
+- upstream geospatial input generation,
+- core R analysis,
+- or a downstream consuming application.
+
 ## Documentation and release expectations
 For user-facing changes, development sessions should consider:
 - whether exported functions need documentation updates
@@ -98,4 +104,3 @@ In future sessions, use this overlay to:
 ## Relationship to other instruction modules
 This overlay is intended to compose with the repository's base chat instructions and other instruction modules.
 If there is any conflict, follow the most restrictive safety and permission constraints first, then the more specific repository guidance.
-
