@@ -103,4 +103,5 @@ In future sessions, use this overlay to:
 
 ## Relationship to other instruction modules
 This overlay is intended to compose with the repository's base chat instructions and other instruction modules.
+For documentation and governance matters, follow `dev/instructions/development-governance.md` and the repository's established artifact precedence.
 If there is any conflict, follow the most restrictive safety and permission constraints first, then the more specific repository guidance.
