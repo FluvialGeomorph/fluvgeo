@@ -31,6 +31,12 @@ Introduce a first-class display-unit architecture in `fluvgeo` that separates:
 - Add or finalize the unit architecture section in `dev/10_design.md`.
 - Record the architectural decision in `dev/decisions/adr-0001-unit-system-separation.md`.
 
+### Definition of done for Phase 1
+- [x] The three-layer unit architecture is documented in `dev/10_design.md`.
+- [x] The decision is captured in an ADR.
+- [x] The public display-unit parameter is defined as `unit_system` with supported values `"USCS"` and `"SI"`.
+- [x] The migration relationship between `profile_units` and `unit_system` is documented.
+
 ### Phase 2: Shared display-unit helper layer
 - Create an internal helper module for display-unit resolution and formatting.
 - Define the canonical USCS and SI display specifications.
