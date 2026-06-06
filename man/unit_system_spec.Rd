@@ -10,11 +10,17 @@ unit_system_spec(unit_system = "USCS")
 \item{unit_system}{character; one of "USCS" or "SI".}
 }
 \value{
-A named list containing display labels, abbreviations, and display
-conversion helpers.
+A named list containing display labels, abbreviations, conversion
+helpers, and ecosystem-aligned unit metadata.
 }
 \description{
 Convert a display unit system into a standardized specification list used by
 output functions.
+
+The returned specification is intentionally package-facing, but it should be
+interpreted in the context of the spatial unit infrastructure provided by
+the open-source geospatial ecosystem. Where practical, package code should
+use `units` objects and ecosystem-native conversions rather than ad hoc
+scaling logic.
 }
 \keyword{internal}

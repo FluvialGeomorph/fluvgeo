@@ -16,6 +16,13 @@ The validated unit system string.
 Internal helpers for resolving and formatting the user-facing display-unit
 system used by plots, reports, legends, captions, and tables.
 }
+\details{
+This helper layer is designed to work in harmony with the open-source
+geospatial ecosystem used by `fluvgeo`, especially `sf`, `terra`, `stars`,
+and `units`. Package-facing functions should continue to expose the
+repository's own `unit_system` contract while relying on ecosystem-native
+unit objects and conversions where appropriate.
+}
 \keyword{Validate}
 \keyword{a}
 \keyword{display}
