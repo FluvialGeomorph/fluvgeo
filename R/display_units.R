@@ -1,7 +1,8 @@
 #' Display unit helpers
 #'
-#' Internal helpers for resolving and formatting the user-facing display-unit
-#' system used by plots, reports, legends, captions, and tables.
+#' Internal helpers for resolving, formatting, and rendering the user-facing
+#' display-unit system used by plots, reports, legends, captions, maps, static
+#' documents, and interactive applications.
 #'
 #' This helper layer is designed to work in harmony with the open-source
 #' geospatial ecosystem used by `fluvgeo`, especially `sf`, `terra`, `stars`,
@@ -81,25 +82,126 @@ unit_system_spec <- function(unit_system = "USCS") {
   )
 }
 
-#' Format a display label for a unit-bearing quantity
+#' Render a unit-bearing label
 #'
-#' @param quantity character; the quantity name, such as "elevation" or
-#'   "distance".
+#' @param quantity character; one of "distance", "area", "elevation",
+#'   or "vertical_reference".
+#' @param unit_system character; one of "USCS" or "SI".
+#' @param render character; one of "plain", "plotmath", "unicode", "prose",
+#'   "latex", or "mathjax".
+#'
+#' @return A character scalar or expression-like string depending on render.
+#' @keywords internal
+render_unit_label <- function(quantity,
+                              unit_system = "USCS",
+                              render = c("plain", "plotmath", "unicode", "prose",
+                                         "latex", "mathjax")) {
+  render <- match.arg(render)
+  spec <- unit_system_spec(unit_system)
+
+  quantity_label <- switch(
+    quantity,
+    "distance" = "Distance",
+    "area" = "Area",
+    "elevation" = "Elevation",
+    "vertical_reference" = "Vertical reference",
+    stop("Unknown display quantity: ", quantity, call. = FALSE)
+  )
+
+  unit_string <- render_unit_symbol(quantity, unit_system, render)
+
+  switch(
+    render,
+    "plain" = paste0(quantity_label, " (", unit_string, ")"),
+    "plotmath" = paste0(quantity_label, " (", unit_string, ")"),
+    "unicode" = paste0(quantity_label, " (", unit_string, ")"),
+    "prose" = paste0(quantity_label, " (", unit_string, ")"),
+    "latex" = paste0(quantity_label, " (", unit_string, ")"),
+    "mathjax" = paste0(quantity_label, " (", unit_string, ")")
+  )
+}
+
+#' Render a unit symbol
+#'
+#' @param quantity character; one of "distance", "area", "elevation",
+#'   or "vertical_reference".
+#' @param unit_system character; one of "USCS" or "SI".
+#' @param render character; one of "plain", "plotmath", "unicode", "prose",
+#'   "latex", or "mathjax".
+#'
+#' @return A character scalar containing the rendered unit symbol.
+#' @keywords internal
+render_unit_symbol <- function(quantity,
+                               unit_system = "USCS",
+                               render = c("plain", "plotmath", "unicode",
+                                          "prose", "latex", "mathjax")) {
+  render <- match.arg(render)
+  spec <- unit_system_spec(unit_system)
+
+  switch(
+    quantity,
+    "distance" = switch(
+      render,
+      "plain" = spec$profile_distance_units,
+      "plotmath" = spec$profile_distance_units,
+      "unicode" = spec$profile_distance_units,
+      "prose" = spec$profile_distance_units,
+      "latex" = spec$profile_distance_units,
+      "mathjax" = spec$profile_distance_units
+    ),
+    "area" = switch(
+      render,
+      "plain" = spec$area_units,
+      "plotmath" = spec$area_units,
+      "unicode" = spec$area_units,
+      "prose" = spec$area_units,
+      "latex" = spec$area_units,
+      "mathjax" = spec$area_units
+    ),
+    "elevation" = switch(
+      render,
+      "plain" = spec$elevation_units,
+      "plotmath" = spec$elevation_units,
+      "unicode" = spec$elevation_units,
+      "prose" = spec$elevation_units,
+      "latex" = spec$elevation_units,
+      "mathjax" = spec$elevation_units
+    ),
+    "vertical_reference" = switch(
+      render,
+      "plain" = spec$vertical_reference_units,
+      "plotmath" = spec$vertical_reference_units,
+      "unicode" = spec$vertical_reference_units,
+      "prose" = spec$vertical_reference_units,
+      "latex" = spec$vertical_reference_units,
+      "mathjax" = spec$vertical_reference_units
+    ),
+    stop("Unknown display quantity: ", quantity, call. = FALSE)
+  )
+}
+
+#' Backwards-compatible label helper
+#'
+#' @param quantity character; one of "distance", "area", "elevation",
+#'   or "vertical_reference".
 #' @param unit_system character; one of "USCS" or "SI".
 #'
 #' @return A character scalar containing a display label.
 #' @keywords internal
 format_display_label <- function(quantity, unit_system = "USCS") {
-  spec <- unit_system_spec(unit_system)
+  render_unit_label(quantity, unit_system, render = "plain")
+}
 
-  switch(
-    quantity,
-    "distance" = spec$distance_axis_label,
-    "elevation" = spec$elevation_axis_label,
-    "area" = spec$area_label,
-    "vertical_reference" = spec$vertical_reference_label,
-    stop("Unknown display quantity: ", quantity, call. = FALSE)
-  )
+#' Backwards-compatible unit string helper
+#'
+#' @param quantity character; one of "distance", "area", "elevation",
+#'   or "vertical_reference".
+#' @param unit_system character; one of "USCS" or "SI".
+#'
+#' @return A character scalar with the display unit string.
+#' @keywords internal
+format_display_units <- function(quantity, unit_system = "USCS") {
+  render_unit_symbol(quantity, unit_system, render = "plain")
 }
 
 #' Convert a profile distance for display
@@ -114,25 +216,16 @@ convert_profile_distance <- function(x, unit_system = "USCS") {
   spec$profile_distance_to_display(x)
 }
 
-#' Format a display unit string
+#' Convert a distance from kilometers to display units
 #'
+#' @param x numeric; profile distance in kilometers.
 #' @param unit_system character; one of "USCS" or "SI".
-#' @param quantity character; one of "distance", "area", "elevation",
-#'   or "vertical_reference".
 #'
-#' @return A character scalar with the display unit string.
+#' @return Numeric vector in display units.
 #' @keywords internal
-format_display_units <- function(quantity, unit_system = "USCS") {
+convert_distance_value <- function(x, unit_system = "USCS") {
   spec <- unit_system_spec(unit_system)
-
-  switch(
-    quantity,
-    "distance" = spec$profile_distance_units,
-    "area" = spec$area_units,
-    "elevation" = spec$elevation_units,
-    "vertical_reference" = spec$vertical_reference_units,
-    stop("Unknown display quantity: ", quantity, call. = FALSE)
-  )
+  spec$profile_distance_to_display(x)
 }
 
 #' Convert a value to a units object for display
@@ -160,16 +253,4 @@ as_display_units <- function(x, quantity, unit_system = "USCS") {
   )
 
   units::set_units(x, unit_string, mode = "standard")
-}
-
-#' Convert a distance from kilometers to display units
-#'
-#' @param x numeric; profile distance in kilometers.
-#' @param unit_system character; one of "USCS" or "SI".
-#'
-#' @return Numeric vector in display units.
-#' @keywords internal
-convert_distance_value <- function(x, unit_system = "USCS") {
-  spec <- unit_system_spec(unit_system)
-  spec$profile_distance_to_display(x)
 }

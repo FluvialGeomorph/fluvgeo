@@ -2,13 +2,13 @@
 % Please edit documentation in R/display_units.R
 \name{format_display_label}
 \alias{format_display_label}
-\title{Format a display label for a unit-bearing quantity}
+\title{Backwards-compatible label helper}
 \usage{
 format_display_label(quantity, unit_system = "USCS")
 }
 \arguments{
-\item{quantity}{character; the quantity name, such as "elevation" or
-"distance".}
+\item{quantity}{character; one of "distance", "area", "elevation",
+or "vertical_reference".}
 
 \item{unit_system}{character; one of "USCS" or "SI".}
 }
@@ -16,6 +16,6 @@ format_display_label(quantity, unit_system = "USCS")
 A character scalar containing a display label.
 }
 \description{
-Format a display label for a unit-bearing quantity
+Backwards-compatible label helper
 }
 \keyword{internal}

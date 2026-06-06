@@ -47,38 +47,54 @@ test_that("unit_system_spec returns expected fields for SI", {
   expect_true(is.function(spec$profile_distance_to_display))
 })
 
-test_that("format_display_label returns expected labels", {
-  expect_identical(format_display_label("distance", "USCS"), "Distance (ft)")
-  expect_identical(format_display_label("distance", "SI"), "Distance (m)")
-  expect_identical(format_display_label("elevation", "USCS"), "Elevation (ft)")
-  expect_identical(format_display_label("elevation", "SI"), "Elevation (m)")
-  expect_identical(format_display_label("area", "USCS"), "Area (sq ft)")
-  expect_identical(format_display_label("area", "SI"), "Area (sq m)")
+test_that("render_unit_symbol returns expected unit strings", {
+  expect_identical(render_unit_symbol("distance", "USCS", "plain"), "ft")
+  expect_identical(render_unit_symbol("distance", "SI", "plain"), "m")
+  expect_identical(render_unit_symbol("area", "USCS", "plain"), "ft^2")
+  expect_identical(render_unit_symbol("area", "SI", "plain"), "m^2")
+  expect_identical(render_unit_symbol("elevation", "USCS", "plain"), "ft")
+  expect_identical(render_unit_symbol("elevation", "SI", "plain"), "m")
   expect_identical(
-    format_display_label("vertical_reference", "USCS"),
-    "NAVD88 ft"
+    render_unit_symbol("vertical_reference", "USCS", "plain"),
+    "ft"
   )
   expect_identical(
-    format_display_label("vertical_reference", "SI"),
+    render_unit_symbol("vertical_reference", "SI", "plain"),
     "m"
   )
 })
 
-test_that("format_display_units returns expected unit strings", {
-  expect_identical(format_display_units("distance", "USCS"), "ft")
-  expect_identical(format_display_units("distance", "SI"), "m")
-  expect_identical(format_display_units("area", "USCS"), "ft2")
-  expect_identical(format_display_units("area", "SI"), "m2")
-  expect_identical(format_display_units("elevation", "USCS"), "ft")
+test_that("render_unit_label returns expected labels", {
+  expect_identical(
+    render_unit_label("distance", "USCS", "plain"),
+    "Distance (ft)"
+  )
+  expect_identical(render_unit_label("distance", "SI", "plain"), "Distance (m)")
+  expect_identical(
+    render_unit_label("elevation", "USCS", "plain"),
+    "Elevation (ft)"
+  )
+  expect_identical(
+    render_unit_label("elevation", "SI", "plain"),
+    "Elevation (m)"
+  )
+  expect_identical(render_unit_label("area", "USCS", "plain"), "Area (ft^2)")
+  expect_identical(render_unit_label("area", "SI", "plain"), "Area (m^2)")
+  expect_identical(
+    render_unit_label("vertical_reference", "USCS", "plain"),
+    "Vertical reference (ft)"
+  )
+  expect_identical(
+    render_unit_label("vertical_reference", "SI", "plain"),
+    "Vertical reference (m)"
+  )
+})
+
+test_that("backwards-compatible helpers return expected outputs", {
+  expect_identical(format_display_label("distance", "USCS"), "Distance (ft)")
+  expect_identical(format_display_label("area", "SI"), "Area (m^2)")
+  expect_identical(format_display_units("area", "USCS"), "ft^2")
   expect_identical(format_display_units("elevation", "SI"), "m")
-  expect_identical(
-    format_display_units("vertical_reference", "USCS"),
-    "ft"
-  )
-  expect_identical(
-    format_display_units("vertical_reference", "SI"),
-    "m"
-  )
 })
 
 test_that("convert_profile_distance converts kilometers for display", {
@@ -122,6 +138,8 @@ test_that("as_display_units returns units objects with expected units", {
 })
 
 test_that("display unit helpers reject unknown quantities", {
+  expect_error(render_unit_symbol("unknown", "USCS", "plain"))
+  expect_error(render_unit_label("unknown", "USCS", "plain"))
   expect_error(format_display_label("unknown", "USCS"))
   expect_error(format_display_units("unknown", "USCS"))
   expect_error(as_display_units(1, "unknown", "USCS"))

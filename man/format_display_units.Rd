@@ -2,7 +2,7 @@
 % Please edit documentation in R/display_units.R
 \name{format_display_units}
 \alias{format_display_units}
-\title{Format a display unit string}
+\title{Backwards-compatible unit string helper}
 \usage{
 format_display_units(quantity, unit_system = "USCS")
 }
@@ -16,6 +16,6 @@ or "vertical_reference".}
 A character scalar with the display unit string.
 }
 \description{
-Format a display unit string
+Backwards-compatible unit string helper
 }
 \keyword{internal}

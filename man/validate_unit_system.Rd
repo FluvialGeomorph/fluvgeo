@@ -13,8 +13,9 @@ validate_unit_system(unit_system)
 The validated unit system string.
 }
 \description{
-Internal helpers for resolving and formatting the user-facing display-unit
-system used by plots, reports, legends, captions, and tables.
+Internal helpers for resolving, formatting, and rendering the user-facing
+display-unit system used by plots, reports, legends, captions, maps, static
+documents, and interactive applications.
 }
 \details{
 This helper layer is designed to work in harmony with the open-source
