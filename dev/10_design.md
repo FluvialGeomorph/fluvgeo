@@ -166,6 +166,145 @@ This layer should be designed so additional render targets can be added later wi
 ***
 
 
+## Ecosystem review checklist: `units` + tidyverse + geospatial workflows
+
+Before defining the computation interface ADR, review established patterns for using `units` in scientific and geospatial workflows built on the tidyverse ecosystem.
+
+### Review goals
+- Identify common ways that `units` objects are introduced, preserved, transformed, and dropped in pipelines.
+- Determine where unit conversion is typically performed: at input boundaries, inside verbs, or at output boundaries.
+- Understand how `sf`, `terra`, and `stars` interact with unit-bearing values.
+- Capture patterns that support robust, readable, and maintainable analysis code.
+- Avoid inventing a computation contract that conflicts with common ecosystem practice.
+
+### Questions to answer
+1. **Public function boundaries**
+   - Do well-designed packages accept `units` objects directly?
+   - Do they also accept bare numeric values with explicit unit metadata?
+   - Which pattern is most common for public-facing scientific functions?
+
+2. **Pipeline behavior**
+   - How do `units` objects behave in `dplyr::mutate()`, `summarise()`, `across()`, and grouped operations?
+   - Are unit-bearing columns preserved through common transformations?
+   - What operations tend to fail or coerce unexpectedly?
+
+3. **Conversion placement**
+   - Where are conversions performed in practice?
+   - Are values normalized to method-native units before calculation?
+   - Are outputs converted to display units only at the end?
+   - Are there cases where calculations are intentionally performed in a canonical system throughout?
+
+4. **Spatial object integration**
+   - How do `sf` objects retain and propagate units on geometry-derived values?
+   - How do `terra` and `stars` manage unit metadata, if at all?
+   - When working across `sf`/`terra`/`stars`, what is the safest point to attach or preserve units?
+
+5. **Summary and aggregation**
+   - How do unit-bearing values behave in grouped summaries?
+   - What happens to units during `mean()`, `sum()`, `min()`, `max()`, and derived metrics?
+   - Are there package conventions for preserving units through aggregation?
+
+6. **Representation and display**
+   - When do packages render units directly versus using a display layer?
+   - What is the balance between `units` objects, plain strings, and human-readable labels?
+   - How do plotting packages like `ggplot2` handle unit-bearing aesthetics and labels?
+
+7. **Validation and coercion**
+   - How strictly do packages validate unit compatibility?
+   - Do they error early on incompatible units?
+   - Do they silently convert compatible units?
+   - How do they handle missing or unknown units?
+
+8. **Implementation ergonomics**
+   - Which approach is easiest to maintain in a pipeline-heavy package?
+   - Which patterns minimize repeated conversion logic?
+   - Which patterns are most likely to remain compatible with future geospatial tooling?
+
+### Research sources to inspect
+- `units` package documentation and vignettes
+- `sf` documentation and examples involving `units`
+- `terra` documentation and examples involving measurement values
+- `stars` documentation and examples involving metadata and derived quantities
+- tidyverse examples from scientific or spatial packages using `units`
+- package code that uses `units` in `dplyr` pipelines
+
+### Deliverable
+Summarize:
+- the dominant ecosystem pattern
+- recommended boundary behavior
+- recommended internal representation
+- likely risks or friction points
+- implications for a future computation interface ADR
+
+### Decision rule
+Do not finalize the computation interface ADR until this review has identified the most practical and ecosystem-aligned usage pattern.
+
+
+***
+
+
+## Computation interface design questions
+
+Before continuing further with display-layer refactoring, `fluvgeo` should define the interface for how values and units are represented in computations. This is a separate concern from display formatting, but it will strongly influence how the display layer and analysis layer interact.
+
+### Core questions
+1. **What is the canonical computational representation?**
+   - Should internal functions primarily operate on bare numeric values with separate unit metadata?
+   - Should functions accept `units` objects directly?
+   - Should both be supported, with one canonical internal form?
+
+2. **Where do unit conversions happen?**
+   - At the function boundary?
+   - Inside analysis helpers?
+   - Only in dedicated conversion helpers?
+   - Should output functions ever perform computation-layer conversions, or only display conversions?
+
+3. **What is the public API contract for value + unit inputs?**
+   - Should public-facing functions require explicit unit metadata?
+   - Should they infer units from data structures when possible?
+   - Should they validate units aggressively or allow permissive coercion?
+
+4. **What should internal helper functions accept and return?**
+   - Bare numeric vectors?
+   - `units` objects?
+   - Tibbles/data frames with unit-bearing columns?
+   - Structured objects that carry both values and unit metadata?
+
+5. **How should formulas from the literature be encoded?**
+   - Should each scientific method declare its required input and output units?
+   - Should computations be normalized into method-native units before evaluation?
+   - Should conversion helpers be method-specific or shared?
+
+6. **How should interoperability with `sf`, `terra`, `stars`, and `units` be handled?**
+   - Should geometry and raster/vector inputs retain their native units where possible?
+   - Should spatial metadata be propagated through computations?
+   - Should unit conversion rely on ecosystem-native methods where available?
+
+7. **How should tests be structured for computation semantics?**
+   - Should tests assert unit preservation?
+   - Should they assert conversion accuracy?
+   - Should they assert equivalence between bare numeric and `units`-aware paths?
+
+### Design goals
+- preserve scientific correctness
+- make unit handling explicit and testable
+- reduce hidden assumptions in analysis functions
+- support both `units` objects and display-layer unit rendering without conflating them
+- avoid duplicating conversion logic across output functions and analysis functions
+- remain compatible with the broader geospatial ecosystem
+
+### Proposed next design step
+Define a computation interface that distinguishes between:
+- **semantic unit handling**: represented with `units`
+- **analysis input normalization**: conversion into method-required units
+- **display rendering**: handled by the display metadata layer
+
+This interface should be documented before expanding the plotting and report refactors further.
+
+
+***
+
+
 ## Architecture history and current transition state
 `fluvgeo` was originally developed as part of a hybrid ESRI + R architecture for fluvial geomorphology analysis.
 
