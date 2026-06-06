@@ -18,6 +18,8 @@ This document records the current stable architecture, operating assumptions, an
 - [ ] Add unresolved design questions here
 
 
+***
+
 
 ## Unit architecture and display-unit API
 
@@ -90,9 +92,12 @@ Existing functions that currently accept `profile_units` are part of the legacy 
 - The same report should render correctly in both USCS and SI modes without changing the underlying analysis results.
 
 
+***
+
+
 ### Unit metadata and rendering layer
 
-In addition to the `units` package as the semantic backend, `fluvgeo` should maintain a lightweight structured metadata layer for display-oriented unit handling. This layer is not a replacement for `units`; it is a package-specific rendering contract that sits above `units` and standardizes how unit-bearing quantities are described and displayed across plots, reports, tables, and maps.
+In addition to the `units` package as the semantic backend, `fluvgeo` should maintain a lightweight structured metadata layer for display-oriented unit handling. This layer is not a replacement for `units`; it is a package-specific rendering contract that sits above `units` and standardizes how unit-bearing quantities are described and displayed across plots, reports, tables, maps, static documents, and interactive applications.
 
 #### Purpose
 The metadata layer exists to answer display questions that `units` does not fully solve on its own:
@@ -100,7 +105,7 @@ The metadata layer exists to answer display questions that `units` does not full
 - What kind of quantity is this?
 - What is the canonical base unit symbol?
 - Does the quantity use a power, compound denominator, or ratio form?
-- How should the quantity be rendered in plain text, plotmath, unicode, and prose?
+- How should the quantity be rendered in plain text, plotmath, unicode, LaTeX, MathJax, and prose?
 - Which render style should be used in each output context?
 
 #### Relationship to `units`
@@ -121,6 +126,8 @@ The metadata layer should support, at minimum:
   - plotmath
   - unicode
   - prose
+  - LaTeX
+  - MathJax
 
 #### Rendering targets
 The metadata layer should support multiple rendering targets because different output systems have different needs:
@@ -129,6 +136,8 @@ The metadata layer should support multiple rendering targets because different o
 - **plotmath**: for `ggplot2` axis titles and annotations
 - **unicode**: for human-readable report text and table labels
 - **prose**: for narrative report language
+- **latex**: for static document generation
+- **MathJax**: for interactive HTML, Shiny apps, and browser-rendered formula display
 
 #### Design principle
 The rendering layer should be derived from a single structured specification so that unit naming is consistent across all outputs. A quantity should never have to be re-described independently in multiple plotting or reporting functions.
@@ -144,13 +153,17 @@ A display-oriented quantity specification may include:
   - `plotmath`
   - `unicode`
   - `prose`
+  - `latex`
+  - `mathjax`
 
 #### Implementation implication
-Output functions should request unit renderings from helper functions rather than constructing labels manually. For example, a plot function should ask the helper layer for the correct x-axis label or unit symbol instead of hard-coding `ft^2`, `m^2`, or prose phrases in the plotting code.
+Output functions should request unit renderings from helper functions rather than constructing labels manually. For example, a plot function should ask the helper layer for the correct x-axis label, unit symbol, or rendered formula instead of hard-coding `ft^2`, `m^2`, `\mathrm{ft}^{2}`, or prose phrases in the plotting code.
 
 #### Forward compatibility
-This layer should be designed so additional render targets can be added later without changing the output-function contract. For example, if a later workflow needs LaTeX, markdown, or HTML-safe unit rendering, that should be added as a new render target rather than by reworking every plotting function.
+This layer should be designed so additional render targets can be added later without changing the output-function contract. For example, if a later workflow needs markdown-safe rendering, HTML-safe rendering, or a specialized renderer for a new plotting framework, that should be added as a new render target rather than by reworking every plotting function.
 
+
+***
 
 
 ## Architecture history and current transition state
@@ -192,3 +205,7 @@ When multiple approaches are acceptable, prefer open-source solutions over propr
 - reduce licensing constraints
 - improve portability and adoption
 - preserve reproducibility and maintenance viability
+
+
+***
+
