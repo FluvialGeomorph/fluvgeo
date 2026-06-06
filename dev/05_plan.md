@@ -52,6 +52,9 @@ Introduce a first-class display-unit architecture in `fluvgeo` that separates:
 
 ### Phase 4: Remaining output functions
 - Refactor `xs_metric_plot`.
+- Refactor `fig_xs_profiles_L1`.
+- Refactor `fig_xs_profiles_L2`.
+- Refactor `reach_rhg_graph`
 - Refactor `map_reach_overview`.
 - Refactor `map_reach_metric`.
 
@@ -65,7 +68,7 @@ Introduce a first-class display-unit architecture in `fluvgeo` that separates:
 - Update `R/level_1_report_b.R`.
 - Update `R/level_2_report_b.R`.
 - Update `R/level_3_report.R`.
-- Update `R/estimate_bankful_report.R` if applicable.
+- Update `R/estimate_bankful_report.R`.
 
 ### Phase 7: Testing and documentation
 - Add unit tests for both USCS and SI display modes.
