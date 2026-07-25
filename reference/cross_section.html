@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2025.07.08</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.07.25.9000</span>
       </span>
     </div>
 
@@ -55,7 +55,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cross_section</span><span class="op">(</span><span class="va">xs</span>, <span class="va">flowline_points</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cross_section</span><span class="op">(</span></span>
+<span>  <span class="va">xs</span>,</span>
+<span>  <span class="va">flowline_points</span>,</span>
+<span>  watershed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"required"</span>, <span class="st">"optional"</span>, <span class="st">"skip"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,6 +72,16 @@
 
 <dt id="arg-flowline-points">flowline_points<a class="anchor" aria-label="anchor" href="#arg-flowline-points"></a></dt>
 <dd><p>sf object; A flowline_points feature.</p></dd>
+
+
+<dt id="arg-watershed">watershed<a class="anchor" aria-label="anchor" href="#arg-watershed"></a></dt>
+<dd><p>character; Controls upstream watershed lookup.
+`"required"` preserves strict behavior and stops
+when the remote watershed service fails.
+`"optional"` returns missing watershed area with a
+warning when lookup fails. `"skip"` does not call
+the watershed service and returns missing watershed
+area.</p></dd>
 
 </dl></div>
     <div id="value">
