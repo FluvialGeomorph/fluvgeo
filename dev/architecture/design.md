@@ -6,16 +6,14 @@ This document records the current stable architecture, operating assumptions, an
 - Package code: `R/`
 - Documentation: `man/`
 - Tests: `tests/`
-- Vignettes: `vignettes/`
 - Data: `data/`
-- Development instructions: `dev/instructions/`
-- Development plan: `dev/05_plan.md`
-- Schemas: `dev/40_schemas.md`
+- Reproducible data-generation sources: `data-raw/`
+- Development context and routing: `AGENTS.md` and `dev/`
+- Development plan: `dev/goals/project-plan.md`
+- Schemas: `dev/schemas/project-schemas.md`
 - Decisions: `dev/decisions/`
-- Sessions: `dev/sessions/`
-
-## Open questions
-- [ ] Add unresolved design questions here
+- Backend ecosystem boundary: `dev/architecture/backend-ecosystem.md`
+- Backend change procedure: `dev/workflows/backend-change-assessment.md`
 
 ## Architecture history and current transition state
 `fluvgeo` was originally developed as part of a hybrid ESRI + R architecture for fluvial geomorphology analysis.
@@ -56,3 +54,8 @@ When multiple approaches are acceptable, prefer open-source solutions over propr
 - reduce licensing constraints
 - improve portability and adoption
 - preserve reproducibility and maintenance viability
+
+## Open questions
+
+No unresolved architecture question is currently recorded. Add concrete
+questions here only when repository evidence cannot yet resolve them.

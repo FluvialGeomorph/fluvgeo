@@ -1,10 +1,7 @@
-# Decision Records
+# Decisions
 
-This directory stores durable design and architecture decisions.
+Use architectural decision records for consequential choices that should remain understandable after the implementation changes.
 
-Use this directory for decisions that:
-- materially affect future work
-- involve tradeoffs or alternatives
-- should remain easy to review over time
-
-Do not use this directory for task tracking or transient session notes.
+- Give each ADR a stable identifier.
+- Record context, decision, consequences, and status.
+- Supersede accepted ADRs with a new ADR instead of rewriting history.
