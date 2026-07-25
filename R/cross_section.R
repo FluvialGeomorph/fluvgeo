@@ -3,6 +3,13 @@
 #'              digitized stream cross section lines.
 #' @param xs               sf object; A newly digitized set of cross sections.
 #' @param flowline_points  sf object; A flowline_points feature.
+#' @param watershed        character; Controls upstream watershed lookup.
+#'                         `"required"` preserves strict behavior and stops
+#'                         when the remote watershed service fails.
+#'                         `"optional"` returns missing watershed area with a
+#'                         warning when lookup fails. `"skip"` does not call
+#'                         the watershed service and returns missing watershed
+#'                         area.
 #'
 #' @returns an sf object representing a valid set of cross section line features
 #' @export
@@ -16,7 +23,12 @@
 #' @importFrom rLFT addMValues
 #' @importFrom fluvgeo xs_upstream
 #'
-cross_section <- function(xs, flowline_points) {
+cross_section <- function(
+  xs,
+  flowline_points,
+  watershed = c("required", "optional", "skip")
+) {
+  watershed <- match.arg(watershed)
   assert_that("sf" %in% class(xs),
               msg = "xs must be sf object")
   assert_that("sf" %in% class(flowline_points),
@@ -59,16 +71,21 @@ cross_section <- function(xs, flowline_points) {
     st_drop_geometry() |>
     st_as_sf(coords = c("POINT_X", "POINT_Y"), crs = st_crs(xs_seq))
 
-  xs_basin_area = data.frame()
-  for (i in xs_pts$Seq) {
-    xs_i <- xs_pts %>%
-      filter(Seq == i) %>%
-      select(Seq, geometry) %>%
-      mutate(basin_area = pt_watershed_area(.)$drainage_basin$area) %>%
-      st_drop_geometry()
+  basin_area <- vapply(
+    seq_len(nrow(xs_pts)),
+    function(i) {
+      cross_section_watershed_area(
+        point = xs_pts[i, c("Seq", "geometry")],
+        watershed = watershed
+      )
+    },
+    numeric(1)
+  )
+  xs_basin_area <- data.frame(
+    Seq = xs_pts$Seq,
+    basin_area = basin_area
+  )
 
-    xs_basin_area <- rbind(xs_i, xs_basin_area)
-  }
   xs_area <- xs_seq %>%
     left_join(xs_basin_area, by = "Seq") %>%
     mutate(Watershed_Area_SqMile = as.numeric(basin_area) / 2564102.5641026)
@@ -107,4 +124,57 @@ cross_section <- function(xs, flowline_points) {
   xs_fixed <- xs_upstream(st_zm(xs_m_values, drop = TRUE, what = "ZM"))
 
   return(xs_fixed)
+}
+
+#' Resolve watershed area for one cross section
+#'
+#' @param point An sf point.
+#' @param watershed Watershed lookup mode.
+#' @param watershed_area_fn Watershed lookup function.
+#'
+#' @return Numeric watershed area in square meters or `NA_real_`.
+#' @noRd
+cross_section_watershed_area <- function(
+  point,
+  watershed,
+  watershed_area_fn = pt_watershed_area
+) {
+  if (identical(watershed, "skip")) {
+    return(NA_real_)
+  }
+
+  tryCatch(
+    {
+      result <- watershed_area_fn(point)
+      drainage_basin <- result[["drainage_basin"]]
+      area <- drainage_basin[["area"]]
+
+      if (is.null(drainage_basin) ||
+          nrow(drainage_basin) < 1L ||
+          is.null(area) ||
+          length(area) < 1L ||
+          !is.finite(as.numeric(area[[1]])) ||
+          as.numeric(area[[1]]) <= 0) {
+        stop("Watershed service returned no valid drainage basin area.",
+             call. = FALSE)
+      }
+
+      as.numeric(area[[1]])
+    },
+    error = function(error) {
+      message <- paste(
+        "Unable to calculate watershed area:",
+        conditionMessage(error)
+      )
+      if (identical(watershed, "required")) {
+        stop(message, call. = FALSE)
+      }
+
+      warning(
+        paste0(message, " Continuing with missing watershed area."),
+        call. = FALSE
+      )
+      NA_real_
+    }
+  )
 }

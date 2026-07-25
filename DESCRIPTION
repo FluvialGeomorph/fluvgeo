@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2025.07.08
+Version: 2026.07.25.9000
 Authors@R: c(
     person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
            role = "aut",
