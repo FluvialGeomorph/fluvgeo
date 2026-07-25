@@ -1,3 +1,13 @@
+# fluvgeo 2026.07.25.9000
+
+## Bug fix
+
+* Added explicit required, optional, and skipped watershed lookup modes to
+  `cross_section()`. Clients that do not require drainage area can now continue
+  cross-section processing when the remote watershed service is unavailable.
+
+***
+
 # fluvgeo 2025.07.08
 
 ## Bug fix

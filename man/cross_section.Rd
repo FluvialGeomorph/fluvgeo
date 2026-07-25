@@ -4,12 +4,24 @@
 \alias{cross_section}
 \title{Cross Section}
 \usage{
-cross_section(xs, flowline_points)
+cross_section(
+  xs,
+  flowline_points,
+  watershed = c("required", "optional", "skip")
+)
 }
 \arguments{
 \item{xs}{sf object; A newly digitized set of cross sections.}
 
 \item{flowline_points}{sf object; A flowline_points feature.}
+
+\item{watershed}{character; Controls upstream watershed lookup.
+`"required"` preserves strict behavior and stops
+when the remote watershed service fails.
+`"optional"` returns missing watershed area with a
+warning when lookup fails. `"skip"` does not call
+the watershed service and returns missing watershed
+area.}
 }
 \value{
 an sf object representing a valid set of cross section line features

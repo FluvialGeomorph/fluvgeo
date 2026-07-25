@@ -64,6 +64,9 @@ supports that claim.
 - Breaking changes require a deliberate decision, migration guidance, tests,
   documentation, and release notes.
 - Prefer the smallest change that keeps the shared backend clear and reusable.
+- Remote enrichment services must expose explicit failure behavior. A client
+  that does not require an enrichment value may opt out while retaining the
+  documented output field as typed missing data.
 
 ## Related context
 
