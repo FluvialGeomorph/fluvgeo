@@ -1,8 +1,8 @@
 ^renv$
 ^renv\.lock$
+^AGENTS\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^create_package_steps\.R$
 ^data-raw$
 ^README.Rmd
 ^_pkgdown\.yml$

@@ -1,0 +1,28 @@
+schema_version: 1
+standard_version: "0.1"
+installed_by: reproducibleai
+package_version: "2026.07.24.9000"
+hash_algorithm: md5
+profiles:
+  - base
+  - r-package
+seeded_files:
+  "AGENTS.md": "533a0def222c50bd9a8a1c39dd4a2796"
+  "dev/architecture/README.md": "a7b58345100fda5e40ed2570e66806d4"
+  "dev/checkpoints/archive/README.md": "3f58cb402247d1fb008e0ade6a7f7659"
+  "dev/checkpoints/current/README.md": "2e322e83d02b066d92f760d6c9088d40"
+  "dev/checkpoints/README.md": "7d5b05014d2a46a4a50ad6df266e337f"
+  "dev/checkpoints/template.md": "db89e53a7fc22dbe7b99425bc815b0cf"
+  "dev/decisions/README.md": "05d3e553dfac772ccab9bce0c9fb8e47"
+  "dev/decisions/template.md": "32f881ec3e4cd610bac9c1c386d07d3d"
+  "dev/features/README.md": "daaea4d0eb2a435c9c6b3e68cedf389f"
+  "dev/goals/README.md": "51491d21d9799eb622bb1927459be5ec"
+  "dev/governance/artifact-lifecycle.md": "bab5cde94e9e31752e232763979c136e"
+  "dev/governance/README.md": "c5708dbc817470f82a40087221754200"
+  "dev/README.md": "669216ce6d72653de14789a234b1faaa"
+  "dev/schemas/checkpoint.md": "d19036ba1e4aec0bf5c3e8f99bc70f0e"
+  "dev/schemas/README.md": "4e8455a6be24f15da83145a532a4318b"
+  "dev/scripts/README.md": "267e1e848ed0a297475b7fe331949262"
+  "dev/workflows/complete-development-task.md": "25b17687052bfb256dfb8be430c52bb9"
+  "dev/workflows/README.md": "55c594011c7a9165f7d482296500ead8"
+  "dev/workflows/r-package-development.md": "8c827c287598ab79a05c2b651225e3d3"

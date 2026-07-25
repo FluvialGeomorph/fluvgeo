@@ -1,12 +1,8 @@
-# This script records the steps used to create the package
+# This script records the one-time steps used to create the package.
+# It is historical scaffolding, not a script to source from top to bottom.
 
 library(devtools)
 library(usethis)
-
-## Package Structure
-# Ignore this file
-devtools::use_build_ignore("create_package_steps.R")
-
 
 ## Setup
 # Add the following line to DESCRIPTION to support .rda file compression
@@ -61,8 +57,8 @@ devtools::document()
 # Create the vignette infrastructure
 
 
-# Build the vignette (re-run after each set of edits)
-devtools::build_vignettes()
+# Build vignettes when the package contains them.
+# devtools::build_vignettes()
 
 
 ## Check
@@ -70,33 +66,15 @@ devtools::build_vignettes()
 # network drive
 devtools::check()
 
-devtools::check(
-  args = c("--no-examples", "--no-tests", "--ignore-vignettes", "--timings"),
-  check_dir = "c:/workflow/FluvialGeomorph/",
-  error_on = "never")
-
 result <- rcmdcheck::rcmdcheck(error_on = "never")
 
 ## Continuous Integration
 # https://bookdown.org/rdpeng/RProgDA/continuous-integration.html
-# Use travis to test on Linux
-usethis::use_travis()
-# Use AppVeyor to test on Windows
-usethis::use_appveyor()
-
-# Check status of Travis CI builds
-# https://travis-ci.org/mpdougherty/RegionalCurve
-
-# Check status of AppVeyor builds
-# https://ci.appveyor.com/project/mpdougherty/regionalcurve
-
-# Check status of test code coverage
-# https://codecov.io/gh/mpdougherty/RegionalCurve
+# Add current CI using r-lib/actions when a package-check workflow is adopted.
 
 
 ## Check
 # Use package goodpractice to check package
-library(goodpractice)
-goodpractice::gp("D:\\Workspace\\EMRRP_Sediment\\Methods\\fluvgeo")
+# goodpractice::gp(".")
 
 
