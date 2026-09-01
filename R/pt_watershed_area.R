@@ -6,7 +6,7 @@
 #'  * drainage_basing - The upstream drainage area of the snapped point.
 #' @export
 #' @importFrom sf st_sfc st_point st_as_sfc st_as_sf st_area
-#' @importFrom nhdplusTools get_raindrop_trace get_split_catchment
+#' @importFrom hydrogeofetch get_raindrop_trace get_split_catchment
 #' @importFrom dplyr mutate filter select
 #'
 pt_watershed_area <- function(point_sf) {

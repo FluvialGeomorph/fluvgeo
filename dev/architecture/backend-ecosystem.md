@@ -67,6 +67,10 @@ supports that claim.
 - Remote enrichment services must expose explicit failure behavior. A client
   that does not require an enrichment value may opt out while retaining the
   documented output field as typed missing data.
+- Use `hydrogeofetch` as the supported R access package for USGS hydrologic
+  geospatial services and Geoconnex reference features. Keep NLDI processing
+  operations distinct from Geoconnex reference-feature discovery in APIs,
+  provenance, and failure handling.
 
 ## Related context
 

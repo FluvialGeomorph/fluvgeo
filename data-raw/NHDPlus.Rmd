@@ -5,7 +5,7 @@ output: html_document
 
 
 ```{r}
-library(nhdplusTools)
+library(hydrogeofetch)
 library(sf)
 
 sources <- dataRetrieval::get_nldi_sources()

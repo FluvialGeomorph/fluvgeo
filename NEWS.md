@@ -1,5 +1,18 @@
 # fluvgeo 2026.07.25.9000
 
+## Dependency update
+
+* Replaced the retiring `nhdplusTools` dependency with its supported successor,
+  `hydrogeofetch`. The existing watershed lookup continues to use
+  `get_raindrop_trace()` and `get_split_catchment()` with their preserved APIs.
+
+## Stream Network relational model
+
+* Added constructors for Stream Network Configuration, Configuration–Stream
+  membership, and time-specific Stream Network Observation tables. The
+  constructors validate governed identities, cardinality, temporal precision,
+  provenance, units, and lifecycle defaults without requiring FGDB access.
+
 ## Bug fix
 
 * Added explicit required, optional, and skipped watershed lookup modes to
