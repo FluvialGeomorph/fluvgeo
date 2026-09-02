@@ -23,9 +23,13 @@ test_that("check for valid cross sections", {
                                 package = "fluvgeodata"), quiet = TRUE)
   xs_fix <- sf_fix_crs(xs_mapedit)
   xs <- sf::st_transform(xs_fix, crs = 3857) # Web Mercator
-  xs_lines <- cross_section(xs, flowline_points)
+  xs_lines <- cross_section(xs, flowline_points, watershed = "skip")
   #xs_plot(xs_lines, flowline, flowline_points, dem)
-  expect_true(fluvgeo::check_cross_section(xs_lines, "station_points"))
+  expect_true(fluvgeo::check_cross_section(
+    xs_lines,
+    "station_points",
+    watershed = "skip"
+  ))
 })
 
 test_that("check for flipped cross sections", {
@@ -43,7 +47,11 @@ test_that("check for flipped cross sections", {
   xs_fix <- sf_fix_crs(xs_mapedit)
   xs <- sf::st_transform(xs_fix, crs = 3857) # Web Mercator
   xs_flipped <- sf_line_reverse(xs)
-  xs_lines <- cross_section(xs_flipped, flowline_points)
+  xs_lines <- cross_section(xs_flipped, flowline_points, watershed = "skip")
   #xs_plot(xs_lines, flowline, flowline_points, dem)
-  expect_true(fluvgeo::check_cross_section(xs_lines, "station_points"))
+  expect_true(fluvgeo::check_cross_section(
+    xs_lines,
+    "station_points",
+    watershed = "skip"
+  ))
 })

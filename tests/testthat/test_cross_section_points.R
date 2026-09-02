@@ -30,7 +30,7 @@ test_that("check for valid cross section points", {
   flowline_points <- flowline_points(flowline, dem, station_distance)
   detrend <- detrend(dem, flowline, flowline_points, buffer_distance = 300)
   rem <- detrend$rem
-  cross_section <- cross_section(xs, flowline_points)
+  cross_section <- cross_section(xs, flowline_points, watershed = "skip")
   station_distance = 5
   xs_pts <- cross_section_points(cross_section, dem, rem, station_distance)
   #xs_pts_plot(flowline, xs_pts, dem)

@@ -26,7 +26,7 @@ test_that("check for valid xs points", {
   detrend <- detrend(dem, flowline, flowline_points, buffer_distance)
   rem <- detrend$rem
   trend <- detrend$trend
-  cross_section <- cross_section(xs, flowline_points)
+  cross_section <- cross_section(xs, flowline_points, watershed = "skip")
   station_distance = 5
   xs_pts <- cross_section_points(cross_section, dem, rem, station_distance)
   channel_wse <- 103

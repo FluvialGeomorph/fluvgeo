@@ -7,7 +7,8 @@
 check_cross_section(
   cross_section,
   step = c("assign_ids", "watershed_area", "river_position", "station_points",
-    "loop_bend")
+    "loop_bend"),
+  watershed = c("required", "optional", "skip")
 )
 }
 \arguments{
@@ -17,6 +18,11 @@ structure used by the fluvgeo package.}
 \item{step}{character; last completed processing step. One of
 "assign_ids", "watershed_area", "river_position",
 "station_points", "loop_bend"}
+
+\item{watershed}{character; Watershed-area validation policy. The
+default `"required"` requires positive, nonmissing
+values. `"optional"` and `"skip"` permit missing
+values but still reject nonpositive retained values.}
 }
 \value{
 Returns TRUE if the `cross_section` data structure matches the

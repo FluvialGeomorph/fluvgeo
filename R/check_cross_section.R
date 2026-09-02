@@ -9,6 +9,10 @@
 #' @param step            character; last completed processing step. One of
 #'                        "assign_ids", "watershed_area", "river_position",
 #'                        "station_points", "loop_bend"
+#' @param watershed       character; Watershed-area validation policy. The
+#'                        default `"required"` requires positive, nonmissing
+#'                        values. `"optional"` and `"skip"` permit missing
+#'                        values but still reject nonpositive retained values.
 #'
 #' @details Cross section feature classes evolve as different steps are
 #' performed on them. The `step` parameter allows a `cross section` data
@@ -25,7 +29,10 @@
 check_cross_section <- function(cross_section,
                                 step = c("assign_ids", "watershed_area",
                                          "river_position", "station_points",
-                                         "loop_bend")) {
+                                         "loop_bend"),
+                                watershed = c("required", "optional", "skip")) {
+  step <- match.arg(step)
+  watershed <- match.arg(watershed)
   name <- deparse(substitute(cross_section))
   if(class(cross_section)[1] == "sf") {
     cross_section_df <- cross_section
@@ -63,11 +70,16 @@ check_cross_section <- function(cross_section,
                 msg = paste("Numeric field 'Watershed_Area_SqMile' missing from",
                             name))
 
-    # Check that all cross sections have watershed areas
-    assert_that((sum(is.na(cross_section_df$Watershed_Area_SqMi)) +
-                   sum(na.omit(cross_section_df$Watershed_Area_SqMile) == 0)) == 0,
-                msg = paste("Field `Watershed_Area_SqMile` contains missing values",
+    watershed_area <- cross_section_df$Watershed_Area_SqMile
+    retained_area <- watershed_area[!is.na(watershed_area)]
+    assert_that(all(is.finite(retained_area)) && all(retained_area > 0),
+                msg = paste("Field `Watershed_Area_SqMile` contains invalid values",
                             name))
+    if (identical(watershed, "required")) {
+      assert_that(!anyNA(watershed_area),
+                  msg = paste("Field `Watershed_Area_SqMile` contains missing values",
+                              name))
+    }
   }
 
   # Step: river_position

@@ -29,9 +29,10 @@ not exist in historical outputs.
 
 Focused `testthat` verification passes 18 assertions. A package build/load
 check completes with no errors or warnings; its two notes concern pre-existing
-package-wide dependency declarations and visible bindings. The complete legacy
-test suite cannot run unattended because existing tests require ArcGIS
-credentials and configured document rendering.
+package-wide dependency declarations and visible bindings. The wider legacy
+suite includes credentialed ArcGIS, USGS NLDI, Mapbox, document-rendering, and
+network-filesystem integration tests. Their live-service results are reported
+separately from deterministic constructor verification.
 
 ## Next slice
 

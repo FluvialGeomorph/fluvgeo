@@ -83,4 +83,13 @@ test_that("cross sections can be processed without a watershed service call", {
   expect_equal(nrow(result), nrow(xs))
   expect_true(is.numeric(result$Watershed_Area_SqMile))
   expect_true(all(is.na(result$Watershed_Area_SqMile)))
+  expect_true(check_cross_section(
+    result,
+    step = "station_points",
+    watershed = "skip"
+  ))
+  expect_error(
+    check_cross_section(result, step = "station_points"),
+    "contains missing values"
+  )
 })

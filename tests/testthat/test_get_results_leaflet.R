@@ -18,7 +18,7 @@ test_that("channel and floodplain polys", {
   detrend <- detrend(dem, fl, flowline_points, buffer_distance)
   rem <- detrend$rem
   trend <- detrend$trend
-  xs <- cross_section(xs, flowline_points)
+  xs <- cross_section(xs, flowline_points, watershed = "skip")
   station_distance = 5
   xs_pts <- cross_section_points(xs, dem, rem, station_distance)
   channel_wse <- 103

@@ -18,6 +18,8 @@
 * Added explicit required, optional, and skipped watershed lookup modes to
   `cross_section()`. Clients that do not require drainage area can now continue
   cross-section processing when the remote watershed service is unavailable.
+  `check_cross_section()` now applies the same validation policy, and
+  geometry-focused tests no longer depend on live watershed lookup.
 
 ***
 
