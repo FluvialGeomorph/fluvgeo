@@ -1,7 +1,7 @@
 # Stream Network relational constructors
 
-- Status: first implementation slice
-- Updated: 2026-09-01
+- Status: retained-source preparation and initial assessment implemented
+- Updated: 2026-09-04
 - Governing contract: FGDB Stream Network Geodatabase schema, accepted
   2026-09-01
 
@@ -24,9 +24,21 @@ source row, so legacy `ReachName` values remain evidence rather than identity.
 True multipart rows become separately identified candidate segments while
 retaining one source relationship per part.
 
-Both functions return tibbles whose column names and row meanings correspond
-directly to the accepted local file-geodatabase and enterprise SDE relations.
-They neither access FGDB nor infer governed identities from names.
+`prepare_stream_network_from_features()` adds WORKING assessment and a linked
+`stream_network_review` sf layer. Checks identify reversed duplicates, closed
+or self-intersecting segments, interior intersections/overlaps, and endpoint
+near misses within the observation tolerance, checked against actual CRS units.
+Every segment also receives an unresolved-direction finding; source order does
+not establish flow direction. Exact shared endpoints are permitted.
+
+Review rows use `INSPECT`, preserve the affected candidate geometry, and remain
+`PENDING`. Their issue link identifies the second segment for pair findings.
+`VALIDATE_ONLY` returns the same findings with an empty typed review layer.
+No snapping, splitting, reversal, node assignment, or acceptance occurs.
+
+Functions return the named relational tibbles and sf objects without FGDB
+access. Existing normalizer and constructor signatures remain compatible;
+ArcGIS/Shiny wrappers and existing downstream callers require no change.
 
 ## Evidence
 
@@ -42,8 +54,16 @@ legacy suite includes credentialed ArcGIS, remote hydrology, Mapbox,
 document-rendering, and network-filesystem integration tests. Their live-service
 results are reported separately from deterministic Stream Network verification.
 
+On 2026-09-04, 82 focused assertions passed. R CMD check with tests, examples,
+manual, and vignettes excluded (suggested packages optional) completed with
+zero errors/warnings and two package-wide dependency/global-binding notes.
+The full-suite attempt was interrupted after failures in existing ArcGIS and
+cross-section tests; there is no complete full-suite result for this change.
+
 ## Next slice
 
-Add topology and direction assessment plus review features around the candidate
-segments. Applying analyst decisions, establishing governed node identities,
-and accepting a Network Observation remain explicit later operations.
+Inspect the pending features with an analyst and select a concrete repair or
+direction-evidence workflow. Then implement actionable proposals and their
+application. INSPECT rows alone cannot authorize edits. Disconnected components,
+multi-segment cycles, near endpoint-to-interior gaps, missing Stream/Reach
+boundary splits, governed nodes, and acceptance validation remain unimplemented.

@@ -120,7 +120,9 @@
     .fg_abort(sprintf("`%s` cannot contain blank values.", name))
   }
   present <- !is.na(x)
-  x[present] <- .fg_uuid(x[present], name)
+  if (any(present)) {
+    x[present] <- .fg_uuid(x[present], name)
+  }
   x
 }
 

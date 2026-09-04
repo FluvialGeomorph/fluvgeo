@@ -45,6 +45,153 @@ stream_network_test_context <- function(source_network) {
   )
 }
 
+retained_network_test_source <- function() {
+  suppressWarnings(sf::st_read(
+    system.file("extdata", "testing_data.gdb", package = "fluvgeodata"),
+    layer = "stream_network", quiet = TRUE
+  ))
+}
+
+prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
+                                 tolerance = 0.01, unit = "METRE") {
+  context <- stream_network_test_context(source)
+  context$observation$topology_tolerance <- tolerance
+  context$observation$topology_tolerance_unit <- unit
+  prepare_stream_network_from_features(
+    source, data.frame(source_row = seq_len(nrow(source)),
+                       stream_id = stream_network_test_ids$stream_1),
+    context$configuration, context$configuration_streams,
+    context$observation, actor = "testthat", review_mode = mode
+  )
+}
+
+test_that("retained assessment produces linked pending spatial inspection rows", {
+  source <- retained_network_test_source()
+  before <- source
+  result <- prepare_test_network(source)
+  issues <- result$stream_network_validation_issue
+  review <- result$stream_network_review
+  segments <- result$stream_network
+  expect_identical(source, before)
+  expect_equal(nrow(segments), 99L)
+  expect_equal(sum(issues$issue_code == "DIRECTION_UNRESOLVED"), 99L)
+  expect_equal(review$stream_network_validation_issue_id,
+               issues$stream_network_validation_issue_id)
+  expect_equal(review$reason_code, issues$issue_code)
+  expect_true(all(review$decision == "PENDING"))
+  expect_true(all(review$operation_code == "INSPECT"))
+  expect_true(all(is.na(review$proposed_node_id)))
+  expect_true(all(segments$direction_status == "UNRESOLVED"))
+  expect_true(all(is.na(segments$downstream_node_id)))
+  expect_equal(sf::st_geometry(review), sf::st_geometry(segments)[
+    match(review$stream_network_segment_id, segments$stream_network_segment_id)
+  ])
+  expect_equal(result$stream_network_validation_run$result, "REVIEW_REQUIRED")
+  expect_equal(sf::st_crs(review), sf::st_crs(source))
+
+  tables_only <- prepare_test_network(source, "VALIDATE_ONLY")
+  expect_equal(nrow(tables_only$stream_network_review), 0L)
+  expect_s3_class(tables_only$stream_network_review, "sf")
+  expect_equal(names(tables_only$stream_network_review), names(review))
+  expect_equal(tables_only$stream_network_validation_issue$issue_code, issues$issue_code)
+})
+
+test_that("reversed duplicates remain unchanged and reference both segments", {
+  source <- retained_network_test_source()[c(1L, 1L), ]
+  line <- sf::st_geometry(source)[[1L]][[1L]]
+  sf::st_geometry(source) <- sf::st_sfc(
+    sf::st_linestring(line), sf::st_linestring(line[nrow(line):1L, ]),
+    crs = sf::st_crs(source)
+  )
+  result <- prepare_test_network(source)
+  duplicate <- subset(result$stream_network_validation_issue,
+                      issue_code == "DUPLICATE_GEOMETRY")
+  expect_equal(nrow(duplicate), 1L)
+  expect_equal(duplicate$affected_object_id,
+               result$stream_network$stream_network_segment_id[1L])
+  expect_equal(duplicate$related_object_id,
+               result$stream_network$stream_network_segment_id[2L])
+  expect_equal(sf::st_geometry(result$stream_network), sf::st_geometry(source))
+})
+
+test_that("endpoint tolerance distinguishes exact joins, near misses and gaps", {
+  source <- retained_network_test_source()[c(1L, 1L), ]
+  # Controlled in-memory splits of the first retained line edge.
+  edge <- sf::st_geometry(source)[[1L]][[1L]][1:2, ]
+  midpoint <- colMeans(edge)
+  direction <- (edge[2L, ] - edge[1L, ]) / sqrt(sum((edge[2L, ] - edge[1L, ])^2))
+  make_gap <- function(gap) {
+    changed <- source
+    sf::st_geometry(changed) <- sf::st_sfc(
+      sf::st_linestring(rbind(edge[1L, ], midpoint)),
+      sf::st_linestring(rbind(midpoint + gap * direction, edge[2L, ])),
+      crs = sf::st_crs(source)
+    )
+    changed
+  }
+  exact <- prepare_test_network(make_gap(0))
+  near <- prepare_test_network(make_gap(0.005))
+  far <- prepare_test_network(make_gap(0.02))
+  expect_false("ENDPOINT_NEAR_MISS" %in% exact$stream_network_validation_issue$issue_code)
+  expect_false("INTERIOR_INTERSECTION" %in% exact$stream_network_validation_issue$issue_code)
+  expect_equal(sum(near$stream_network_validation_issue$issue_code == "ENDPOINT_NEAR_MISS"), 1L)
+  expect_false("ENDPOINT_NEAR_MISS" %in% far$stream_network_validation_issue$issue_code)
+  expect_equal(sf::st_geometry(near$stream_network), sf::st_geometry(make_gap(0.005)))
+})
+
+test_that("interior junctions are presented for inspection without splitting", {
+  source <- retained_network_test_source()[c(1L, 1L), ]
+  edge <- sf::st_geometry(source)[[1L]][[1L]][1:2, ]
+  midpoint <- colMeans(edge)
+  delta <- edge[2L, ] - edge[1L, ]
+  perpendicular <- c(-delta[2L], delta[1L])
+  sf::st_geometry(source) <- sf::st_sfc(
+    sf::st_linestring(edge),
+    sf::st_linestring(rbind(midpoint, midpoint + perpendicular)),
+    crs = sf::st_crs(source)
+  )
+  result <- prepare_test_network(source)
+  expect_equal(sum(result$stream_network_validation_issue$issue_code == "INTERIOR_INTERSECTION"), 1L)
+  expect_equal(nrow(result$stream_network), 2L)
+  expect_equal(sf::st_geometry(result$stream_network), sf::st_geometry(source))
+})
+
+test_that("assessment rejects invalid tolerances and mismatched CRS units", {
+  source <- retained_network_test_source()[1L, ]
+  expect_error(prepare_test_network(source, tolerance = 0), "must be positive")
+  expect_error(prepare_test_network(source, tolerance = NA_real_), "is required")
+  expect_error(prepare_test_network(source, unit = "FOOT"), "must match the projected CRS")
+  expect_error(prepare_test_network(source, unit = "UNSPECIFIED"), "must match the projected CRS")
+})
+
+test_that("closed and self-intersecting retained edits require inspection", {
+  source <- retained_network_test_source()[1L, ]
+  edge <- sf::st_geometry(source)[[1L]][[1L]][1:2, ]
+  a <- edge[1L, ]
+  b <- edge[2L, ]
+  delta <- b - a
+  perpendicular <- c(-delta[2L], delta[1L])
+  sf::st_geometry(source) <- sf::st_sfc(sf::st_linestring(rbind(
+    a, b + perpendicular, a + perpendicular, b, a
+  )), crs = sf::st_crs(source))
+  result <- prepare_test_network(source)
+  expect_true(all(c("CLOSED_SEGMENT", "SELF_INTERSECTION") %in%
+                    result$stream_network_validation_issue$issue_code))
+})
+
+test_that("preparation accepts explicitly unassigned Reach mappings", {
+  source <- retained_network_test_source()[1L, ]
+  context <- stream_network_test_context(source)
+  result <- prepare_stream_network_from_features(
+    source, data.frame(source_row = 1L,
+                       stream_id = stream_network_test_ids$stream_1,
+                       reach_id = NA),
+    context$configuration, context$configuration_streams,
+    context$observation, actor = "testthat"
+  )
+  expect_true(is.na(result$stream_network$reach_id))
+})
+
 test_that("configuration relations use direct retained Stream names", {
   source_gdb <- system.file(
     "extdata",

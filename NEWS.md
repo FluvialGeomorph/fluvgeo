@@ -2,6 +2,13 @@
 
 ## Stream Network relations
 
+- Added `prepare_stream_network_from_features()` for retained-source topology
+  checks and linked pending spatial inspection features. It flags unresolved
+  direction, duplicate/closed/self-intersecting lines, interior intersections,
+  and endpoint near misses without applying repairs or accepting candidates.
+- Fixed normalization of mappings whose optional `reach_id` column is entirely
+  `NA`.
+
 - Added `normalize_retained_stream_network()` to create candidate governed
   segments, source lineage, and working validation results from retained legacy
   Stream Network features using an explicit per-feature identity mapping.
