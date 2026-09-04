@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.07.25.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.4.9000</span>
       </span>
     </div>
 
@@ -44,14 +44,26 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/v2026.07.25/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2026.07.25.9000" id="fluvgeo-202607259000">fluvgeo 2026.07.25.9000<a class="anchor" aria-label="anchor" href="#fluvgeo-202607259000"></a></h2>
+<h2 class="page-header" data-toc-text="2026.09.4.9000" id="fluvgeo-20260949000">fluvgeo 2026.09.4.9000<a class="anchor" aria-label="anchor" href="#fluvgeo-20260949000"></a></h2>
 <div class="section level3">
-<h3 id="bug-fix-2026-07-25-9000">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-2026-07-25-9000"></a></h3>
-<ul><li>Added explicit required, optional, and skipped watershed lookup modes to <code><a href="../reference/cross_section.html">cross_section()</a></code>. Clients that do not require drainage area can now continue cross-section processing when the remote watershed service is unavailable.</li>
+<h3 id="stream-network-relations-2026-09-4-9000">Stream Network relations<a class="anchor" aria-label="anchor" href="#stream-network-relations-2026-09-4-9000"></a></h3>
+<ul><li>Added <code><a href="../reference/normalize_retained_stream_network.html">normalize_retained_stream_network()</a></code> to create candidate governed segments, source lineage, and working validation results from retained legacy Stream Network features using an explicit per-feature identity mapping.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="dependency-update-2026-09-4-9000">Dependency update<a class="anchor" aria-label="anchor" href="#dependency-update-2026-09-4-9000"></a></h3>
+<ul><li>Replaced the retiring <code>nhdplusTools</code> dependency with its supported successor, <code>hydrogeofetch</code>. The existing watershed lookup continues to use <code>get_raindrop_trace()</code> and <code>get_split_catchment()</code> with their preserved APIs.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="stream-network-relational-model-2026-09-4-9000">Stream Network relational model<a class="anchor" aria-label="anchor" href="#stream-network-relational-model-2026-09-4-9000"></a></h3>
+<ul><li>Added constructors for Stream Network Configuration, Configuration–Stream membership, and time-specific Stream Network Observation tables. The constructors validate governed identities, cardinality, temporal precision, provenance, units, and lifecycle defaults without requiring FGDB access.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fix-2026-09-4-9000">Bug fix<a class="anchor" aria-label="anchor" href="#bug-fix-2026-09-4-9000"></a></h3>
+<ul><li>Added explicit required, optional, and skipped watershed lookup modes to <code><a href="../reference/cross_section.html">cross_section()</a></code>. Clients that do not require drainage area can now continue cross-section processing when the remote watershed service is unavailable. <code><a href="../reference/check_cross_section.html">check_cross_section()</a></code> now applies the same validation policy, and geometry-focused tests no longer depend on live watershed lookup.</li>
 </ul><hr></div>
 </div>
     <div class="section level2">

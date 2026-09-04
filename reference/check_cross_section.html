@@ -18,7 +18,7 @@ the requirements for this data structure."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.07.25.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.4.9000</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@ the requirements for this data structure."><!-- mathjax --><script src="https://
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Check the validity of an `fluvgeo` `cross_section` data structure</h1>
-    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/v2026.07.25/R/check_cross_section.R" class="external-link"><code>R/check_cross_section.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/R/check_cross_section.R" class="external-link"><code>R/check_cross_section.R</code></a></small>
     <div class="hidden name"><code>check_cross_section.Rd</code></div>
     </div>
 
@@ -58,7 +58,8 @@ the requirements for this data structure.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_cross_section</span><span class="op">(</span></span>
 <span>  <span class="va">cross_section</span>,</span>
 <span>  step <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"assign_ids"</span>, <span class="st">"watershed_area"</span>, <span class="st">"river_position"</span>, <span class="st">"station_points"</span>,</span>
-<span>    <span class="st">"loop_bend"</span><span class="op">)</span></span>
+<span>    <span class="st">"loop_bend"</span><span class="op">)</span>,</span>
+<span>  watershed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"required"</span>, <span class="st">"optional"</span>, <span class="st">"skip"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,6 +76,13 @@ structure used by the fluvgeo package.</p></dd>
 <dd><p>character; last completed processing step. One of
 "assign_ids", "watershed_area", "river_position",
 "station_points", "loop_bend"</p></dd>
+
+
+<dt id="arg-watershed">watershed<a class="anchor" aria-label="anchor" href="#arg-watershed"></a></dt>
+<dd><p>character; Watershed-area validation policy. The
+default `"required"` requires positive, nonmissing
+values. `"optional"` and `"skip"` permit missing
+values but still reject nonpositive retained values.</p></dd>
 
 </dl></div>
     <div id="value">

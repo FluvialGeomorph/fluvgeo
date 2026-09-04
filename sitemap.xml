@@ -27,6 +27,8 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_xs_dims.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_long_profile.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_xs_long_profile.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/create_stream_network_configuration.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/create_stream_network_observation.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section_dimensions_L1.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section_dimensions_L2.html</loc></url>
@@ -65,6 +67,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/meander_length.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/meander_width.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/metric_colors.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/normalize_retained_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/pt_watershed_area.html</loc></url>
