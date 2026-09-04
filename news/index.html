@@ -51,7 +51,9 @@
 <h2 class="page-header" data-toc-text="2026.09.4.9000" id="fluvgeo-20260949000">fluvgeo 2026.09.4.9000<a class="anchor" aria-label="anchor" href="#fluvgeo-20260949000"></a></h2>
 <div class="section level3">
 <h3 id="stream-network-relations-2026-09-4-9000">Stream Network relations<a class="anchor" aria-label="anchor" href="#stream-network-relations-2026-09-4-9000"></a></h3>
-<ul><li>Added <code><a href="../reference/normalize_retained_stream_network.html">normalize_retained_stream_network()</a></code> to create candidate governed segments, source lineage, and working validation results from retained legacy Stream Network features using an explicit per-feature identity mapping.</li>
+<ul><li><p>Added <code><a href="../reference/prepare_stream_network_from_features.html">prepare_stream_network_from_features()</a></code> for retained-source topology checks and linked pending spatial inspection features. It flags unresolved direction, duplicate/closed/self-intersecting lines, interior intersections, and endpoint near misses without applying repairs or accepting candidates.</p></li>
+<li><p>Fixed normalization of mappings whose optional <code>reach_id</code> column is entirely <code>NA</code>.</p></li>
+<li><p>Added <code><a href="../reference/normalize_retained_stream_network.html">normalize_retained_stream_network()</a></code> to create candidate governed segments, source lineage, and working validation results from retained legacy Stream Network features using an explicit per-feature identity mapping.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="dependency-update-2026-09-4-9000">Dependency update<a class="anchor" aria-label="anchor" href="#dependency-update-2026-09-4-9000"></a></h3>
