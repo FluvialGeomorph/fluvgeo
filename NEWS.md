@@ -1,4 +1,10 @@
-# fluvgeo 2026.07.25.9000
+# fluvgeo 2026.09.4.9000
+
+## Stream Network relations
+
+- Added `normalize_retained_stream_network()` to create candidate governed
+  segments, source lineage, and working validation results from retained legacy
+  Stream Network features using an explicit per-feature identity mapping.
 
 ## Dependency update
 

@@ -16,6 +16,14 @@ creation provenance.
 row. It validates temporal precision, evidence and coverage codes, conditional
 terrain and method provenance, compatible units, and lifecycle/review defaults.
 
+`normalize_retained_stream_network()` converts a retained legacy
+`stream_network` `sf` object into candidate `stream_network` segments,
+`stream_network_source` lineage, and working validation results. A separate
+`source_mappings` table supplies governed Stream and optional Reach UUIDs by
+source row, so legacy `ReachName` values remain evidence rather than identity.
+True multipart rows become separately identified candidate segments while
+retaining one source relationship per part.
+
 Both functions return tibbles whose column names and row meanings correspond
 directly to the accepted local file-geodatabase and enterprise SDE relations.
 They neither access FGDB nor infer governed identities from names.
@@ -27,16 +35,15 @@ real legacy Stream names and CRS evidence. Scalar governed identifiers and
 review provenance are explicit constructor inputs because those relations did
 not exist in historical outputs.
 
-Focused `testthat` verification passes 18 assertions. A package build/load
-check completes with no errors or warnings; its two notes concern pre-existing
-package-wide dependency declarations and visible bindings. The wider legacy
-suite includes credentialed ArcGIS, USGS NLDI, Mapbox, document-rendering, and
-network-filesystem integration tests. Their live-service results are reported
-separately from deterministic constructor verification.
+Focused `testthat` verification covers constructors, direct retained
+single/multi-feature networks, explicitly missing legacy attributes, multipart
+normalization, mapping validation, and generated relational lineage. The wider
+legacy suite includes credentialed ArcGIS, remote hydrology, Mapbox,
+document-rendering, and network-filesystem integration tests. Their live-service
+results are reported separately from deterministic Stream Network verification.
 
 ## Next slice
 
-Normalize retained `stream_network` features into governed segment and source
-relations while preserving legacy `arcid`, node keys, `grid_code`, and
-`ReachName` as source-feature attributes. Topology changes and identity
-reconciliation remain explicit later operations.
+Add topology and direction assessment plus review features around the candidate
+segments. Applying analyst decisions, establishing governed node identities,
+and accepting a Network Observation remain explicit later operations.

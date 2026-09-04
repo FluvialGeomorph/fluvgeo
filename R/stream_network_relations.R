@@ -80,6 +80,60 @@
   as.numeric(x)
 }
 
+.fg_generate_uuid <- function(n) {
+  if (length(n) != 1L || is.na(n) || n < 0L || n != as.integer(n)) {
+    .fg_abort("`n` must be one nonnegative integer.")
+  }
+  n <- as.integer(n)
+  if (!n) {
+    return(character())
+  }
+
+  vapply(seq_len(n), function(i) {
+    bytes <- as.integer(openssl::rand_bytes(16L))
+    bytes[7L] <- bitwOr(bitwAnd(bytes[7L], 15L), 64L)
+    bytes[9L] <- bitwOr(bitwAnd(bytes[9L], 63L), 128L)
+    hex <- sprintf("%02x", bytes)
+    paste0(
+      paste0(hex[1L:4L], collapse = ""), "-",
+      paste0(hex[5L:6L], collapse = ""), "-",
+      paste0(hex[7L:8L], collapse = ""), "-",
+      paste0(hex[9L:10L], collapse = ""), "-",
+      paste0(hex[11L:16L], collapse = "")
+    )
+  }, character(1))
+}
+
+.fg_optional_uuid_vector <- function(x, name, length) {
+  if (base::length(x) != length ||
+      (!is.character(x) && !all(is.na(x)))) {
+    .fg_abort(sprintf(
+      "`%s` must contain %s UUID value%s or `NA`.",
+      name,
+      length,
+      if (length == 1L) "" else "s"
+    ))
+  }
+  x <- as.character(x)
+  blank <- !is.na(x) & !nzchar(trimws(x))
+  if (any(blank)) {
+    .fg_abort(sprintf("`%s` cannot contain blank values.", name))
+  }
+  present <- !is.na(x)
+  x[present] <- .fg_uuid(x[present], name)
+  x
+}
+
+.fg_source_text <- function(x, field) {
+  index <- match(tolower(field), tolower(names(x)))
+  if (is.na(index)) {
+    return(rep(NA_character_, nrow(x)))
+  }
+  value <- as.character(x[[index]])
+  value[is.na(value)] <- NA_character_
+  value
+}
+
 #' Create Stream Network Configuration relations
 #'
 #' Creates the normalized configuration and Stream-membership tables used by
@@ -409,5 +463,266 @@ create_stream_network_observation <- function(
     modified_at = created_at,
     modified_by = actor,
     lifecycle_status = "ACTIVE"
+  )
+}
+
+#' Normalize a retained Stream Network
+#'
+#' Converts retained legacy Stream Network features into candidate governed
+#' segment and source-lineage relations. Governed Stream and optional Reach
+#' identities are supplied separately from the source features and are never
+#' inferred from legacy names.
+#'
+#' This first normalization slice preserves source geometry and attributes. It
+#' does not establish direction, governed topology-node identities, segment
+#' role, analyst acceptance, or enterprise identity. Those fields remain
+#' explicitly unresolved and are reported in the returned validation issues.
+#'
+#' @param stream_network Projected `sf` line features from a retained
+#'   `stream_network` feature class.
+#' @param source_mappings Data frame with exactly one row per source feature.
+#'   `source_row` is the one-based row number in `stream_network`, `stream_id`
+#'   is required, and `reach_id` is optional. Governed IDs are UUIDs.
+#' @param configuration One `stream_network_configuration` row.
+#' @param configuration_streams The corresponding
+#'   `stream_network_configuration_stream` rows.
+#' @param observation One `stream_network_observation` row whose evidence class
+#'   is `SOURCE_NETWORK_RETAINED`.
+#' @param actor Stable actor or process identifier.
+#' @param source_dataset_name Reviewable source feature-class name.
+#' @param created_at Creation date-time; converted to UTC.
+#'
+#' @return A named list containing `stream_network`, `stream_network_source`,
+#'   `stream_network_validation_run`, and `stream_network_validation_issue`.
+#' @export
+#' @importFrom openssl rand_bytes
+normalize_retained_stream_network <- function(
+    stream_network,
+    source_mappings,
+    configuration,
+    configuration_streams,
+    observation,
+    actor,
+    source_dataset_name = "stream_network",
+    created_at = Sys.time()) {
+  if (!inherits(stream_network, "sf")) {
+    .fg_abort("`stream_network` must be an `sf` object.")
+  }
+  if (!nrow(stream_network)) {
+    .fg_abort("`stream_network` must contain at least one source feature.")
+  }
+  if (is.na(sf::st_crs(stream_network))) {
+    .fg_abort("`stream_network` must have a coordinate reference system.")
+  }
+  if (isTRUE(sf::st_is_longlat(stream_network))) {
+    .fg_abort("`stream_network` must use a projected coordinate reference system.")
+  }
+
+  geometry_type <- as.character(sf::st_geometry_type(stream_network))
+  if (any(!geometry_type %in% c("LINESTRING", "MULTILINESTRING"))) {
+    .fg_abort("`stream_network` geometry must be LINESTRING or MULTILINESTRING.")
+  }
+  if (any(sf::st_is_empty(stream_network))) {
+    .fg_abort("`stream_network` geometry cannot be empty.")
+  }
+  if (any(!sf::st_is_valid(stream_network))) {
+    .fg_abort("`stream_network` geometry must be valid.")
+  }
+  if (any(as.numeric(sf::st_length(stream_network)) <= 0)) {
+    .fg_abort("`stream_network` geometry must have positive length.")
+  }
+
+  if (!is.data.frame(configuration) || nrow(configuration) != 1L ||
+      !all(c("stream_network_configuration_id", "study_area_id") %in%
+           names(configuration))) {
+    .fg_abort("`configuration` must contain one governed Configuration row.")
+  }
+  configuration_id <- .fg_uuid(
+    configuration$stream_network_configuration_id,
+    "configuration$stream_network_configuration_id"
+  )
+
+  membership_fields <- c("stream_network_configuration_id", "stream_id")
+  if (!is.data.frame(configuration_streams) || !nrow(configuration_streams) ||
+      !all(membership_fields %in% names(configuration_streams))) {
+    .fg_abort("`configuration_streams` must contain governed Configuration-Stream rows.")
+  }
+  membership_configuration_ids <- .fg_uuid(
+    configuration_streams$stream_network_configuration_id,
+    "configuration_streams$stream_network_configuration_id"
+  )
+  if (any(membership_configuration_ids != configuration_id)) {
+    .fg_abort("Every Configuration-Stream row must belong to `configuration`.")
+  }
+  member_stream_ids <- .fg_uuid(
+    configuration_streams$stream_id,
+    "configuration_streams$stream_id"
+  )
+
+  observation_fields <- c(
+    "stream_network_observation_id",
+    "stream_network_configuration_id",
+    "evidence_class"
+  )
+  if (!is.data.frame(observation) || nrow(observation) != 1L ||
+      !all(observation_fields %in% names(observation))) {
+    .fg_abort("`observation` must contain one governed Observation row.")
+  }
+  observation_id <- .fg_uuid(
+    observation$stream_network_observation_id,
+    "observation$stream_network_observation_id"
+  )
+  observation_configuration_id <- .fg_uuid(
+    observation$stream_network_configuration_id,
+    "observation$stream_network_configuration_id"
+  )
+  if (observation_configuration_id != configuration_id) {
+    .fg_abort("`observation` must belong to `configuration`.")
+  }
+  if (!identical(as.character(observation$evidence_class), "SOURCE_NETWORK_RETAINED")) {
+    .fg_abort("`observation$evidence_class` must be `SOURCE_NETWORK_RETAINED`.")
+  }
+
+  mapping_fields <- c("source_row", "stream_id")
+  if (!is.data.frame(source_mappings) ||
+      !all(mapping_fields %in% names(source_mappings))) {
+    .fg_abort("`source_mappings` must contain `source_row` and `stream_id`.")
+  }
+  if (nrow(source_mappings) != nrow(stream_network)) {
+    .fg_abort("`source_mappings` must contain exactly one row per source feature.")
+  }
+  source_rows <- source_mappings$source_row
+  if (!is.numeric(source_rows) || anyNA(source_rows) ||
+      any(source_rows != as.integer(source_rows)) ||
+      !setequal(as.integer(source_rows), seq_len(nrow(stream_network)))) {
+    .fg_abort("`source_mappings$source_row` must identify every source row exactly once.")
+  }
+  if (anyDuplicated(source_rows)) {
+    .fg_abort("`source_mappings$source_row` must be unique.")
+  }
+  source_mappings <- source_mappings[
+    match(seq_len(nrow(stream_network)), as.integer(source_rows)),
+    ,
+    drop = FALSE
+  ]
+  mapped_stream_ids <- .fg_uuid(
+    source_mappings$stream_id,
+    "source_mappings$stream_id"
+  )
+  if (any(!mapped_stream_ids %in% member_stream_ids)) {
+    .fg_abort("Every mapped Stream must participate in `configuration`.")
+  }
+  mapped_reach_ids <- if ("reach_id" %in% names(source_mappings)) {
+    .fg_optional_uuid_vector(
+      source_mappings$reach_id,
+      "source_mappings$reach_id",
+      nrow(source_mappings)
+    )
+  } else {
+    rep(NA_character_, nrow(source_mappings))
+  }
+
+  actor <- .fg_required_text(actor, "actor")
+  source_dataset_name <- .fg_required_text(
+    source_dataset_name,
+    "source_dataset_name"
+  )
+  created_at <- .fg_timestamp(created_at, "created_at")
+  created_at_value <- created_at
+
+  source <- stream_network
+  source$.source_row <- seq_len(nrow(source))
+  source$.source_part_count <- ifelse(
+    geometry_type == "MULTILINESTRING",
+    lengths(sf::st_geometry(source)),
+    1L
+  )
+  normalized <- suppressWarnings(sf::st_cast(source, "LINESTRING"))
+  normalized <- sf::st_zm(normalized, drop = TRUE, what = "ZM")
+  normalized$.source_part <- ave(
+    normalized$.source_row,
+    normalized$.source_row,
+    FUN = seq_along
+  )
+  normalized$.stream_id <- mapped_stream_ids[normalized$.source_row]
+  normalized$.reach_id <- mapped_reach_ids[normalized$.source_row]
+
+  segment_ids <- .fg_generate_uuid(nrow(normalized))
+  source_ids <- .fg_generate_uuid(nrow(normalized))
+  validation_run_id <- .fg_generate_uuid(1L)
+  source_feature_key <- .fg_source_text(normalized, "arcid")
+
+  segments <- sf::st_sf(
+    tibble::tibble(
+      stream_network_segment_id = segment_ids,
+      stream_network_observation_id = rep(observation_id, nrow(normalized)),
+      stream_id = normalized$.stream_id,
+      reach_id = normalized$.reach_id,
+      downstream_node_id = rep(NA_character_, nrow(normalized)),
+      upstream_node_id = rep(NA_character_, nrow(normalized)),
+      segment_role = rep("UNRESOLVED", nrow(normalized)),
+      direction_status = rep("UNRESOLVED", nrow(normalized)),
+      direction_method = rep("LEGACY_UNKNOWN", nrow(normalized)),
+      source_feature_key = source_feature_key,
+      review_status = rep("PENDING", nrow(normalized)),
+      created_at = rep(created_at_value, nrow(normalized)),
+      created_by = rep(actor, nrow(normalized)),
+      modified_at = rep(created_at_value, nrow(normalized)),
+      modified_by = rep(actor, nrow(normalized)),
+      lifecycle_status = rep("ACTIVE", nrow(normalized))
+    ),
+    Shape = sf::st_geometry(normalized)
+  )
+
+  sources <- tibble::tibble(
+    stream_network_source_id = source_ids,
+    stream_network_segment_id = segment_ids,
+    source_object_type = "RETAINED_STREAM_NETWORK",
+    source_object_id = NA_character_,
+    source_dataset_name = source_dataset_name,
+    source_feature_key = source_feature_key,
+    source_from_node_key = .fg_source_text(normalized, "from_node"),
+    source_to_node_key = .fg_source_text(normalized, "to_node"),
+    source_class_code = .fg_source_text(normalized, "grid_code"),
+    source_reach_name = .fg_source_text(normalized, "ReachName"),
+    relation_code = "GEOMETRY_SOURCE",
+    geometry_modified = normalized$.source_part_count > 1L
+  )
+
+  validation_run <- tibble::tibble(
+    stream_network_validation_run_id = validation_run_id,
+    stream_network_observation_id = observation_id,
+    validation_level = "WORKING",
+    result = "REVIEW_REQUIRED",
+    model_version = "FGDB_STREAM_NETWORK_1",
+    validator_version = "RETAINED_NORMALIZATION_0.1",
+    validated_at = created_at,
+    validated_by = actor
+  )
+
+  validation_issue <- tibble::tibble(
+    stream_network_validation_issue_id = .fg_generate_uuid(nrow(normalized)),
+    stream_network_validation_run_id = rep(validation_run_id, nrow(normalized)),
+    issue_code = "SEGMENT_REVIEW_REQUIRED",
+    severity = "ERROR",
+    affected_relation = "stream_network",
+    affected_object_id = segment_ids,
+    related_relation = "stream_network_source",
+    related_object_id = source_ids,
+    message = paste(
+      "Retained geometry requires reviewed direction, node identities,",
+      "and segment role before acceptance."
+    ),
+    analyst_disposition = "UNRESOLVED",
+    disposition_at = as.POSIXct(NA, tz = "UTC"),
+    disposition_by = NA_character_,
+    disposition_notes = NA_character_
+  )
+
+  list(
+    stream_network = segments,
+    stream_network_source = sources,
+    stream_network_validation_run = validation_run,
+    stream_network_validation_issue = validation_issue
   )
 }
