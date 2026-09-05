@@ -7,6 +7,8 @@
 #' @param dem        terra SpatRast object; A DEM for the stream reach. 
 #'
 #' @returns a valid flowline sf object
+#' @details Uses orient_lines_from_dem() for endpoint-based upstream orientation.
+#'   If direction cannot be resolved, returns unchanged linework with a warning.
 #' @export
 #' 
 #' @importFrom assertthat assert_that
@@ -31,22 +33,11 @@ flowline <- function(flowline, reach_name, dem) {
     select() %>%
     mutate(ReachName = reach_name)
   
-  # Determine downstream end of flowline
-  og_start_pt <- flowline %>%
-    sf_line_end_point("start") %>%
-    sf_get_z(., dem) %>%
-    select(c(x, y, z))
-  
-  og_end_pt <- flowline %>%
-    sf_line_end_point("end") %>%
-    sf_get_z(., dem) %>%
-    select(c(x, y, z))
-  
-  # Reverse the flowline digitization direction if needed
-  if(og_end_pt$z < og_start_pt$z) {
-    print("reverse the flowline")
-    fl <- sf_line_reverse(fl)
-  } 
-
-  return(fl)
+  oriented <- orient_lines_from_dem(fl, dem)
+  if (any(oriented$direction$action == "UNRESOLVED")) {
+    warning("Flowline direction is unresolved: ",
+            paste(unique(oriented$direction$reason_code), collapse = ", "),
+            call. = FALSE)
+  }
+  return(oriented$lines)
 }

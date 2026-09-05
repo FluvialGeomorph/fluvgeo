@@ -2,6 +2,14 @@
 
 ## Stream Network relations
 
+- Added reusable `orient_lines_from_dem()` and an optional `dem` argument to
+  Stream Network preparation. Supported endpoint comparisons now resolve
+  direction automatically, with reversals, evidence, and operation history.
+  `flowline()` uses the same method and warns when direction is unresolved.
+  Endpoint evidence distinguishes outside-extent from in-extent NoData values.
+  Automatic network preparation rejects incomplete DEM coverage;
+  `VALIDATE_ONLY` exposes coverage diagnostics without applying corrections.
+
 - Added `prepare_stream_network_from_features()` for retained-source topology
   checks and linked pending spatial inspection features. It flags unresolved
   direction, duplicate/closed/self-intersecting lines, interior intersections,

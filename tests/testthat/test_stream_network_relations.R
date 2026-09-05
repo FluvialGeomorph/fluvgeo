@@ -53,7 +53,7 @@ retained_network_test_source <- function() {
 }
 
 prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
-                                 tolerance = 0.01, unit = "METRE") {
+                                 tolerance = 0.01, unit = "METRE", dem = NULL) {
   context <- stream_network_test_context(source)
   context$observation$topology_tolerance <- tolerance
   context$observation$topology_tolerance_unit <- unit
@@ -61,9 +61,68 @@ prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
     source, data.frame(source_row = seq_len(nrow(source)),
                        stream_id = stream_network_test_ids$stream_1),
     context$configuration, context$configuration_streams,
-    context$observation, actor = "testthat", review_mode = mode
+    context$observation, actor = "testthat", review_mode = mode, dem = dem
   )
 }
+
+test_that("DEM preparation resolves direction with linked automatic operations", {
+  source <- retained_network_test_source()
+  dem <- terra::rast(system.file("extdata", "dem_1m.tif", package = "fluvgeodata"))
+  # This raster covers only part of the network. Reject the full pair, then
+  # explicitly test a covered subset; never present it as a full-source DEM.
+  expect_error(prepare_test_network(source, dem = dem), "46 segments outside its extent; 4 additional")
+  preview <- prepare_test_network(source, "VALIDATE_ONLY", dem = dem)
+  expect_equal(sum(preview$stream_network_validation_issue$issue_code == "DEM_COVERAGE_INCOMPLETE"), 50L)
+  expect_equal(nrow(preview$stream_network_operation), 0L)
+  sampled <- preview$stream_network_direction_evidence
+  source <- source[sampled$start_sample_status == "AVAILABLE" &
+                     sampled$end_sample_status == "AVAILABLE", ]
+  expect_equal(nrow(source), 49L)
+  before <- source
+  result <- prepare_test_network(source, dem = dem)
+  segments <- result$stream_network
+  evidence <- result$stream_network_direction_evidence
+  operations <- result$stream_network_operation
+  issues <- result$stream_network_validation_issue
+  supported <- evidence$action != "UNRESOLVED"
+  reversed <- evidence$action == "REVERSE"
+  expect_identical(source, before)
+  expect_equal(sum(supported), 46L)
+  expect_equal(sum(reversed), 33L)
+  expect_equal(sum(segments$direction_status == "CONFIRMED"), 46L)
+  expect_true(all(segments$direction_method[supported] == "TERRAIN_ELEVATION"))
+  expect_equal(sum(issues$issue_code == "DIRECTION_UNRESOLVED"), 3L)
+  expect_equal(sum(issues$issue_code == "SEGMENT_REVIEW_REQUIRED"), 46L)
+  expect_equal(nrow(operations), 46L)
+  expect_equal(sum(operations$operation_code == "REVERSE_DIRECTION"), 33L)
+  expect_equal(sum(operations$operation_code == "CONFIRM_DIRECTION"), 13L)
+  expect_equal(evidence$stream_network_operation_id[supported], operations$stream_network_operation_id)
+  expect_equal(evidence$stream_network_segment_id, segments$stream_network_segment_id)
+  expect_equal(operations$stream_network_segment_id, segments$stream_network_segment_id[supported])
+  expect_equal(operations$stream_network_source_id,
+               result$stream_network_source$stream_network_source_id[supported])
+  expect_true(all(operations$performed_by == "testthat"))
+  expect_equal(result$stream_network_source$geometry_modified, reversed)
+  # Only coordinate order changes: every candidate still covers its source line.
+  expect_true(all(vapply(sf::st_equals(segments, source), length, integer(1)) >= 1L))
+  expect_true(all(is.na(segments$downstream_node_id)))
+  expect_true(all(segments$review_status == "PENDING"))
+  expect_equal(result$stream_network_validation_run$result, "REVIEW_REQUIRED")
+
+  validate <- prepare_test_network(source, "VALIDATE_ONLY", dem = dem)
+  normalized <- suppressWarnings(sf::st_cast(source, "LINESTRING"))
+  expect_equal(sf::st_geometry(validate$stream_network), sf::st_geometry(normalized))
+  expect_equal(nrow(validate$stream_network_operation), 0L)
+  expect_equal(nrow(validate$stream_network_review), 0L)
+  expect_true(all(is.na(validate$stream_network_direction_evidence$stream_network_operation_id)))
+  expect_true(all(validate$stream_network$direction_status == "UNRESOLVED"))
+  expect_equal(validate$stream_network_direction_evidence$action, evidence$action)
+  no_dem <- prepare_test_network(source)
+  expect_equal(nrow(no_dem$stream_network_direction_evidence), 0L)
+  expect_equal(nrow(no_dem$stream_network_operation), 0L)
+  expect_identical(vapply(no_dem$stream_network_operation, typeof, character(1)),
+                   vapply(operations, typeof, character(1)))
+})
 
 test_that("retained assessment produces linked pending spatial inspection rows", {
   source <- retained_network_test_source()

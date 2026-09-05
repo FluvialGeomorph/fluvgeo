@@ -20,3 +20,7 @@ a valid flowline sf object
 Takes a newly drawn flowline and uses the dem to ensure
 the flowline is digitized in the upstream direction.
 }
+\details{
+Uses orient_lines_from_dem() for endpoint-based upstream orientation.
+  If direction cannot be resolved, returns unchanged linework with a warning.
+}

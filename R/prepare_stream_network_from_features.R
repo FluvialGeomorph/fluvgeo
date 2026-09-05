@@ -2,7 +2,8 @@
 #'
 #' Normalizes retained linework and produces spatial inspection features for
 #' direction and topology findings. Source coordinate order is not evidence of
-#' downstream direction. No geometry repairs or analyst decisions are applied.
+#' downstream direction. An optional source DEM automatically establishes
+#' endpoint-based direction and reverses supported candidates on a copy.
 #'
 #' Checks cover duplicate geometry (including reversed lines), self-intersections,
 #' closed segments, intersections involving a line interior, and noncoincident
@@ -13,15 +14,26 @@
 #' This retained-source slice does not detect every network defect: disconnected
 #' components, multi-segment cycles, near endpoint-to-interior gaps, and missing
 #' Stream/Reach boundary splits remain outside its checks. It does not assign
-#' node UUIDs or confirm direction. Its WORKING result is always REVIEW_REQUIRED.
+#' node UUIDs. Its WORKING result is always REVIEW_REQUIRED because node
+#' identities and segment roles remain unresolved after direction correction.
 #'
 #' @inheritParams normalize_retained_stream_network
 #' @param review_mode CREATE_REVIEW_FEATURES returns pending INSPECT features;
-#'   VALIDATE_ONLY returns the same findings and an empty, typed review layer.
+#'   VALIDATE_ONLY assesses but does not apply DEM direction corrections and
+#'   returns an empty, typed review layer.
+#' @param dem Optional single-band terra SpatRaster representing the source
+#'   Stream DEM, in the linework CRS. NULL preserves inspection-only behavior.
+#'   Automatic correction requires finite DEM values at every endpoint. An
+#'   incomplete DEM fails before any corrections are returned; VALIDATE_ONLY
+#'   reports per-endpoint coverage diagnostics to help select the correct input.
 #'
 #' @return A named list with stream_network, stream_network_source,
 #'   stream_network_review, stream_network_validation_run, and
-#'   stream_network_validation_issue. Review Shape is the affected candidate
+#'   stream_network_validation_issue, stream_network_operation, and
+#'   stream_network_direction_evidence. The last two tables are empty without
+#'   a DEM. Evidence records original endpoint values, raster reference, method,
+#'   action, and an operation link for applied corrections/classifications.
+#'   Review Shape is the affected candidate
 #'   line, not a proposed repair. INSPECT decisions cannot authorize geometry
 #'   changes; concrete repair proposals and their application are later steps.
 #' @export
@@ -32,7 +44,8 @@ prepare_stream_network_from_features <- function(
     configuration_streams,
     observation,
     actor,
-    review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY")) {
+    review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
+    dem = NULL) {
   review_mode <- match.arg(review_mode)
   result <- normalize_retained_stream_network(
     stream_network, source_mappings, configuration, configuration_streams,
@@ -61,12 +74,82 @@ prepare_stream_network_from_features <- function(
   }
 
   segments <- result$stream_network
-  geometry <- sf::st_geometry(segments)
   n <- nrow(segments)
   segment_ids <- segments$stream_network_segment_id
   source_ids <- result$stream_network_source$stream_network_source_id
   run <- result$stream_network_validation_run
-  run$validator_version <- "RETAINED_ASSESSMENT_0.1"
+  run$validator_version <- "RETAINED_ASSESSMENT_0.2"
+  direction <- tibble::tibble(
+    input_row = integer(), start_elevation = double(), end_elevation = double(),
+    start_sample_status = character(), end_sample_status = character(),
+    action = character(), reason_code = character(), method = character(),
+    dem_band = character(), dem_source = character()
+  )
+  applied <- integer()
+  if (!is.null(dem)) {
+    oriented <- orient_lines_from_dem(segments, dem)
+    direction <- oriented$direction
+    if (review_mode != "VALIDATE_ONLY") {
+      outside <- direction$reason_code == "ENDPOINT_OUTSIDE_DEM"
+      nodata <- direction$reason_code == "ENDPOINT_DEM_NODATA"
+      if (any(outside | nodata)) {
+        .fg_abort(sprintf(paste(
+          "Source DEM endpoint coverage is incomplete: %d segments outside its extent;",
+          "%d additional segments with NoData/nonfinite endpoint values.",
+          "Supply the matching full source DEM, or use review_mode = 'VALIDATE_ONLY'",
+          "to inspect coverage. No direction corrections were returned."
+        ), sum(outside), sum(nodata)))
+      }
+      applied <- which(direction$action != "UNRESOLVED")
+      segments <- oriented$lines
+      segments$direction_status[applied] <- "CONFIRMED"
+      segments$direction_method[applied] <- "TERRAIN_ELEVATION"
+      segments$modified_at[applied] <- run$validated_at
+      segments$modified_by[applied] <- actor
+      reversed <- which(direction$action == "REVERSE")
+      result$stream_network_source$geometry_modified[reversed] <- TRUE
+    }
+  }
+  geometry <- sf::st_geometry(segments)
+  operation_ids <- .fg_generate_uuid(length(applied))
+  operations <- tibble::tibble(
+    stream_network_operation_id = operation_ids,
+    stream_network_segment_id = segment_ids[applied],
+    stream_network_source_id = source_ids[applied],
+    operation_sequence = rep(1L, length(applied)),
+    operation_code = ifelse(direction$action[applied] == "REVERSE",
+                            "REVERSE_DIRECTION", "CONFIRM_DIRECTION"),
+    tolerance_value = rep(NA_real_, length(applied)),
+    tolerance_unit = rep(NA_character_, length(applied)),
+    target_node_id = rep(NA_character_, length(applied)),
+    stream_id = rep(NA_character_, length(applied)),
+    reach_id = rep(NA_character_, length(applied)),
+    operation_notes = rep("Automatic direction assignment using DEM_ENDPOINTS_1; see direction evidence.",
+                          length(applied)),
+    performed_at = rep(run$validated_at, length(applied)),
+    performed_by = rep(actor, length(applied))
+  )
+  # ifelse(logical(0), ...) returns logical(0); retain the table's text schema.
+  operations$operation_code <- as.character(operations$operation_code)
+  evidence_operation_ids <- rep(NA_character_, nrow(direction))
+  evidence_operation_ids[applied] <- operation_ids
+  elevation_unit <- if ("vertical_unit" %in% names(observation)) {
+    .fg_optional_text(observation$vertical_unit, "observation$vertical_unit")
+  } else NA_character_
+  evidence <- tibble::tibble(
+    stream_network_segment_id = segment_ids[direction$input_row],
+    stream_network_operation_id = evidence_operation_ids,
+    start_elevation = direction$start_elevation,
+    end_elevation = direction$end_elevation,
+    start_sample_status = direction$start_sample_status,
+    end_sample_status = direction$end_sample_status,
+    elevation_unit = rep(elevation_unit, nrow(direction)),
+    action = direction$action,
+    reason_code = direction$reason_code,
+    method = direction$method,
+    dem_band = direction$dem_band,
+    dem_source = direction$dem_source
+  )
 
   findings <- list()
   add_finding <- function(i, code, message, j = NA_integer_) {
@@ -75,10 +158,23 @@ prepare_stream_network_from_features <- function(
     )
   }
   for (i in seq_len(n)) {
-    add_finding(i, "DIRECTION_UNRESOLVED", paste(
-      "Confirm downstream-to-upstream coordinate order using analyst or terrain",
-      "evidence. Node identities and segment role also remain unresolved."
-    ))
+    if (i %in% applied) {
+      add_finding(i, "SEGMENT_REVIEW_REQUIRED",
+                  "Direction resolved by DEM; node identities and segment role remain unresolved.")
+    } else {
+      detail <- if (is.null(dem)) "No DEM supplied." else paste(
+        "DEM endpoint assessment:", direction$reason_code[i],
+        "Action:", direction$action[i],
+        if (review_mode == "VALIDATE_ONLY") "Corrections not applied in VALIDATE_ONLY mode." else ""
+      )
+      code <- if (!is.null(dem) && direction$reason_code[i] %in%
+                  c("ENDPOINT_OUTSIDE_DEM", "ENDPOINT_DEM_NODATA")) {
+        "DEM_COVERAGE_INCOMPLETE"
+      } else "DIRECTION_UNRESOLVED"
+      add_finding(i, code, paste(
+        detail, "Direction, node identities, and segment role remain unresolved."
+      ))
+    }
   }
   simple <- sf::st_is_simple(geometry)
   endpoints <- sf::st_sfc(lapply(geometry, function(line) {
@@ -174,6 +270,8 @@ prepare_stream_network_from_features <- function(
     stream_network_source = result$stream_network_source,
     stream_network_review = review,
     stream_network_validation_run = run,
-    stream_network_validation_issue = issues
+    stream_network_validation_issue = issues,
+    stream_network_operation = operations,
+    stream_network_direction_evidence = evidence
   )
 }

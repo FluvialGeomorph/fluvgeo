@@ -11,7 +11,8 @@ prepare_stream_network_from_features(
   configuration_streams,
   observation,
   actor,
-  review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY")
+  review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
+  dem = NULL
 )
 }
 \arguments{
@@ -33,19 +34,31 @@ is `SOURCE_NETWORK_RETAINED`.}
 \item{actor}{Stable actor or process identifier.}
 
 \item{review_mode}{CREATE_REVIEW_FEATURES returns pending INSPECT features;
-VALIDATE_ONLY returns the same findings and an empty, typed review layer.}
+VALIDATE_ONLY assesses but does not apply DEM direction corrections and
+returns an empty, typed review layer.}
+
+\item{dem}{Optional single-band terra SpatRaster representing the source
+Stream DEM, in the linework CRS. NULL preserves inspection-only behavior.
+Automatic correction requires finite DEM values at every endpoint. An
+incomplete DEM fails before any corrections are returned; VALIDATE_ONLY
+reports per-endpoint coverage diagnostics to help select the correct input.}
 }
 \value{
 A named list with stream_network, stream_network_source,
   stream_network_review, stream_network_validation_run, and
-  stream_network_validation_issue. Review Shape is the affected candidate
+  stream_network_validation_issue, stream_network_operation, and
+  stream_network_direction_evidence. The last two tables are empty without
+  a DEM. Evidence records original endpoint values, raster reference, method,
+  action, and an operation link for applied corrections/classifications.
+  Review Shape is the affected candidate
   line, not a proposed repair. INSPECT decisions cannot authorize geometry
   changes; concrete repair proposals and their application are later steps.
 }
 \description{
 Normalizes retained linework and produces spatial inspection features for
 direction and topology findings. Source coordinate order is not evidence of
-downstream direction. No geometry repairs or analyst decisions are applied.
+downstream direction. An optional source DEM automatically establishes
+endpoint-based direction and reverses supported candidates on a copy.
 }
 \details{
 Checks cover duplicate geometry (including reversed lines), self-intersections,
@@ -57,5 +70,6 @@ not automatically a hydrologic connection.
 This retained-source slice does not detect every network defect: disconnected
 components, multi-segment cycles, near endpoint-to-interior gaps, and missing
 Stream/Reach boundary splits remain outside its checks. It does not assign
-node UUIDs or confirm direction. Its WORKING result is always REVIEW_REQUIRED.
+node UUIDs. Its WORKING result is always REVIEW_REQUIRED because node
+identities and segment roles remain unresolved after direction correction.
 }
