@@ -40,6 +40,7 @@ Imports:
     gridExtra,
     gtable,
     httr2,
+    igraph,
     leafem,
     leaflegend,
     leaflet,
@@ -60,6 +61,7 @@ Imports:
     rmarkdown,
     scales,
     sf,
+    sfnetworks (>= 0.6.6),
     smoothr,
     stars,
     stats,
@@ -68,6 +70,7 @@ Imports:
     testthat,
     tibble,
     tidyr,
+    tidygraph,
     tmap,
     tools,
     utils

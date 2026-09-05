@@ -4,6 +4,7 @@
 #' direction and topology findings. Source coordinate order is not evidence of
 #' downstream direction. An optional source DEM automatically establishes
 #' endpoint-based direction and reverses supported candidates on a copy.
+#' Optional consolidation first joins raw continuations into logical links.
 #'
 #' Checks cover duplicate geometry (including reversed lines), self-intersections,
 #' closed segments, intersections involving a line interior, and noncoincident
@@ -22,16 +23,24 @@
 #'   VALIDATE_ONLY assesses but does not apply DEM direction corrections and
 #'   returns an empty, typed review layer.
 #' @param dem Optional single-band terra SpatRaster representing the source
-#'   Stream DEM, in the linework CRS. NULL preserves inspection-only behavior.
+#'   Stream DEM, in the linework CRS. NULL skips DEM direction assessment.
 #'   Automatic correction requires finite DEM values at every endpoint. An
 #'   incomplete DEM fails before any corrections are returned; VALIDATE_ONLY
 #'   reports per-endpoint coverage diagnostics to help select the correct input.
+#' @param consolidate Logical; FALSE retains raw segmentation (the compatible
+#'   default). TRUE builds logical links before DEM orientation, preserving
+#'   Stream/Reach boundaries and source lineage. Raw endpoint DEM coverage is
+#'   checked before merging. VALIDATE_ONLY never consolidates or records edits.
+#' @param protected_nodes Optional exact endpoint POINTs passed to
+#'   \code{\link{build_logical_stream_links}} when consolidating. Boundaries inside source
+#'   lines must first be split explicitly; they are not inferred or snapped.
 #'
 #' @return A named list with stream_network, stream_network_source,
 #'   stream_network_review, stream_network_validation_run, and
 #'   stream_network_validation_issue, stream_network_operation, and
-#'   stream_network_direction_evidence. The last two tables are empty without
-#'   a DEM. Evidence records original endpoint values, raster reference, method,
+#'   stream_network_direction_evidence. Direction evidence is empty without
+#'   a DEM; operations also record applied logical-link consolidation.
+#'   Evidence records pre-orientation logical-link endpoint values, raster reference, method,
 #'   action, and an operation link for applied corrections/classifications.
 #'   Review Shape is the affected candidate
 #'   line, not a proposed repair. INSPECT decisions cannot authorize geometry
@@ -45,8 +54,16 @@ prepare_stream_network_from_features <- function(
     observation,
     actor,
     review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
-    dem = NULL) {
+    dem = NULL,
+    consolidate = FALSE,
+    protected_nodes = NULL) {
   review_mode <- match.arg(review_mode)
+  if (!is.logical(consolidate) || length(consolidate) != 1L || is.na(consolidate)) {
+    .fg_abort("`consolidate` must be TRUE or FALSE.")
+  }
+  if (!consolidate && !is.null(protected_nodes)) {
+    .fg_abort("`protected_nodes` requires consolidate = TRUE.")
+  }
   result <- normalize_retained_stream_network(
     stream_network, source_mappings, configuration, configuration_streams,
     observation, actor
@@ -74,11 +91,59 @@ prepare_stream_network_from_features <- function(
   }
 
   segments <- result$stream_network
+  require_coverage <- function(direction) {
+    outside <- direction$reason_code == "ENDPOINT_OUTSIDE_DEM"
+    nodata <- direction$reason_code == "ENDPOINT_DEM_NODATA"
+    if (any(outside | nodata)) {
+      .fg_abort(sprintf(paste(
+        "Source DEM endpoint coverage is incomplete: %d segments outside its extent;",
+        "%d additional segments with NoData/nonfinite endpoint values.",
+        "Supply the matching full source DEM, or use review_mode = 'VALIDATE_ONLY'",
+        "to inspect coverage. No direction corrections were returned."
+      ), sum(outside), sum(nodata)))
+    }
+  }
+  merged <- rep(FALSE, nrow(segments))
+  if (consolidate && review_mode != "VALIDATE_ONLY") {
+    if (!is.null(dem)) {
+      # Do not make absent source elevations disappear by removing raw endpoints.
+      require_coverage(orient_lines_from_dem(segments, dem)$direction)
+    }
+    logical <- build_logical_stream_links(
+      segments, boundary_fields = c("stream_id", "reach_id"),
+      protected_nodes = protected_nodes, tolerance = tolerance
+    )
+    membership <- logical$membership
+    members <- split(membership$input_row, membership$link_row)
+    # split() orders numeric groups numerically; keep the explicit output order.
+    members <- members[as.character(seq_len(nrow(logical$links)))]
+    first <- vapply(members, `[`, integer(1), 1L)
+    merged <- lengths(members) > 1L
+    old_ids <- segments$stream_network_segment_id
+    segments <- segments[first, ]
+    sf::st_geometry(segments) <- sf::st_geometry(logical$links)
+    segments$stream_network_segment_id[merged] <- .fg_generate_uuid(sum(merged))
+    segments$source_feature_key[merged] <- NA_character_
+    source_link <- membership$link_row[
+      match(match(result$stream_network_source$stream_network_segment_id, old_ids),
+            membership$input_row)
+    ]
+    result$stream_network_source$stream_network_segment_id <-
+      segments$stream_network_segment_id[source_link]
+    result$stream_network_source$geometry_modified <-
+      result$stream_network_source$geometry_modified | merged[source_link]
+  }
   n <- nrow(segments)
   segment_ids <- segments$stream_network_segment_id
-  source_ids <- result$stream_network_source$stream_network_source_id
+  # A segment can now have several sources. Never falsely select one of them
+  # for a whole-link operation or review; the segment FK retrieves all sources.
+  source_ids <- vapply(segment_ids, function(id) {
+    ids <- result$stream_network_source$stream_network_source_id[
+      result$stream_network_source$stream_network_segment_id == id]
+    if (length(ids) == 1L) ids else NA_character_
+  }, character(1), USE.NAMES = FALSE)
   run <- result$stream_network_validation_run
-  run$validator_version <- "RETAINED_ASSESSMENT_0.2"
+  run$validator_version <- "RETAINED_ASSESSMENT_0.3"
   direction <- tibble::tibble(
     input_row = integer(), start_elevation = double(), end_elevation = double(),
     start_sample_status = character(), end_sample_status = character(),
@@ -90,16 +155,7 @@ prepare_stream_network_from_features <- function(
     oriented <- orient_lines_from_dem(segments, dem)
     direction <- oriented$direction
     if (review_mode != "VALIDATE_ONLY") {
-      outside <- direction$reason_code == "ENDPOINT_OUTSIDE_DEM"
-      nodata <- direction$reason_code == "ENDPOINT_DEM_NODATA"
-      if (any(outside | nodata)) {
-        .fg_abort(sprintf(paste(
-          "Source DEM endpoint coverage is incomplete: %d segments outside its extent;",
-          "%d additional segments with NoData/nonfinite endpoint values.",
-          "Supply the matching full source DEM, or use review_mode = 'VALIDATE_ONLY'",
-          "to inspect coverage. No direction corrections were returned."
-        ), sum(outside), sum(nodata)))
-      }
+      require_coverage(direction)
       applied <- which(direction$action != "UNRESOLVED")
       segments <- oriented$lines
       segments$direction_status[applied] <- "CONFIRMED"
@@ -107,7 +163,9 @@ prepare_stream_network_from_features <- function(
       segments$modified_at[applied] <- run$validated_at
       segments$modified_by[applied] <- actor
       reversed <- which(direction$action == "REVERSE")
-      result$stream_network_source$geometry_modified[reversed] <- TRUE
+      result$stream_network_source$geometry_modified[
+        result$stream_network_source$stream_network_segment_id %in% segment_ids[reversed]
+      ] <- TRUE
     }
   }
   geometry <- sf::st_geometry(segments)
@@ -116,7 +174,7 @@ prepare_stream_network_from_features <- function(
     stream_network_operation_id = operation_ids,
     stream_network_segment_id = segment_ids[applied],
     stream_network_source_id = source_ids[applied],
-    operation_sequence = rep(1L, length(applied)),
+    operation_sequence = 1L + as.integer(merged[applied]),
     operation_code = ifelse(direction$action[applied] == "REVERSE",
                             "REVERSE_DIRECTION", "CONFIRM_DIRECTION"),
     tolerance_value = rep(NA_real_, length(applied)),
@@ -131,6 +189,28 @@ prepare_stream_network_from_features <- function(
   )
   # ifelse(logical(0), ...) returns logical(0); retain the table's text schema.
   operations$operation_code <- as.character(operations$operation_code)
+  merge_operations <- tibble::tibble(
+    stream_network_operation_id = .fg_generate_uuid(sum(merged)),
+    stream_network_segment_id = segment_ids[merged],
+    stream_network_source_id = rep(NA_character_, sum(merged)),
+    operation_sequence = rep(1L, sum(merged)),
+    operation_code = rep("CONSOLIDATE_SEGMENTS", sum(merged)),
+    tolerance_value = rep(tolerance, sum(merged)),
+    tolerance_unit = rep(tolerance_unit, sum(merged)),
+    target_node_id = rep(NA_character_, sum(merged)),
+    stream_id = rep(NA_character_, sum(merged)),
+    reach_id = rep(NA_character_, sum(merged)),
+    operation_notes = rep(paste(
+      "LOGICAL_LINKS_1: exact-endpoint degree-two concatenation;",
+      "Stream/Reach and protected boundaries retained; tolerance protects near misses, not snapping;",
+      "sfnetworks", utils::packageVersion("sfnetworks"),
+      "tidygraph", utils::packageVersion("tidygraph"),
+      "igraph", utils::packageVersion("igraph")
+    ), sum(merged)),
+    performed_at = rep(run$validated_at, sum(merged)),
+    performed_by = rep(actor, sum(merged))
+  )
+  operations <- dplyr::bind_rows(merge_operations, operations)
   evidence_operation_ids <- rep(NA_character_, nrow(direction))
   evidence_operation_ids[applied] <- operation_ids
   elevation_unit <- if ("vertical_unit" %in% names(observation)) {
@@ -233,7 +313,9 @@ prepare_stream_network_from_features <- function(
     severity = rep("ERROR", count),
     affected_relation = rep("stream_network", count),
     affected_object_id = segment_ids[affected],
-    related_relation = ifelse(is.na(related), "stream_network_source", "stream_network"),
+    related_relation = ifelse(is.na(related),
+                             ifelse(is.na(source_ids[affected]), NA_character_, "stream_network_source"),
+                             "stream_network"),
     related_object_id = ifelse(is.na(related), source_ids[affected], segment_ids[related]),
     message = messages,
     analyst_disposition = rep("UNRESOLVED", count),

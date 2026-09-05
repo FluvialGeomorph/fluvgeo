@@ -1,6 +1,6 @@
 # Schemas
 
-Last updated: 2026-07-24
+Last updated: 2026-09-05
 
 ## Purpose
 This document records important structural contracts used by the repository, including data objects, files, tables, configuration structures, and other interfaces whose shape must remain explicit.
@@ -27,10 +27,30 @@ the field is missing. Operations that scientifically require drainage area
 must retain strict validation; consumers that require only DEM-derived geometry
 may continue without it.
 
-## Current status
+## Logical-link and preparation contracts
 
-The cross-section watershed contract above is the current supplemental
-project-wide schema. Other function-level contracts remain in generated package
+`build_logical_stream_links()` returns:
+
+- `links`: XY LINESTRING sf with integer `link_row` plus requested boundary
+  attributes, in the input projected CRS.
+- `membership`: integer `link_row`/`input_row` pairs. Every input row appears
+  exactly once; `link_row` refers to the returned links, not a persistent ID.
+
+Output links are ordered by first contributing input row; membership is ordered
+by link and input row. Singleton coordinate order is preserved; merged order is
+arbitrary until direction assessment. Geometry coverage and total length are
+preserved; no snapping or geometric simplification is performed.
+
+The optional consolidation mode of `prepare_stream_network_from_features()`
+consumes this mapping and returns the existing seven tables. Source relationships
+are now many-to-one with resulting segments. Whole-link source FKs and scalar
+source keys are null when multiple sources contribute. The authoritative
+cross-repository contract is `FGDB/dev/schemas/stream-network-geodatabase-schema.md`,
+including `CONSOLIDATE_SEGMENTS`, ordered DEM operations, and review semantics.
+
+## Other contracts
+
+These are supplemental project-wide schemas. Other function-level contracts remain in generated package
 documentation and their tests.
 
 Add an explicit schema here when a data object, spatial layer, file, table, or

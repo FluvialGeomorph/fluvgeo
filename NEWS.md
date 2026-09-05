@@ -2,6 +2,13 @@
 
 ## Stream Network relations
 
+- Added `build_logical_stream_links()` using sfnetworks to join degree-two
+  continuations without a length cutoff. It preserves source membership,
+  declared boundaries, junctions, and questionable geometry. Preparation opts
+  in with `consolidate = TRUE`, before DEM orientation, with many-source lineage
+  and ordered consolidation/direction operations. Raw endpoint coverage still
+  gates automatic processing. No snapping, node assignment, or acceptance.
+
 - Added reusable `orient_lines_from_dem()` and an optional `dem` argument to
   Stream Network preparation. Supported endpoint comparisons now resolve
   direction automatically, with reversals, evidence, and operation history.

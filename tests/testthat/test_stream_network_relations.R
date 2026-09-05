@@ -53,7 +53,8 @@ retained_network_test_source <- function() {
 }
 
 prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
-                                 tolerance = 0.01, unit = "METRE", dem = NULL) {
+                                 tolerance = 0.01, unit = "METRE", dem = NULL,
+                                 consolidate = FALSE, protected_nodes = NULL) {
   context <- stream_network_test_context(source)
   context$observation$topology_tolerance <- tolerance
   context$observation$topology_tolerance_unit <- unit
@@ -61,9 +62,85 @@ prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
     source, data.frame(source_row = seq_len(nrow(source)),
                        stream_id = stream_network_test_ids$stream_1),
     context$configuration, context$configuration_streams,
-    context$observation, actor = "testthat", review_mode = mode, dem = dem
+    context$observation, actor = "testthat", review_mode = mode, dem = dem,
+    consolidate = consolidate, protected_nodes = protected_nodes
   )
 }
+
+test_that("preparation consolidates before direction with many-source operation lineage", {
+  # Explicit synthetic geometry and raster: the middle short line occupies one
+  # cell; the logical link has measurable relief. A separate singleton catches
+  # accidental row-index assumptions in source updates.
+  coords <- list(c(0.2, 1.2), c(1.2, 1.4), c(1.4, 2.2), c(10.2, 11.2))
+  source <- sf::st_sf(arcid = 1:4, ReachName = "Synthetic",
+    geometry = sf::st_sfc(lapply(coords, function(x) {
+      sf::st_linestring(cbind(x, 0.5))
+    }), crs = 26915))
+  dem <- terra::rast(nrows = 1, ncols = 12, xmin = 0, xmax = 12,
+                     ymin = 0, ymax = 1, crs = "EPSG:26915")
+  terra::values(dem) <- 12:1
+  before <- source
+  raw <- prepare_test_network(source, dem = dem)
+  expect_equal(sum(raw$stream_network_validation_issue$issue_code == "DIRECTION_UNRESOLVED"), 1L)
+  out <- prepare_test_network(source, dem = dem, consolidate = TRUE)
+  expect_identical(source, before)
+  expect_equal(nrow(out$stream_network), 2L)
+  expect_true(all(out$stream_network$direction_status == "CONFIRMED"))
+  expect_equal(out$stream_network_validation_issue$issue_code, rep("SEGMENT_REVIEW_REQUIRED", 2))
+  expect_equal(out$stream_network_validation_run$result, "REVIEW_REQUIRED")
+  expect_true(all(is.na(out$stream_network$downstream_node_id)))
+  lineage <- out$stream_network_source
+  expect_equal(lineage$source_feature_key, as.character(1:4))
+  expect_equal(lineage$stream_network_segment_id,
+               out$stream_network$stream_network_segment_id[c(1,1,1,2)])
+  expect_true(all(lineage$geometry_modified))
+  expect_true(is.na(out$stream_network$source_feature_key[1]))
+  expect_equal(out$stream_network$source_feature_key[2], "4")
+  ops <- out$stream_network_operation
+  expect_equal(ops$operation_code, c("CONSOLIDATE_SEGMENTS", "REVERSE_DIRECTION", "REVERSE_DIRECTION"))
+  expect_equal(ops$operation_sequence, c(1L, 2L, 1L))
+  expect_true(all(is.na(ops$stream_network_source_id[1:2])))
+  expect_equal(ops$stream_network_source_id[3], lineage$stream_network_source_id[4])
+  expect_equal(out$stream_network_direction_evidence$stream_network_operation_id,
+               ops$stream_network_operation_id[2:3])
+  expect_true(is.na(out$stream_network_review$stream_network_source_id[1]))
+  expect_equal(out$stream_network_review$stream_network_source_id[2], lineage$stream_network_source_id[4])
+  expect_true(is.na(out$stream_network_validation_issue$related_relation[1]))
+  expect_equal(nrow(prepare_test_network(source, consolidate = TRUE)$stream_network_operation), 1L)
+  flat <- terra::init(dem, 1)
+  expect_true(all(prepare_test_network(source, dem = flat, consolidate = TRUE)$
+                   stream_network_direction_evidence$action == "UNRESOLVED"))
+  preview <- prepare_test_network(source, "VALIDATE_ONLY", dem = dem, consolidate = TRUE)
+  expect_equal(nrow(preview$stream_network), 4L)
+  expect_equal(nrow(preview$stream_network_operation), 0L)
+  expect_identical(sf::st_geometry(preview$stream_network), sf::st_geometry(source))
+  # Interior raw endpoint NoData cannot be hidden by removing that endpoint.
+  terra::values(dem)[2] <- NA_real_
+  expect_error(prepare_test_network(source, dem = dem, consolidate = TRUE), "coverage is incomplete")
+})
+
+test_that("preparation preserves multipart lineage and explicit boundaries", {
+  source <- retained_network_test_source()
+  out <- prepare_test_network(source, consolidate = TRUE)
+  expect_equal(nrow(out$stream_network), 1L)
+  expect_equal(nrow(out$stream_network_source), 99L)
+  expect_equal(out$stream_network_source$source_feature_key, as.character(source$arcid))
+  expect_true(all(out$stream_network_source$geometry_modified))
+  expect_equal(out$stream_network_operation$operation_code, "CONSOLIDATE_SEGMENTS")
+  p <- sf::st_geometry(suppressWarnings(sf::st_cast(source[source$arcid == 1126,], "LINESTRING")))[[1]]
+  point <- sf::st_sfc(sf::st_point(p[nrow(p),]), crs = sf::st_crs(source))
+  protected <- prepare_test_network(source, consolidate = TRUE, protected_nodes = point)
+  expect_equal(nrow(protected$stream_network), 2L)
+  expect_equal(nrow(protected$stream_network_source), 99L)
+  # Merge two parts of a single retained feature without dropping either source relation.
+  multi <- source[1,]
+  sf::st_geometry(multi) <- sf::st_sfc(sf::st_multilinestring(list(
+    rbind(c(0,0),c(1,0)), rbind(c(1,0),c(2,0)))), crs = sf::st_crs(source))
+  joined <- prepare_test_network(multi, consolidate = TRUE)
+  expect_equal(nrow(joined$stream_network), 1L)
+  expect_equal(nrow(joined$stream_network_source), 2L)
+  expect_equal(length(unique(joined$stream_network_source$stream_network_source_id)), 2L)
+})
 
 test_that("DEM preparation resolves direction with linked automatic operations", {
   source <- retained_network_test_source()

@@ -57,6 +57,8 @@ splitting, node assignment, or observation acceptance occurs.
 Functions return the named relational tibbles and sf objects without FGDB
 access. Existing normalizer and constructor signatures remain compatible;
 Preparation adds two named output tables and an optional trailing `dem` argument.
+The logical-link extension adds trailing `consolidate = FALSE` and
+`protected_nodes = NULL` arguments without changing output table names.
 Existing normalizer and constructor outputs are unchanged. `flowline()` retains
 its signature and sf return; equal/missing evidence now produces an explicit
 warning. No toolbox, Shiny app, RegionalCurve, or fluvgeodata files are changed.
@@ -98,9 +100,80 @@ pair is a negative coverage test; positive preparation uses an explicit
 49-segment subset with available endpoint samples, not the complete network.
 These findings correct the earlier claim that all 53 unresolved cases lacked
 endpoint values. Full-source DEM evaluation remains outstanding.
-The user selected this existing method first on 2026-09-05, with topology
-automation and its R/open-source literature review explicitly deferred until
-lessons from this slice are reviewed. INSPECT rows alone cannot authorize edits.
+After reviewing this slice, the user reopened topology research and authorized
+a standalone sfnetworks/hydroloom interoperability experiment on 2026-09-05.
+It passed on the retained mainstem and Hydroloom's branched New Hope example;
+see [network-processing-experiment.md](network-processing-experiment.md).
+The user accepted adoption of these packages as a decision; see
+[ADR-0001](../decisions/ADR-0001-network-processing-libraries.md).
+The [clipped-DEM follow-up](clipped-dem-network-experiment.md) demonstrates
+that 51 usable-footprint pieces consolidate into one DEM-oriented logical link,
+eliminating the three independent equal-elevation decisions. Actual preparation
+then retains only SEGMENT_REVIEW_REQUIRED. The original experiments used
+standalone adapters. The production logical-link slice below now integrates
+consolidation and many-source lineage; node/role assignment and acceptance
+validation remain outstanding.
+INSPECT rows alone cannot authorize edits.
 Disconnected components,
 multi-segment cycles, near endpoint-to-interior gaps, missing Stream/Reach
 boundary splits, governed nodes, and acceptance validation remain unimplemented.
+
+## Production logical-link slice (2026-09-05)
+
+`build_logical_stream_links()` is an identity-independent sf operation using
+sfnetworks/tidygraph/igraph. It concatenates degree-two exact-endpoint chains;
+there is no minimum-length parameter or cartographic smoothing. Its `links`
+and `membership` outputs preserve every input row. Only explicitly selected
+boundary attributes are carried onto output links; other original attributes
+are accessible through membership. Same missing boundary values can join,
+but a missing value never joins a known one.
+
+Preparation opts in explicitly:
+
+```r
+prepared <- prepare_stream_network_from_features(
+  stream_network = raw_lines, source_mappings = mappings,
+  configuration = configuration, configuration_streams = configuration_streams,
+  observation = observation, actor = "network-preparation",
+  dem = stream_dem, consolidate = TRUE,
+  protected_nodes = retained_boundary_points # NULL if none are declared
+)
+```
+
+Stream/Reach identity changes, junctions, and exact protected endpoints remain
+boundaries. Undirected cyclic edges, duplicate/overlapping/interior-intersecting
+or self-intersecting geometry, and near-miss edges stay unmerged for assessment.
+No missing junction or semantic split is invented. Cyclic protection also
+leaves legitimate diversion paths unmerged; hydrologic qualification is deferred.
+
+Merged links get new candidate UUIDs and a null scalar source key. Every
+original normalized source-part relationship survives with its source attributes
+and relationship UUID, pointing to the merged candidate and marked modified.
+Consolidation is sequence 1; DEM direction is sequence 2 on merged links and
+sequence 1 on singletons. Multi-source review/operation rows reference the
+segment, with null source FK rather than an arbitrary single source.
+
+Raw endpoint coverage is checked before consolidation as well as on resulting
+links. This is not whole-line raster coverage or monotonic downhill validation.
+Equal logical endpoint elevations still remain unresolved. VALIDATE_ONLY does
+not consolidate and retains raw endpoint evidence and empty operation/review
+tables. Default calls retain previous behavior.
+
+Hydroloom production relationship/node adapters are the next implementation
+slice. Neither FGDB persistence nor Shiny/toolbox clients are changed here;
+callers must explicitly enable consolidation. DEM clipping remains fixture-only.
+
+Verified after implementation: 263 focused assertions pass with no test warnings
+or failures; the clipped-DEM script passes 38 checks, including direct production
+preparation of 51 pieces into one identical oriented link with all 51 source
+relationships and two ordered operations. R CMD check (tests, examples, manual,
+and vignettes excluded; suggested packages optional) reports zero errors and
+warnings, with the same two existing package-wide notes. This is not a full
+live-service integration-suite result. Documentation generation with installed
+roxygen2 8.1.0 also reports existing unrelated import-tag formatting issues;
+unrelated metadata/namespace changes were excluded from this implementation.
+An additional production-helper check on hydroloom's New Hope fixture returned
+645 links from 746 features with all 746 memberships, identical geometric
+coverage, and total length preserved within 1e-7 CRS units. This conservative
+undirected path is distinct from the original directed 643-link experiment;
+production hydrologic relationship rebuilding has not yet been implemented.

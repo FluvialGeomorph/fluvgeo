@@ -12,7 +12,9 @@ prepare_stream_network_from_features(
   observation,
   actor,
   review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
-  dem = NULL
+  dem = NULL,
+  consolidate = FALSE,
+  protected_nodes = NULL
 )
 }
 \arguments{
@@ -38,17 +40,27 @@ VALIDATE_ONLY assesses but does not apply DEM direction corrections and
 returns an empty, typed review layer.}
 
 \item{dem}{Optional single-band terra SpatRaster representing the source
-Stream DEM, in the linework CRS. NULL preserves inspection-only behavior.
+Stream DEM, in the linework CRS. NULL skips DEM direction assessment.
 Automatic correction requires finite DEM values at every endpoint. An
 incomplete DEM fails before any corrections are returned; VALIDATE_ONLY
 reports per-endpoint coverage diagnostics to help select the correct input.}
+
+\item{consolidate}{Logical; FALSE retains raw segmentation (the compatible
+default). TRUE builds logical links before DEM orientation, preserving
+Stream/Reach boundaries and source lineage. Raw endpoint DEM coverage is
+checked before merging. VALIDATE_ONLY never consolidates or records edits.}
+
+\item{protected_nodes}{Optional exact endpoint POINTs passed to
+\code{\link{build_logical_stream_links}} when consolidating. Boundaries inside source
+lines must first be split explicitly; they are not inferred or snapped.}
 }
 \value{
 A named list with stream_network, stream_network_source,
   stream_network_review, stream_network_validation_run, and
   stream_network_validation_issue, stream_network_operation, and
-  stream_network_direction_evidence. The last two tables are empty without
-  a DEM. Evidence records original endpoint values, raster reference, method,
+  stream_network_direction_evidence. Direction evidence is empty without
+  a DEM; operations also record applied logical-link consolidation.
+  Evidence records pre-orientation logical-link endpoint values, raster reference, method,
   action, and an operation link for applied corrections/classifications.
   Review Shape is the affected candidate
   line, not a proposed repair. INSPECT decisions cannot authorize geometry
@@ -59,6 +71,7 @@ Normalizes retained linework and produces spatial inspection features for
 direction and topology findings. Source coordinate order is not evidence of
 downstream direction. An optional source DEM automatically establishes
 endpoint-based direction and reverses supported candidates on a copy.
+Optional consolidation first joins raw continuations into logical links.
 }
 \details{
 Checks cover duplicate geometry (including reversed lines), self-intersections,
