@@ -43,6 +43,173 @@ acceptance_test_review <- function(f) {
   f
 }
 
+acceptance_test_bundle <- function(reviewed = TRUE) {
+  f <- acceptance_test_fixture()
+  if (reviewed) f <- acceptance_test_review(f)
+  c(f$config, list(stream_network_observation = f$obs), f$p)
+}
+
+test_that("explicit acceptance preserves evidence and can be revalidated", {
+  x <- acceptance_test_bundle()
+  original <- x
+  accepted <- accept_stream_network(x, "synthetic-reviewer", accepted_at = Sys.time() + 2)
+  expect_identical(x, original)
+  expect_equal(accepted$stream_network_observation$review_status, "ACCEPTED")
+  expect_equal(accepted$stream_network_observation$reviewed_by, "synthetic-reviewer")
+  expect_equal(accepted$stream_network$review_status, "ACCEPTED")
+  expect_identical(accepted$stream_network$modified_at, x$stream_network$modified_at)
+  for (nm in c("stream_network_source", "stream_network_review", "stream_network_operation", "stream_network_node",
+               "stream_network_connection", "stream_network_direction_evidence", "stream_network_validation_issue")) {
+    expect_identical(accepted[[nm]], x[[nm]])
+  }
+  expect_equal(nrow(accepted$stream_network_validation_run), nrow(x$stream_network_validation_run) + 1L)
+  expect_equal(tail(accepted$stream_network_validation_run$result, 1), "PASS")
+  expect_equal(.fg_validate_network_bundle(accepted, "ACCEPTANCE", "test")$stream_network_validation_run$result, "PASS")
+  expect_error(accept_stream_network(accepted, "different-reviewer"), "explicitly reopen")
+  expect_error(accept_stream_network(x, "synthetic-reviewer", accepted_at = Sys.time() - 60), "cannot predate")
+  expect_error(accept_stream_network(x, " "), "nonempty")
+})
+
+test_that("blocked acceptance returns diagnostics without inventing review decisions", {
+  x <- acceptance_test_bundle(FALSE)
+  original <- x
+  error <- tryCatch(accept_stream_network(x, "synthetic-reviewer"), fluvgeo_acceptance_error = identity)
+  expect_s3_class(error, "fluvgeo_acceptance_error")
+  expect_identical(x, original)
+  expect_equal(error$geodatabase$stream_network_observation$review_status, "DRAFT")
+  expect_identical(error$geodatabase$stream_network_review, x$stream_network_review)
+  expect_true("REQUIRED_REVIEW_PENDING" %in% error$validation$stream_network_validation_issue$issue_code)
+  expect_equal(nrow(error$geodatabase$stream_network_validation_run), nrow(x$stream_network_validation_run) + 1L)
+  x <- acceptance_test_bundle()
+  x$stream_network_observation$review_notes <- NA_character_
+  expect_error(accept_stream_network(x, "synthetic-reviewer", accepted_at = Sys.time() + 2), "OBSERVATION_QUALIFICATION_REQUIRED")
+  accepted <- accept_stream_network(x, "synthetic-reviewer", "Synthetic partial-coverage/provenance qualification.", accepted_at = Sys.time() + 2)
+  expect_equal(accepted$stream_network_observation$review_notes, "Synthetic partial-coverage/provenance qualification.")
+})
+
+test_that("GeoPackage preserves accepted and unresolved draft relations exactly", {
+  for (reviewed in c(FALSE, TRUE)) {
+    x <- acceptance_test_bundle(reviewed)
+    if (reviewed) x <- accept_stream_network(x, "synthetic-reviewer", accepted_at = Sys.time() + 2)
+    path <- tempfile(fileext = ".gpkg")
+    on.exit(unlink(path), add = TRUE)
+    expect_invisible(write_stream_network_geodatabase(x, path))
+    read <- read_stream_network_geodatabase(path)
+    expect_identical(names(read), names(x))
+    for (nm in names(x)) {
+      a <- x[[nm]]; b <- read[[nm]]
+      if (inherits(a, "sf")) {
+        expect_identical(sf::st_as_binary(sf::st_geometry(a)), sf::st_as_binary(sf::st_geometry(b)))
+        expect_true(sf::st_crs(a) == sf::st_crs(b))
+        a <- sf::st_drop_geometry(a); b <- sf::st_drop_geometry(b)
+      }
+      for (field in names(a)) {
+        if (inherits(a[[field]], "POSIXt")) {
+          expect_identical(as.numeric(a[[field]]), as.numeric(b[[field]]))
+          expect_identical(attr(b[[field]], "tzone"), "UTC")
+        } else expect_identical(unname(a[[field]]), unname(b[[field]]), info = paste(nm, field))
+      }
+    }
+    expect_equal(attr(read, "validation")$stream_network_validation_run$result, if (reviewed) "PASS" else "REVIEW_REQUIRED")
+    digest <- tools::md5sum(path)
+    expect_error(write_stream_network_geodatabase(x, path), "already exists")
+    expect_error(write_stream_network_geodatabase(x, path, overwrite = TRUE), "Only GEOPACKAGE CREATE")
+    expect_identical(tools::md5sum(path), digest)
+  }
+})
+
+test_that("empty spatial tables, timestamps, and nullable values survive storage", {
+  x <- acceptance_test_bundle(FALSE)
+  empty <- .fg_empty_connectivity(sf::st_crs(x$stream_network))
+  x$stream_network_node <- empty$stream_network_node
+  x$stream_network_connection <- empty$stream_network_connection
+  x$stream_network$upstream_node_id <- x$stream_network$downstream_node_id <- NA_character_
+  x$stream_network_review <- x$stream_network_review[0, ]
+  x$stream_network_operation <- x$stream_network_operation[0, ]
+  x$stream_network_direction_evidence$stream_network_operation_id <- NA_character_
+  path <- tempfile(fileext = ".gpkg")
+  on.exit(unlink(path), add = TRUE)
+  write_stream_network_geodatabase(x, path)
+  restored <- read_stream_network_geodatabase(path, validate = FALSE)
+  expect_equal(nrow(restored$stream_network_node), 0L)
+  expect_s3_class(sf::st_geometry(restored$stream_network_node), "sfc_POINT")
+  expect_s3_class(sf::st_geometry(restored$stream_network_review), "sfc_LINESTRING")
+  expect_type(restored$stream_network_source$geometry_modified, "logical")
+  expect_s3_class(restored$stream_network_operation$performed_at, "POSIXct")
+  expect_identical(as.numeric(restored$stream_network$created_at), as.numeric(x$stream_network$created_at))
+  expect_true(all(is.na(restored$stream_network_review$decision_at)))
+})
+
+test_that("unsupported or broken bundles fail before publishing", {
+  x <- acceptance_test_bundle()
+  path <- tempfile(fileext = ".gpkg")
+  on.exit(unlink(path), add = TRUE)
+  expect_error(write_stream_network_geodatabase(x, path, format = "FILE_GEODATABASE"), "Only GEOPACKAGE CREATE")
+  expect_error(write_stream_network_geodatabase(x, path, mode = "UPDATE"), "Only GEOPACKAGE CREATE")
+  broken <- x
+  broken$stream_network_review$stream_network_validation_issue_id <- .fg_generate_uuid(1)
+  expect_error(write_stream_network_geodatabase(broken, path), "Broken reference")
+  broken <- x
+  broken$stream_network_configuration$bad <- I(list(1:3))
+  expect_error(write_stream_network_geodatabase(broken, path), "Unsupported field type")
+  broken <- accept_stream_network(x, "synthetic-reviewer", accepted_at = Sys.time() + 2)
+  broken$stream_network_review$decision <- "PENDING"
+  expect_error(write_stream_network_geodatabase(broken, path), "no longer valid")
+  expect_false(file.exists(path))
+  sf::st_write(data.frame(x = 1), path, layer = "unrelated", quiet = TRUE)
+  expect_error(read_stream_network_geodatabase(path), "Missing.*manifest")
+})
+
+test_that("failed staging never publishes and does not touch another file", {
+  x <- acceptance_test_bundle(FALSE)
+  path <- tempfile(fileext = ".gpkg")
+  on.exit(unlink(path), add = TRUE)
+  before <- list.files(dirname(path), pattern = "^\\.fluvgeo-network-", full.names = TRUE)
+  testthat::local_mocked_bindings(read_stream_network_geodatabase = function(...) stop("synthetic staged read failure"))
+  expect_error(write_stream_network_geodatabase(x, path), "synthetic staged read failure")
+  expect_false(file.exists(path))
+  expect_setequal(list.files(dirname(path), pattern = "^\\.fluvgeo-network-", full.names = TRUE), before)
+})
+
+test_that("saved acceptance requires audit provenance and current inspection", {
+  x <- accept_stream_network(acceptance_test_bundle(), "synthetic-reviewer", accepted_at = Sys.time() + 2)
+  path <- tempfile(fileext = ".gpkg")
+  on.exit(unlink(path), add = TRUE)
+  broken <- x
+  broken$stream_network_observation$reviewed_by <- NA_character_
+  expect_error(write_stream_network_geodatabase(broken, path), "reviewer/time")
+  broken <- x
+  broken$stream_network_validation_run$result <- "REVIEW_REQUIRED"
+  expect_error(write_stream_network_geodatabase(broken, path), "recorded acceptance run")
+  broken <- x
+  broken$stream_network_review$decision_at <- x$stream_network_observation$reviewed_at + 60
+  expect_error(write_stream_network_geodatabase(broken, path), "later modifications or inspections")
+  expect_false(file.exists(path))
+  write_stream_network_geodatabase(x, path)
+  # Simulate an external edit to a disposable test GeoPackage, retaining schema.
+  changed <- read_stream_network_geodatabase(path, validate = FALSE)$stream_network_observation
+  changed$review_status <- "ACCEPTED"
+  changed$reviewed_at <- .fg_encode_network_time(changed$reviewed_at)
+  changed$created_at <- .fg_encode_network_time(changed$created_at)
+  changed$modified_at <- .fg_encode_network_time(changed$modified_at)
+  changed$reviewed_by <- "unrecorded-reviewer"
+  sf::st_write(changed, path, layer = "stream_network_observation", append = FALSE, quiet = TRUE)
+  expect_error(read_stream_network_geodatabase(path), "recorded acceptance run")
+  expect_equal(read_stream_network_geodatabase(path, validate = FALSE)$stream_network_observation$reviewed_by, "unrecorded-reviewer")
+})
+
+test_that("timestamp binding preserves instants and fails on lossy scalar input", {
+  times <- as.POSIXct(c(0, -0.25, 1788634567.1234567, 2147483648.9999998, NA_real_),
+                     origin = "1970-01-01", tz = "America/Chicago")
+  encoded <- .fg_encode_network_time(times)
+  restored <- as.POSIXct(encoded, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")
+  expect_identical(as.numeric(restored), as.numeric(times))
+  expect_identical(.fg_encode_network_time(times[0]), character())
+  x <- acceptance_test_bundle(FALSE)
+  x$stream_network_configuration$invalid <- Inf
+  expect_error(.fg_network_field_manifest(x), "Nonfinite numeric")
+})
+
 test_that("classification preserves geometry, lineage, reviews, and existing history", {
   f <- acceptance_test_fixture()
   before <- f$p

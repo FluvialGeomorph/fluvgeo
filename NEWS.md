@@ -2,6 +2,13 @@
 
 ## Stream Network relations
 
+- Added `accept_stream_network()` for explicit, validated local acceptance, with
+  reviewer provenance and appended validation history. It never supplies missing
+  inspection decisions. Added new-file GeoPackage write/read with staged exact
+  value/geometry round-trip checks, UTC timestamps, and retained lineage/reviews.
+  Drafts can be saved unresolved; accepted state is revalidated. File-geodatabase
+  binding, UPDATE/overwrite, reopening, and enterprise loading remain deferred.
+
 - Added explicit `classify_stream_network_segments()` decisions with structured
   role values and ordered operation provenance, without approving inspections.
   Added read-only `validate_stream_network()` for WORKING/ACCEPTANCE checks on

@@ -264,8 +264,8 @@ IDs are present. There are no FGDB access calls or new runtime dependencies.
 The Sinsinawa experiment records MAINSTEM using the user's prior confirmation
 of the pruned artifact, explicitly attributed to the experiment process. It
 does not fabricate a reviewer approval, qualification notes, or a true terrain
-date. The next slice is the explicit reviewer-facing acceptance transition and
-local persistence, not another topology implementation.
+date. The subsequent slice below adds the explicit reviewer-facing acceptance
+transition and local persistence, not another topology implementation.
 
 Verification: 408 focused assertions and 55 clipped-DEM experiment checks pass.
 The scoped package check reports zero errors/warnings and the same two existing
@@ -273,3 +273,50 @@ package-wide notes (tests/examples/manual/vignettes excluded, suggested packages
 optional). The final operation-code/notes guards were followed by another full
 focused-test and experiment run. The external-service integration suite was not
 rerun. No source datasets, geodatabase contents, or real approval states changed.
+
+## Explicit acceptance and local persistence (2026-09-05)
+
+This slice implements `accept_stream_network()` on a named list combining
+Configuration tables, Observation, and preparation outputs. Inspection decisions
+must already be supplied; the function never turns PENDING into ACCEPT. A fresh
+ACCEPTANCE check gates the status transition, which records the observation
+reviewer/time/notes and appends validation history. Failure carries diagnostics
+and a history-preserving bundle in `fluvgeo_acceptance_error`. Segment scientific
+modification timestamps stay unchanged by acceptance alone. Reopening is deferred.
+
+```r
+relations <- c(configuration_tables,
+  list(stream_network_observation = observation), classified)
+# After the analyst has supplied current inspection decisions and qualification:
+accepted <- accept_stream_network(relations, reviewer = reviewer_id)
+write_stream_network_geodatabase(accepted, "reviewed-network.gpkg")
+restored <- read_stream_network_geodatabase("reviewed-network.gpkg")
+```
+
+The disk slice is new-file GeoPackage only, using existing sf/GDAL dependencies.
+Drafts can also be saved directly, with pending decisions intact. A versioned
+field manifest preserves nullable scalar types and UTC timestamps; spatial and
+attribute tables undergo exact round-trip comparison before publication. It
+never overwrites an existing destination. A hard-link-capable local filesystem
+is required for atomic, non-replacing publication. Accepted bundles are checked
+again on save/default read; fresh read diagnostics are attached, not substituted
+for prior evidence. Full FileGDB binding, in-place UPDATE, and enterprise loading
+remain deferred. Physical details are in the shared FGDB schema.
+
+The clipped Sinsinawa pilot now exercises draft save/reload, preserving all
+51 sources, candidate/node identities, native geometry, and pending inspections.
+Attempted acceptance still reports missing review and scientific qualification.
+Only explicitly synthetic fixtures exercise successful acceptance. No real
+observation is approved by this implementation step.
+
+Verification: 804 focused assertions pass with zero failures/errors/test warnings;
+the clipped-DEM experiment passes 64 checks. This includes synthetic successful
+acceptance, blocked/stale acceptance, accepted and unresolved draft round trips,
+typed empty spatial/evidence tables, UTC precision, broken evidence references,
+existing-file protection, and staged-failure cleanup. Scoped R CMD check finishes
+with zero errors/warnings and the same two existing package-wide notes (undeclared
+methods use and global bindings); tests/examples/manual/vignettes excluded and
+suggested packages optional. The external-service integration suite was not rerun.
+Generated help was refreshed without retaining unrelated roxygen churn. FGDB
+changes in this slice document the shared API/binding; no enterprise loader,
+client deployment, source dataset modification, or new dependency is included.

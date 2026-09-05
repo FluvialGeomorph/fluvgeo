@@ -232,3 +232,27 @@ check(setequal(acceptance$stream_network_validation_issue$issue_code,
                 c("REQUIRED_REVIEW_PENDING", "OBSERVATION_QUALIFICATION_REQUIRED")), "only explicit inspection and qualification remain")
 check(identical(observation$review_status, "DRAFT"), "test Observation remains unaccepted")
 cat("CLASSIFICATION PASS:", checks, "total checks; WORKING passes; ACCEPTANCE requires review and qualification.\n")
+
+# Persist the experimental draft, NOT a real or automatically accepted observation.
+local_bundle <- c(config, list(stream_network_observation = observation), classified)
+local_path <- tempfile("clipped-sinsinawa-draft-", fileext = ".gpkg")
+local({
+  on.exit(unlink(local_path))
+  write_stream_network_geodatabase(local_bundle, local_path)
+  restored <- read_stream_network_geodatabase(local_path)
+  check(nrow(restored$stream_network_source) == 51L, "saved draft retains all 51 sources")
+  check(identical(restored$stream_network$stream_network_segment_id,
+                  classified$stream_network$stream_network_segment_id), "saved segment identity")
+  check(identical(restored$stream_network_node$node_id, classified$stream_network_node$node_id), "saved node identities")
+  check(identical(sf::st_as_binary(sf::st_geometry(restored$stream_network)),
+                  sf::st_as_binary(sf::st_geometry(classified$stream_network))), "saved geometry unchanged")
+  check(identical(restored$stream_network_observation$review_status, "DRAFT"), "saved Observation remains draft")
+  check(all(restored$stream_network_review$decision == "PENDING"), "saved review decisions remain pending")
+  check(identical(attr(restored, "validation")$stream_network_validation_run$result, "PASS"), "reloaded draft passes working validation")
+  blocked <- tryCatch(accept_stream_network(restored, "clipped-dem-experiment"),
+                       fluvgeo_acceptance_error = identity)
+  check(inherits(blocked, "fluvgeo_acceptance_error"), "experiment process cannot bypass missing review")
+  check(setequal(blocked$validation$stream_network_validation_issue$issue_code,
+                  c("REQUIRED_REVIEW_PENDING", "OBSERVATION_QUALIFICATION_REQUIRED")), "acceptance retains both human decisions")
+})
+cat("PERSISTENCE PASS:", checks, "total checks; draft round trip preserves evidence; acceptance remains blocked.\n")

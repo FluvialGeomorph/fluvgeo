@@ -82,6 +82,23 @@ REVIEW_REQUIRED, not an acceptance state change. The detailed retained-network
 scope and human-review requirements are in the shared FGDB schema referenced
 above. Actual acceptance and enterprise loading remain separate operations.
 
+## Local acceptance and persistence
+
+`accept_stream_network()` takes a complete named relation list, supplied reviewer,
+optional qualification notes/Reach mappings, and acceptance time. It returns an
+accepted copy only after current acceptance validation passes, preserving earlier
+runs/issues and inspection decisions. A structured failure exposes findings and
+a bundle with appended failed history. It never implicitly writes to disk.
+
+`write_stream_network_geodatabase()` / `read_stream_network_geodatabase()` implement
+the new-file GeoPackage binding `FLUVGEO_NETWORK_GPKG_1`. All relation tables and a
+field-type manifest are stored together; timestamps use exact UTC text and are
+restored as POSIXct. New writes undergo round-trip verification and non-replacing
+publication. Read validation is attached separately from saved history. Scientific
+readiness is not required to save drafts; accepted state must revalidate. See the
+shared FGDB schema for manifest, field types, acceptance provenance, and filesystem
+limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
+
 ## Other contracts
 
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package
