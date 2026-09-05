@@ -101,6 +101,29 @@ limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
 
 ## Other contracts
 
+### Terrain Development report input contract
+
+`TERRAIN_DEVELOPMENT_REPORT_1` is a read-only presentation contract, not an FGDB
+entity schema or an extension to the network GeoPackage binding. Its optional
+inputs use canonical UUID identities:
+
+- `study_area`: one polygon sf row, `study_area_id`, `study_area_name`;
+- `streams`: selected rows with `stream_id`, `study_area_id`, `stream_name`;
+- `reaches`: rows with `reach_id`, `stream_id`, `reach_name`;
+- `survey_events`: `survey_event_id`, `reach_id`, required `survey_year`, nullable
+  `survey_month`/`survey_day`. Optional `source_dataset`/`availability_notes` are
+  caller-supplied inventory descriptions, not verified file checks by the API;
+- existing network relations or a fluvgeo GeoPackage, and an optional projected
+  single-band SpatRaster; optional terrain/analyst narrative notes.
+
+Each context identity is unique, parentage is checked by IDs rather than spatial
+containment or name parsing, and partial dates are not padded with invented
+components. Optional Stream/Reach sf geometry must be polygon AOIs. Geometry may
+arrive in its defined local CRS; the report transforms only its display. This
+does not alter FGDB's governed geometry CRS. Missing inputs remain explicit.
+The summary's fresh validation is separate from persisted history; rendering
+does not change either. See `dev/features/terrain-development-report.md`.
+
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package
 documentation and their tests.
 

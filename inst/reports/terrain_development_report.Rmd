@@ -1,0 +1,137 @@
+---
+title: "Terrain Development"
+subtitle: "Study definition and pre-Level-1 review"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+    toc: true
+    toc_depth: 2
+params:
+  report: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+r <- params$report
+esc <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  gsub(">", "&gt;", x, fixed = TRUE)
+}
+table_html <- function(x, fields = names(x)) {
+  if (is.null(x) || !nrow(x)) return(cat("<p>Not supplied or no records supplied.</p>\n"))
+  x <- as.data.frame(sf::st_drop_geometry(x))
+  cat(as.character(knitr::kable(x[intersect(fields, names(x))], format = "html", escape = TRUE, row.names = FALSE)))
+}
+```
+
+## Study scope
+
+This is a read-only review of supplied local inputs, not a Level 1 readiness
+certificate. Missing information is shown below; no Survey Events, boundaries,
+or review decisions have been inferred. The AOI is an analyst-defined study
+extent, not an official boundary or a watershed derived from this report.
+
+```{r scope, results='asis'}
+table_html(r$study_area, "study_area_name")
+cat("<p>Generated ", esc(format(r$generated_at, tz = "UTC", usetz = TRUE)), ".</p>", sep = "")
+if (!is.na(r$analyst_notes)) cat("<p>", esc(r$analyst_notes), "</p>", sep = "")
+cat("<p>", if (is.null(r$streams)) "Unknown" else nrow(r$streams), " selected Streams; ",
+    if (is.null(r$reaches)) "unknown" else nrow(r$reaches), " defined Reaches; ",
+    nrow(r$surveys), " supplied Survey Events.</p>", sep = "")
+```
+
+## Decisions and missing evidence
+
+```{r gaps, results='asis'}
+cat("<ul>", paste0("<li>", esc(r$gaps), "</li>", collapse = ""), "</ul>")
+```
+
+## Spatial overview
+
+```{r overview, fig.width=9, fig.height=6}
+layers <- Filter(Negate(is.null), list(r$segments, r$study_area, r$dem_extent,
+  if (inherits(r$streams, "sf")) r$streams else NULL,
+  if (inherits(r$reaches, "sf")) r$reaches else NULL))
+if (length(layers)) {
+  crs <- sf::st_crs(layers[[1]])
+  p <- ggplot2::ggplot()
+  if (!is.null(r$dem_extent)) p <- p + ggplot2::geom_sf(data = r$dem_extent, fill = "#e8eef3", colour = "#70869a", linetype = "dashed")
+  if (!is.null(r$study_area)) p <- p + ggplot2::geom_sf(data = r$study_area, fill = NA, colour = "#1d3038", linewidth = 1)
+  if (inherits(r$streams, "sf")) p <- p + ggplot2::geom_sf(data = r$streams, fill = NA, colour = "#5e8d7b", linetype = "dotted")
+  if (inherits(r$reaches, "sf")) p <- p + ggplot2::geom_sf(data = r$reaches, fill = NA, colour = "#a36945", linetype = "dotdash")
+  if (!is.null(r$segments)) p <- p + ggplot2::geom_sf(data = r$segments, ggplot2::aes(colour = report_reach), linewidth = 1)
+  print(p + ggplot2::coord_sf(crs = crs, datum = crs) + ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::scale_x_continuous(n.breaks = 3, labels = scales::label_number(big.mark = ",")) +
+    ggplot2::scale_y_continuous(n.breaks = 4, labels = scales::label_number(big.mark = ",")) +
+    ggplot2::theme(legend.position = "bottom", axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+    ggplot2::labs(colour = "Network Reach assignment", x = NULL, y = NULL,
+      caption = paste("Display CRS:", crs$Name, "| Coordinate units:", crs$units_gdal)))
+} else cat("No Study Area, network, or DEM extent supplied for mapping.")
+```
+
+Solid dark outline: Study Area AOI. Pale fill and dashed outline: DEM rectangle,
+**not its valid-cell footprint**. Optional green dotted and brown dot-dashed
+outlines: supplied Stream and Reach AOIs. Network colours show supplied Reach
+assignments, not inferred segmentation. No online basemap is requested.
+
+## Streams, Reaches and Survey Events
+
+### Selected Streams
+
+```{r streams, results='asis'}
+table_html(r$streams, "stream_name")
+```
+
+### Reach definitions
+
+```{r reaches, results='asis'}
+table_html(r$reaches, c("stream_name", "reach_name"))
+```
+
+### Survey Event inventory
+
+Dates retain their supplied precision. Inventory does not establish which files
+remain available, a base event, or a relationship to this network observation.
+
+```{r surveys, results='asis'}
+table_html(r$surveys, c("reach_name", "date_label", "source_dataset", "availability_notes"))
+```
+
+## Terrain and network evidence
+
+```{r terrain, results='asis'}
+if (!is.na(r$terrain_notes)) cat("<p>", esc(r$terrain_notes), "</p>", sep = "")
+table_html(r$terrain)
+if (nrow(r$observation)) {
+  fields <- intersect(c("evidence_class", "coverage_status", "provenance_completeness", "review_status",
+    "derivation_method_id", "method_version", "source_terrain_label", "vertical_unit", "native_vertical_datum"), names(r$observation))
+  table_html(data.frame(property = fields, value = vapply(r$observation[fields], as.character, character(1))))
+}
+```
+
+The supplied DEM is not asserted to be the original derivation surface. This
+first report shows its extent and grid metadata; it does not assess internal
+NoData, elevation quality, hydro-conditioning or Level 1 input completeness.
+Network acceptance and local technical validation are separate facts.
+
+## Network checks and identity references
+
+```{r checks, results='asis'}
+if (!is.null(r$validation)) {
+  table_html(r$validation$stream_network_validation_run, c("validation_level", "result", "validated_at"))
+  findings <- r$validation$stream_network_validation_issue
+  if (nrow(findings)) table_html(findings, c("issue_code", "message"))
+}
+cat("<details><summary>Identity references</summary>")
+table_html(r$study_area, c("study_area_name", "study_area_id"))
+table_html(r$streams, c("stream_name", "stream_id", "study_area_id"))
+table_html(r$reaches, c("reach_name", "reach_id", "stream_id"))
+table_html(r$surveys, c("date_label", "survey_event_id", "reach_id"))
+cat("</details>")
+```
+
+The report does not change source data, stored validation history, review
+decisions, or acceptance status. Detailed network lineage and operation evidence
+remain in the accompanying relation bundle/GeoPackage.

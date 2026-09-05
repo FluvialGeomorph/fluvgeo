@@ -1,5 +1,14 @@
 # fluvgeo 2026.09.4.9000
 
+## Terrain Development reporting
+
+- Added read-only `terrain_development_summary()` and offline HTML
+  `terrain_development_report()` for pre-Level-1 scope, terrain extent, selected
+  Streams/Reaches, Survey Event inventory and network findings. Missing context
+  stays explicit; no dates, AOIs, acceptance or Level 1 readiness are inferred.
+  Added a Cole Creek R1 demonstration using the retained 2006/2010/2016 data and
+  the new GeoPackage path, without ArcPy or source-data modification.
+
 ## Stream Network relations
 
 - Added `accept_stream_network()` for explicit, validated local acceptance, with
