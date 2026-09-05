@@ -6,6 +6,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/news/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/FluvialGeomorphicMetric-class.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/accept_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/arcgis_auth.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_radius.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_raduis_plot.html</loc></url>
@@ -77,6 +78,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_network_from_features.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/pt_watershed_area.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/reach_rhg_graph.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_network_geodatabase.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf2csv.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_fix_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_get_z.html</loc></url>
@@ -106,6 +108,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/table_xs_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/water_surface_poly.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/write_stream_network_geodatabase.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs2pts.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_bearing.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/xs_compare_plot_L1.html</loc></url>
