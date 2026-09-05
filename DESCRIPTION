@@ -50,6 +50,7 @@ Imports:
     Metrics,
     openssl,
     hydrogeofetch,
+    hydroloom (>= 1.2.1),
     patchwork,
     purrr,
     raster,

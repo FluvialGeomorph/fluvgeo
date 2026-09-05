@@ -51,8 +51,9 @@ are recorded in `stream_network_operation` and
 `stream_network_direction_evidence`. Reversal preserves segment IDs and sets
 source `geometry_modified`; confirmation records classification without changing
 coordinates. Successful direction correction removes DIRECTION_UNRESOLVED but
-retains SEGMENT_REVIEW_REQUIRED for unresolved nodes/roles. No snapping,
-splitting, node assignment, or observation acceptance occurs.
+retains SEGMENT_REVIEW_REQUIRED for unresolved nodes/roles. Optional connectivity
+now resolves candidate node identities (below); no snapping, splitting, or
+observation acceptance occurs.
 
 Functions return the named relational tibbles and sf objects without FGDB
 access. Existing normalizer and constructor signatures remain compatible;
@@ -111,12 +112,13 @@ that 51 usable-footprint pieces consolidate into one DEM-oriented logical link,
 eliminating the three independent equal-elevation decisions. Actual preparation
 then retains only SEGMENT_REVIEW_REQUIRED. The original experiments used
 standalone adapters. The production logical-link slice below now integrates
-consolidation and many-source lineage; node/role assignment and acceptance
-validation remain outstanding.
+consolidation and many-source lineage. The subsequent connectivity slice below
+assigns candidate nodes; role assignment and acceptance validation remain outstanding.
 INSPECT rows alone cannot authorize edits.
 Disconnected components,
-multi-segment cycles, near endpoint-to-interior gaps, missing Stream/Reach
-boundary splits, governed nodes, and acceptance validation remain unimplemented.
+near endpoint-to-interior gaps, missing Stream/Reach boundary splits, and
+acceptance validation remain unimplemented. Optional connectivity now checks
+directed cycles; disconnected components are represented but not accepted.
 
 ## Production logical-link slice (2026-09-05)
 
@@ -135,7 +137,7 @@ prepared <- prepare_stream_network_from_features(
   stream_network = raw_lines, source_mappings = mappings,
   configuration = configuration, configuration_streams = configuration_streams,
   observation = observation, actor = "network-preparation",
-  dem = stream_dem, consolidate = TRUE,
+  dem = stream_dem, consolidate = TRUE, connect = TRUE,
   protected_nodes = retained_boundary_points # NULL if none are declared
 )
 ```
@@ -159,8 +161,8 @@ Equal logical endpoint elevations still remain unresolved. VALIDATE_ONLY does
 not consolidate and retains raw endpoint evidence and empty operation/review
 tables. Default calls retain previous behavior.
 
-Hydroloom production relationship/node adapters are the next implementation
-slice. Neither FGDB persistence nor Shiny/toolbox clients are changed here;
+The connectivity slice below adds the hydroloom production adapter.
+Neither FGDB persistence nor Shiny/toolbox clients are changed here;
 callers must explicitly enable consolidation. DEM clipping remains fixture-only.
 
 Verified after implementation: 263 focused assertions pass with no test warnings
@@ -176,4 +178,48 @@ An additional production-helper check on hydroloom's New Hope fixture returned
 645 links from 746 features with all 746 memberships, identical geometric
 coverage, and total length preserved within 1e-7 CRS units. This conservative
 undirected path is distinct from the original directed 643-link experiment;
-production hydrologic relationship rebuilding has not yet been implemented.
+that check preceded production hydrologic relationship rebuilding.
+
+## Production connectivity slice (2026-09-05)
+
+`connect_stream_network()` takes confirmed, downstream-to-upstream candidate
+segments. An sfnetwork built on a reversed copy identifies exact shared
+endpoints; hydroloom's `add_toids(return_dendritic = FALSE)` and `sort_network()`
+derive and order every downstream relationship. Storage geometry, candidate
+segment IDs, and source relationships survive unchanged. No main path is
+invented at diversions. Existing consistent node FKs are reused, even after
+input reordering; missing endpoint identities receive UUIDs. Conflicting IDs
+fail rather than silently replacing governed identity.
+
+Preparation enables this with `connect = TRUE`, independently of consolidation.
+It appends `stream_network_node` and `stream_network_connection` to the existing
+seven outputs. Defaults retain the old seven-table return. Successful assignment
+adds `ASSIGN_NETWORK_NODES` after direction/consolidation operations, updates
+candidate modification provenance, and leaves source geometry flags unchanged.
+`SEGMENT_REVIEW_REQUIRED` then identifies unresolved roles and acceptance, not
+already assigned node identities.
+
+Assignment requires confirmed direction throughout the candidate network.
+Geometry findings (including near misses in preparation) or directed cycles
+defer the entire assignment with an explicit connectivity finding and empty
+typed tables. VALIDATE_ONLY also returns empty tables and applies no operations.
+Disconnected components and multiple outlets are representable, not silently
+certified as a complete network. Node boundary labels describe the observed
+extent, not true river heads or mouths. Undirected diversion cycles are allowed
+when their directed network is acyclic. No node identity across Observations,
+geodatabase writes, Shiny deployment, or observation acceptance is implied.
+
+The next slice is explicit role classification and acceptance-level validation
+of the prepared network, using this shared connectivity rather than adding a
+second relationship engine in FGDB.
+
+Connectivity verification: 340 focused assertions pass without test failures or
+warnings. This includes the independently supplied New Hope relationships:
+746 segments, 663 nodes, and all 832 connection/outlet rows retained. The
+clipped-DEM script passes 47 checks, producing two nodes and one outlet row
+from the single logical link, with all 51 sources intact. No fixture files or
+geodatabase contents were modified.
+The connectivity package check also completed with zero errors/warnings and
+the same two existing notes (tests/examples/manual/vignettes excluded;
+suggested packages optional). The full external-service integration suite was
+not rerun. Generated help was refreshed without unrelated roxygen metadata churn.

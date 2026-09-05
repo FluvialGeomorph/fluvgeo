@@ -109,3 +109,14 @@ remains. All 38 checks passed (28 original plus 10 integration checks).
 This replaces the need for a lineage sidecar in that production path; the
 original experiment and its limitations below remain historical evidence.
 Clipping/inset policy is still experimental, not part of production preparation.
+
+## Connectivity integration follow-up (2026-09-05)
+
+With `consolidate = TRUE, connect = TRUE`, the 51 raw clipped pieces now produce
+one oriented candidate link, two endpoint node UUIDs, one observed-outlet
+connection row, and three ordered operations: consolidation, direction reversal,
+and node assignment. All 51 source relationships and the prior geometric result
+are preserved. All 47 checks pass (38 preceding checks plus 9 connectivity checks).
+Only role and observation-acceptance review remain in the segment finding.
+The downstream boundary remains the edge of this clipped observation, not a
+claim about the physical mouth of the Sinsinawa.

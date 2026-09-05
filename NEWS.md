@@ -2,6 +2,14 @@
 
 ## Stream Network relations
 
+- Added `connect_stream_network()` and optional preparation `connect = TRUE`.
+  Exact endpoints receive reusable candidate node UUIDs; hydroloom derives
+  and orders all downstream relationships, including diversions. Storage
+  geometry and source lineage are preserved. Unresolved direction, ambiguous
+  geometry, or directed cycles defer assignment. Role/acceptance review remains
+  explicit. The default seven-table return remains unchanged; opting in adds
+  node and connection tables and records ordered node-assignment operations.
+
 - Added `build_logical_stream_links()` using sfnetworks to join degree-two
   continuations without a length cutoff. It preserves source membership,
   declared boundaries, junctions, and questionable geometry. Preparation opts

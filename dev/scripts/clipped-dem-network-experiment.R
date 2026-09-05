@@ -101,10 +101,11 @@ observation <- create_stream_network_observation(
   native_horizontal_crs = sf::st_crs(clipped)$input, horizontal_unit = "METRE",
   provenance_completeness = "PARTIAL_LEGACY", actor = "clipped-dem-experiment"
 )
-prepare <- function(x, logical_links = FALSE) prepare_stream_network_from_features(
+prepare <- function(x, logical_links = FALSE, connect = FALSE) prepare_stream_network_from_features(
   x, data.frame(source_row = seq_len(nrow(x)), stream_id = unname(ids["stream"])),
   config$stream_network_configuration, config$stream_network_configuration_stream,
-  observation, actor = "clipped-dem-experiment", dem = dem, consolidate = logical_links
+  observation, actor = "clipped-dem-experiment", dem = dem, consolidate = logical_links,
+  connect = connect
 )
 rejection <- tryCatch({prepare(rect_logical); NULL}, error = function(e) conditionMessage(e))
 check(!is.null(rejection) && grepl("coverage is incomplete", rejection),
@@ -183,3 +184,23 @@ check(identical(sf::st_as_binary(sf::st_geometry(integrated$stream_network)),
       "production geometry agrees with experimental result")
 check(identical(clipped, before), "integrated input unchanged")
 cat("PRODUCTION PASS:", checks, "total checks; 51 sources -> 1 link -> 2 operations; review required.\n")
+
+connected <- prepare(clipped, logical_links = TRUE, connect = TRUE)
+check(nrow(connected$stream_network_node) == 2L, "two candidate endpoint UUIDs")
+check(nrow(connected$stream_network_connection) == 1L &&
+        is.na(connected$stream_network_connection$downstream_segment_id), "one observed outlet row")
+check(all(connected$stream_network$upstream_node_id %in% connected$stream_network_node$node_id) &&
+        all(connected$stream_network$downstream_node_id %in% connected$stream_network_node$node_id),
+      "candidate endpoint foreign keys")
+check(identical(connected$stream_network_operation$operation_code,
+                c("CONSOLIDATE_SEGMENTS", "REVERSE_DIRECTION", "ASSIGN_NETWORK_NODES")),
+      "three ordered preparation operations")
+check(identical(connected$stream_network_operation$operation_sequence, 1:3), "node operation sequence")
+check(identical(connected$stream_network_validation_issue$issue_code, "SEGMENT_REVIEW_REQUIRED"),
+      "role and acceptance remain open")
+check(grepl("segment role and observation acceptance", connected$stream_network_validation_issue$message),
+      "review no longer requests already assigned node identities")
+check(nrow(connected$stream_network_source) == 51L, "connectivity preserves all original lineage")
+check(identical(sf::st_as_binary(sf::st_geometry(connected$stream_network)),
+                sf::st_as_binary(sf::st_geometry(integrated$stream_network))), "connectivity leaves geometry unchanged")
+cat("CONNECTIVITY PASS:", checks, "total checks; 2 nodes, 1 outlet row, 3 operations; review required.\n")

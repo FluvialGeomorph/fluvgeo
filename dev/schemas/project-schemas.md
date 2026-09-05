@@ -48,6 +48,22 @@ source keys are null when multiple sources contribute. The authoritative
 cross-repository contract is `FGDB/dev/schemas/stream-network-geodatabase-schema.md`,
 including `CONSOLIDATE_SEGMENTS`, ordered DEM operations, and review semantics.
 
+## Candidate node and connectivity contracts
+
+`connect_stream_network()` returns the candidate `stream_network` with populated
+node FKs, `stream_network_node` (POINT sf), and `stream_network_connection`
+(tibble). Preparation appends these last two tables only with `connect = TRUE`;
+the default seven-table return is unchanged. Deferred and VALIDATE_ONLY calls
+return typed empty tables. The FGDB schema above defines fields and codes.
+
+Node UUIDs represent exact endpoint locations within one Observation; known
+consistent IDs are reused. Endpoint coincidence is exact, not tolerance-based
+clustering. Connection pairs preserve every diversion, and outlets use a null
+downstream-segment FK. Do not join this repeated-ID relationship table as a
+unique-feature table. Node assignment is recorded in `ASSIGN_NETWORK_NODES`
+operations; storage geometry and source lineage are unchanged. Topological
+boundary labels and confirmed direction do not substitute for acceptance review.
+
 ## Other contracts
 
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package

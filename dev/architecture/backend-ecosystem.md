@@ -75,7 +75,7 @@ supports that claim.
 ## Related context
 
 Network processing uses sfnetworks/tidygraph/igraph for spatial topology and
-adopts hydroloom for subsequent hydrologic adapters. fluvgeo owns reusable
+hydroloom for non-dendritic connectivity and hydrologic ordering. fluvgeo owns reusable
 methods; FGDB owns persistence and governed relational meaning. See
 [ADR-0001](../decisions/ADR-0001-network-processing-libraries.md).
 

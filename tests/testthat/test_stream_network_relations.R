@@ -54,7 +54,8 @@ retained_network_test_source <- function() {
 
 prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
                                  tolerance = 0.01, unit = "METRE", dem = NULL,
-                                 consolidate = FALSE, protected_nodes = NULL) {
+                                 consolidate = FALSE, protected_nodes = NULL,
+                                 connect = FALSE) {
   context <- stream_network_test_context(source)
   context$observation$topology_tolerance <- tolerance
   context$observation$topology_tolerance_unit <- unit
@@ -63,7 +64,7 @@ prepare_test_network <- function(source, mode = "CREATE_REVIEW_FEATURES",
                        stream_id = stream_network_test_ids$stream_1),
     context$configuration, context$configuration_streams,
     context$observation, actor = "testthat", review_mode = mode, dem = dem,
-    consolidate = consolidate, protected_nodes = protected_nodes
+    consolidate = consolidate, protected_nodes = protected_nodes, connect = connect
   )
 }
 
@@ -106,10 +107,41 @@ test_that("preparation consolidates before direction with many-source operation 
   expect_true(is.na(out$stream_network_review$stream_network_source_id[1]))
   expect_equal(out$stream_network_review$stream_network_source_id[2], lineage$stream_network_source_id[4])
   expect_true(is.na(out$stream_network_validation_issue$related_relation[1]))
+  connected <- prepare_test_network(source, dem = dem, consolidate = TRUE, connect = TRUE)
+  expect_equal(length(connected), 9L)
+  expect_equal(nrow(connected$stream_network_node), 4L)
+  expect_equal(nrow(connected$stream_network_connection), 2L)
+  expect_false(anyNA(connected$stream_network$upstream_node_id))
+  expect_false(anyNA(connected$stream_network$downstream_node_id))
+  cops <- connected$stream_network_operation
+  expect_equal(cops$operation_code[4:5], rep("ASSIGN_NETWORK_NODES", 2))
+  expect_equal(cops$operation_sequence[4:5], c(3L,2L))
+  expect_true(is.na(cops$stream_network_source_id[4]))
+  expect_true(all(grepl("segment role and observation acceptance", connected$stream_network_validation_issue$message)))
+  expect_true(all(connected$stream_network_source$geometry_modified))
   expect_equal(nrow(prepare_test_network(source, consolidate = TRUE)$stream_network_operation), 1L)
   flat <- terra::init(dem, 1)
   expect_true(all(prepare_test_network(source, dem = flat, consolidate = TRUE)$
                    stream_network_direction_evidence$action == "UNRESOLVED"))
+  deferred <- prepare_test_network(source, dem = flat, consolidate = TRUE, connect = TRUE)
+  expect_equal(nrow(deferred$stream_network_node), 0L)
+  expect_equal(nrow(deferred$stream_network_connection), 0L)
+  expect_true("CONNECTIVITY_DIRECTION_UNRESOLVED" %in% deferred$stream_network_validation_issue$issue_code)
+  expect_false(any(deferred$stream_network_operation$operation_code == "ASSIGN_NETWORK_NODES"))
+  preview_connected <- prepare_test_network(source, "VALIDATE_ONLY", dem = dem, connect = TRUE)
+  expect_equal(nrow(preview_connected$stream_network_node), 0L)
+  expect_equal(nrow(preview_connected$stream_network_operation), 0L)
+  kept <- source[c(1,4),]
+  sf::st_geometry(kept) <- sf::st_reverse(sf::st_geometry(kept))
+  classified <- prepare_test_network(kept, dem = dem, connect = TRUE)
+  expect_false(any(classified$stream_network_source$geometry_modified))
+  expect_identical(sf::st_geometry(classified$stream_network), sf::st_geometry(kept))
+  near <- source[c(1,4),]
+  sf::st_geometry(near)[[2]] <- sf::st_linestring(rbind(c(1.201,0.5),c(2.2,0.5)))
+  blocked <- prepare_test_network(near, dem = dem, connect = TRUE)
+  expect_equal(nrow(blocked$stream_network_node), 0L)
+  expect_true("CONNECTIVITY_GEOMETRY_UNRESOLVED" %in% blocked$stream_network_validation_issue$issue_code)
+  expect_false(any(blocked$stream_network_operation$operation_code == "ASSIGN_NETWORK_NODES"))
   preview <- prepare_test_network(source, "VALIDATE_ONLY", dem = dem, consolidate = TRUE)
   expect_equal(nrow(preview$stream_network), 4L)
   expect_equal(nrow(preview$stream_network_operation), 0L)

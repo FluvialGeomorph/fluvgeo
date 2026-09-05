@@ -14,7 +14,8 @@ prepare_stream_network_from_features(
   review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
   dem = NULL,
   consolidate = FALSE,
-  protected_nodes = NULL
+  protected_nodes = NULL,
+  connect = FALSE
 )
 }
 \arguments{
@@ -53,13 +54,21 @@ checked before merging. VALIDATE_ONLY never consolidates or records edits.}
 \item{protected_nodes}{Optional exact endpoint POINTs passed to
 \code{\link{build_logical_stream_links}} when consolidating. Boundaries inside source
 lines must first be split explicitly; they are not inferred or snapped.}
+
+\item{connect}{Logical; FALSE preserves the seven-table return. TRUE adds
+candidate node and connection tables using \code{\link{connect_stream_network}}
+after direction/geometry assessment. Unresolved direction or geometry defers
+the whole assignment with a linked finding and empty typed tables. Directed
+cycles also defer assignment. VALIDATE_ONLY never assigns nodes.}
 }
 \value{
 A named list with stream_network, stream_network_source,
   stream_network_review, stream_network_validation_run, and
   stream_network_validation_issue, stream_network_operation, and
   stream_network_direction_evidence. Direction evidence is empty without
-  a DEM; operations also record applied logical-link consolidation.
+  a DEM; operations also record applied logical-link consolidation and node
+  assignment. With connect = TRUE, stream_network_node and
+  stream_network_connection are appended (empty when deferred/validate-only).
   Evidence records pre-orientation logical-link endpoint values, raster reference, method,
   action, and an operation link for applied corrections/classifications.
   Review Shape is the affected candidate
@@ -82,7 +91,7 @@ not automatically a hydrologic connection.
 
 This retained-source slice does not detect every network defect: disconnected
 components, multi-segment cycles, near endpoint-to-interior gaps, and missing
-Stream/Reach boundary splits remain outside its checks. It does not assign
-node UUIDs. Its WORKING result is always REVIEW_REQUIRED because node
-identities and segment roles remain unresolved after direction correction.
+Stream/Reach boundary splits remain outside its base checks. Optional
+connectivity assigns node UUIDs and checks directed cycles. Its WORKING result
+remains REVIEW_REQUIRED because segment roles and acceptance remain unresolved.
 }

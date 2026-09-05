@@ -14,9 +14,9 @@
 #'
 #' This retained-source slice does not detect every network defect: disconnected
 #' components, multi-segment cycles, near endpoint-to-interior gaps, and missing
-#' Stream/Reach boundary splits remain outside its checks. It does not assign
-#' node UUIDs. Its WORKING result is always REVIEW_REQUIRED because node
-#' identities and segment roles remain unresolved after direction correction.
+#' Stream/Reach boundary splits remain outside its base checks. Optional
+#' connectivity assigns node UUIDs and checks directed cycles. Its WORKING result
+#' remains REVIEW_REQUIRED because segment roles and acceptance remain unresolved.
 #'
 #' @inheritParams normalize_retained_stream_network
 #' @param review_mode CREATE_REVIEW_FEATURES returns pending INSPECT features;
@@ -34,12 +34,19 @@
 #' @param protected_nodes Optional exact endpoint POINTs passed to
 #'   \code{\link{build_logical_stream_links}} when consolidating. Boundaries inside source
 #'   lines must first be split explicitly; they are not inferred or snapped.
+#' @param connect Logical; FALSE preserves the seven-table return. TRUE adds
+#'   candidate node and connection tables using \code{\link{connect_stream_network}}
+#'   after direction/geometry assessment. Unresolved direction or geometry defers
+#'   the whole assignment with a linked finding and empty typed tables. Directed
+#'   cycles also defer assignment. VALIDATE_ONLY never assigns nodes.
 #'
 #' @return A named list with stream_network, stream_network_source,
 #'   stream_network_review, stream_network_validation_run, and
 #'   stream_network_validation_issue, stream_network_operation, and
 #'   stream_network_direction_evidence. Direction evidence is empty without
-#'   a DEM; operations also record applied logical-link consolidation.
+#'   a DEM; operations also record applied logical-link consolidation and node
+#'   assignment. With connect = TRUE, stream_network_node and
+#'   stream_network_connection are appended (empty when deferred/validate-only).
 #'   Evidence records pre-orientation logical-link endpoint values, raster reference, method,
 #'   action, and an operation link for applied corrections/classifications.
 #'   Review Shape is the affected candidate
@@ -56,13 +63,17 @@ prepare_stream_network_from_features <- function(
     review_mode = c("CREATE_REVIEW_FEATURES", "VALIDATE_ONLY"),
     dem = NULL,
     consolidate = FALSE,
-    protected_nodes = NULL) {
+    protected_nodes = NULL,
+    connect = FALSE) {
   review_mode <- match.arg(review_mode)
   if (!is.logical(consolidate) || length(consolidate) != 1L || is.na(consolidate)) {
     .fg_abort("`consolidate` must be TRUE or FALSE.")
   }
   if (!consolidate && !is.null(protected_nodes)) {
     .fg_abort("`protected_nodes` requires consolidate = TRUE.")
+  }
+  if (!is.logical(connect) || length(connect) != 1L || is.na(connect)) {
+    .fg_abort("`connect` must be TRUE or FALSE.")
   }
   result <- normalize_retained_stream_network(
     stream_network, source_mappings, configuration, configuration_streams,
@@ -143,7 +154,7 @@ prepare_stream_network_from_features <- function(
     if (length(ids) == 1L) ids else NA_character_
   }, character(1), USE.NAMES = FALSE)
   run <- result$stream_network_validation_run
-  run$validator_version <- "RETAINED_ASSESSMENT_0.3"
+  run$validator_version <- "RETAINED_ASSESSMENT_0.4"
   direction <- tibble::tibble(
     input_row = integer(), start_elevation = double(), end_elevation = double(),
     start_sample_status = character(), end_sample_status = character(),
@@ -301,6 +312,57 @@ prepare_stream_network_from_features <- function(
     }
   }
 
+  connectivity <- .fg_empty_connectivity(sf::st_crs(segments))
+  if (connect && review_mode != "VALIDATE_ONLY") {
+    geometry_codes <- c("SELF_INTERSECTION", "CLOSED_SEGMENT", "DUPLICATE_GEOMETRY",
+                        "INTERIOR_INTERSECTION", "ENDPOINT_NEAR_MISS")
+    blocked <- vapply(findings, function(f) f$code %in% geometry_codes, logical(1))
+    connected <- NULL
+    if (any(blocked)) {
+      add_finding(findings[[which(blocked)[1L]]]$i, "CONNECTIVITY_GEOMETRY_UNRESOLVED",
+                  "Connectivity assignment deferred for the whole observation; resolve geometry findings first.")
+    } else {
+      connected <- tryCatch(connect_stream_network(segments),
+        fluvgeo_connectivity_error = function(e) {
+          add_finding(1L, e$issue_code, conditionMessage(e))
+          NULL
+        })
+    }
+    if (!is.null(connected)) {
+      segments <- connected$stream_network
+      segments$modified_at <- run$validated_at
+      segments$modified_by <- actor
+      connectivity <- connected[c("stream_network_node", "stream_network_connection")]
+      # All fields start as typed NA; assignment is an attribute operation,
+      # not a geometry edit, and has no single target node or snap tolerance.
+      node_operations <- operations[rep(NA_integer_, n), ]
+      node_operations$stream_network_operation_id <- .fg_generate_uuid(n)
+      node_operations$stream_network_segment_id <- segment_ids
+      node_operations$stream_network_source_id <- source_ids
+      node_operations$operation_sequence <- vapply(segment_ids, function(id) {
+        max(c(0L, operations$operation_sequence[operations$stream_network_segment_id == id])) + 1L
+      }, integer(1), USE.NAMES = FALSE)
+      node_operations$operation_code <- "ASSIGN_NETWORK_NODES"
+      node_operations$operation_notes <- paste(
+        "EXACT_ENDPOINT_CONNECTIVITY_1: candidate endpoints and all downstream connections;",
+        "sfnetworks", utils::packageVersion("sfnetworks"),
+        "hydroloom", utils::packageVersion("hydroloom"),
+        "no snapping, main-path inference, or acceptance."
+      )
+      node_operations$performed_at <- run$validated_at
+      node_operations$performed_by <- actor
+      operations <- dplyr::bind_rows(operations, node_operations)
+      for (i in seq_along(findings)) {
+        if (findings[[i]]$code == "SEGMENT_REVIEW_REQUIRED") {
+          findings[[i]]$message <- paste(
+            "Direction and candidate node identities resolved;",
+            "segment role and observation acceptance remain unresolved."
+          )
+        }
+      }
+    }
+  }
+
   affected <- vapply(findings, `[[`, integer(1), "i")
   related <- vapply(findings, `[[`, integer(1), "j")
   codes <- vapply(findings, `[[`, character(1), "code")
@@ -347,7 +409,7 @@ prepare_stream_network_from_features <- function(
   if (review_mode == "VALIDATE_ONLY") {
     review <- review[0, ]
   }
-  list(
+  output <- list(
     stream_network = segments,
     stream_network_source = result$stream_network_source,
     stream_network_review = review,
@@ -356,4 +418,6 @@ prepare_stream_network_from_features <- function(
     stream_network_operation = operations,
     stream_network_direction_evidence = evidence
   )
+  if (connect) output <- c(output, connectivity)
+  output
 }
