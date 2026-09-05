@@ -209,9 +209,8 @@ extent, not true river heads or mouths. Undirected diversion cycles are allowed
 when their directed network is acyclic. No node identity across Observations,
 geodatabase writes, Shiny deployment, or observation acceptance is implied.
 
-The next slice is explicit role classification and acceptance-level validation
-of the prepared network, using this shared connectivity rather than adding a
-second relationship engine in FGDB.
+The subsequent role/validation slice below uses this shared connectivity rather
+than adding a second relationship engine in FGDB.
 
 Connectivity verification: 340 focused assertions pass without test failures or
 warnings. This includes the independently supplied New Hope relationships:
@@ -223,3 +222,54 @@ The connectivity package check also completed with zero errors/warnings and
 the same two existing notes (tests/examples/manual/vignettes excluded;
 suggested packages optional). The full external-service integration suite was
 not rerun. Generated help was refreshed without unrelated roxygen metadata churn.
+
+## Explicit roles and acceptance validation (2026-09-05)
+
+Use `classify_stream_network_segments(prepared, classifications, actor)` after
+logical-link construction. `classifications` contains UUID-keyed `segment_role`
+and `decision_notes`, so callers can apply a batch of explicit MAINSTEM,
+TRIBUTARY, CONNECTOR, or ARTIFICIAL decisions without positional matching.
+This does not infer the main channel from length or degree. Changed roles append
+CLASSIFY_SEGMENT_ROLE operations with a structured role field and actor/time/notes;
+unchanged decisions are no-ops. Geometry, nodes, sources, inspection decisions,
+and old validation evidence stay unchanged.
+
+Then call `validate_stream_network()` with current relations:
+
+```r
+checked <- validate_stream_network(
+  configuration, configuration_streams, observation, classified$stream_network,
+  sources = classified$stream_network_source,
+  operations = classified$stream_network_operation,
+  nodes = classified$stream_network_node,
+  connections = classified$stream_network_connection,
+  review_features = classified$stream_network_review,
+  level = "ACCEPTANCE", actor = "network-validator"
+)
+```
+
+WORKING recomputes technical checks, including hydroloom connectivity, instead
+of trusting earlier run flags. ACCEPTANCE additionally checks current explicit
+inspection decisions and their provenance and requires qualification notes for
+incomplete legacy coverage/provenance or multiple observed outlets. A later
+geometry or role change makes an older approval stale. No function in this slice
+accepts an Observation or makes an INSPECT approval authorize a repair.
+
+Scope is currently SOURCE_NETWORK_RETAINED. The validator checks local
+consistency, not the original DEM's identity, complete historic source retention,
+scientific appropriateness of supplied roles, unrecorded semantic boundaries, or
+enterprise ownership. Supplied Reach-Stream mappings are required when Reach
+IDs are present. There are no FGDB access calls or new runtime dependencies.
+
+The Sinsinawa experiment records MAINSTEM using the user's prior confirmation
+of the pruned artifact, explicitly attributed to the experiment process. It
+does not fabricate a reviewer approval, qualification notes, or a true terrain
+date. The next slice is the explicit reviewer-facing acceptance transition and
+local persistence, not another topology implementation.
+
+Verification: 408 focused assertions and 55 clipped-DEM experiment checks pass.
+The scoped package check reports zero errors/warnings and the same two existing
+package-wide notes (tests/examples/manual/vignettes excluded, suggested packages
+optional). The final operation-code/notes guards were followed by another full
+focused-test and experiment run. The external-service integration suite was not
+rerun. No source datasets, geodatabase contents, or real approval states changed.

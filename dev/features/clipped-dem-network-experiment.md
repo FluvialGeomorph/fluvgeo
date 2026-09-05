@@ -120,3 +120,17 @@ are preserved. All 47 checks pass (38 preceding checks plus 9 connectivity check
 Only role and observation-acceptance review remain in the segment finding.
 The downstream boundary remains the edge of this clipped observation, not a
 claim about the physical mouth of the Sinsinawa.
+
+## Explicit role and acceptance-check follow-up (2026-09-05)
+
+The experiment records MAINSTEM from the user's existing confirmation that the
+artifact is a pruned mainstem. This appends a fourth, structured classification
+operation without changing geometry, source lineage, or pending inspection
+decisions. WORKING validation passes on the current relations. ACCEPTANCE
+validation returns exactly REQUIRED_REVIEW_PENDING and
+OBSERVATION_QUALIFICATION_REQUIRED: explicit inspection approval and notes
+qualifying clipped coverage/incomplete provenance are still absent.
+
+All 55 experiment checks pass. The synthetic Observation remains DRAFT; no
+approval, historic date, or provenance qualification was fabricated. A technical
+PASS is not permission to accept or load this fixture as a real Observation.

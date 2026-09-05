@@ -89,12 +89,12 @@ connect_stream_network <- function(stream_network) {
   node_ids <- vapply(seq_len(nrow(points)), function(i) {
     known <- unique(endpoint_ids[endpoint_nodes == i & !is.na(endpoint_ids)])
     if (length(known) > 1L) {
-      .fg_abort("Conflicting node IDs at one exact shared endpoint.")
+      fail("NODE_IDENTITY_CONFLICT", "Conflicting node IDs at one exact shared endpoint.")
     }
     if (length(known)) known else NA_character_
   }, character(1))
   if (anyDuplicated(node_ids[!is.na(node_ids)])) {
-    .fg_abort("One node ID cannot identify different endpoint locations.")
+    fail("NODE_IDENTITY_CONFLICT", "One node ID cannot identify different endpoint locations.")
   }
   node_ids[is.na(node_ids)] <- .fg_generate_uuid(sum(is.na(node_ids)))
   x$stream_network_segment_id <- ids

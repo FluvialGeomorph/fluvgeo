@@ -204,3 +204,31 @@ check(nrow(connected$stream_network_source) == 51L, "connectivity preserves all 
 check(identical(sf::st_as_binary(sf::st_geometry(connected$stream_network)),
                 sf::st_as_binary(sf::st_geometry(integrated$stream_network))), "connectivity leaves geometry unchanged")
 cat("CONNECTIVITY PASS:", checks, "total checks; 2 nodes, 1 outlet row, 3 operations; review required.\n")
+
+# The user explicitly confirmed that this retained artifact is a pruned mainstem.
+# Record that role knowledge, not an invented acceptance of this test Observation.
+classified <- classify_stream_network_segments(connected, data.frame(
+  stream_network_segment_id = connected$stream_network$stream_network_segment_id,
+  segment_role = "MAINSTEM",
+  decision_notes = "User-confirmed pruned Sinsinawa mainstem; this is its clipped experimental subset."
+), actor = "clipped-dem-experiment")
+validate <- function(level) validate_stream_network(
+  config$stream_network_configuration, config$stream_network_configuration_stream,
+  observation, classified$stream_network, sources = classified$stream_network_source,
+  operations = classified$stream_network_operation, level = level,
+  nodes = classified$stream_network_node, connections = classified$stream_network_connection,
+  review_features = classified$stream_network_review, actor = "clipped-dem-experiment"
+)
+working <- validate("WORKING")
+acceptance <- validate("ACCEPTANCE")
+check(identical(classified$stream_network$segment_role, "MAINSTEM"), "explicit mainstem role")
+check(identical(tail(classified$stream_network_operation$operation_code, 1), "CLASSIFY_SEGMENT_ROLE"), "role operation recorded")
+check(identical(tail(classified$stream_network_operation$operation_sequence, 1), 4L), "role operation sequence")
+check(nrow(classified$stream_network_source) == 51L, "role decision preserves 51 sources")
+check(identical(sf::st_as_binary(sf::st_geometry(classified$stream_network)),
+                sf::st_as_binary(sf::st_geometry(connected$stream_network))), "classification does not edit geometry")
+check(identical(working$stream_network_validation_run$result, "PASS"), "working technical checks pass")
+check(setequal(acceptance$stream_network_validation_issue$issue_code,
+                c("REQUIRED_REVIEW_PENDING", "OBSERVATION_QUALIFICATION_REQUIRED")), "only explicit inspection and qualification remain")
+check(identical(observation$review_status, "DRAFT"), "test Observation remains unaccepted")
+cat("CLASSIFICATION PASS:", checks, "total checks; WORKING passes; ACCEPTANCE requires review and qualification.\n")

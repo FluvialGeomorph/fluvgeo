@@ -2,6 +2,15 @@
 
 ## Stream Network relations
 
+- Added explicit `classify_stream_network_segments()` decisions with structured
+  role values and ordered operation provenance, without approving inspections.
+  Added read-only `validate_stream_network()` for WORKING/ACCEPTANCE checks on
+  retained networks: recomputed geometry/connectivity, memberships, node and
+  connection consistency, source/operation references, and current review
+  decisions. PASS is not observation acceptance. Stale approvals and unqualified
+  partial legacy observations remain blocking. Geometry assessment is shared
+  with preparation instead of implementing a second set of spatial checks.
+
 - Added `connect_stream_network()` and optional preparation `connect = TRUE`.
   Exact endpoints receive reusable candidate node UUIDs; hydroloom derives
   and orders all downstream relationships, including diversions. Storage

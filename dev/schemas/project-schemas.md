@@ -64,6 +64,24 @@ unique-feature table. Node assignment is recorded in `ASSIGN_NETWORK_NODES`
 operations; storage geometry and source lineage are unchanged. Topological
 boundary labels and confirmed direction do not substitute for acceptance review.
 
+## Explicit roles and acceptance checks
+
+`classify_stream_network_segments(prepared, classifications, actor)` consumes
+unique candidate segment UUIDs with `segment_role` and `decision_notes` columns.
+It updates only role/modification fields and appends ordered
+CLASSIFY_SEGMENT_ROLE operations. The operation table now has nullable
+`segment_role`; nonclassification operations leave it null. Repeated unchanged
+decisions do not append operations. Inspection decisions and historical
+validation tables are preserved.
+
+`validate_stream_network()` returns only new validation run/issue tibbles. It
+accepts the existing Configuration, memberships, Observation, candidates,
+sources and operations, plus current nodes/connections, optional Reach mappings,
+review features, and validator actor. Its WORKING/ACCEPTANCE result is PASS or
+REVIEW_REQUIRED, not an acceptance state change. The detailed retained-network
+scope and human-review requirements are in the shared FGDB schema referenced
+above. Actual acceptance and enterprise loading remain separate operations.
+
 ## Other contracts
 
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package
