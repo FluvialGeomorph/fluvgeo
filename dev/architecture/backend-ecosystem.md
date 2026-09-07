@@ -7,11 +7,25 @@ from remotely sensed terrain data, especially lidar. It centralizes reusable
 scientific calculations, spatial data handling, analysis conventions, and
 reporting components so client applications do not duplicate core methods.
 
+Reports are scientific deliverables that explain study definition, data
+development and results, not merely client diagnostics. The accepted
+[reporting intent](../goals/reporting-intent.md) extends that record above Reach
+level and separates the thorough desktop artifact from selective Shiny interaction.
+The third reporting job is forensic reconstruction of archived analyses. The
+accepted [GeoPackage storage direction](../../../FGDB/dev/decisions/adr-0024-geopackage-local-standard-and-archive-reconstruction.md)
+applies to local project spatial data and related tables; legacy File GDB remains
+a source-read boundary while migration profiles are qualified.
+The later [folder/GeoTIFF decision](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md)
+clarifies that GeoPackages carry vectors/tables, not the migration's analytical
+raster payloads. Reach–Survey–Event folders keep external GeoTIFFs and their
+metadata/identity links together; qualified Esri terrain exchange is not assumed.
+
 ## Clients and collaborators
 
 Changes may affect:
 
 - `FluvialGeomorph-toolbox`, which supports ArcGIS Pro desktop workflows;
+- `fg-qgis-toolbox`, the separate developing open-source desktop client;
 - `ohwm2`, which provides an interactive Shiny application;
 - `RegionalCurve`, which supplies regional hydraulic geometry operations; and
 - `fluvgeodata`, which supplies test and example data used by this package.
@@ -37,6 +51,14 @@ interface. Do not move client-specific orchestration into the backend merely
 because the client imports this package.
 
 ## Architecture transition
+
+The accepted [parallel QGIS migration decision](../../../fg-qgis-toolbox/dev/decisions/ADR-0001-parallel-open-source-migration.md)
+makes fg-qgis-toolbox the desktop development/test path while the ArcGIS Pro
+toolbox continues in production. Tool divisions may change; scientific methods
+remain reusable in fluvgeo for QGIS and Shiny. Separate repositories do not by
+themselves isolate shared R libraries: identify development runtimes and backend
+versions, and promote changes to production clients only after relevant review.
+QGIS-specific interaction must not become a prerequisite for Shiny capabilities.
 
 The ecosystem began as a hybrid ESRI and R architecture. Open-source
 geospatial capabilities now implement some operations previously performed

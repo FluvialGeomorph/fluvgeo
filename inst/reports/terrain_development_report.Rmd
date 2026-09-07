@@ -1,6 +1,6 @@
 ---
 title: "Terrain Development"
-subtitle: "Study definition and pre-Level-1 review"
+subtitle: "Study structure, terrain evidence and archive reconstruction"
 output:
   html_document:
     self_contained: true
@@ -42,23 +42,44 @@ cat("<p>", if (is.null(r$streams)) "Unknown" else nrow(r$streams), " selected St
     nrow(r$surveys), " supplied Survey Events.</p>", sep = "")
 ```
 
-## Decisions and missing evidence
+## Study structure
 
-```{r gaps, results='asis'}
-cat("<ul>", paste0("<li>", esc(r$gaps), "</li>", collapse = ""), "</ul>")
+This view describes supplied identities and relationships, not a reconstruction
+from names or spatial overlap. Missing context is not filled in automatically.
+Network Configurations belong to the Study Area; their Observations are distinct
+from Reach Survey Events, even when they share a year.
+
+```{r structure, fig.width=10, fig.height=max(4, 0.55 * nrow(r$hierarchy)), fig.cap="Study organization from supplied relationships. Names and dates are display labels; identity references are retained below."}
+if (!is.null(r$hierarchy) && nrow(r$hierarchy)) {
+  h <- r$hierarchy
+  h$y <- rev(seq_len(nrow(h)))
+  h$text <- vapply(paste(h$entity_type, h$label, sep = ": "),
+    function(x) paste(strwrap(x, width = 27), collapse = "\n"), character(1))
+  edges <- h[!is.na(h$parent_key), , drop = FALSE]
+  parents <- match(edges$parent_key, h$node_key)
+  edges$x0 <- h$depth[parents]; edges$y0 <- h$y[parents]
+  print(ggplot2::ggplot(h, ggplot2::aes(x = depth, y = y)) +
+    ggplot2::geom_segment(data = edges, ggplot2::aes(x = x0, y = y0, xend = depth, yend = y), colour = "#aab8bf") +
+    ggplot2::geom_point(ggplot2::aes(colour = entity_type), size = 3, show.legend = FALSE) +
+    ggplot2::geom_label(ggplot2::aes(label = text), hjust = 0, nudge_x = 0.07, size = 3.4, linewidth = 0.15, fill = "white") +
+    ggplot2::scale_x_continuous(limits = c(-0.1, 4.2)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = 0.8)) +
+    ggplot2::theme_void())
+} else cat("No hierarchy supplied. Archive interpretations can be recorded without assigning identities.")
 ```
 
 ## Spatial overview
 
 ```{r overview, fig.width=9, fig.height=6}
-layers <- Filter(Negate(is.null), list(r$segments, r$study_area, r$dem_extent,
+layers <- Filter(Negate(is.null), list(r$segments,
+  if (inherits(r$study_area, "sf")) r$study_area else NULL, r$dem_extent,
   if (inherits(r$streams, "sf")) r$streams else NULL,
   if (inherits(r$reaches, "sf")) r$reaches else NULL))
 if (length(layers)) {
   crs <- sf::st_crs(layers[[1]])
   p <- ggplot2::ggplot()
   if (!is.null(r$dem_extent)) p <- p + ggplot2::geom_sf(data = r$dem_extent, fill = "#e8eef3", colour = "#70869a", linetype = "dashed")
-  if (!is.null(r$study_area)) p <- p + ggplot2::geom_sf(data = r$study_area, fill = NA, colour = "#1d3038", linewidth = 1)
+  if (inherits(r$study_area, "sf")) p <- p + ggplot2::geom_sf(data = r$study_area, fill = NA, colour = "#1d3038", linewidth = 1)
   if (inherits(r$streams, "sf")) p <- p + ggplot2::geom_sf(data = r$streams, fill = NA, colour = "#5e8d7b", linetype = "dotted")
   if (inherits(r$reaches, "sf")) p <- p + ggplot2::geom_sf(data = r$reaches, fill = NA, colour = "#a36945", linetype = "dotdash")
   if (!is.null(r$segments)) p <- p + ggplot2::geom_sf(data = r$segments, ggplot2::aes(colour = report_reach), linewidth = 1)
@@ -75,6 +96,79 @@ Solid dark outline: Study Area AOI. Pale fill and dashed outline: DEM rectangle,
 **not its valid-cell footprint**. Optional green dotted and brown dot-dashed
 outlines: supplied Stream and Reach AOIs. Network colours show supplied Reach
 assignments, not inferred segmentation. No online basemap is requested.
+
+## Evidence across Reaches and time
+
+Each column represents a supplied Survey Event, not every year a study was
+expected to cover. Blank cells mean **no event supplied for that Reach and
+column**, not a missing required survey. Same-date events remain separate.
+"Grid supplied" means a raster object and its grid metadata were supplied for
+that event; it does not certify readable cell values, complete coverage,
+vertical references or comparable methods.
+
+```{r event-matrix, fig.width=10, fig.height=max(2, 0.5 * length(unique(r$event_evidence$reach_id))), fig.cap="Supplied event evidence, not a readiness or completeness score."}
+if (!is.null(r$event_evidence) && nrow(r$event_evidence)) {
+  e <- r$event_evidence
+  reach_ids <- unique(e$reach_id)
+  e$x <- seq_len(nrow(e)); e$y <- match(e$reach_id, rev(reach_ids))
+  e$label <- ifelse(e$evidence_status == "GRID_SUPPLIED", "Grid\nsupplied", "Inventory\nonly")
+  print(ggplot2::ggplot(e, ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_tile(ggplot2::aes(fill = evidence_status), colour = "white", width = 0.9, height = 0.8) +
+    ggplot2::geom_text(ggplot2::aes(label = label), size = 3.5) +
+    ggplot2::scale_fill_manual(values = c(GRID_SUPPLIED = "#b7d9d0", INVENTORY_ONLY = "#e4e9ed"), guide = "none") +
+    ggplot2::scale_x_continuous(breaks = e$x, labels = paste(e$date_label, paste0("Event ", e$x), sep = "\n")) +
+    ggplot2::scale_y_continuous(breaks = seq_along(reach_ids),
+      labels = e$reach_label[match(rev(reach_ids), e$reach_id)]) +
+    ggplot2::theme_minimal(base_size = 12) + ggplot2::labs(x = NULL, y = NULL))
+} else cat("Survey Events have not been supplied; no expected time sequence is assumed.")
+```
+
+### Survey terrain extents
+
+```{r event-extents, fig.width=10, fig.height=6, fig.cap="Supplied DEM grid rectangles by event. These are not valid-cell footprints or Study Area boundaries."}
+if (!is.null(r$survey_dem_extents)) {
+  p <- ggplot2::ggplot(r$survey_dem_extents) +
+    ggplot2::geom_sf(fill = "#e8eef3", colour = "#70869a", linetype = "dashed")
+  if (inherits(r$study_area, "sf")) p <- p + ggplot2::geom_sf(data = r$study_area, fill = NA, colour = "#1d3038")
+  display_crs <- sf::st_crs(r$survey_dem_extents)
+  print(p + ggplot2::facet_wrap(~panel, labeller = ggplot2::label_wrap_gen(width = 22)) +
+    ggplot2::coord_sf(crs = display_crs, datum = display_crs) + ggplot2::theme_minimal(base_size = 10) +
+    ggplot2::scale_x_continuous(n.breaks = 2, labels = scales::label_number(big.mark = ",")) +
+    ggplot2::scale_y_continuous(n.breaks = 3, labels = scales::label_number(big.mark = ",")) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
+    ggplot2::labs(caption = paste("Common display CRS:", display_crs$Name, "| Units:", display_crs$units_gdal)))
+} else cat("No event-associated DEM grids supplied.")
+```
+
+```{r event-evidence, results='asis'}
+table_html(r$event_evidence, c("reach_label", "date_label", "evidence_status", "source_dataset",
+  "rows", "columns", "x_cell_size", "y_cell_size", "horizontal_units", "horizontal_crs"))
+```
+
+## Legacy project reconstruction
+
+Surviving artifacts may support several interpretations of the original study.
+The entries below keep source evidence, proposed structure and supplied analyst
+decisions separate. **CONFIRMED** records the analyst's interpretation, not
+independent verification, governed identity reconciliation or approval to load
+FGDB. Rejected interpretations remain visible. Nothing in this ledger creates
+or changes the hierarchy above.
+
+```{r reconstruction, results='asis'}
+table_html(r$reconstruction)
+```
+
+### Decisions and next actions
+
+These stage-specific prompts are reusable by a client such as Shiny. They are
+not a complete migration validator or a single FGDB compliance verdict. Technical
+checks and detailed evidence remain available even when no human decision is due.
+
+```{r actions, results='asis'}
+table_html(r$assessment, c("entity_label", "stage", "status", "requires_input", "next_action"))
+cat("<details><summary>Additional context and network qualifications</summary>")
+cat("<ul>", paste0("<li>", esc(r$gaps), "</li>", collapse = ""), "</ul></details>")
+```
 
 ## Streams, Reaches and Survey Events
 
@@ -129,6 +223,7 @@ table_html(r$study_area, c("study_area_name", "study_area_id"))
 table_html(r$streams, c("stream_name", "stream_id", "study_area_id"))
 table_html(r$reaches, c("reach_name", "reach_id", "stream_id"))
 table_html(r$surveys, c("date_label", "survey_event_id", "reach_id"))
+table_html(r$assessment, c("code", "entity_label", "entity_id"))
 cat("</details>")
 ```
 

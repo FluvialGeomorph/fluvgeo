@@ -57,5 +57,8 @@ When multiple approaches are acceptable, prefer open-source solutions over propr
 
 ## Open questions
 
-No unresolved architecture question is currently recorded. Add concrete
-questions here only when repository evidence cannot yet resolve them.
+The [folder/GeoTIFF migration decision](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md)
+settles the storage direction, but its manifest binding, shared-raster resolver,
+export/conformance adapters and cross-client qualification remain to be designed
+and implemented. Do not interpret the existing network GeoPackage as a complete
+Reach–Survey–Event container.

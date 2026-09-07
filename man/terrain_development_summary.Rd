@@ -12,12 +12,15 @@ terrain_development_summary(
   network = NULL,
   dem = NULL,
   terrain_notes = NA_character_,
-  analyst_notes = NA_character_
+  analyst_notes = NA_character_,
+  survey_dems = NULL,
+  reconstruction = NULL
 )
 }
 \arguments{
-\item{study_area}{Optional one-row polygon sf with study_area_id and
-study_area_name. Its analyst-defined AOI is never inferred from a DEM extent.}
+\item{study_area}{Optional one-row data frame with study_area_id and
+study_area_name, optionally polygon sf. A named Study Area can be described
+before its AOI is supplied; the AOI is never inferred from a DEM extent.}
 
 \item{streams}{Optional data frame with stream_id, study_area_id, stream_name.
 These are selected Streams; defaults to network Configuration membership.}
@@ -37,10 +40,25 @@ displays its extent/grid metadata, not an elevation preview or valid-cell mask.}
 \item{terrain_notes}{Supplied terrain source, processing, units and limitations.}
 
 \item{analyst_notes}{Supplied scope, segmentation rationale and next decisions.}
+
+\item{survey_dems}{Optional named list of single-band projected SpatRasters,
+keyed by supplied survey_event_id. Associations are caller assertions, not
+inferred from filenames or years. Grid metadata/rectangles do not prove
+valid-cell coverage, vertical references or scientific comparability.}
+
+\item{reconstruction}{Optional data frame with case_id, source_ref,
+proposed_structure, evidence, status, analyst and decision_notes. Status is
+PROPOSED, CONFIRMED, REJECTED or UNKNOWN. CONFIRMED/REJECTED require analyst
+and decision_notes. These are supplied forensic interpretations, never
+automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
+parent context are required to record an unresolved archive case.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.
-  Inputs and saved network history remain unchanged.
+  Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
+  reconstruction and a limited stage-specific assessment with requires_input
+  flags for clients. It does not validate complete archive migration or file
+  availability. Inputs and saved network history remain unchanged.
 }
 \description{
 Read-only report data for R and future Shiny clients. Missing inputs remain

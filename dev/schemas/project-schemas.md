@@ -1,6 +1,6 @@
 # Schemas
 
-Last updated: 2026-09-05
+Last updated: 2026-09-06
 
 ## Purpose
 This document records important structural contracts used by the repository, including data objects, files, tables, configuration structures, and other interfaces whose shape must remain explicit.
@@ -101,13 +101,25 @@ limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
 
 ## Other contracts
 
+### Planned folder delivery boundary
+
+Under [ADR-0002](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md),
+Reach–Survey–Event deliveries combine vector/table GeoPackages and external
+GeoTIFF terrain in a folder with explicit metadata links. Follow
+[FGDB's requirements](../../../FGDB/dev/schemas/local-project-folder-requirements.md)
+for identity, relative paths, integrity, embedded/sidecar CRS consistency,
+vertical references, grid/NoData and provenance. The exact serialized binding
+and runtime validator are not implemented. This does not revise the existing
+network or report schema tags.
+
 ### Terrain Development report input contract
 
-`TERRAIN_DEVELOPMENT_REPORT_1` is a read-only presentation contract, not an FGDB
+`TERRAIN_DEVELOPMENT_REPORT_2` is a read-only presentation contract, not an FGDB
 entity schema or an extension to the network GeoPackage binding. Its optional
 inputs use canonical UUID identities:
 
-- `study_area`: one polygon sf row, `study_area_id`, `study_area_name`;
+- `study_area`: one data-frame row, `study_area_id`, `study_area_name`, optionally
+  polygon sf. A named identity need not have a supplied AOI to be described;
 - `streams`: selected rows with `stream_id`, `study_area_id`, `stream_name`;
 - `reaches`: rows with `reach_id`, `stream_id`, `reach_name`;
 - `survey_events`: `survey_event_id`, `reach_id`, required `survey_year`, nullable
@@ -115,6 +127,15 @@ inputs use canonical UUID identities:
   caller-supplied inventory descriptions, not verified file checks by the API;
 - existing network relations or a fluvgeo GeoPackage, and an optional projected
   single-band SpatRaster; optional terrain/analyst narrative notes.
+- `survey_dems`: optional list of single-band projected SpatRasters uniquely
+  named by supplied Survey Event UUIDs. A supplied association is not inferred
+  from a year/name and does not establish valid-cell coverage or comparability.
+- `reconstruction`: optional nonspatial, character-column table with unique local
+  `case_id`, required `source_ref`, `evidence`, `status`, nullable
+  `proposed_structure`, `analyst`, `decision_notes`. Status is `PROPOSED`,
+  `CONFIRMED`, `REJECTED`, or `UNKNOWN`. Proposed/confirmed cases need a proposed
+  structure; confirmed/rejected cases require analyst and decision notes. Cases
+  require no governed UUIDs and never populate or alter hierarchy automatically.
 
 Each context identity is unique, parentage is checked by IDs rather than spatial
 containment or name parsing, and partial dates are not padded with invented
@@ -123,6 +144,26 @@ arrive in its defined local CRS; the report transforms only its display. This
 does not alter FGDB's governed geometry CRS. Missing inputs remain explicit.
 The summary's fresh validation is separate from persisted history; rendering
 does not change either. See `dev/features/terrain-development-report.md`.
+
+Version 2 adds `hierarchy` (entity type/ID, parent ID, label/depth and typed node
+keys), `event_evidence` (one row per event, Reach identity/label, date precision,
+source label, `INVENTORY_ONLY` or `GRID_SUPPLIED`, native grid/CRS metadata),
+`survey_dem_extents` (display-only sf rectangles), `reconstruction`, and
+`assessment` (code, entity ID/label, stage, status, requires_input, next_action).
+Assessment currently covers missing Study Area AOI, unassessed event terrain and
+archive interpretations; existing network validation/gaps remain separate. It is
+not comprehensive FGDB compliance. Parentage conflicts still fail strict context
+validation; use independent reconstruction cases to discuss unresolved artifacts.
+Typed keys prevent cross-entity UUID collisions from conflating diagram nodes.
+Survey Events are not collapsed by matching labels or years. Configuration and
+Observation form a separate Study-Area-owned branch.
+
+The renderer accepts retained version-1 summaries; new summaries return version
+2. Existing arguments remain compatible, with new arguments appended. Clients
+that explicitly inspect the schema tag must recognize the new version. These
+additions do not change `FLUVGEO_NETWORK_GPKG_1` or define a project-context
+GeoPackage binding. The accepted local-storage direction is
+[FGDB ADR-0024](../../../FGDB/dev/decisions/adr-0024-geopackage-local-standard-and-archive-reconstruction.md).
 
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package
 documentation and their tests.

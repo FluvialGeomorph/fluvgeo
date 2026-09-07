@@ -79,6 +79,10 @@ test_that("network GeoPackage reporting preserves history and does not accept", 
   expect_identical(tools::md5sum(path), digest)
   expect_equal(s$observation$review_status, "DRAFT")
   expect_equal(s$segments$report_reach, "Synthetic Creek / Reach unassigned")
+  h <- s$hierarchy
+  expect_equal(h$parent_id[h$entity_type == "Configuration"], x$study_area$study_area_id)
+  expect_equal(h$parent_id[h$entity_type == "Observation"], conf$stream_network_configuration$stream_network_configuration_id)
+  expect_false(any(h$entity_type == "Survey Event"))
   expect_true(any(grepl("not accepted", s$gaps)))
   expect_equal(nrow(s$surveys), 0L)
   d <- terra::rast(nrows = 2, ncols = 2, xmin = 0, xmax = 2, ymin = 0, ymax = 2, crs = "EPSG:26914")
@@ -112,4 +116,106 @@ test_that("HTML render is self-contained, escaped, and non-replacing", {
   on.exit(unlink(aoi_path), add = TRUE)
   terrain_development_report(only_aoi, aoi_path)
   expect_match(paste(readLines(aoi_path, warn = FALSE), collapse = "\n"), "data:image/png;base64,", fixed = TRUE)
+})
+
+terrain_test_reconstruction <- function() data.frame(case_id = "archive-1",
+  source_ref = "unclassified/project.gdb", proposed_structure = "Possible parent Stream / R1",
+  evidence = "A surviving filename; insufficient to assign hierarchy.", status = "PROPOSED",
+  analyst = NA_character_, decision_notes = NA_character_)
+
+test_that("forensic interpretation does not require or create governed identities", {
+  cases <- terrain_test_reconstruction()
+  before <- cases
+  s <- terrain_development_summary(reconstruction = cases)
+  expect_identical(cases, before)
+  expect_identical(s$reconstruction, cases)
+  expect_equal(nrow(s$hierarchy), 0L)
+  expect_null(s$study_area)
+  expect_null(s$streams)
+  expect_true(s$assessment$requires_input[s$assessment$code == "ARCHIVE_INTERPRETATION"])
+  cases$status <- "CONFIRMED"
+  expect_error(terrain_development_summary(reconstruction = cases), "analyst and decision_notes")
+  cases$analyst <- "fixture analyst"; cases$decision_notes <- "Confirmed from project scope document."
+  confirmed <- terrain_development_summary(reconstruction = cases)
+  expect_equal(nrow(confirmed$hierarchy), 0L)
+  expect_false(confirmed$assessment$requires_input[confirmed$assessment$code == "ARCHIVE_INTERPRETATION"])
+  cases$status <- "UNKNOWN"; cases$proposed_structure <- NA_character_
+  expect_equal(terrain_development_summary(reconstruction = cases)$reconstruction$status, "UNKNOWN")
+  cases$status <- "ACCEPTED"
+  expect_error(terrain_development_summary(reconstruction = cases), "statuses")
+  expect_error(terrain_development_summary(reconstruction = rbind(before, before)), "unique")
+  cases <- before; cases$status <- "REJECTED"
+  expect_error(terrain_development_summary(reconstruction = cases), "analyst and decision_notes")
+})
+
+test_that("named Study Area and identity-based hierarchy need no invented polygon", {
+  x <- terrain_test_context()
+  x$study_area <- sf::st_drop_geometry(x$study_area)
+  s <- do.call(terrain_development_summary, x)
+  expect_s3_class(s$study_area, "data.frame")
+  expect_false(inherits(s$study_area, "sf"))
+  expect_equal(nrow(s$hierarchy), 6L)
+  expect_equal(s$hierarchy$entity_type, c("Study Area", "Stream", "Reach", rep("Survey Event", 3)))
+  expect_equal(s$hierarchy$parent_id[4:6], rep(x$reaches$reach_id, 3))
+  expect_true(any(s$assessment$code == "STUDY_AOI_NOT_SUPPLIED"))
+  # Same labels and years are legal; neither is a join key.
+  x$reaches <- rbind(x$reaches, transform(x$reaches, reach_id = .fg_generate_uuid(1)))
+  x$survey_events <- rbind(x$survey_events, transform(x$survey_events,
+    survey_event_id = .fg_generate_uuid(3), reach_id = x$reaches$reach_id[2]))
+  s <- do.call(terrain_development_summary, x)
+  expect_equal(nrow(s$event_evidence), 6L)
+  expect_equal(length(unique(s$event_evidence$reach_id)), 2L)
+  expect_equal(length(unique(s$hierarchy$node_key)), nrow(s$hierarchy))
+})
+
+test_that("per-event DEM metadata does not infer availability or comparability", {
+  x <- terrain_test_context()
+  d <- terra::rast(nrows = 2, ncols = 2, xmin = 0, xmax = 2, ymin = 0, ymax = 2, crs = "EPSG:26914")
+  terra::values(d) <- c(1, NA, 2, 3)
+  before <- terra::values(d)
+  x$survey_dems <- setNames(list(d), x$survey_events$survey_event_id[2])
+  s <- do.call(terrain_development_summary, x)
+  expect_equal(s$event_evidence$evidence_status, c("INVENTORY_ONLY", "GRID_SUPPLIED", "INVENTORY_ONLY"))
+  expect_equal(s$survey_dem_extents$survey_event_id, x$survey_events$survey_event_id[2])
+  expect_identical(terra::values(d), before)
+  expect_true(all(s$assessment$status[s$assessment$code == "EVENT_TERRAIN_REVIEW"] == "NOT_ASSESSED"))
+  expect_equal(s$event_evidence$rows, c(NA_integer_, 2L, NA_integer_))
+  x$survey_dems <- list(d)
+  expect_error(do.call(terrain_development_summary, x), "uniquely named")
+  x$survey_dems <- setNames(list(d), .fg_generate_uuid(1))
+  expect_error(do.call(terrain_development_summary, x), "uniquely named")
+  x$survey_dems <- setNames(list(c(d,d)), x$survey_events$survey_event_id[1])
+  expect_error(do.call(terrain_development_summary, x), "single-band")
+})
+
+test_that("visual report handles archive-only and named-AOI-missing inputs safely", {
+  skip_if_not_installed("knitr")
+  skip_if_not(rmarkdown::pandoc_available(), "Pandoc not available")
+  cases <- terrain_test_reconstruction()
+  cases$evidence <- "<script>untrusted archive text</script>"
+  cases$proposed_structure <- "<b>Not markup</b>"
+  x <- terrain_test_context()
+  x$study_area <- sf::st_drop_geometry(x$study_area)
+  x$reconstruction <- cases
+  d <- terra::rast(nrows = 2, ncols = 2, xmin = 0, xmax = 2, ymin = 0, ymax = 2, crs = "EPSG:26914")
+  x$survey_dems <- setNames(list(d), x$survey_events$survey_event_id[1])
+  s <- do.call(terrain_development_summary, x)
+  path <- tempfile(fileext = ".html")
+  on.exit(unlink(path), add = TRUE)
+  terrain_development_report(s, path)
+  html <- paste(readLines(path, warn = FALSE), collapse = "\n")
+  expect_match(html, "Study structure", fixed = TRUE)
+  expect_match(html, "Legacy project reconstruction", fixed = TRUE)
+  expect_match(html, "&lt;script&gt;untrusted", fixed = TRUE)
+  expect_false(grepl("<b>Not markup</b>", html, fixed = TRUE))
+  expect_gte(lengths(regmatches(html, gregexpr("data:image/png;base64,", html, fixed = TRUE))), 3L)
+  archive_path <- tempfile(fileext = ".html")
+  on.exit(unlink(archive_path), add = TRUE)
+  expect_invisible(terrain_development_report(terrain_development_summary(reconstruction = cases), archive_path))
+  old <- s; old$schema <- "TERRAIN_DEVELOPMENT_REPORT_1"
+  old[c("hierarchy", "event_evidence", "survey_dem_extents", "reconstruction", "assessment")] <- NULL
+  old_path <- tempfile(fileext = ".html")
+  on.exit(unlink(old_path), add = TRUE)
+  expect_invisible(terrain_development_report(old, old_path))
+  expect_error(terrain_development_report(list(), tempfile(fileext = ".html")), "summary")
 })

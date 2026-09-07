@@ -62,6 +62,7 @@ decision when the choice has durable tradeoffs or changes an ownership boundary.
 Before completion, assess applicable effects on:
 
 - `FluvialGeomorph-toolbox`;
+- `fg-qgis-toolbox` (separate development runtime; not a production upgrade path);
 - `ohwm2`;
 - `RegionalCurve`;
 - `fluvgeodata`;

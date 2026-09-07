@@ -2,6 +2,15 @@
 
 ## Terrain Development reporting
 
+- Extended the report with a Study Area hierarchy/network relationship diagram,
+  per-event evidence matrix and terrain extents, plus a forensic archive
+  interpretation ledger. Named Study Areas can be described before an AOI is
+  supplied. New optional `survey_dems` and `reconstruction` inputs preserve
+  explicit associations and decisions without creating hierarchy or acceptance.
+  Summary schema 2 adds reusable visual data and limited stage-specific prompts;
+  the renderer still accepts schema-1 summaries. Added a bounded Cole Creek
+  GeoPackage conversion probe; this is not a general archive migration adapter.
+
 - Added read-only `terrain_development_summary()` and offline HTML
   `terrain_development_report()` for pre-Level-1 scope, terrain extent, selected
   Streams/Reaches, Survey Event inventory and network findings. Missing context

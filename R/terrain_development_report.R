@@ -4,8 +4,9 @@
 #' explicit; no hierarchy, Survey Event, acceptance, or Level 1 readiness is
 #' inferred. Context tables are report inputs, not new FGDB persistence relations.
 #'
-#' @param study_area Optional one-row polygon sf with study_area_id and
-#'   study_area_name. Its analyst-defined AOI is never inferred from a DEM extent.
+#' @param study_area Optional one-row data frame with study_area_id and
+#'   study_area_name, optionally polygon sf. A named Study Area can be described
+#'   before its AOI is supplied; the AOI is never inferred from a DEM extent.
 #' @param streams Optional data frame with stream_id, study_area_id, stream_name.
 #'   These are selected Streams; defaults to network Configuration membership.
 #' @param reaches Optional data frame with reach_id, stream_id, reach_name.
@@ -18,12 +19,26 @@
 #'   displays its extent/grid metadata, not an elevation preview or valid-cell mask.
 #' @param terrain_notes Supplied terrain source, processing, units and limitations.
 #' @param analyst_notes Supplied scope, segmentation rationale and next decisions.
+#' @param survey_dems Optional named list of single-band projected SpatRasters,
+#'   keyed by supplied survey_event_id. Associations are caller assertions, not
+#'   inferred from filenames or years. Grid metadata/rectangles do not prove
+#'   valid-cell coverage, vertical references or scientific comparability.
+#' @param reconstruction Optional data frame with case_id, source_ref,
+#'   proposed_structure, evidence, status, analyst and decision_notes. Status is
+#'   PROPOSED, CONFIRMED, REJECTED or UNKNOWN. CONFIRMED/REJECTED require analyst
+#'   and decision_notes. These are supplied forensic interpretations, never
+#'   automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
+#'   parent context are required to record an unresolved archive case.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
-#'   Inputs and saved network history remain unchanged.
+#'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
+#'   reconstruction and a limited stage-specific assessment with requires_input
+#'   flags for clients. It does not validate complete archive migration or file
+#'   availability. Inputs and saved network history remain unchanged.
 #' @export
 terrain_development_summary <- function(study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, network = NULL, dem = NULL,
-    terrain_notes = NA_character_, analyst_notes = NA_character_) {
+    terrain_notes = NA_character_, analyst_notes = NA_character_,
+    survey_dems = NULL, reconstruction = NULL) {
   terrain_notes <- .fg_optional_text(terrain_notes, "terrain_notes")
   analyst_notes <- .fg_optional_text(analyst_notes, "analyst_notes")
   if (is.character(network)) network <- read_stream_network_geodatabase(network, validate = FALSE)
@@ -32,8 +47,9 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
   add <- function(s) gaps <<- c(gaps, s)
   if (!is.null(study_area)) {
     .fg_terrain_context(study_area, "study_area_id", "study_area_name")
-    .fg_terrain_polygon(study_area)
-    if (nrow(study_area) != 1L) .fg_abort("Supply exactly one Study Area AOI.")
+    if (inherits(study_area, "sf")) .fg_terrain_polygon(study_area)
+    if (nrow(study_area) != 1L) .fg_abort("Supply exactly one Study Area.")
+    if (!inherits(study_area, "sf")) add("Study Area is named but its AOI is not supplied; no boundary has been inferred.")
   } else add("Study Area AOI not supplied; no boundary has been inferred.")
   if (is.null(streams) && !is.null(network)) {
     streams <- network$stream_network_configuration_stream[c("stream_id", "stream_name")]
@@ -111,10 +127,13 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
   } else add("DEM not supplied; terrain extent and grid metadata are unavailable.")
   if (is.na(terrain_notes)) add("Terrain source, processing history, vertical units/datum and qualifications have not been described.")
   if (is.na(analyst_notes)) add("Analyst scope and segmentation rationale have not been supplied.")
-  list(study_area = study_area, streams = streams, reaches = reaches, surveys = surveys,
+  visual <- .fg_terrain_visual_context(study_area, streams, reaches, surveys,
+    survey_dems, reconstruction, network)
+  c(list(study_area = study_area, streams = streams, reaches = reaches, surveys = surveys,
+    configuration = if (is.null(network)) data.frame() else network$stream_network_configuration,
     observation = observation, segments = segments, dem_extent = footprint, terrain = terrain,
     validation = validation, gaps = unique(gaps), terrain_notes = terrain_notes, analyst_notes = analyst_notes,
-    generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_1")
+    generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual)
 }
 
 .fg_terrain_context <- function(x, id, label = NULL, parent = NULL) {
@@ -159,7 +178,8 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
 #'   requires a local hard-link-capable filesystem, failing safely otherwise.
 #' @export
 terrain_development_report <- function(summary, output_file) {
-  if (!is.list(summary) || !identical(summary$schema, "TERRAIN_DEVELOPMENT_REPORT_1")) .fg_abort("Supply a terrain_development_summary() result.")
+  if (!is.list(summary) || length(summary$schema) != 1L ||
+      !summary$schema %in% c("TERRAIN_DEVELOPMENT_REPORT_1", "TERRAIN_DEVELOPMENT_REPORT_2")) .fg_abort("Supply a terrain_development_summary() result.")
   output_file <- .fg_required_text(output_file, "output_file")
   if (!grepl("\\.html$", output_file, ignore.case = TRUE) || !dir.exists(dirname(output_file))) .fg_abort("Supply a new .html path in an existing directory.")
   output_file <- file.path(normalizePath(dirname(output_file), winslash = "/"), basename(output_file))
