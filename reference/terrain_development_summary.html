@@ -65,7 +65,9 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 <span>  network <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dem <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  survey_dems <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reconstruction <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -74,8 +76,9 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 
 
 <dl><dt id="arg-study-area">study_area<a class="anchor" aria-label="anchor" href="#arg-study-area"></a></dt>
-<dd><p>Optional one-row polygon sf with study_area_id and
-study_area_name. Its analyst-defined AOI is never inferred from a DEM extent.</p></dd>
+<dd><p>Optional one-row data frame with study_area_id and
+study_area_name, optionally polygon sf. A named Study Area can be described
+before its AOI is supplied; the AOI is never inferred from a DEM extent.</p></dd>
 
 
 <dt id="arg-streams">streams<a class="anchor" aria-label="anchor" href="#arg-streams"></a></dt>
@@ -110,11 +113,30 @@ displays its extent/grid metadata, not an elevation preview or valid-cell mask.<
 <dt id="arg-analyst-notes">analyst_notes<a class="anchor" aria-label="anchor" href="#arg-analyst-notes"></a></dt>
 <dd><p>Supplied scope, segmentation rationale and next decisions.</p></dd>
 
+
+<dt id="arg-survey-dems">survey_dems<a class="anchor" aria-label="anchor" href="#arg-survey-dems"></a></dt>
+<dd><p>Optional named list of single-band projected SpatRasters,
+keyed by supplied survey_event_id. Associations are caller assertions, not
+inferred from filenames or years. Grid metadata/rectangles do not prove
+valid-cell coverage, vertical references or scientific comparability.</p></dd>
+
+
+<dt id="arg-reconstruction">reconstruction<a class="anchor" aria-label="anchor" href="#arg-reconstruction"></a></dt>
+<dd><p>Optional data frame with case_id, source_ref,
+proposed_structure, evidence, status, analyst and decision_notes. Status is
+PROPOSED, CONFIRMED, REJECTED or UNKNOWN. CONFIRMED/REJECTED require analyst
+and decision_notes. These are supplied forensic interpretations, never
+automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
+parent context are required to record an unresolved archive case.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>List of tables, map layers, fresh network validation and explicit gaps.
-  Inputs and saved network history remain unchanged.</p>
+  Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
+  reconstruction and a limited stage-specific assessment with requires_input
+  flags for clients. It does not validate complete archive migration or file
+  availability. Inputs and saved network history remain unchanged.</p>
     </div>
 
   </div>
