@@ -2,17 +2,18 @@
 
 Status: read-only visual Study Area/event evidence and archive-interpretation
 slice implemented; full coverage, context persistence and migration work remain.
-Updated: 2026-09-06.
+Updated: 2026-09-08.
 
 ## Purpose and design direction
 
 The accepted [folder/GeoTIFF boundary](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md)
-adds a future reporting obligation: describe which external terrain belongs to
+adds a reporting obligation: describe which external terrain belongs to
 each event or shared source, whether its files/metadata are available and
 consistent, and what remains unresolved. A displayed raster or supplied grid
 does not verify the whole folder. Machine-readable assessment should drive
-selective Shiny prompts and the durable desktop report; these artifact-link and
-integrity checks are requirements, not current report capabilities.
+selective Shiny prompts and the durable desktop report. The selected-file intake
+slice below now supplies integrity findings; complete event/shared-terrain linkage
+and comprehensive folder qualification remain future work.
 
 The accepted [reporting intent](../goals/reporting-intent.md) establishes this as
 a visual, thorough, durable Study Area deliverable, valuable independently of
@@ -131,6 +132,35 @@ modified. Generated examples live outside tracked package artifacts.
 
 ## Next slices, driven by the report
 
+### Implemented selected-file intake slice (2026-09-08)
+
+`write_terrain_manifest()` snapshots selected GeoPackage/GeoTIFF files and known
+companions using local intake/artifact labels, relative paths, SHA-256 and observed
+metadata. `inspect_terrain_folder()` supplies fresh availability, identity and
+metadata findings. Optional `folder_manifest` adds these to the existing report
+and structured assessment without populating hierarchy or selecting DEMs.
+See the [intake binding](../schemas/terrain-intake-manifest.md) for exact scope.
+
+The same saved manifest can be inspected after relocation. Changed/missing files,
+sidecar disagreement and unknown/conflicting vertical units remain distinct from
+byte identity. No blanket scientific PASS is returned. Complete event membership,
+shared external assets, terrain-edition lineage, coverage and full cross-client
+qualification are not implemented by this first slice.
+
+Reproduce the new Cole Creek report using a fresh output directory:
+
+```r
+# Rscript dev/scripts/cole-creek-terrain-report.R <new-output-directory> --folder
+```
+
+This uses original fluvgeodata sources to produce six GeoTIFF copies, verifies
+exact values/masks and unchanged source grids/CRS, inventories the copies plus
+the existing draft network GeoPackage, and checks original archives remain
+unchanged. Vertical references are not inferred from legacy names. The existing
+historical GeoPackage-probe mode remains available, not the migration default.
+
+### Remaining slices
+
 1. **Extend the initial visual structure and coverage slice:** pair a geographic overview with
    a readable hierarchy/relationship view and Reach-by-Survey-Event evidence
    matrix. Explain selected Streams, Reach definitions and intended versus
@@ -220,3 +250,29 @@ data acceptance, source modification or deployment occurred.
   fluvgeodata package. Repository-index access was unavailable. Direct R build
   was used after the wrapper's Rtools precheck failed; no workstation settings or
   installed packages were changed. This is not a full release qualification.
+
+## Verification of portable terrain intake (2026-09-08)
+
+- The final focused reporting/intake selection passed 121 assertions with no
+  failures or skips. The broader network/reporting regression selection also
+  passed. These are scoped checks, not the full external-service test suite.
+- The Cole Creek folder demonstration verified exact values and NoData masks,
+  semantic CRS equality and unchanged native resolution/extent for six GeoTIFF
+  copies. All seven selected files matched their manifest hashes; inspecting a
+  copied folder produced identical findings. Original source GDB file hashes
+  remained unchanged. The report uses the reopened GeoTIFF copies.
+- The final report is
+  `dev/outputs/terrain-development/cole-creek-folder-v3/cole-creek-terrain-development.html`.
+  Six unknown vertical references and missing Study Area context remain explicit;
+  file integrity is not scientific acceptance or FGDB readiness. Generated output
+  is ignored demonstration material, not a new committed fixture.
+- Scoped `R CMD check` completed with zero errors/warnings and two existing notes
+  (methods dependency and package-wide global bindings). Tests, examples, manual
+  and vignettes were excluded; focused tests ran separately. Final report-label
+  refinements were verified by the focused tests and demonstration rerun.
+  Rendered content and escaping were tested; interactive browser visual review
+  was unavailable because the preview did not attach.
+- Related help, schema and architecture documentation were updated. jsonlite is
+  now a declared import; no installed packages or workstation settings changed.
+  FGDB changes are documentation only. Full event/shared-asset binding, archive
+  conversion, data acceptance and client deployment remain outside this slice.

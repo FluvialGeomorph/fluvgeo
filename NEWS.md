@@ -2,6 +2,13 @@
 
 ## Terrain Development reporting
 
+- Added `write_terrain_manifest()` and `inspect_terrain_folder()` for a portable
+  selected-file intake inventory, plus optional `folder_manifest` reporting.
+  Checks cover missing/changed files, relative-path safety, raster metadata,
+  known companions and vertical-reference gaps/conflicts. This is not a complete
+  event manifest, archive converter or FGDB acceptance. The Cole Creek demo now
+  supports `--folder` for verified GeoTIFF copies and an intake-aware report.
+
 - Extended the report with a Study Area hierarchy/network relationship diagram,
   per-event evidence matrix and terrain extents, plus a forensic archive
   interpretation ledger. Named Study Areas can be described before an AOI is

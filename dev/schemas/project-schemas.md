@@ -108,9 +108,11 @@ Reach–Survey–Event deliveries combine vector/table GeoPackages and external
 GeoTIFF terrain in a folder with explicit metadata links. Follow
 [FGDB's requirements](../../../FGDB/dev/schemas/local-project-folder-requirements.md)
 for identity, relative paths, integrity, embedded/sidecar CRS consistency,
-vertical references, grid/NoData and provenance. The exact serialized binding
-and runtime validator are not implemented. This does not revise the existing
-network or report schema tags.
+vertical references, grid/NoData and provenance. The full event binding remains
+unimplemented. A bounded [terrain intake manifest](terrain-intake-manifest.md)
+now snapshots selected files and supplies fresh integrity/metadata findings to
+the report. It does not govern hierarchy, complete deliveries or shared assets.
+Existing network and report schema tags are unchanged.
 
 ### Terrain Development report input contract
 

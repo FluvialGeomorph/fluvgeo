@@ -3,11 +3,15 @@
 # identities, not reconciled FGDB identities or approval of legacy observations.
 pkgload::load_all(".", quiet = TRUE)
 args <- commandArgs(trailingOnly = TRUE)
-if (!length(args) || length(args) > 2L || file.exists(args[1])) stop("Supply a new output directory and optional GeoPackage probe directory.")
+if (!length(args) || length(args) > 2L || file.exists(args[1])) stop("Supply a new output directory and optional probe directory or --folder.")
+folder_mode <- length(args) == 2L && identical(args[2], "--folder")
+folder_manifest <- NULL
 out <- args[1]
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 years <- c(2006L, 2010L, 2016L)
 gdbs <- paste0("../fluvgeodata/inst/extdata/y", years, "_R1.gdb")
+source_files <- unlist(lapply(gdbs, list.files, full.names = TRUE, recursive = TRUE))
+source_hashes <- tools::md5sum(source_files)
 inventory <- lapply(seq_along(gdbs), function(i) {
   layers <- sf::st_layers(gdbs[i])
   flowline <- sf::st_read(gdbs[i], layer = "flowline", quiet = TRUE)
@@ -42,13 +46,43 @@ write_stream_network_geodatabase(bundle, gpkg)
 dem <- terra::rast(gdbs[1], subds = "dem_2006_ft_50")
 dem_names <- c("dem_2006_ft_50", "dem_2010_ft_50", "dem_2016_hydro_50")
 survey_dems <- setNames(lapply(seq_along(years), function(i) terra::rast(gdbs[i], subds = dem_names[i])), events$survey_event_id)
-if (length(args) == 2L) {
+if (length(args) == 2L && !folder_mode) {
   conformance <- utils::read.csv(file.path(args[2], "conformance.csv"))
   stopifnot(nrow(conformance) == 51L, all(conformance$result == "PASS"))
   paths <- file.path(args[2], "intake", paste0("cole-creek-", years), paste0(dem_names, ".gpkg"))
   survey_dems <- setNames(lapply(paths, terra::rast), events$survey_event_id)
   events$source_dataset <- paste(events$source_dataset, "->", paths)
   dem <- survey_dems[[1]]
+}
+if (folder_mode) {
+  dir.create(file.path(out, "rasters"))
+  artifacts <- data.frame(artifact_id = "retained-network", path = basename(gpkg), role = "draft-network")
+  checks <- list()
+  for (i in seq_along(years)) {
+    datasets <- terra::sources(terra::sds(gdbs[i]))
+    for (j in seq_along(datasets)) {
+      source <- terra::rast(datasets[j])
+      label <- paste0("cole-", years[i], "-raster-", j)
+      relative <- paste0("rasters/", label, ".tif")
+      target <- terra::writeRaster(source, file.path(out, relative),
+        datatype = terra::datatype(source), gdal = "COMPRESS=DEFLATE")
+      before <- terra::values(source); after <- terra::values(target)
+      stopifnot(identical(is.na(before), is.na(after)),
+        identical(before[!is.na(before)], after[!is.na(before)]),
+        isTRUE(sf::st_crs(terra::crs(source)) == sf::st_crs(terra::crs(target))),
+        identical(terra::res(source), terra::res(target)),
+        isTRUE(all.equal(as.vector(terra::ext(source)), as.vector(terra::ext(target)), tolerance = 0)))
+      artifacts <- rbind(artifacts, data.frame(artifact_id = label, path = relative,
+        role = paste(basename(gdbs[i]), sub(".*:", "", datasets[j]), sep = " | ")))
+      checks[[label]] <- list(source_gdb = basename(gdbs[i]), source_layer = sub(".*:", "", datasets[j]),
+        path = relative, exact_values = TRUE, exact_mask = TRUE, grid_and_crs = TRUE)
+      if (grepl(paste0(":", dem_names[i], "$"), datasets[j])) survey_dems[[i]] <- target
+    }
+  }
+  dem <- survey_dems[[1]]
+  folder_manifest <- write_terrain_manifest(out, artifacts, "cole-creek-retained-2006-2010-2016")
+  stopifnot(all(vapply(survey_dems, function(d) all(grepl("\\.tif$", terra::sources(d))), logical(1))))
+  jsonlite::write_json(checks, file.path(out, "geotiff-copy-evidence.json"), pretty = TRUE, auto_unbox = TRUE)
 }
 reconstruction <- data.frame(case_id = c("cole-scope", "papillion-aoi", "terrain-vertical-reference"),
   source_ref = c("User-confirmed scope; flowline ReachName in all three GDBs",
@@ -64,11 +98,14 @@ summary <- terrain_development_summary(
   study_area = data.frame(study_area_id = streams$study_area_id, study_area_name = "Papillion Creek"),
   streams = streams, reaches = reaches, survey_events = events, survey_dems = survey_dems,
   reconstruction = reconstruction,
+  folder_manifest = folder_manifest,
   network = gpkg, dem = dem,
   analyst_notes = paste("Papillion Creek Study Area / Cole Creek / Reach R1. Scope and Survey Event years confirmed by the user.",
     "PROVISIONAL DEMONSTRATION: UUIDs and the 0.01 m diagnostic tolerance are test scaffolding, not reconciled FGDB identities or analyst-approved processing parameters.",
     "The retained 2006 network is displayed without automated repair or acceptance. No Papillion Creek Study Area AOI, wider Stream inventory, or other Reach definitions were supplied."),
-  terrain_notes = paste(if (length(args) == 2L)
+  terrain_notes = paste(if (folder_mode)
+    "Displayed terrain grids are reopened GeoTIFF copies. All six retained rasters were checked for exact values/NoData and unchanged grids/CRS. The selected-file intake manifest adds fresh integrity checks, not complete event acceptance."
+    else if (length(args) == 2L)
     "Displayed terrain grids are reopened GeoPackage probe copies. Selected flowline and raster value/CRS checks passed; this is not a complete archive migration or FGDB-ready dataset."
     else "Displayed terrain grids are read from original GDBs with terra/GDAL.",
     "The ft name is a source label, not verified vertical-reference metadata. Later retained DEMs are dem_2010_ft_50 and dem_2016_hydro_50; each file also retains a detrended raster.",
@@ -76,6 +113,8 @@ summary <- terrain_development_summary(
 html <- file.path(out, "cole-creek-terrain-development.html")
 terrain_development_report(summary, html)
 stopifnot(summary$observation$review_status == "DRAFT", nrow(summary$surveys) == 3L)
+if (folder_mode) stopifnot(!any(summary$folder_inventory$assessment$status == "BLOCKED"))
+stopifnot(identical(tools::md5sum(source_files), source_hashes))
 utils::write.csv(summary$reconstruction, file.path(out, "archive-interpretations.csv"), row.names = FALSE)
 utils::write.csv(summary$assessment, file.path(out, "study-assessment.csv"), row.names = FALSE)
 cat(normalizePath(html, winslash = "/"), "\n")

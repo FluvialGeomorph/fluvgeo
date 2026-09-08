@@ -41,6 +41,7 @@ Imports:
     gtable,
     httr2,
     igraph,
+    jsonlite,
     leafem,
     leaflegend,
     leaflet,

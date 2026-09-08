@@ -147,6 +147,30 @@ table_html(r$event_evidence, c("reach_label", "date_label", "evidence_status", "
 
 ## Legacy project reconstruction
 
+### Portable intake files
+
+The optional inventory below checks selected files against their saved snapshot.
+It is not a complete event manifest, proof of archive conversion, or FGDB acceptance.
+Local intake/artifact labels do not assign Study Area or Survey Event identities.
+Matching bytes do not establish vertical meaning or adequate terrain coverage.
+
+```{r intake-inventory, results='asis'}
+if (!is.null(r$folder_inventory)) {
+  cat("<p>Intake case: ", esc(r$folder_inventory$intake_id), "</p>", sep = "")
+  inventory <- r$folder_inventory$artifacts
+  inventory$available <- ifelse(inventory$available, "Present", "Missing")
+  inventory$hash_verified <- ifelse(inventory$hash_verified, "Matches snapshot", "Not verified")
+  for (field in c("vertical_reference", "vertical_unit")) inventory[[field]][is.na(inventory[[field]])] <- "Unknown"
+  names(inventory) <- c("Artifact", "Role / source label", "Relative path", "Format",
+    "File", "Snapshot integrity", "Vertical reference", "Elevation units")
+  cat('<div class="table-responsive">')
+  table_html(inventory)
+  cat('</div>')
+} else cat("<p>No portable intake manifest supplied.</p>")
+```
+
+### Archive interpretations
+
 Surviving artifacts may support several interpretations of the original study.
 The entries below keep source evidence, proposed structure and supplied analyst
 decisions separate. **CONFIRMED** records the analyst's interpretation, not

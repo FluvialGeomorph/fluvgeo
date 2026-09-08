@@ -29,16 +29,19 @@
 #'   and decision_notes. These are supplied forensic interpretations, never
 #'   automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
 #'   parent context are required to record an unresolved archive case.
+#' @param folder_manifest Optional terrain intake JSON manifest. Files are
+#'   freshly inspected; its local intake labels never create report hierarchy.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
 #'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
 #'   reconstruction and a limited stage-specific assessment with requires_input
-#'   flags for clients. It does not validate complete archive migration or file
-#'   availability. Inputs and saved network history remain unchanged.
+#'   flags for clients. Optional folder_manifest adds fresh selected-file
+#'   inspection, not complete archive migration validation. Inputs and saved
+#'   network history remain unchanged.
 #' @export
 terrain_development_summary <- function(study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, network = NULL, dem = NULL,
     terrain_notes = NA_character_, analyst_notes = NA_character_,
-    survey_dems = NULL, reconstruction = NULL) {
+    survey_dems = NULL, reconstruction = NULL, folder_manifest = NULL) {
   terrain_notes <- .fg_optional_text(terrain_notes, "terrain_notes")
   analyst_notes <- .fg_optional_text(analyst_notes, "analyst_notes")
   if (is.character(network)) network <- read_stream_network_geodatabase(network, validate = FALSE)
@@ -129,11 +132,13 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
   if (is.na(analyst_notes)) add("Analyst scope and segmentation rationale have not been supplied.")
   visual <- .fg_terrain_visual_context(study_area, streams, reaches, surveys,
     survey_dems, reconstruction, network)
+  folder <- if (is.null(folder_manifest)) NULL else inspect_terrain_folder(folder_manifest)
+  if (!is.null(folder)) visual$assessment <- rbind(visual$assessment, folder$assessment)
   c(list(study_area = study_area, streams = streams, reaches = reaches, surveys = surveys,
     configuration = if (is.null(network)) data.frame() else network$stream_network_configuration,
     observation = observation, segments = segments, dem_extent = footprint, terrain = terrain,
     validation = validation, gaps = unique(gaps), terrain_notes = terrain_notes, analyst_notes = analyst_notes,
-    generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual)
+    folder_inventory = folder, generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual)
 }
 
 .fg_terrain_context <- function(x, id, label = NULL, parent = NULL) {

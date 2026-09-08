@@ -53,6 +53,10 @@ description and configuration aid, not only an FGDB compliance report.
   links under [ADR-0002](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md).
   Include relocated folders, missing assets, conflicting sidecars and unknown
   vertical references. Earlier raster-GeoPackage probes are not this delivery profile.
+- [x] Implement the first selected-file intake manifest and shared read-only
+  inspector, integrate findings into the existing report, and exercise GeoTIFF
+  copies in the Cole Creek demo. See [the bounded intake contract](../schemas/terrain-intake-manifest.md).
+  Complete event binding, shared assets and cross-client qualification remain open.
 - [ ] Expand shared assessment to hierarchy conflict inspection, valid-cell
   coverage and migration findings; wire selective prompts into Shiny separately.
 - [ ] Extend fluvgeodata with a representative Study Area / full terrain-network

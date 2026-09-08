@@ -14,7 +14,8 @@ terrain_development_summary(
   terrain_notes = NA_character_,
   analyst_notes = NA_character_,
   survey_dems = NULL,
-  reconstruction = NULL
+  reconstruction = NULL,
+  folder_manifest = NULL
 )
 }
 \arguments{
@@ -52,13 +53,17 @@ PROPOSED, CONFIRMED, REJECTED or UNKNOWN. CONFIRMED/REJECTED require analyst
 and decision_notes. These are supplied forensic interpretations, never
 automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
 parent context are required to record an unresolved archive case.}
+
+\item{folder_manifest}{Optional terrain intake JSON manifest. Files are
+freshly inspected; its local intake labels never create report hierarchy.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.
   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
   reconstruction and a limited stage-specific assessment with requires_input
-  flags for clients. It does not validate complete archive migration or file
-  availability. Inputs and saved network history remain unchanged.
+  flags for clients. Optional folder_manifest adds fresh selected-file
+  inspection, not complete archive migration validation. Inputs and saved
+  network history remain unchanged.
 }
 \description{
 Read-only report data for R and future Shiny clients. Missing inputs remain

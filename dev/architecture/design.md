@@ -62,3 +62,7 @@ settles the storage direction, but its manifest binding, shared-raster resolver,
 export/conformance adapters and cross-client qualification remain to be designed
 and implemented. Do not interpret the existing network GeoPackage as a complete
 Reach–Survey–Event container.
+
+The first [terrain intake inventory](../schemas/terrain-intake-manifest.md) is now
+implemented for selected files under one root and integrates with report schema 2.
+It does not implement the complete event-folder or shared-raster binding above.
