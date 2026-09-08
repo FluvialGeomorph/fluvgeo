@@ -67,7 +67,8 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 <span>  terrain_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  survey_dems <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  reconstruction <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  reconstruction <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  folder_manifest <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -129,14 +130,20 @@ and decision_notes. These are supplied forensic interpretations, never
 automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
 parent context are required to record an unresolved archive case.</p></dd>
 
+
+<dt id="arg-folder-manifest">folder_manifest<a class="anchor" aria-label="anchor" href="#arg-folder-manifest"></a></dt>
+<dd><p>Optional terrain intake JSON manifest. Files are
+freshly inspected; its local intake labels never create report hierarchy.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>List of tables, map layers, fresh network validation and explicit gaps.
   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
   reconstruction and a limited stage-specific assessment with requires_input
-  flags for clients. It does not validate complete archive migration or file
-  availability. Inputs and saved network history remain unchanged.</p>
+  flags for clients. Optional folder_manifest adds fresh selected-file
+  inspection, not complete archive migration validation. Inputs and saved
+  network history remain unchanged.</p>
     </div>
 
   </div>
