@@ -213,9 +213,116 @@ test_that("visual report handles archive-only and named-AOI-missing inputs safel
   on.exit(unlink(archive_path), add = TRUE)
   expect_invisible(terrain_development_report(terrain_development_summary(reconstruction = cases), archive_path))
   old <- s; old$schema <- "TERRAIN_DEVELOPMENT_REPORT_1"
-  old[c("hierarchy", "event_evidence", "survey_dem_extents", "reconstruction", "assessment")] <- NULL
+  old[c("hierarchy", "event_evidence", "survey_dem_extents", "reconstruction", "assessment",
+    "review_actions", "review_action_members")] <- NULL
   old_path <- tempfile(fileext = ".html")
   on.exit(unlink(old_path), add = TRUE)
   expect_invisible(terrain_development_report(old, old_path))
+  expect_match(paste(readLines(old_path, warn = FALSE), collapse = "\n"),
+    "Grouped review is unavailable", fixed = TRUE)
   expect_error(terrain_development_report(list(), tempfile(fileext = ".html")), "summary")
+})
+
+test_that("review groups preserve findings and distinguish work from human input", {
+  a <- data.frame(code = c("VERTICAL_REFERENCE_UNKNOWN", "VERTICAL_REFERENCE_UNKNOWN",
+    "FILE_CHANGED", "FILE_HASH_VERIFIED", "ARCHIVE_INTERPRETATION", "ARCHIVE_INTERPRETATION",
+    "EVENT_TERRAIN_REVIEW"), entity_id = c("a", "b", "a", "b", "c", "d", "e"),
+    entity_label = rep("same label", 7),
+    stage = c("FILE_INTEGRITY", "FILE_INTEGRITY", "FILE_INTEGRITY", "FILE_INTEGRITY",
+      "HIERARCHY_RECONSTRUCTION", "HIERARCHY_RECONSTRUCTION", "TERRAIN_REVIEW"),
+    status = c("REVIEW_REQUIRED", "REVIEW_REQUIRED", "BLOCKED", "VERIFIED", "CONFIRMED", "REJECTED", "NOT_ASSESSED"),
+    requires_input = c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE),
+    next_action = c("Confirm metadata", "Confirm metadata", "Review changed file",
+      "Retain check", "Retain decision", "Retain decision", "Assess coverage"))
+  before <- a
+  result <- .fg_terrain_review_actions(a)
+  expect_identical(a, before)
+  expect_equal(nrow(result$review_actions), 3L)
+  expect_equal(result$review_actions$code, c("FILE_CHANGED", "VERTICAL_REFERENCE_UNKNOWN", "EVENT_TERRAIN_REVIEW"))
+  expect_false(result$review_actions$requires_input[1])
+  expect_equal(result$review_actions$entity_count, c(1L, 2L, 1L))
+  expect_equal(sort(result$review_action_members$assessment_row), c(1L, 2L, 3L, 7L))
+  expect_false(anyDuplicated(result$review_action_members$assessment_row) > 0L)
+  expect_true(all(result$review_action_members$action_id %in% result$review_actions$action_id))
+  a$next_action[2] <- "Different evidence is needed"
+  expect_equal(nrow(.fg_terrain_review_actions(a)$review_actions), 4L)
+  a$next_action[2] <- a$next_action[1]; a$status[2] <- "BLOCKED"
+  expect_equal(nrow(.fg_terrain_review_actions(a)$review_actions), 4L)
+  a$status[2] <- a$status[1]; a$code[2] <- "OTHER_CHECK"
+  expect_equal(nrow(.fg_terrain_review_actions(a)$review_actions), 4L)
+  expect_equal(nrow(.fg_terrain_review_actions(a[4:6, ])$review_actions), 0L)
+  expect_type(.fg_terrain_review_actions(NULL)$review_action_members$assessment_row, "integer")
+})
+
+test_that("summary grouping retains every affected event without name-based merging", {
+  x <- terrain_test_context()
+  x$survey_events$survey_year <- rep(2006L, 3)
+  x$survey_events$survey_month <- x$survey_events$survey_day <- rep(NA_integer_, 3)
+  s <- do.call(terrain_development_summary, x)
+  expect_equal(nrow(s$assessment), 3L)
+  expect_equal(nrow(s$review_actions), 1L)
+  expect_equal(s$review_actions$entity_count, 3L)
+  expect_equal(s$review_actions$finding_count, 3L)
+  expect_equal(s$review_action_members$assessment_row, 1:3)
+  expect_identical(s$schema, "TERRAIN_DEVELOPMENT_REPORT_2")
+})
+
+test_that("report reduces default detail without dropping evidence or safe escaping", {
+  skip_if_not_installed("knitr")
+  skip_if_not(rmarkdown::pandoc_available(), "Pandoc not available")
+  s <- do.call(terrain_development_summary, terrain_test_context())
+  s$review_actions$next_action[1] <- "<script>not trusted</script>"
+  before <- s
+  path <- tempfile(fileext = ".html")
+  on.exit(unlink(path), add = TRUE)
+  terrain_development_report(s, path)
+  html <- paste(readLines(path, warn = FALSE), collapse = "\n")
+  expect_identical(s, before)
+  expect_match(html, "Review focus", fixed = TRUE)
+  expect_match(html, "Further assessment", fixed = TRUE)
+  expect_match(html, "&lt;script&gt;not trusted&lt;/script&gt;", fixed = TRUE)
+  expect_false(grepl("<script>not trusted</script>", html, fixed = TRUE))
+  expect_match(html, '<details class="terrain-detail">', fixed = TRUE)
+  expect_match(html, "Expand supporting record", fixed = TRUE)
+  expect_match(html, "beforeprint", fixed = TRUE)
+  expect_match(html, "afterprint", fixed = TRUE)
+  expect_match(html, s$assessment$entity_id[1], fixed = TRUE)
+  expect_match(html, "EVENT_TERRAIN_REVIEW", fixed = TRUE)
+  expect_match(html, "not an exhaustive task list", fixed = TRUE)
+  expect_match(html, "What is known about the supplied scope", fixed = TRUE)
+  expect_match(html, "What is known from the current checks", fixed = TRUE)
+  expect_match(html, "What to do next", fixed = TRUE)
+  expect_true(grepl("not a prescribed\\s+processing sequence", html, perl = TRUE))
+  expect_false(grepl('>\\s*Group\\s*</th>', html, perl = TRUE))
+  expect_match(html, "Geographic hierarchy", fixed = TRUE)
+  expect_match(html, "Network configuration records", fixed = TRUE)
+  expect_match(html, "No network Configuration or Observation records supplied", fixed = TRUE)
+})
+
+test_that("template separates hierarchy types without changing identity or ownership", {
+  s <- do.call(terrain_development_summary, terrain_test_context())
+  h <- s$hierarchy
+  cfg <- h[2, ]; cfg$entity_type <- 'Configuration'; cfg$entity_id <- .fg_generate_uuid(1)
+  cfg$node_key <- paste('Configuration', cfg$entity_id, sep = ':')
+  cfg$label <- 'Network configuration'
+  obs <- h[3, ]; obs$entity_type <- 'Observation'; obs$entity_id <- .fg_generate_uuid(1)
+  obs$node_key <- paste('Observation', obs$entity_id, sep = ':')
+  obs$parent_id <- cfg$entity_id; obs$parent_key <- cfg$node_key; obs$label <- '2006 / DRAFT'
+  s$hierarchy <- rbind(h, cfg, obs)
+  before <- s
+  template <- readLines(system.file('reports', 'terrain_development_report.Rmd', package = 'fluvgeo'))
+  start <- grep('^```\\{r setup', template)
+  end <- which(seq_along(template) > start & template == '```')[1]
+  env <- new.env(); env$params <- list(report = s)
+  eval(parse(text = template[(start + 1):(end - 1)]), envir = env)
+  expect_identical(s, before)
+  expect_identical(as.list(env$geographic_hierarchy), as.list(h))
+  expect_equal(env$configuration_hierarchy$entity_type, c('Study Area', 'Configuration', 'Observation'))
+  expect_equal(env$configuration_hierarchy$parent_key[2], h$node_key[1])
+  expect_equal(env$configuration_hierarchy$parent_key[3], cfg$node_key)
+  expect_equal(env$draw_hierarchy(env$geographic_hierarchy)$data$node_key, h$node_key)
+  expect_equal(env$draw_hierarchy(env$configuration_hierarchy)$data$node_key, c(h$node_key[1], cfg$node_key, obs$node_key))
+  rendered <- paste(capture.output(env$paragraphs_html('First paragraph.\n\n<script>Not markup</script>')), collapse = '\n')
+  expect_match(rendered, '<p>First paragraph.</p>', fixed = TRUE)
+  expect_match(rendered, '<p>&lt;script&gt;Not markup&lt;/script&gt;</p>', fixed = TRUE)
 })

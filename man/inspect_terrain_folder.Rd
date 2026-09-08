@@ -7,11 +7,13 @@
 inspect_terrain_folder(manifest)
 }
 \arguments{
-\item{manifest}{Path to a FLUVGEO_TERRAIN_INTAKE_1 JSON manifest.}
+\item{manifest}{Path to a FLUVGEO_TERRAIN_INTAKE_1 or _2 JSON manifest.}
 }
 \value{
 List with schema, intake_id, artifacts (current file status), and
-  assessment (structured findings for reports and future clients).
+  assessment (structured findings for reports and future clients). Schema-2
+  inspection also returns validated event_links, without resolving event
+  identities against a registry or selecting scientific inputs.
 }
 \description{
 Resolves files relative to the manifest's current directory and checks hashes,

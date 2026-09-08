@@ -57,6 +57,7 @@ if (length(args) == 2L && !folder_mode) {
 if (folder_mode) {
   dir.create(file.path(out, "rasters"))
   artifacts <- data.frame(artifact_id = "retained-network", path = basename(gpkg), role = "draft-network")
+  event_links <- list()
   checks <- list()
   for (i in seq_along(years)) {
     datasets <- terra::sources(terra::sds(gdbs[i]))
@@ -76,12 +77,20 @@ if (folder_mode) {
         role = paste(basename(gdbs[i]), sub(".*:", "", datasets[j]), sep = " | ")))
       checks[[label]] <- list(source_gdb = basename(gdbs[i]), source_layer = sub(".*:", "", datasets[j]),
         path = relative, exact_values = TRUE, exact_mask = TRUE, grid_and_crs = TRUE)
+      event_links[[label]] <- data.frame(artifact_id = label, survey_event_id = events$survey_event_id[i],
+        purpose = paste('Retained terrain:', sub('.*:', '', datasets[j])),
+        evidence = paste('Read from', basename(gdbs[i]), 'for the user-confirmed Cole Creek R1 event;',
+          'exact copied values/grid verified. Demonstration event UUID is provisional.'),
+        analyst = 'terrain-report-demo (supplied scope; provisional association)',
+        use_for_report = grepl(paste0(':', dem_names[i], '$'), datasets[j]))
       if (grepl(paste0(":", dem_names[i], "$"), datasets[j])) survey_dems[[i]] <- target
     }
   }
   dem <- survey_dems[[1]]
-  folder_manifest <- write_terrain_manifest(out, artifacts, "cole-creek-retained-2006-2010-2016")
+  folder_manifest <- write_terrain_manifest(out, artifacts, "cole-creek-retained-2006-2010-2016",
+    event_links = do.call(rbind, event_links))
   stopifnot(all(vapply(survey_dems, function(d) all(grepl("\\.tif$", terra::sources(d))), logical(1))))
+  survey_dems <- NULL # Reopen event grids only through the saved explicit links.
   jsonlite::write_json(checks, file.path(out, "geotiff-copy-evidence.json"), pretty = TRUE, auto_unbox = TRUE)
 }
 reconstruction <- data.frame(case_id = c("cole-scope", "papillion-aoi", "terrain-vertical-reference"),
@@ -102,7 +111,7 @@ summary <- terrain_development_summary(
   network = gpkg, dem = dem,
   analyst_notes = paste("Papillion Creek Study Area / Cole Creek / Reach R1. Scope and Survey Event years confirmed by the user.",
     "PROVISIONAL DEMONSTRATION: UUIDs and the 0.01 m diagnostic tolerance are test scaffolding, not reconciled FGDB identities or analyst-approved processing parameters.",
-    "The retained 2006 network is displayed without automated repair or acceptance. No Papillion Creek Study Area AOI, wider Stream inventory, or other Reach definitions were supplied."),
+    "The retained 2006 network is displayed without automated repair or acceptance. No Papillion Creek Study Area AOI, wider Stream inventory, or other Reach definitions were supplied.", sep = "\n\n"),
   terrain_notes = paste(if (folder_mode)
     "Displayed terrain grids are reopened GeoTIFF copies. All six retained rasters were checked for exact values/NoData and unchanged grids/CRS. The selected-file intake manifest adds fresh integrity checks, not complete event acceptance."
     else if (length(args) == 2L)
@@ -113,8 +122,12 @@ summary <- terrain_development_summary(
 html <- file.path(out, "cole-creek-terrain-development.html")
 terrain_development_report(summary, html)
 stopifnot(summary$observation$review_status == "DRAFT", nrow(summary$surveys) == 3L)
-if (folder_mode) stopifnot(!any(summary$folder_inventory$assessment$status == "BLOCKED"))
+if (folder_mode) stopifnot(!any(summary$folder_inventory$assessment$status == "BLOCKED"),
+  nrow(summary$event_artifacts) == 6L, sum(summary$event_artifacts$grid_status == 'GRID_LOADED') == 3L,
+  all(summary$event_evidence$evidence_status == 'GRID_SUPPLIED'))
 stopifnot(identical(tools::md5sum(source_files), source_hashes))
 utils::write.csv(summary$reconstruction, file.path(out, "archive-interpretations.csv"), row.names = FALSE)
 utils::write.csv(summary$assessment, file.path(out, "study-assessment.csv"), row.names = FALSE)
+utils::write.csv(summary$review_actions, file.path(out, "review-actions.csv"), row.names = FALSE)
+utils::write.csv(summary$review_action_members, file.path(out, "review-action-members.csv"), row.names = FALSE)
 cat(normalizePath(html, winslash = "/"), "\n")

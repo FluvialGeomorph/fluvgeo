@@ -13,10 +13,15 @@
 #'   Missing vertical metadata remains unknown, never inferred from filenames.
 #' @param intake_id Nonempty local intake-case label; no hierarchy is inferred.
 #' @param filename New JSON filename directly within root; never overwritten.
+#' @param event_links Optional data frame with artifact_id, survey_event_id,
+#'   purpose, evidence, analyst (character) and use_for_report (logical).
+#'   Links are caller assertions, not reconciled identities or acceptance.
+#'   At most one GeoTIFF per event may be selected for the report grid view.
+#'   Supplying links writes intake schema 2; omission retains schema 1.
 #' @return Manifest path invisibly. Publication requires hard-link support.
 #' @export
 write_terrain_manifest <- function(root, artifacts, intake_id,
-    filename = "terrain-manifest.json") {
+    filename = "terrain-manifest.json", event_links = NULL) {
   root <- .fg_manifest_root(root)
   intake_id <- .fg_required_text(intake_id, "intake_id")
   filename <- .fg_required_text(filename, "filename")
@@ -50,11 +55,14 @@ write_terrain_manifest <- function(root, artifacts, intake_id,
     if (!identical(x$sha256, .fg_file_sha256(path))) .fg_abort("Artifact changed during inventory.")
     x
   })
-  manifest <- list(schema = "FLUVGEO_TERRAIN_INTAKE_1", intake_id = intake_id,
+  links <- .fg_terrain_event_links(event_links, artifacts$artifact_id,
+    vapply(records, function(a) a$observed$format, character(1)))
+  manifest <- list(schema = if (is.null(event_links)) "FLUVGEO_TERRAIN_INTAKE_1" else "FLUVGEO_TERRAIN_INTAKE_2", intake_id = intake_id,
     created_at = format(Sys.time(), tz = "UTC", format = "%Y-%m-%dT%H:%M:%SZ"),
     software = list(fluvgeo = as.character(utils::packageVersion("fluvgeo")),
                     terra = as.character(utils::packageVersion("terra")),
                     gdal = terra::gdal()), artifacts = records)
+  if (!is.null(event_links)) manifest$event_links <- links
   stage <- tempfile("terrain-manifest-", tmpdir = root, fileext = ".json")
   on.exit(unlink(stage), add = TRUE)
   jsonlite::write_json(manifest, stage, auto_unbox = TRUE, pretty = TRUE, na = "null", digits = NA)
@@ -72,9 +80,11 @@ write_terrain_manifest <- function(root, artifacts, intake_id,
 #' Undeclared assets, hierarchy, coverage, source-to-copy numerical equivalence,
 #' and shared assets outside this intake root are not qualified by this slice.
 #'
-#' @param manifest Path to a FLUVGEO_TERRAIN_INTAKE_1 JSON manifest.
+#' @param manifest Path to a FLUVGEO_TERRAIN_INTAKE_1 or _2 JSON manifest.
 #' @return List with schema, intake_id, artifacts (current file status), and
-#'   assessment (structured findings for reports and future clients).
+#'   assessment (structured findings for reports and future clients). Schema-2
+#'   inspection also returns validated event_links, without resolving event
+#'   identities against a registry or selecting scientific inputs.
 #' @export
 inspect_terrain_folder <- function(manifest) {
   manifest <- .fg_required_text(manifest, "manifest")
@@ -83,7 +93,8 @@ inspect_terrain_folder <- function(manifest) {
   manifest <- normalizePath(manifest, winslash = "/", mustWork = TRUE)
   root <- dirname(manifest)
   x <- jsonlite::read_json(manifest, simplifyVector = FALSE)
-  if (!identical(x$schema, "FLUVGEO_TERRAIN_INTAKE_1") ||
+  if (!is.character(x$schema) || length(x$schema) != 1L ||
+      !x$schema %in% c("FLUVGEO_TERRAIN_INTAKE_1", "FLUVGEO_TERRAIN_INTAKE_2") ||
       !is.list(x$artifacts) || !length(x$artifacts)) .fg_abort("Unsupported or malformed terrain manifest.")
   .fg_required_text(x$intake_id, "intake_id")
   assessment <- data.frame(code = character(), entity_id = character(), entity_label = character(),
@@ -142,8 +153,19 @@ inspect_terrain_folder <- function(manifest) {
       vertical_unit = if (is.null(a$vertical_unit)) NA_character_ else a$vertical_unit)
   })
   if (anyDuplicated(ids) || anyDuplicated(paths)) .fg_abort("Artifact IDs and paths must be unique.")
-  list(schema = "FLUVGEO_TERRAIN_INTAKE_REVIEW_1", intake_id = x$intake_id,
+  result <- list(schema = "FLUVGEO_TERRAIN_INTAKE_REVIEW_1", intake_id = x$intake_id,
        artifacts = do.call(rbind, rows), assessment = assessment)
+  if (x$schema == "FLUVGEO_TERRAIN_INTAKE_2") {
+    if (!is.list(x$event_links) || !length(x$event_links)) .fg_abort("Schema 2 requires nonempty event_links.")
+    links <- lapply(x$event_links, function(link) {
+      if (!is.list(link) || any(lengths(link) != 1L)) .fg_abort("Malformed event link.")
+      as.data.frame(link, stringsAsFactors = FALSE)
+    })
+    result$event_links <- .fg_terrain_event_links(do.call(rbind, links),
+      result$artifacts$artifact_id, result$artifacts$format)
+    result$schema <- "FLUVGEO_TERRAIN_INTAKE_REVIEW_2"
+  } else if (!is.null(x$event_links)) .fg_abort("Event links require intake schema 2.")
+  result
 }
 
 .fg_manifest_root <- function(root) {

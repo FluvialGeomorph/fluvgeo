@@ -66,3 +66,6 @@ Reach–Survey–Event container.
 The first [terrain intake inventory](../schemas/terrain-intake-manifest.md) is now
 implemented for selected files under one root and integrates with report schema 2.
 It does not implement the complete event-folder or shared-raster binding above.
+Its opt-in schema 2 records explicit event associations and report-grid selection
+within one root. It checks supplied event context without creating or reconciling
+identities. Parent-context persistence and shared external assets remain open.

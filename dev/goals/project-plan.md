@@ -57,8 +57,15 @@ description and configuration aid, not only an FGDB compliance report.
   inspector, integrate findings into the existing report, and exercise GeoTIFF
   copies in the Cole Creek demo. See [the bounded intake contract](../schemas/terrain-intake-manifest.md).
   Complete event binding, shared assets and cross-client qualification remain open.
+- [x] Persist explicit artifact-to-event associations with evidence/attribution,
+  resolve selected event DEMs through the intake manifest, and retain blocked or
+  unresolved associations in the report. This does not persist the parent catalog
+  or implement the complete FGDB event-folder/shared-external-asset binding.
 - [ ] Expand shared assessment to hierarchy conflict inspection, valid-cell
   coverage and migration findings; wire selective prompts into Shiny separately.
+- [x] Reduce report reading burden with a grouped review overview and expandable
+  supporting record; preserve source findings, affected identities and explicit
+  blockers. This is presentation triage, not the full hierarchy binding above.
 - [ ] Extend fluvgeodata with a representative Study Area / full terrain-network
   pair and multi-Reach case, after the analyst identifies suitable retained data.
   This is required for broader verification, not a blocker to every report advance.

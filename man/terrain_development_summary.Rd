@@ -55,14 +55,23 @@ automatically promoted into hierarchy or FGDB acceptance. No UUIDs or
 parent context are required to record an unresolved archive case.}
 
 \item{folder_manifest}{Optional terrain intake JSON manifest. Files are
-freshly inspected; its local intake labels never create report hierarchy.}
+freshly inspected; its local intake labels never create report hierarchy.
+Schema-2 event links resolve against supplied Survey Events. Explicitly
+selected, unblocked GeoTIFFs supply event grid views; conflicting survey_dems
+inputs fail rather than choosing a precedence. Missing context/files remain
+findings. Associations do not prove provenance, coverage or acceptance.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.
   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
   reconstruction and a limited stage-specific assessment with requires_input
   flags for clients. Optional folder_manifest adds fresh selected-file
-  inspection, not complete archive migration validation. Inputs and saved
+  inspection, not complete archive migration validation. review_actions groups
+  pending assessment rows by code, stage, status, input flag and exact action;
+  review_action_members retains their assessment-row references. This is a
+  presentation queue. event_artifacts records supplied manifest associations,
+  context resolution and selected grid-loading status, without acceptance.
+  This is not a complete workflow or readiness verdict. Inputs and saved
   network history remain unchanged.
 }
 \description{

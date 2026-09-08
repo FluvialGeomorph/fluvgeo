@@ -1,6 +1,6 @@
 # Schemas
 
-Last updated: 2026-09-06
+Last updated: 2026-09-08
 
 ## Purpose
 This document records important structural contracts used by the repository, including data objects, files, tables, configuration structures, and other interfaces whose shape must remain explicit.
@@ -111,7 +111,9 @@ for identity, relative paths, integrity, embedded/sidecar CRS consistency,
 vertical references, grid/NoData and provenance. The full event binding remains
 unimplemented. A bounded [terrain intake manifest](terrain-intake-manifest.md)
 now snapshots selected files and supplies fresh integrity/metadata findings to
-the report. It does not govern hierarchy, complete deliveries or shared assets.
+the report. Opt-in intake schema 2 records explicit artifact/event associations
+and report-grid selection; see the intake contract for validation and failure
+semantics. It does not govern hierarchy, complete deliveries or shared external assets.
 Existing network and report schema tags are unchanged.
 
 ### Terrain Development report input contract
@@ -160,6 +162,29 @@ Typed keys prevent cross-entity UUID collisions from conflating diagram nodes.
 Survey Events are not collapsed by matching labels or years. Configuration and
 Observation form a separate Study-Area-owned branch.
 
+The optional, additive `review_actions` and `review_action_members` fields provide
+a presentation queue from `assessment`, not a new validator or workflow engine:
+
+- `review_actions`: integer local `action_id`, character `code`, `stage`, `status`,
+  logical `requires_input`, integer `finding_count`, `entity_count`, and character
+  `next_action`. Group only exact matches of code/stage/status/input flag/action.
+  Entity counts use distinct IDs, not labels; an unknown ID is one unknown
+  reference, not an invented entity. IDs are local to the snapshot, not durable
+  tasks or scientific identities.
+- `review_action_members`: integer `action_id` and 1-based `assessment_row`.
+  Each pending source row occurs exactly once. The original assessment, including
+  verified checks and supplied decisions, is unchanged.
+- Pending means human input is requested or status is not VERIFIED, CONFIRMED or
+  REJECTED. BLOCKED groups appear first even when `requires_input` is false, then
+  human-input groups, then remaining assessment work; ties retain source order.
+  This ordering is presentation triage, not a scientific dependency schedule.
+
+Grouping never establishes common cause or permission to apply a bulk decision.
+Existing network validation and context gaps remain separate and visible in the
+report. An empty queue is not readiness or comprehensive compliance. The HTML
+keeps maps and a grouped overview visible, with full tables in expandable sections;
+older summaries without the new fields retain access to their detailed evidence.
+
 The renderer accepts retained version-1 summaries; new summaries return version
 2. Existing arguments remain compatible, with new arguments appended. Clients
 that explicitly inspect the schema tag must recognize the new version. These
@@ -169,6 +194,12 @@ GeoPackage binding. The accepted local-storage direction is
 
 These are supplemental project-wide schemas. Other function-level contracts remain in generated package
 documentation and their tests.
+
+When schema-2 intake links are supplied, report schema 2 additionally returns
+`event_artifacts` with association evidence, context resolution and grid-load
+status. `folder_manifest` may supply selected event grids, but rejects conflicting
+`survey_dems` entries. The report retains unresolved links and does not infer any
+parent hierarchy or registry reconciliation. See [the intake binding](terrain-intake-manifest.md).
 
 Add an explicit schema here when a data object, spatial layer, file, table, or
 cross-repository interface has a durable shape that is not adequately governed

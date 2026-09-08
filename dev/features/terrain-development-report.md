@@ -12,7 +12,7 @@ each event or shared source, whether its files/metadata are available and
 consistent, and what remains unresolved. A displayed raster or supplied grid
 does not verify the whole folder. Machine-readable assessment should drive
 selective Shiny prompts and the durable desktop report. The selected-file intake
-slice below now supplies integrity findings; complete event/shared-terrain linkage
+slice below now supplies integrity findings and opt-in event associations; complete event/shared-terrain linkage
 and comprehensive folder qualification remain future work.
 
 The accepted [reporting intent](../goals/reporting-intent.md) establishes this as
@@ -161,6 +161,53 @@ historical GeoPackage-probe mode remains available, not the migration default.
 
 ### Remaining slices
 
+The explicit-event-association extension adds `event_links` to the manifest
+writer, opting into intake schema 2 while retaining schema-1 behavior by default.
+Each association records an existing artifact, a supplied event UUID, purpose,
+evidence, attribution and an explicit report-grid choice. The summary resolves
+against supplied event context and reopens unblocked selected DEMs; unresolved
+event references and unavailable/conflicting files remain findings. It does not
+create context, infer associations or select an alternative. A conflicting
+`survey_dems` entry fails explicitly. The existing Survey Event inventory gains
+a linked-file table and expandable association evidence, not another required
+report section. See [the exact binding](../schemas/terrain-intake-manifest.md).
+
+The Cole Creek folder demo persists six associations using the user's confirmed
+scope and each retained source GDB as its evidence; its event UUIDs remain
+provisional. Three explicitly chosen DEMs now enter the event views through the
+saved manifest rather than an independently assembled in-memory raster list.
+Sharing a file within the same intake root is supported; governed identities,
+parent-context persistence, terrain editions and external shared assets remain
+outside this implementation. No FGDB or client implementation is changed.
+
+The subsequent usability polish makes the report explicitly answer what is
+known and what the analyst should do next. Scope is a labelled supplied-facts
+table plus paragraph-preserving analyst notes; unknown boundaries stay explicit.
+The action table omits internal group numbers, labels affected record types,
+and explains its ordering as review triage rather than a processing sequence.
+The geographic hierarchy and Configuration/Observation records have separate
+diagrams, repeating the Study Area only as an ownership reference. Both use the
+same unchanged identity-based hierarchy data. The concise inventories and six
+collapsible supporting sections are retained. This is a light refinement of the
+existing R Markdown template, not a custom UI framework or bslib migration.
+
+The 2026-09-08 review-focus extension implements the first presentation refinement:
+pending assessment rows are grouped only when code, stage, status, input flag and
+action text agree. The overview separates blocking checks, analyst input and
+further assessment; source rows and affected IDs remain available through
+`review_action_members`. Same-named entities are not treated as one entity.
+Successful checks and recorded interpretations remain in the full record, not
+the pending queue. Network status is separately visible in the overview.
+
+Maps and hierarchy remain expanded. Wide inventories, metadata, reconstruction
+evidence and detailed checks are in expandable sections with expand/collapse-all
+controls. Printing expands the supporting record when JavaScript is enabled.
+This changes presentation, not scientific validation, persistence, or acceptance;
+no Shiny or QGIS deployment is implied. Full event/shared-asset binding remains
+open. The rationale is the user's feedback that the developing report helps
+clarify the process but remains too complex: preserve evidence without requiring
+every reader to work through every technical row.
+
 1. **Extend the initial visual structure and coverage slice:** pair a geographic overview with
    a readable hierarchy/relationship view and Reach-by-Survey-Event evidence
    matrix. Explain selected Streams, Reach definitions and intended versus
@@ -276,3 +323,90 @@ data acceptance, source modification or deployment occurred.
   now a declared import; no installed packages or workstation settings changed.
   FGDB changes are documentation only. Full event/shared-asset binding, archive
   conversion, data acceptance and client deployment remain outside this slice.
+
+## Verification of the review-focus extension (2026-09-08)
+
+- The final focused reporting/intake tests passed 153 assertions with no failures,
+  errors, test warnings or skips. They cover grouping, affected-row retention,
+  same-named events, blockers without input flags, distinct action/status/code
+  groups, retained decisions, escaping and older-summary rendering.
+- The Cole Creek `--folder` rerun produced
+  `dev/outputs/terrain-development/cole-creek-review-v2/cole-creek-terrain-development.html`.
+  Its 20 source assessment rows are preserved: 12 pending rows form four prompts;
+  seven successful hash checks and one confirmed interpretation remain recorded.
+  The existing six-raster exact-copy and original-source hash checks passed.
+  The demo also exports review actions and their source-row membership separately.
+- Read-only `dev/scripts/check-terrain-review-html.R` verifies six closed,
+  non-nested supporting sections with their tables and all figures outside them.
+  An initial render exposed Markdown-generated section nesting; raw subsection
+  headings corrected it and the final structural check passed.
+  `dev/scripts/check-terrain-review-controls.cjs` tests expand/collapse and print
+  state restoration in an isolated JavaScript context. These are not browser UI
+  or print-layout qualification: automated browser navigation was policy-blocked,
+  and no workaround was attempted. Interactive visual review remains unverified.
+- Generated help was checked separately; collateral help removal from scoped
+  documentation generation was fully restored. Only this summary's intended help
+  content differs. No dependencies, namespace exports, persisted schema tags,
+  client call sites, scientific decisions or source fixtures changed. Cross-client
+  search found no direct callers of the summary in the scoped production client
+  code. No deployment or FGDB implementation is included.
+- Package build/install and scoped `R CMD check` completed with zero errors or
+  warnings and the two existing notes (methods dependency and package-wide
+  globals/imports). Tests, examples, manual and vignettes were excluded from the
+  package check; focused tests ran separately. The build retained the existing
+  R >= 4.1 syntax warning; repository-index access and installed optional
+  fluvgeodata were unavailable. This is not full-suite or release qualification.
+
+## Verification of scope/action/diagram polish (2026-09-08)
+
+The follow-up presentation tests passed 170 assertions with no failures, errors,
+test warnings or skips. Separate diagrams retain the same typed IDs and parent
+links; paragraph rendering preserves escaping, old summaries still render, and
+the action table no longer presents internal IDs as an implied sequence. Initial
+test failures concerned HTML whitespace and incidental R row-name attributes;
+the corrected checks compare the actual wording and identity-bearing columns.
+
+The final Cole Creek report is
+`dev/outputs/terrain-development/cole-creek-review-v3/cole-creek-terrain-development.html`.
+Its six supporting sections, scope table/paragraphs, action labels and separate
+diagram sections passed structural checks; expand/collapse and print-state unit
+checks passed. Both embedded diagram images were visually inspected. Full browser
+and print-layout review remain unverified. Assessment, review-action, membership
+and archive-interpretation CSVs are byte-identical to the preceding v2 report;
+the existing source-raster copy and source-archive integrity checks passed again.
+
+This follow-up changes the R Markdown template, demonstration narrative and
+presentation checks/docs only. No new CSS, framework, dependency, exported API or
+scientific contract was added. No package-wide check was repeated for this
+presentation-only follow-up; the scoped package check above is the prior baseline.
+Existing uncommitted implementation work was preserved; no commit or deployment
+was performed.
+
+## Verification of saved event associations (2026-09-08)
+
+- Focused reporting/intake/event-link tests passed 226 assertions with no failures,
+  errors, test warnings or skips. They cover schema-1 compatibility, schema-2
+  serialization, explicit shared local files, same-date event identities,
+  conflicting selections, invalid/dangling references, missing/changed files,
+  sidecar conflicts, unsupported grid CRS, HTML escaping and no automatic fallback.
+- The Cole Creek `--folder` run produced
+  `dev/outputs/terrain-development/cole-creek-linked-v1/cole-creek-terrain-development.html`.
+  Six associations were saved and three selected event grids reopened from those
+  links. Original archive hashes and all six exact terrain-copy checks passed.
+  The six existing supporting sections and report controls passed structural and
+  isolated control checks. Full browser/print-layout qualification was not repeated.
+- Copying the real output folder to a new location produced identical inspection
+  and association results. All three selected grids resolved there with exact
+  values/NoData masks, resolution and semantic CRS equality. This exercises local
+  folder relocation, not an external shared-asset store or multi-client exchange.
+- Exported help was generated in an isolated temporary directory and only the
+  affected topics copied back; no namespace export or dependency was added.
+  Changes are confined to fluvgeo and preserve the prior uncommitted report work.
+  No governed identities, acceptance decisions, FGDB implementation, production
+  client code or source fixtures were changed; no commit or deployment was made.
+- Package build/install and scoped `R CMD check` completed with zero errors or
+  warnings and two existing notes (methods dependency and package-wide global
+  bindings/imports). Tests, examples, manual and vignettes were excluded from that
+  check; focused tests ran separately. The existing R >= 4.1 syntax build warning,
+  unavailable repository indexes and optional installed fluvgeodata limitation
+  remain. This is not full-suite, release or cross-client qualification.

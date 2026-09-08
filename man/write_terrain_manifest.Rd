@@ -8,7 +8,8 @@ write_terrain_manifest(
   root,
   artifacts,
   intake_id,
-  filename = "terrain-manifest.json"
+  filename = "terrain-manifest.json",
+  event_links = NULL
 )
 }
 \arguments{
@@ -23,6 +24,12 @@ Missing vertical metadata remains unknown, never inferred from filenames.}
 \item{intake_id}{Nonempty local intake-case label; no hierarchy is inferred.}
 
 \item{filename}{New JSON filename directly within root; never overwritten.}
+
+\item{event_links}{Optional data frame with artifact_id, survey_event_id,
+purpose, evidence, analyst (character) and use_for_report (logical).
+Links are caller assertions, not reconciled identities or acceptance.
+At most one GeoTIFF per event may be selected for the report grid view.
+Supplying links writes intake schema 2; omission retains schema 1.}
 }
 \value{
 Manifest path invisibly. Publication requires hard-link support.

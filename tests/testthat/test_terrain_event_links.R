@@ -1,0 +1,143 @@
+event_link_fixture <- function() {
+  root <- tempfile('event-intake-'); dir.create(root)
+  d <- terra::rast(nrows = 2, ncols = 2, xmin = 0, xmax = 2, ymin = 0, ymax = 2, crs = 'EPSG:26914')
+  terra::values(d) <- c(0, -1, .125, NA)
+  terra::writeRaster(d, file.path(root, 'dem.tif'), datatype = 'FLT4S')
+  terra::writeRaster(d + 1, file.path(root, 'other.tif'), datatype = 'FLT4S')
+  sf::st_write(sf::st_sf(geometry = sf::st_sfc(sf::st_point(c(1, 1)), crs = 26914)),
+    file.path(root, 'vectors.gpkg'), quiet = TRUE)
+  aid <- .fg_generate_uuid(1); sid <- .fg_generate_uuid(1); rid <- .fg_generate_uuid(1)
+  context <- list(study_area = data.frame(study_area_id = aid, study_area_name = 'Fixture'),
+    streams = data.frame(stream_id = sid, study_area_id = aid, stream_name = 'Creek'),
+    reaches = data.frame(reach_id = rid, stream_id = sid, reach_name = 'R1'),
+    survey_events = data.frame(survey_event_id = .fg_generate_uuid(2), reach_id = rid, survey_year = c(2006L, 2006L)))
+  links <- data.frame(artifact_id = 'dem', survey_event_id = context$survey_events$survey_event_id[1],
+    purpose = 'Retained terrain', evidence = 'Synthetic event association', analyst = 'fixture', use_for_report = TRUE)
+  list(root = root, dem = d, context = context, links = links,
+    artifacts = data.frame(artifact_id = c('dem', 'other', 'vectors'),
+      path = c('dem.tif', 'other.tif', 'vectors.gpkg'), role = c('terrain', 'alternative', 'vectors')))
+}
+
+test_that('saved event links reopen explicit grids after relocation', {
+  f <- event_link_fixture()
+  source_hash <- tools::md5sum(file.path(f$root, f$artifacts$path))
+  m <- write_terrain_manifest(f$root, f$artifacts, 'fixture', event_links = f$links)
+  x <- inspect_terrain_folder(m)
+  expect_identical(x$schema, 'FLUVGEO_TERRAIN_INTAKE_REVIEW_2')
+  expect_identical(x$event_links, f$links)
+  expect_identical(tools::md5sum(names(source_hash)), source_hash)
+  args <- c(f$context, list(folder_manifest = m))
+  s <- do.call(terrain_development_summary, args)
+  expect_equal(s$event_evidence$evidence_status, c('GRID_SUPPLIED', 'INVENTORY_ONLY'))
+  expect_equal(s$event_artifacts$grid_status, 'GRID_LOADED')
+  expect_true(s$event_artifacts$event_in_context)
+  expect_true('VERTICAL_REFERENCE_UNKNOWN' %in% s$assessment$code)
+  expect_equal(s$event_evidence$survey_event_id, f$context$survey_events$survey_event_id)
+  moved <- tempfile('moved event folder '); dir.create(moved)
+  expect_true(all(file.copy(list.files(f$root, full.names = TRUE), moved)))
+  args$folder_manifest <- file.path(moved, basename(m))
+  y <- do.call(terrain_development_summary, args)
+  expect_identical(y$event_artifacts, s$event_artifacts)
+  expect_identical(y$event_evidence, s$event_evidence)
+  expect_identical(y$assessment, s$assessment)
+  expect_identical(inspect_terrain_folder(args$folder_manifest), x)
+  args$survey_dems <- setNames(list(f$dem), f$links$survey_event_id)
+  expect_error(do.call(terrain_development_summary, args), 'choose one source')
+})
+
+test_that('a local shared artifact can serve distinct same-date events without creating context', {
+  f <- event_link_fixture()
+  links <- rbind(f$links, transform(f$links, survey_event_id = f$context$survey_events$survey_event_id[2]))
+  m <- write_terrain_manifest(f$root, f$artifacts, 'shared', event_links = links)
+  s <- do.call(terrain_development_summary, c(f$context, list(folder_manifest = m)))
+  expect_equal(s$event_artifacts$grid_status, rep('GRID_LOADED', 2))
+  expect_equal(length(unique(s$event_artifacts$artifact_id)), 1L)
+  expect_equal(s$event_evidence$evidence_status, rep('GRID_SUPPLIED', 2))
+  no_context <- terrain_development_summary(folder_manifest = m)
+  expect_equal(nrow(no_context$surveys), 0L)
+  expect_null(no_context$study_area)
+  expect_equal(no_context$event_artifacts$grid_status, rep('NOT_LOADED', 2))
+  expect_equal(sum(no_context$assessment$code == 'EVENT_CONTEXT_MISSING'), 2L)
+  partial <- f$context; partial$survey_events <- partial$survey_events[1, , drop = FALSE]
+  p <- do.call(terrain_development_summary, c(partial, list(folder_manifest = m)))
+  expect_equal(p$event_artifacts$event_in_context, c(TRUE, FALSE))
+  expect_equal(p$event_artifacts$grid_status, c('GRID_LOADED', 'NOT_LOADED'))
+})
+
+test_that('invalid associations fail before a new manifest is published', {
+  f <- event_link_fixture()
+  write <- function(links) write_terrain_manifest(f$root, f$artifacts, 'bad', event_links = links)
+  x <- f$links; x$artifact_id <- 'absent'; expect_error(write(x), 'unknown artifact')
+  x <- f$links; x$survey_event_id <- 'year-2006'; expect_error(write(x), 'UUID')
+  x <- f$links; x$evidence <- ''; expect_error(write(x), 'evidence')
+  x <- f$links; x$analyst <- NA_character_; expect_error(write(x), 'analyst')
+  x <- f$links; x$use_for_report <- NA; expect_error(write(x), 'nonmissing logical')
+  x <- f$links; x$use_for_report <- 'true'; expect_error(write(x), 'logical')
+  expect_error(write(rbind(f$links, f$links)), 'pair must be unique')
+  expect_error(write(rbind(f$links, transform(f$links, artifact_id = 'other'))), 'at most one')
+  x <- f$links; x$artifact_id <- 'vectors'; expect_error(write(x), 'GeoTIFF')
+  expect_false(file.exists(file.path(f$root, 'terrain-manifest.json')))
+  m <- write(f$links)
+  raw <- jsonlite::read_json(m); raw$schema <- 'FLUVGEO_TERRAIN_INTAKE_1'
+  bad <- file.path(f$root, 'bad.json')
+  jsonlite::write_json(raw, bad, auto_unbox = TRUE, null = 'null')
+  expect_error(inspect_terrain_folder(bad), 'require intake schema 2')
+  raw$schema <- 'FLUVGEO_TERRAIN_INTAKE_2'; raw$event_links <- NULL
+  jsonlite::write_json(raw, bad, auto_unbox = TRUE, null = 'null')
+  expect_error(inspect_terrain_folder(bad), 'requires nonempty event_links')
+})
+
+test_that('selected missing or conflicting terrain never falls back to an alternative', {
+  f <- event_link_fixture()
+  links <- rbind(f$links, transform(f$links, artifact_id = 'other', use_for_report = FALSE))
+  m <- write_terrain_manifest(f$root, f$artifacts, 'blocked', event_links = links)
+  manifest_hash <- tools::md5sum(m)
+  expect_true(file.rename(file.path(f$root, 'dem.tif'), file.path(f$root, 'held.tif')))
+  s <- do.call(terrain_development_summary, c(f$context, list(folder_manifest = m)))
+  expect_equal(s$event_artifacts$grid_status, c('NOT_LOADED', 'NOT_SELECTED'))
+  expect_true(all(s$event_evidence$evidence_status == 'INVENTORY_ONLY'))
+  expect_true('EVENT_DEM_BLOCKED' %in% s$assessment$code)
+  expect_identical(tools::md5sum(m), manifest_hash)
+  expect_true(file.rename(file.path(f$root, 'held.tif'), file.path(f$root, 'dem.tif')))
+  writeLines('<PAMDataset><GeoTransform>100,1,0,103,0,-1</GeoTransform></PAMDataset>', file.path(f$root, 'dem.tif.aux.xml'))
+  s <- do.call(terrain_development_summary, c(f$context, list(folder_manifest = m)))
+  expect_true(s$folder_inventory$artifacts$hash_verified[1])
+  expect_equal(s$event_artifacts$grid_status, c('NOT_LOADED', 'NOT_SELECTED'))
+  expect_true('SIDECAR_METADATA_CONFLICT' %in% s$assessment$code)
+  expect_identical(tools::md5sum(m), manifest_hash)
+})
+
+test_that('linked geographic grids remain review findings rather than implicit reprojection', {
+  f <- event_link_fixture()
+  d <- terra::rast(nrows = 2, ncols = 2, xmin = 0, xmax = 2, ymin = 0, ymax = 2, crs = 'EPSG:4326')
+  terra::values(d) <- 1:4
+  terra::writeRaster(d, file.path(f$root, 'geographic.tif'))
+  f$artifacts$path[1] <- 'geographic.tif'
+  m <- write_terrain_manifest(f$root, f$artifacts, 'geographic', event_links = f$links)
+  s <- do.call(terrain_development_summary, c(f$context, list(folder_manifest = m)))
+  expect_equal(s$event_artifacts$grid_status, 'NOT_LOADED')
+  expect_true('EVENT_DEM_UNSUPPORTED' %in% s$assessment$code)
+  expect_true(all(s$event_evidence$evidence_status == 'INVENTORY_ONLY'))
+})
+
+test_that('changed selected files are blocked and linked evidence renders safely', {
+  f <- event_link_fixture()
+  f$links$evidence <- '<script>Untrusted association evidence</script>'
+  m <- write_terrain_manifest(f$root, f$artifacts, 'changed', event_links = f$links)
+  con <- file(file.path(f$root, 'dem.tif'), 'ab'); writeBin(as.raw(0), con); close(con)
+  s <- do.call(terrain_development_summary, c(f$context, list(folder_manifest = m)))
+  expect_equal(s$event_artifacts$grid_status, 'NOT_LOADED')
+  expect_true('FILE_CHANGED' %in% s$assessment$code)
+  expect_true('EVENT_DEM_BLOCKED' %in% s$assessment$code)
+  skip_if_not_installed('knitr')
+  skip_if_not(rmarkdown::pandoc_available(), 'Pandoc not available')
+  html_file <- tempfile(fileext = '.html')
+  terrain_development_report(s, html_file)
+  html <- paste(readLines(html_file, warn = FALSE), collapse = '\n')
+  expect_true(grepl('Terrain file associations', html, fixed = TRUE))
+  expect_true(grepl('&lt;script&gt;Untrusted', html, fixed = TRUE))
+  expect_false(grepl('<script>Untrusted', html, fixed = TRUE))
+  expect_true(grepl('Selected; grid not loaded', html, fixed = TRUE))
+  unknown <- tempfile(fileext = '.html')
+  expect_invisible(terrain_development_report(terrain_development_summary(folder_manifest = m), unknown))
+})

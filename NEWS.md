@@ -2,6 +2,24 @@
 
 ## Terrain Development reporting
 
+- Added optional `event_links` to `write_terrain_manifest()` (intake schema 2):
+  explicit file/event associations, evidence, attribution and report-DEM choice.
+  Reports resolve these links and reopen selected unblocked event grids; missing
+  context/files remain findings and conflicting DEM choices fail. Schema-1
+  calls remain compatible. This is not FGDB identity reconciliation or acceptance.
+
+- Polished the scope and next-action presentation with labelled facts, paragraph
+  separation and an explicit review-order explanation instead of a "Group" column.
+  Geographic hierarchy and network Configuration/Observation records now have
+  separate diagrams. Supporting-record inventories are unchanged; no new UI
+  framework, dependency or summary contract is introduced.
+
+- Added a grouped review overview and expandable supporting record, keeping maps
+  and study structure visible without showing every technical table by default.
+  Summary schema 2 gains `review_actions` and `review_action_members`; original
+  findings and decisions are preserved. Blocking checks stay visible even when
+  no human-input flag is set. This is presentation triage, not a readiness verdict.
+
 - Added `write_terrain_manifest()` and `inspect_terrain_folder()` for a portable
   selected-file intake inventory, plus optional `folder_manifest` reporting.
   Checks cover missing/changed files, relative-path safety, raster metadata,

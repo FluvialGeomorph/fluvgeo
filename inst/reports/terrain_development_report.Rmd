@@ -22,50 +22,148 @@ esc <- function(x) {
 table_html <- function(x, fields = names(x)) {
   if (is.null(x) || !nrow(x)) return(cat("<p>Not supplied or no records supplied.</p>\n"))
   x <- as.data.frame(sf::st_drop_geometry(x))
-  cat(as.character(knitr::kable(x[intersect(fields, names(x))], format = "html", escape = TRUE, row.names = FALSE)))
+  cat('<div class="table-responsive">', as.character(knitr::kable(x[intersect(fields, names(x))], format = "html", escape = TRUE, row.names = FALSE)), '</div>')
+}
+paragraphs_html <- function(x) {
+  if (is.null(x) || is.na(x)) return(invisible(NULL))
+  paragraphs <- strsplit(x, "\n[[:space:]]*\n", perl = TRUE)[[1]]
+  cat(paste0('<p>', esc(paragraphs), '</p>', collapse = '\n'))
+}
+geographic_hierarchy <- configuration_hierarchy <- r$hierarchy
+if (!is.null(r$hierarchy)) {
+  geographic_hierarchy <- r$hierarchy[r$hierarchy$entity_type %in%
+    c('Study Area', 'Stream', 'Reach', 'Survey Event'), , drop = FALSE]
+  configuration_hierarchy <- r$hierarchy[r$hierarchy$entity_type %in%
+    c('Study Area', 'Configuration', 'Observation'), , drop = FALSE]
+  if (!any(configuration_hierarchy$entity_type %in% c('Configuration', 'Observation')))
+    configuration_hierarchy <- configuration_hierarchy[FALSE, , drop = FALSE]
+}
+draw_hierarchy <- function(h) {
+  h$y <- rev(seq_len(nrow(h)))
+  h$text <- vapply(paste(h$entity_type, h$label, sep = ': '),
+    function(x) paste(strwrap(x, width = 27), collapse = '\n'), character(1))
+  edges <- h[!is.na(h$parent_key) & h$parent_key %in% h$node_key, , drop = FALSE]
+  parents <- match(edges$parent_key, h$node_key)
+  edges$x0 <- h$depth[parents]; edges$y0 <- h$y[parents]
+  ggplot2::ggplot(h, ggplot2::aes(x = depth, y = y)) +
+    ggplot2::geom_segment(data = edges, ggplot2::aes(x = x0, y = y0, xend = depth, yend = y), colour = '#aab8bf') +
+    ggplot2::geom_point(ggplot2::aes(colour = entity_type), size = 3, show.legend = FALSE) +
+    ggplot2::geom_label(ggplot2::aes(label = text), hjust = 0, nudge_x = 0.07, size = 3.4, linewidth = 0.15, fill = 'white') +
+    ggplot2::scale_x_continuous(limits = c(-0.1, max(h$depth) + 1.2)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = 0.8)) +
+    ggplot2::theme_void()
 }
 ```
 
+<style>
+.terrain-detail { border-top: 1px solid #d8e1e5; padding: 0.8em 0; }
+.terrain-detail > summary { cursor: pointer; font-weight: 600; color: #254c59; }
+.terrain-review { border-left: 4px solid #527b85; padding: 0.2em 1em; background: #f4f8f9; margin: 1em 0; }
+.terrain-controls { margin: 1em 0; }
+.terrain-controls button { margin-right: 0.5em; padding: 0.4em 0.8em; }
+@media print { .terrain-controls { display: none; } }
+</style>
+
 ## Study scope
 
-This is a read-only review of supplied local inputs, not a Level 1 readiness
-certificate. Missing information is shown below; no Survey Events, boundaries,
-or review decisions have been inferred. The AOI is an analyst-defined study
-extent, not an official boundary or a watershed derived from this report.
+This snapshot describes the supplied study and the work still to review.
+It does not approve the data or certify readiness for analysis or FGDB loading.
 
 ```{r scope, results='asis'}
-table_html(r$study_area, "study_area_name")
-cat("<p>Generated ", esc(format(r$generated_at, tz = "UTC", usetz = TRUE)), ".</p>", sep = "")
-if (!is.na(r$analyst_notes)) cat("<p>", esc(r$analyst_notes), "</p>", sep = "")
-cat("<p>", if (is.null(r$streams)) "Unknown" else nrow(r$streams), " selected Streams; ",
-    if (is.null(r$reaches)) "unknown" else nrow(r$reaches), " defined Reaches; ",
-    nrow(r$surveys), " supplied Survey Events.</p>", sep = "")
+cat('<h3>What is known about the supplied scope</h3>')
+scope <- data.frame(Item = c('Study Area', 'Selected Streams', 'Defined Reaches',
+  'Survey Events', 'Study Area boundary'),
+  `Supplied information` = c(
+    if (is.null(r$study_area)) 'Not supplied' else r$study_area$study_area_name,
+    if (is.null(r$streams)) 'Not supplied' else as.character(nrow(r$streams)),
+    if (is.null(r$reaches)) 'Not supplied' else as.character(nrow(r$reaches)),
+    if (!nrow(r$surveys)) 'None supplied' else paste0(nrow(r$surveys), ' events: ', paste(r$surveys$date_label, collapse = ', ')),
+    if (inherits(r$study_area, 'sf')) 'Analyst-supplied AOI' else 'Not supplied; no boundary inferred'),
+  check.names = FALSE)
+table_html(scope)
+if (!is.na(r$analyst_notes)) {
+  cat('<h3>Scope notes and qualifications</h3>')
+  paragraphs_html(r$analyst_notes)
+}
+cat("<p><small>Snapshot generated ", esc(format(r$generated_at, tz = "UTC", usetz = TRUE)), ".</small></p>", sep = "")
 ```
+
+## Review focus
+
+### What is known from the current checks
+
+```{r review-focus, results='asis'}
+cat('<div class="terrain-review">')
+if (!is.null(r$folder_inventory)) {
+  a <- r$folder_inventory$artifacts
+  cat('<p><strong>Selected files:</strong> ', sum(a$available), ' of ', nrow(a),
+    ' present; ', sum(a$hash_verified), ' match their saved snapshot. ',
+    'Matching bytes do not resolve metadata or scientific questions.</p>', sep = '')
+} else cat('<p><strong>Selected files:</strong> no intake inspection supplied.</p>')
+if (nrow(r$observation)) {
+  cat('<p><strong>Network review:</strong> ', esc(r$observation$review_status),
+    if (!is.null(r$validation)) paste0('; current checks: ', esc(r$validation$stream_network_validation_run$result)) else '',
+    '. Network status does not establish terrain readiness.</p>', sep = '')
+} else cat('<p><strong>Network review:</strong> no network supplied.</p>')
+cat('</div>')
+```
+
+### What to do next
+
+Blocking checks appear first, followed by analyst input and then further
+assessment. This is a review order, **not a prescribed processing sequence**;
+rows within each category have no assigned priority. Repeated prompts are shown
+once with the number of affected records, not a request to make one decision for all.
+
+```{r next-actions, results='asis'}
+actions <- r$review_actions
+if (is.null(actions)) {
+  cat('<p>Grouped review is unavailable in this older snapshot; consult the detailed findings.</p>')
+} else if (!nrow(actions)) {
+  cat('<p>No pending prompts in the supplied assessment. This is not a completeness or readiness verdict.</p>')
+} else {
+  work <- ifelse(actions$status == 'BLOCKED', 'Resolve blocking check',
+    ifelse(actions$requires_input, 'Analyst input', 'Further assessment'))
+  units <- c(FILE_INTEGRITY = 'file(s)', TERRAIN_REVIEW = 'event(s)',
+    STUDY_DEFINITION = 'Study Area reference(s)', HIERARCHY_RECONSTRUCTION = 'archive case(s)',
+    EVENT_ASSOCIATION = 'event reference(s)')
+  affected <- unname(units[actions$stage]); affected[is.na(affected)] <- 'record(s)'
+  display <- data.frame(Work = work, `Applies to` = paste(actions$entity_count, affected),
+    `Next action` = actions$next_action, check.names = FALSE)
+  table_html(display)
+}
+```
+
+This is a limited review queue, not an exhaustive task list. Network findings,
+context qualifications and supplied decisions remain in the supporting record.
+“Further assessment” is unfinished work, not necessarily a question for the analyst
+or a check that the software can already perform automatically.
 
 ## Study structure
 
-This view describes supplied identities and relationships, not a reconstruction
-from names or spatial overlap. Missing context is not filled in automatically.
-Network Configurations belong to the Study Area; their Observations are distinct
-from Reach Survey Events, even when they share a year.
+### Geographic hierarchy
 
-```{r structure, fig.width=10, fig.height=max(4, 0.55 * nrow(r$hierarchy)), fig.cap="Study organization from supplied relationships. Names and dates are display labels; identity references are retained below."}
-if (!is.null(r$hierarchy) && nrow(r$hierarchy)) {
-  h <- r$hierarchy
-  h$y <- rev(seq_len(nrow(h)))
-  h$text <- vapply(paste(h$entity_type, h$label, sep = ": "),
-    function(x) paste(strwrap(x, width = 27), collapse = "\n"), character(1))
-  edges <- h[!is.na(h$parent_key), , drop = FALSE]
-  parents <- match(edges$parent_key, h$node_key)
-  edges$x0 <- h$depth[parents]; edges$y0 <- h$y[parents]
-  print(ggplot2::ggplot(h, ggplot2::aes(x = depth, y = y)) +
-    ggplot2::geom_segment(data = edges, ggplot2::aes(x = x0, y = y0, xend = depth, yend = y), colour = "#aab8bf") +
-    ggplot2::geom_point(ggplot2::aes(colour = entity_type), size = 3, show.legend = FALSE) +
-    ggplot2::geom_label(ggplot2::aes(label = text), hjust = 0, nudge_x = 0.07, size = 3.4, linewidth = 0.15, fill = "white") +
-    ggplot2::scale_x_continuous(limits = c(-0.1, 4.2)) +
-    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = 0.8)) +
-    ggplot2::theme_void())
+The Study Area contains selected Streams, their Reaches and the Survey Events
+associated with each Reach. These are supplied relationships, not boundaries
+or identities inferred from names or spatial overlap.
+
+```{r structure, fig.width=10, fig.height=max(4, 0.55 * nrow(geographic_hierarchy)), fig.alt="Geographic hierarchy: Study Area, Streams, Reaches and Survey Events.", fig.cap="Geographic study organization and its Survey Events. Configuration records are shown separately below."}
+if (!is.null(geographic_hierarchy) && nrow(geographic_hierarchy)) {
+  print(draw_hierarchy(geographic_hierarchy))
 } else cat("No hierarchy supplied. Archive interpretations can be recorded without assigning identities.")
+```
+
+### Network configuration records
+
+A Configuration organizes network records for the Study Area; an Observation
+records a network state. These records do not sit inside the Reach hierarchy.
+The repeated Study Area is an ownership reference, not a second Study Area.
+An Observation is not a Survey Event, even if their years match.
+
+```{r configuration-structure, fig.width=10, fig.height=max(3, 0.65 * nrow(configuration_hierarchy)), fig.alt="Network record relationships: Study Area ownership, Configuration and Observation.", fig.cap="Configuration and Observation records, with Study Area ownership shown for context."}
+if (!is.null(configuration_hierarchy) && nrow(configuration_hierarchy)) {
+  print(draw_hierarchy(configuration_hierarchy))
+} else cat("No network Configuration or Observation records supplied.")
 ```
 
 ## Spatial overview
@@ -140,14 +238,31 @@ if (!is.null(r$survey_dem_extents)) {
 } else cat("No event-associated DEM grids supplied.")
 ```
 
+## Supporting record
+
+The sections below retain the detailed evidence for another analyst or customer.
+Expand them as needed; expanding a section does not change any data or decisions.
+Printing this HTML expands the record automatically when JavaScript is enabled.
+
+<div class="terrain-controls">
+<button type="button" onclick="terrainDetails(true)">Expand supporting record</button>
+<button type="button" onclick="terrainDetails(false)">Collapse supporting record</button>
+</div>
+
+<details class="terrain-detail">
+<summary>Survey terrain grid metadata</summary>
+
 ```{r event-evidence, results='asis'}
 table_html(r$event_evidence, c("reach_label", "date_label", "evidence_status", "source_dataset",
   "rows", "columns", "x_cell_size", "y_cell_size", "horizontal_units", "horizontal_crs"))
 ```
 
-## Legacy project reconstruction
+</details>
 
-### Portable intake files
+<details class="terrain-detail">
+<summary>Legacy project reconstruction and portable intake files</summary>
+
+<h3>Portable intake files</h3>
 
 The optional inventory below checks selected files against their saved snapshot.
 It is not a complete event manifest, proof of archive conversion, or FGDB acceptance.
@@ -169,7 +284,7 @@ if (!is.null(r$folder_inventory)) {
 } else cat("<p>No portable intake manifest supplied.</p>")
 ```
 
-### Archive interpretations
+<h3>Archive interpretations</h3>
 
 Surviving artifacts may support several interpretations of the original study.
 The entries below keep source evidence, proposed structure and supplied analyst
@@ -182,33 +297,45 @@ or changes the hierarchy above.
 table_html(r$reconstruction)
 ```
 
-### Decisions and next actions
+</details>
 
-These stage-specific prompts are reusable by a client such as Shiny. They are
-not a complete migration validator or a single FGDB compliance verdict. Technical
-checks and detailed evidence remain available even when no human decision is due.
+<details class="terrain-detail">
+<summary>All assessment findings and affected records</summary>
+
+Each source finding is retained, including successful checks and supplied
+decisions. Review references are local bookkeeping identifiers, not priorities
+or persistent task IDs.
 
 ```{r actions, results='asis'}
-table_html(r$assessment, c("entity_label", "stage", "status", "requires_input", "next_action"))
-cat("<details><summary>Additional context and network qualifications</summary>")
+if (!is.null(r$assessment)) {
+  findings <- r$assessment
+  findings$review_reference <- rep(NA_integer_, nrow(findings))
+  if (!is.null(r$review_action_members)) {
+    m <- r$review_action_members
+    findings$review_reference[m$assessment_row] <- m$action_id
+  }
+  table_html(findings, c("review_reference", "entity_label", "stage", "status", "requires_input", "next_action"))
+}
+cat("<h4>Additional context and network qualifications</h4>")
 cat("<ul>", paste0("<li>", esc(r$gaps), "</li>", collapse = ""), "</ul></details>")
 ```
 
-## Streams, Reaches and Survey Events
+<details class="terrain-detail">
+<summary>Streams, Reaches and Survey Event inventory</summary>
 
-### Selected Streams
+<h3>Selected Streams</h3>
 
 ```{r streams, results='asis'}
 table_html(r$streams, "stream_name")
 ```
 
-### Reach definitions
+<h3>Reach definitions</h3>
 
 ```{r reaches, results='asis'}
 table_html(r$reaches, c("stream_name", "reach_name"))
 ```
 
-### Survey Event inventory
+<h3>Survey Event inventory</h3>
 
 Dates retain their supplied precision. Inventory does not establish which files
 remain available, a base event, or a relationship to this network observation.
@@ -217,7 +344,29 @@ remain available, a base event, or a relationship to this network observation.
 table_html(r$surveys, c("reach_name", "date_label", "source_dataset", "availability_notes"))
 ```
 
-## Terrain and network evidence
+```{r event-artifacts, results='asis'}
+if (!is.null(r$event_artifacts) && nrow(r$event_artifacts)) {
+  cat('<h3>Terrain file associations</h3><p>These are supplied associations, not independent confirmation of provenance or FGDB identities. Only explicitly selected, unblocked DEMs supply event grid views.</p>')
+  links <- r$event_artifacts
+  idx <- match(links$survey_event_id, r$surveys$survey_event_id)
+  links$reach <- r$surveys$reach_name[idx]
+  links$event <- r$surveys$date_label[idx]
+  links$reach[is.na(idx)] <- 'Context not supplied'
+  links$event[is.na(idx)] <- 'Unresolved event reference'
+  labels <- c(GRID_LOADED = 'Grid loaded; not scientifically assessed',
+    NOT_LOADED = 'Selected; grid not loaded', NOT_SELECTED = 'Retained; not selected for grid view')
+  table_html(data.frame(Reach = links$reach, Event = links$event, Purpose = links$purpose,
+    File = links$path, `Report use` = unname(labels[links$grid_status]), check.names = FALSE))
+  cat('<details><summary>Association evidence and identity references</summary>')
+  table_html(links, c('artifact_id', 'survey_event_id', 'evidence', 'analyst', 'use_for_report'))
+  cat('</details>')
+}
+```
+
+</details>
+
+<details class="terrain-detail">
+<summary>Terrain and network provenance</summary>
 
 ```{r terrain, results='asis'}
 if (!is.na(r$terrain_notes)) cat("<p>", esc(r$terrain_notes), "</p>", sep = "")
@@ -234,7 +383,10 @@ first report shows its extent and grid metadata; it does not assess internal
 NoData, elevation quality, hydro-conditioning or Level 1 input completeness.
 Network acceptance and local technical validation are separate facts.
 
-## Network checks and identity references
+</details>
+
+<details class="terrain-detail">
+<summary>Network checks and identity references</summary>
 
 ```{r checks, results='asis'}
 if (!is.null(r$validation)) {
@@ -254,3 +406,23 @@ cat("</details>")
 The report does not change source data, stored validation history, review
 decisions, or acceptance status. Detailed network lineage and operation evidence
 remain in the accompanying relation bundle/GeoPackage.
+
+</details>
+
+<script>
+function terrainDetails(open) {
+  document.querySelectorAll('details.terrain-detail, details.terrain-detail details').forEach(function(item) { item.open = open; });
+}
+var terrainPrintState = null;
+window.addEventListener('beforeprint', function() {
+  if (terrainPrintState !== null) return;
+  terrainPrintState = Array.from(document.querySelectorAll('details.terrain-detail, details.terrain-detail details')).map(function(item) {
+    return { item: item, open: item.open };
+  });
+  terrainDetails(true);
+});
+window.addEventListener('afterprint', function() {
+  if (terrainPrintState !== null) terrainPrintState.forEach(function(state) { state.item.open = state.open; });
+  terrainPrintState = null;
+});
+</script>

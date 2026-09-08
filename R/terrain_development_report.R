@@ -31,11 +31,20 @@
 #'   parent context are required to record an unresolved archive case.
 #' @param folder_manifest Optional terrain intake JSON manifest. Files are
 #'   freshly inspected; its local intake labels never create report hierarchy.
+#'   Schema-2 event links resolve against supplied Survey Events. Explicitly
+#'   selected, unblocked GeoTIFFs supply event grid views; conflicting survey_dems
+#'   inputs fail rather than choosing a precedence. Missing context/files remain
+#'   findings. Associations do not prove provenance, coverage or acceptance.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
 #'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
 #'   reconstruction and a limited stage-specific assessment with requires_input
 #'   flags for clients. Optional folder_manifest adds fresh selected-file
-#'   inspection, not complete archive migration validation. Inputs and saved
+#'   inspection, not complete archive migration validation. review_actions groups
+#'   pending assessment rows by code, stage, status, input flag and exact action;
+#'   review_action_members retains their assessment-row references. This is a
+#'   presentation queue. event_artifacts records supplied manifest associations,
+#'   context resolution and selected grid-loading status, without acceptance.
+#'   This is not a complete workflow or readiness verdict. Inputs and saved
 #'   network history remain unchanged.
 #' @export
 terrain_development_summary <- function(study_area = NULL, streams = NULL,
@@ -80,7 +89,7 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     for (nm in c("survey_month", "survey_day")) if (!nm %in% names(surveys)) surveys[[nm]] <- rep(NA_integer_, nrow(surveys))
     surveys$date_label <- .fg_terrain_dates(surveys)
     surveys$reach_name <- reaches$reach_name[match(surveys$reach_id, reaches$reach_id)]
-    add("Survey Event inventory is supplied context; terrain-file availability and network-to-event associations are not verified.")
+    add("Survey Event inventory is supplied context; inventory alone does not verify terrain-file availability or network-to-event associations.")
   } else add("Survey Event inventory not supplied; the network observation date is not substituted.")
   validation <- NULL
   segments <- NULL
@@ -130,15 +139,20 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
   } else add("DEM not supplied; terrain extent and grid metadata are unavailable.")
   if (is.na(terrain_notes)) add("Terrain source, processing history, vertical units/datum and qualifications have not been described.")
   if (is.na(analyst_notes)) add("Analyst scope and segmentation rationale have not been supplied.")
+  folder <- if (is.null(folder_manifest)) NULL else inspect_terrain_folder(folder_manifest)
+  linked <- if (is.null(folder)) NULL else .fg_terrain_resolve_events(folder, folder_manifest, surveys, survey_dems)
+  if (!is.null(linked)) survey_dems <- linked$survey_dems
   visual <- .fg_terrain_visual_context(study_area, streams, reaches, surveys,
     survey_dems, reconstruction, network)
-  folder <- if (is.null(folder_manifest)) NULL else inspect_terrain_folder(folder_manifest)
   if (!is.null(folder)) visual$assessment <- rbind(visual$assessment, folder$assessment)
+  if (!is.null(linked)) visual$assessment <- rbind(visual$assessment, linked$assessment)
+  review <- .fg_terrain_review_actions(visual$assessment)
   c(list(study_area = study_area, streams = streams, reaches = reaches, surveys = surveys,
     configuration = if (is.null(network)) data.frame() else network$stream_network_configuration,
     observation = observation, segments = segments, dem_extent = footprint, terrain = terrain,
     validation = validation, gaps = unique(gaps), terrain_notes = terrain_notes, analyst_notes = analyst_notes,
-    folder_inventory = folder, generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual)
+    folder_inventory = folder, event_artifacts = if (is.null(linked)) NULL else linked$event_artifacts,
+    generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual, review)
 }
 
 .fg_terrain_context <- function(x, id, label = NULL, parent = NULL) {

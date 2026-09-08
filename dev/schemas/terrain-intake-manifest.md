@@ -1,4 +1,4 @@
-# Terrain intake inventory: FLUVGEO_TERRAIN_INTAKE_1
+# Terrain intake inventory: FLUVGEO_TERRAIN_INTAKE_1 and _2
 
 Status: first implemented development binding, 2026-09-08. This is **not** the
 complete FGDB event-folder contract or an extension to FLUVGEO_NETWORK_GPKG_1.
@@ -7,7 +7,7 @@ explicitly selected local files before hierarchy and scientific metadata are res
 
 ## Ownership and interface
 
-fluvgeo owns `write_terrain_manifest(root, artifacts, intake_id, filename)` and
+fluvgeo owns `write_terrain_manifest(root, artifacts, intake_id, filename, event_links)` and
 `inspect_terrain_folder(manifest)`. FGDB continues to own governed event identities,
 enterprise ingestion and the eventual event-folder binding. QGIS/Shiny may consume
 the same structured inspection; no client is deployed by this slice.
@@ -21,7 +21,8 @@ Shared assets outside the root are deliberately unsupported in this first bindin
 
 ## JSON structure
 
-- `schema`: exactly `FLUVGEO_TERRAIN_INTAKE_1`.
+- `schema`: `FLUVGEO_TERRAIN_INTAKE_1` without event links, or
+  `FLUVGEO_TERRAIN_INTAKE_2` with the explicit associations described below.
 - `intake_id`: nonempty, caller-supplied local case label; not a scientific UUID.
 - `created_at`: UTC snapshot time, not a survey or terrain derivation date.
 - `software`: fluvgeo, terra and GDAL versions observed by the writer.
@@ -46,6 +47,35 @@ Extent/resolution comparisons permit only 32 scaled double-precision epsilons
 for JSON/driver representation differences. This is not permission to shift a
 grid or resample values; full-file checksums must still match exactly.
 
+## Optional event associations (schema 2)
+
+Supplying the appended `event_links` argument writes schema 2. Existing calls
+still write schema 1; both are readable. Version-1 readers reject version 2,
+rather than silently lose its associations. No in-place upgrade or overwrite is
+performed. Omitted links mean no declared association, not an absent required file.
+
+`event_links` is a nonempty array of records with required fields:
+
+| Field | Meaning |
+| --- | --- |
+| `artifact_id` | Existing local artifact ID in this manifest. |
+| `survey_event_id` | Caller-supplied canonical UUID; not independently reconciled with FGDB. |
+| `purpose` | Nonempty caller description of the artifact's use; not a governed terrain-role vocabulary. |
+| `evidence` | Nonempty source/basis for the asserted association. |
+| `analyst` | Nonempty attribution for the supplied association; not an approval signature. |
+| `use_for_report` | Required nonmissing boolean selecting the event grid preview, not scientific acceptance. |
+
+Each artifact/event pair is unique. Many files may relate to one event; the same
+local file may relate to multiple events without copying or clipping. At most one
+file per event can have `use_for_report = true`, and it must be an inventoried
+single-band GeoTIFF. Shared files outside the manifest root remain unsupported.
+Unknown identities stay in the existing unlinked intake/reconstruction workflow;
+never mint a UUID or infer an association from matching dates/names to fill a gap.
+
+The inspector checks link structure and artifact references but has no event
+registry. Schema-2 inspection returns `FLUVGEO_TERRAIN_INTAKE_REVIEW_2` and an
+`event_links` data frame; schema-1 inspection output remains unchanged.
+
 ## Inspection output and reporting
 
 `FLUVGEO_TERRAIN_INTAKE_REVIEW_1` returns `intake_id`, `artifacts` (availability,
@@ -65,9 +95,29 @@ become reviewable findings. Unknown schema versions are not silently interpreted
 
 `terrain_development_summary(folder_manifest=...)` re-inspects the folder and
 adds `folder_inventory` and its findings to summary schema 2. This is an optional,
-backward-compatible extension: no hierarchy, Survey Event mapping, DEM selection,
-acceptance or prior history is changed. HTML shows the selected-file inventory and
-the existing assessment table. A saved HTML report is a snapshot, not a live monitor.
+backward-compatible extension for schema-1 inputs. With schema 2, supplied links
+are resolved against report Survey Event IDs and explicitly selected GeoTIFFs
+provide event grid metadata/rectangles. No hierarchy or acceptance is created.
+Selection conflicts with an explicit `survey_dems` entry for the same event fail
+instead of applying silent precedence. No fallback file is chosen.
+
+The summary's additive `event_artifacts` table retains the link fields and adds
+relative `path`, logical `event_in_context`, and `grid_status` (`NOT_SELECTED`,
+`NOT_LOADED`, `GRID_LOADED`). Missing event context yields `EVENT_CONTEXT_MISSING`
+(REVIEW_REQUIRED, human input). A selected file with a failed hash or any BLOCKED
+file finding yields `EVENT_DEM_BLOCKED` (BLOCKED). An unreadable/nonprojected grid
+or one without a CRS yields `EVENT_DEM_UNSUPPORTED` (REVIEW_REQUIRED, human input).
+These use stage `EVENT_ASSOCIATION` and the referenced event ID. Individual file
+findings remain available. Unknown vertical metadata does not prevent a grid
+rectangle preview, but remains unresolved; loaded does not mean usable for science.
+Linked events absent from supplied context are never created or substituted.
+
+HTML shows event/file associations and their supplied evidence in the existing
+Survey Event inventory, plus the selected-file inventory and
+the full assessment table in its expandable supporting record. Its review overview
+groups repeated pending findings, preserving each artifact reference; a matching
+hash never conceals a blocking metadata finding. A saved HTML report is a
+snapshot, not a live monitor.
 
 ## Remaining boundaries
 
@@ -79,3 +129,7 @@ embedded rasters. File hashes prove snapshot identity, not source-to-copy equiva
 the Cole Creek demo separately compares all six source/copy raster arrays and grids.
 The full [FGDB folder requirements](../../../FGDB/dev/schemas/local-project-folder-requirements.md)
 remain the target and must not be marked implemented by this narrower inventory.
+Inspection and preview loading are not a concurrent filesystem transaction; do
+not mutate the intake folder during review. Schema 2 does not persist the parent
+Study Area/Stream/Reach/event catalog, a network-to-event relation or a full event
+delivery. Those remain separate implementation steps owned by their contracts.
