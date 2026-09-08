@@ -69,13 +69,15 @@ and shared assets outside this intake root are not qualified by this slice.</p>
 
 
 <dl><dt id="arg-manifest">manifest<a class="anchor" aria-label="anchor" href="#arg-manifest"></a></dt>
-<dd><p>Path to a FLUVGEO_TERRAIN_INTAKE_1 JSON manifest.</p></dd>
+<dd><p>Path to a FLUVGEO_TERRAIN_INTAKE_1 or _2 JSON manifest.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>List with schema, intake_id, artifacts (current file status), and
-  assessment (structured findings for reports and future clients).</p>
+  assessment (structured findings for reports and future clients). Schema-2
+  inspection also returns validated event_links, without resolving event
+  identities against a registry or selecting scientific inputs.</p>
     </div>
 
   </div>

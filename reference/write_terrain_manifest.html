@@ -63,7 +63,8 @@ intake and artifact IDs are caller-supplied local labels, not governed UUIDs.</p
 <span>  <span class="va">root</span>,</span>
 <span>  <span class="va">artifacts</span>,</span>
 <span>  <span class="va">intake_id</span>,</span>
-<span>  filename <span class="op">=</span> <span class="st">"terrain-manifest.json"</span></span>
+<span>  filename <span class="op">=</span> <span class="st">"terrain-manifest.json"</span>,</span>
+<span>  event_links <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,6 +90,14 @@ Missing vertical metadata remains unknown, never inferred from filenames.</p></d
 
 <dt id="arg-filename">filename<a class="anchor" aria-label="anchor" href="#arg-filename"></a></dt>
 <dd><p>New JSON filename directly within root; never overwritten.</p></dd>
+
+
+<dt id="arg-event-links">event_links<a class="anchor" aria-label="anchor" href="#arg-event-links"></a></dt>
+<dd><p>Optional data frame with artifact_id, survey_event_id,
+purpose, evidence, analyst (character) and use_for_report (logical).
+Links are caller assertions, not reconciled identities or acceptance.
+At most one GeoTIFF per event may be selected for the report grid view.
+Supplying links writes intake schema 2; omission retains schema 1.</p></dd>
 
 </dl></div>
     <div id="value">
