@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-06
+Last updated: 2026-09-08
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -45,6 +45,10 @@ description and configuration aid, not only an FGDB compliance report.
   reconciled identities; exercise one complete archived Reach–Survey Event dataset
   with explicit datatype/CRS/NoData comparisons before building the general loader.
   The initial QGIS review tool can proceed independently of this complete binding.
+- [x] Review the two-computer GeoPackage raster experiment and reaffirm the
+  folder/GeoTIFF storage decision with the user (2026-09-08). See
+  [completed findings](../../../FGDB/dev/experiments/geopackage-raster/FINAL-FINDINGS.md).
+  Single-container equivalence is not a prerequisite for the following work.
 - [ ] Qualify external GeoTIFF terrain and explicit raster metadata/identity
   links under [ADR-0002](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md).
   Include relocated folders, missing assets, conflicting sidecars and unknown
