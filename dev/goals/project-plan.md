@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-08
+Last updated: 2026-09-09
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -22,14 +22,28 @@ Papillion Creek / Cole Creek example. See the current feature design in
 [reporting intent](reporting-intent.md) makes this a durable visual Study Area
 description and configuration aid, not only an FGDB compliance report.
 
-## Next planning action
+## Immediate focus
+
+The current desktop integration milestone is an analyst-run isolated QGIS trial
+of network review/reporting, owned by fg-qgis-toolbox. Runtime discovery, provider
+selection and actual R invocation are complete; do not repeat that investigation.
+See [its current plan](../../../fg-qgis-toolbox/dev/goals/project-plan.md).
+
+The larger backend outcome remains a report that helps analysts **configure a
+study, describe it durably and reconstruct archived projects**. The next backend
+design gap is complete saved Study Area/event/terrain context: the network-only
+QGIS input cannot reopen the full Cole Creek demonstration. Use trial feedback
+to choose the next bounded slice of that work. QGIS usability, storage fidelity
+and FGDB loading are separate acceptance questions, not one compliance score.
+
+## Delivery record and remaining work
 
 - [x] Record fg-qgis-toolbox as the separate open-source desktop migration path,
   sharing fluvgeo methods with Shiny while preserving production ArcGIS use.
-- [ ] Support the first QGIS integration slice: inspect installed runtimes, choose
-  the QGIS-to-R mechanism, then expose read-only network GeoPackage review and
-  reporting. Verify agreement with direct-R findings and unchanged source data.
-  See the [QGIS migration decision](../../../fg-qgis-toolbox/dev/decisions/ADR-0001-parallel-open-source-migration.md).
+- [x] Support the first QGIS execution slice: the actual R Provider invokes
+  read-only network review/reporting, agrees with direct-R report tables and
+  preserves source data. This does not complete desktop/release qualification.
+  See [the execution findings](../../../fg-qgis-toolbox/dev/features/qgis-provider-qualification.md).
 - [x] Define the first Terrain Development reporting slice and implement its
   read-only summary/HTML interface without requiring Level 1 products.
 - [x] Record the parent-level reporting gap and accepted desktop/Shiny reporting
