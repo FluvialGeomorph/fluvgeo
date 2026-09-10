@@ -68,4 +68,6 @@ implemented for selected files under one root and integrates with report schema 
 It does not implement the complete event-folder or shared-raster binding above.
 Its opt-in schema 2 records explicit event associations and report-grid selection
 within one root. It checks supplied event context without creating or reconciling
-identities. Parent-context persistence and shared external assets remain open.
+identities. The first [saved report-context binding](../schemas/study-context.md)
+now persists supplied parent records and pinned local links; full event delivery
+and shared external assets remain open.

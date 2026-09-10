@@ -136,7 +136,7 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
       add("Some network geometry extends outside the supplied DEM extent. This DEM cannot cover the whole supplied network.")
     }
     add("DEM extent agreement does not verify valid-cell coverage or historical derivation provenance.")
-  } else add("DEM not supplied; terrain extent and grid metadata are unavailable.")
+  } else add("Overview DEM not supplied; see the Survey Event inventory for any separately supplied event grids.")
   if (is.na(terrain_notes)) add("Terrain source, processing history, vertical units/datum and qualifications have not been described.")
   if (is.na(analyst_notes)) add("Analyst scope and segmentation rationale have not been supplied.")
   folder <- if (is.null(folder_manifest)) NULL else inspect_terrain_folder(folder_manifest)

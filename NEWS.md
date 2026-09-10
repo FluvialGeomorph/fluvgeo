@@ -1,3 +1,18 @@
+# fluvgeo 2026.09.10.9000
+
+- Added `revise_study_context()` for intentional Study Area display-name changes
+  and appended scope notes, saved in a new same-folder context copy with optional
+  refreshed reporting. Other records and evidence links remain unchanged. No
+  identity reconciliation, in-place replacement or acceptance is performed.
+
+# fluvgeo 2026.09.9.9000
+
+- Added new-file Study Area context GeoPackage persistence and read-only reopening
+  for Terrain Development reports. Supplied hierarchy, optional AOIs, event
+  inventory, forensic interpretations and notes persist with pinned relative
+  network/manifest links. No identities, raster selections or acceptance are
+  inferred. Existing network-only and terrain-intake APIs remain compatible.
+
 # fluvgeo 2026.09.4.9000
 
 ## Terrain Development reporting

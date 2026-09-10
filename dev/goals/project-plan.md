@@ -24,16 +24,18 @@ description and configuration aid, not only an FGDB compliance report.
 
 ## Immediate focus
 
-The current desktop integration milestone is an analyst-run isolated QGIS trial
-of network review/reporting, owned by fg-qgis-toolbox. Runtime discovery, provider
-selection and actual R invocation are complete; do not repeat that investigation.
+The network-review desktop trial and bounded cancellation test are complete,
+owned by fg-qgis-toolbox. Runtime discovery, provider selection and actual R
+invocation are complete; do not repeat that investigation.
 See [its current plan](../../../fg-qgis-toolbox/dev/goals/project-plan.md).
 
 The larger backend outcome remains a report that helps analysts **configure a
-study, describe it durably and reconstruct archived projects**. The next backend
-design gap is complete saved Study Area/event/terrain context: the network-only
-QGIS input cannot reopen the full Cole Creek demonstration. Use trial feedback
-to choose the next bounded slice of that work. QGIS usability, storage fidelity
+study, describe it durably and reconstruct archived projects**. The initial saved
+context slice now saves supplied parent records and pinned local file links in a
+separate [context GeoPackage](../schemas/study-context.md), allowing a read-only
+QGIS wrapper to reopen the Cole Creek folder report. Complete event delivery,
+general hierarchy/AOI/event editing and external shared assets remain future work.
+Bounded name/note revision is implemented. QGIS usability, storage fidelity
 and FGDB loading are separate acceptance questions, not one compliance score.
 
 ## Delivery record and remaining work
@@ -46,6 +48,13 @@ and FGDB loading are separate acceptance questions, not one compliance score.
   See [the execution findings](../../../fg-qgis-toolbox/dev/features/qgis-provider-qualification.md).
 - [x] Define the first Terrain Development reporting slice and implement its
   read-only summary/HTML interface without requiring Level 1 products.
+- [x] Persist supplied Study Area/Stream/Reach/event context, interpretations and
+  notes with pinned local links; reopen the Cole Creek folder report without
+  rerunning its setup script. Full event delivery remains separate.
+- [x] Add bounded revision of a supplied Study Area display name and appended
+  analyst notes, preserving the original context, other records and evidence
+  links. Save a new same-folder context and optionally regenerate its report.
+  General hierarchy/AOI/event editing and approval remain separate.
 - [x] Record the parent-level reporting gap and accepted desktop/Shiny reporting
   intent, grounded in review of the existing Level 1–3 and bankfull templates.
 - [x] Build the first visual Study Area structure/event-grid slice and forensic
@@ -83,6 +92,12 @@ and FGDB loading are separate acceptance questions, not one compliance score.
 - [ ] Extend fluvgeodata with a representative Study Area / full terrain-network
   pair and multi-Reach case, after the analyst identifies suitable retained data.
   This is required for broader verification, not a blocker to every report advance.
+  The newly retained NWO_Papillion geodatabase now supplies seven user-confirmed
+  Stream areas and a dissolved Study Area boundary. It does not yet resolve the
+  wider line variants, complete event inventory or original extraction DEM.
+- [ ] Make hierarchy levels, parentage and the analyst's boundary/naming choices
+  unambiguous in standardized local storage. HUC12 delineation is an optional
+  project convention, not the hierarchy definition required of all projects.
 - [ ] Add terrain-quality and interactive network-review views based on that
   fixture; keep human conditioning/segmentation decisions explicit.
 - [ ] Restore or select a compatible R dependency environment before relying on

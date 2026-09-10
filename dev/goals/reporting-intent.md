@@ -93,6 +93,14 @@ relationship view showing actual Stream/Reach assignments and supported event
 associations. Names, proximity or matching years alone do not establish those
 relationships.
 
+Stream boundaries and naming are analyst-selected study-design choices, not
+universally fixed hydrologic units. In the NWO_Papillion example, the user confirms
+that selected HUC12 polygons and names define Stream areas and their dissolved
+union defines the Study Area. This useful project convention is not a requirement
+for other studies. Reports must state the chosen delineation/naming basis and its
+authority; standardized future storage must make the hierarchy explicit without
+requiring an analyst to reconstruct it from filenames or geographic proximity.
+
 Thorough means complete and interpretable, not an unfiltered data dump. Give the
 desktop reader an intelligible overview, substantive visual sections and a
 technical appendix for identifiers, detailed checks and provenance. Optional

@@ -3,14 +3,17 @@
 # identities, not reconciled FGDB identities or approval of legacy observations.
 pkgload::load_all(".", quiet = TRUE)
 args <- commandArgs(trailingOnly = TRUE)
-if (!length(args) || length(args) > 2L || file.exists(args[1])) stop("Supply a new output directory and optional probe directory or --folder.")
-folder_mode <- length(args) == 2L && identical(args[2], "--folder")
+if (!length(args) || length(args) > 2L || file.exists(args[1])) stop("Supply a new output directory and optional probe directory, --folder or --folder-structure.")
+structure_mode <- length(args) == 2L && identical(args[2], "--folder-structure")
+folder_mode <- length(args) == 2L && args[2] %in% c("--folder", "--folder-structure")
 folder_manifest <- NULL
 out <- args[1]
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 years <- c(2006L, 2010L, 2016L)
 gdbs <- paste0("../fluvgeodata/inst/extdata/y", years, "_R1.gdb")
-source_files <- unlist(lapply(gdbs, list.files, full.names = TRUE, recursive = TRUE))
+structure_gdb <- "../fluvgeodata/inst/extdata/NWO_Papillion_ColeCreek_Stream.gdb"
+source_files <- unlist(lapply(c(gdbs, if (structure_mode) structure_gdb),
+  list.files, full.names = TRUE, recursive = TRUE))
 source_hashes <- tools::md5sum(source_files)
 inventory <- lapply(seq_along(gdbs), function(i) {
   layers <- sf::st_layers(gdbs[i])
@@ -24,11 +27,22 @@ inventory <- do.call(rbind, inventory)
 streams <- data.frame(stream_id = "33333333-3333-4333-8333-333333333333",
   study_area_id = "11111111-1111-4111-8111-111111111111", stream_name = "Cole Creek")
 reaches <- data.frame(reach_id = "44444444-4444-4444-8444-444444444444", stream_id = streams$stream_id, reach_name = "R1")
+study_area <- data.frame(study_area_id = streams$study_area_id, study_area_name = "Papillion Creek")
+config_streams <- streams
+if (structure_mode) {
+  source("dev/scripts/cole-creek-study-structure.R", local = TRUE)
+  structure <- cole_creek_study_structure(structure_gdb,
+    sf::st_read(gdbs[1], layer = "flowline", quiet = TRUE), study_area$study_area_id, reaches$reach_id)
+  study_area <- structure$study_area; streams <- structure$streams; reaches <- structure$reaches
+  config_streams <- sf::st_drop_geometry(streams[structure$parent_index, ])
+  utils::write.csv(structure$source_mapping, file.path(out, "stream-source-mapping.csv"), row.names = FALSE)
+  jsonlite::write_json(structure$checks, file.path(out, "study-boundary-evidence.json"), pretty = TRUE, auto_unbox = TRUE)
+}
 events <- cbind(data.frame(survey_event_id = c("66666666-6666-4666-8666-666666666666",
   "77777777-7777-4777-8777-777777777777", "88888888-8888-4888-8888-888888888888"),
   reach_id = reaches$reach_id, survey_year = years), inventory)
-config <- create_stream_network_configuration("22222222-2222-4222-8222-222222222222", streams$study_area_id,
-  "Cole Creek R1 retained example (provisional)", "STREAM", streams, actor = "terrain-report-demo")
+config <- create_stream_network_configuration("22222222-2222-4222-8222-222222222222", study_area$study_area_id,
+  "Cole Creek R1 retained example (provisional)", "STREAM", config_streams, actor = "terrain-report-demo")
 obs <- create_stream_network_observation("55555555-5555-4555-8555-555555555555",
   config$stream_network_configuration$stream_network_configuration_id, observation_year = 2006L,
   evidence_class = "SOURCE_NETWORK_RETAINED", coverage_status = "PARTIAL_CONFIGURATION",
@@ -37,7 +51,7 @@ obs <- create_stream_network_observation("55555555-5555-4555-8555-555555555555",
   actor = "terrain-report-demo")
 raw <- sf::st_read(gdbs[1], layer = "stream_network", quiet = TRUE)
 prepared <- prepare_stream_network_from_features(raw,
-  data.frame(source_row = seq_len(nrow(raw)), stream_id = streams$stream_id, reach_id = reaches$reach_id),
+  data.frame(source_row = seq_len(nrow(raw)), stream_id = config_streams$stream_id, reach_id = reaches$reach_id),
   config$stream_network_configuration, config$stream_network_configuration_stream, obs,
   actor = "terrain-report-demo")
 bundle <- c(config, list(stream_network_observation = obs), prepared)
@@ -103,12 +117,34 @@ reconstruction <- data.frame(case_id = c("cole-scope", "papillion-aoi", "terrain
   status = c("CONFIRMED", "UNKNOWN", "UNKNOWN"),
   analyst = c("User (scope confirmation in development discussion)", NA_character_, NA_character_),
   decision_notes = c("Use supplied scope in this demonstration; UUIDs remain provisional and unreconciled.", NA_character_, NA_character_))
-summary <- terrain_development_summary(
-  study_area = data.frame(study_area_id = streams$study_area_id, study_area_name = "Papillion Creek"),
+if (structure_mode) {
+  reconstruction <- reconstruction[reconstruction$case_id == "terrain-vertical-reference", ]
+  reconstruction <- rbind(reconstruction, data.frame(
+    case_id = c("papillion-stream-scope", "papillion-aoi", "cole-parent", "papillion-flowline-variants"),
+    source_ref = c(rep("NWO_Papillion_ColeCreek_Stream.gdb / Papillion_HUC12; user clarification 2026-09-10", 2),
+      "y2006_R1.gdb / flowline spatial containment in Papillion_HUC12",
+      "NWO_Papillion_ColeCreek_Stream.gdb / Papillion_flowline"),
+    proposed_structure = c("Seven HUC12-named Stream areas in NWO_Papillion",
+      "Study Area = dissolved union of the seven selected Stream areas",
+      paste("NWO_Papillion /", config_streams$stream_name, "/ Cole Creek R1; Survey Events 2006, 2010, 2016"), NA_character_),
+    evidence = c("User confirms HUC12 names and segmentation were chosen for this project, not required generally.",
+      "User directs merging the edge-matching HUC12 boundaries; the derived union is one valid polygon.",
+      "The retained 2006 R1 flowline is entirely inside HUC12 102300060204 (Little Papillion Creek). Survey years and Cole Creek R1 labels were previously user-confirmed.",
+      "100 line features have 38 distinct labels, repeated geometry and differing measure attributes. No variants were selected, dropped or repaired."),
+    status = c("CONFIRMED", "CONFIRMED", "PROPOSED", "UNKNOWN"),
+    analyst = c(rep("User (project interpretation in development discussion)", 2), NA_character_, NA_character_),
+    decision_notes = c("Project convention only; future storage must explicitly identify hierarchy and rationale.",
+      "Source polygons retained unchanged. Union computed in EPSG:26914 without snapping or repair.",
+      "Spatially inferred parent used for this provisional demonstration, not reconciled FGDB identity.",
+      "Keep the wider network and additional Reach definitions outside this adoption step.")))
+  rownames(reconstruction) <- NULL
+}
+summary_args <- list(
+  study_area = study_area,
   streams = streams, reaches = reaches, survey_events = events, survey_dems = survey_dems,
   reconstruction = reconstruction,
   folder_manifest = folder_manifest,
-  network = gpkg, dem = dem,
+  network = gpkg, dem = if (folder_mode) NULL else dem,
   analyst_notes = paste("Papillion Creek Study Area / Cole Creek / Reach R1. Scope and Survey Event years confirmed by the user.",
     "PROVISIONAL DEMONSTRATION: UUIDs and the 0.01 m diagnostic tolerance are test scaffolding, not reconciled FGDB identities or analyst-approved processing parameters.",
     "The retained 2006 network is displayed without automated repair or acceptance. No Papillion Creek Study Area AOI, wider Stream inventory, or other Reach definitions were supplied.", sep = "\n\n"),
@@ -119,6 +155,34 @@ summary <- terrain_development_summary(
     else "Displayed terrain grids are read from original GDBs with terra/GDAL.",
     "The ft name is a source label, not verified vertical-reference metadata. Later retained DEMs are dem_2010_ft_50 and dem_2016_hydro_50; each file also retains a detrended raster.",
     "These Reach-scale products do not establish retention of the original Stream-scale extraction DEM. The 2006 network date follows its containing file and remains provisional derivation provenance."))
+if (structure_mode) summary_args$analyst_notes <- paste(
+  "NWO_Papillion: seven analyst-selected Stream areas use the supplied HUC12 names and boundaries. The Study Area is their dissolved union, as confirmed by the user. This is a project-specific convention, not a requirement to use HUC12 segmentation.",
+  "Cole Creek R1 lies within the Little Papillion Creek Stream area. This parent association is spatially inferred for review. The retained survey inventory remains limited to Cole Creek R1 in 2006, 2010 and 2016; empty Stream branches do not imply that other Reaches or surveys never existed.",
+  "The wider Papillion_flowline variants and five Cole Creek corridor polygons remain source evidence, not newly adopted network or Reach boundaries. Their interpretation and a standardized explicit hierarchy format remain future work.",
+  "PROVISIONAL DEMONSTRATION: all UUIDs and the 0.01 m diagnostic tolerance are test scaffolding, not reconciled FGDB identities or analyst-approved processing parameters. The retained 2006 network is displayed without repair or acceptance.", sep = "\n\n")
+summary <- do.call(terrain_development_summary, summary_args)
+if (folder_mode) {
+  saved_args <- summary_args
+  saved_args$dem <- NULL; saved_args$survey_dems <- NULL
+  saved_args$network <- basename(gpkg)
+  saved_args$folder_manifest <- basename(folder_manifest)
+  context <- do.call(write_study_context,
+    c(list(dsn = file.path(out, "cole-creek-study.gpkg")), saved_args))
+  reopened <- read_study_context_summary(context)
+  for (field in c("study_area", "streams", "reaches", "surveys", "event_evidence",
+                  "event_artifacts", "reconstruction", "assessment", "gaps")) {
+    before <- summary[[field]]; after <- reopened[[field]]
+    if (inherits(before, "sf")) {
+      # Compare native coordinates and semantic CRS, not incidental WKT spelling.
+      stopifnot(identical(sf::st_as_binary(sf::st_geometry(before)), sf::st_as_binary(sf::st_geometry(after))),
+        isTRUE(sf::st_crs(before) == sf::st_crs(after)))
+      before <- sf::st_drop_geometry(before); after <- sf::st_drop_geometry(after)
+    }
+    comparison <- all.equal(before, after)
+    if (!isTRUE(comparison)) stop(field, ": ", paste(comparison, collapse = "; "))
+  }
+  summary <- reopened
+}
 html <- file.path(out, "cole-creek-terrain-development.html")
 terrain_development_report(summary, html)
 stopifnot(summary$observation$review_status == "DRAFT", nrow(summary$surveys) == 3L)
@@ -126,6 +190,8 @@ if (folder_mode) stopifnot(!any(summary$folder_inventory$assessment$status == "B
   nrow(summary$event_artifacts) == 6L, sum(summary$event_artifacts$grid_status == 'GRID_LOADED') == 3L,
   all(summary$event_evidence$evidence_status == 'GRID_SUPPLIED'))
 stopifnot(identical(tools::md5sum(source_files), source_hashes))
+utils::write.csv(data.frame(source = names(source_hashes), md5 = unname(source_hashes)),
+  file.path(out, "source-checksums.csv"), row.names = FALSE)
 utils::write.csv(summary$reconstruction, file.path(out, "archive-interpretations.csv"), row.names = FALSE)
 utils::write.csv(summary$assessment, file.path(out, "study-assessment.csv"), row.names = FALSE)
 utils::write.csv(summary$review_actions, file.path(out, "review-actions.csv"), row.names = FALSE)

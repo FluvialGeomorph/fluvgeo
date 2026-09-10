@@ -1,8 +1,90 @@
 # Terrain Development reporting
 
-Status: read-only visual Study Area/event evidence and archive-interpretation
-slice implemented; full coverage, context persistence and migration work remain.
-Updated: 2026-09-08.
+Status: read-only visual Study Area/event evidence, archive interpretation and
+saved-context reopening and bounded name/note revision implemented; full coverage
+and migration remain. Updated: 2026-09-10.
+
+The [saved-context binding](../schemas/study-context.md) now retains supplied
+hierarchy/optional AOIs, event inventory, interpretations and notes alongside
+pinned relative links to the network and terrain manifest. The `--folder` demo
+renders from that reopened context. This is not the complete FGDB event-folder
+contract or a general configuration editor; historical scope statements below describe
+the earlier implementation slices.
+
+`revise_study_context()` now adds a bounded next step: change an existing Study
+Area display name and/or append a scope note, saving a new same-folder context
+with optional refreshed reporting. Other records and links remain unchanged.
+This is additive to the shared schema, with no production client upgrades or
+FGDB reconciliation. See [the revision contract](../schemas/study-context.md#bounded-revisions)
+and [QGIS editing qualification](../../../fg-qgis-toolbox/dev/features/review-study-area.md#bounded-editing-step-2026-09-10).
+
+### Saved-context verification (2026-09-09)
+
+Focused context/report/intake/event-link tests pass 261 assertions. They verify
+native AOI coordinates and semantic CRS equality, typed date/text persistence,
+forensic-only drafts, relocation, missing/changed links, blocked terrain and
+new-file safety. Initial comparisons were corrected to exclude fresh timestamps
+and incidental sf/CRS-input attributes, not to relax coordinate or value equality.
+
+`dev/outputs/terrain-development/cole-creek-context-v2/` contains the new saved
+context and report rendered from it. All six source/copy GeoTIFF value/NoData/grid
+checks and original archive hash checks pass; three event grids reopen through
+six saved associations. The separate QGIS wrapper agrees with direct R; see
+[its verification](../../../fg-qgis-toolbox/dev/features/review-study-area.md).
+The report does not infer an overview DEM from those event selections; wording
+now distinguishes absent overview terrain from separately supplied event grids.
+
+Changes are additive backend APIs plus one gap-message clarification, with no
+new dependency or altered scientific method. Existing network/intake contracts
+remain unchanged. Scoped downstream searches found no existing callers of these
+new APIs in the production ArcGIS toolbox, ohwm2, RegionalCurve or FGDB R code.
+Those clients and fluvgeodata were not edited; only an isolated development R
+library was installed. No acceptance, deployment or commit was performed.
+
+Source build/install and scoped `R CMD check` completed with no errors/warnings
+and the same two existing notes (methods dependency and package-wide globals).
+Tests, examples, manual and vignettes were excluded from the package check;
+focused tests ran separately. The pre-existing R >= 4.1 build warning, offline
+index diagnostics and unavailable optional installed fluvgeodata remain.
+This is not full-suite or cross-client storage qualification. Generated help and
+strict reproducibleai context validation passed.
+
+### NWO_Papillion structural fixture (2026-09-10)
+
+The user supplied and clarified `NWO_Papillion_ColeCreek_Stream.gdb`. Its seven
+`Papillion_HUC12` polygons and names define this project's Stream areas; their
+dissolved union defines the **NWO_Papillion** Study Area. This is a confirmed
+project convention, not a universal HUC12 segmentation/naming requirement. The
+source interpretation is retained in fluvgeodata's `inst/extdata/README-storage.md`.
+
+Run `dev/scripts/cole-creek-terrain-report.R <new-directory> --folder-structure`
+from fluvgeo to exercise the richer fixture. The old demo modes are retained.
+The fixture-only helper retains native Stream polygons, explicitly projects a
+working copy to EPSG:26914 and dissolves it without snapping, filling or repair.
+The result is one valid polygon covering all seven source areas (about 790.696
+square kilometres), with summed-area agreement within a 0.001 square metre
+numeric tolerance. GeoPackage reopening preserves exact polygon WKB, scalar
+values and semantic CRS; incidental CRS spelling is not treated as data loss.
+
+The current result is `dev/outputs/terrain-development/cole-creek-structure-v3/`.
+The report now shows seven Stream branches, the dissolved Study Area and the
+three retained Cole Creek R1 Survey Events. R1's parent, **Little Papillion Creek**
+(HUC12 102300060204), is spatially inferred from complete containment of its 2006
+flowline and recorded as PROPOSED, distinct from the confirmed boundary convention.
+No wider line variant or additional Reach AOI has been selected or repaired.
+Provisional fixture UUIDs do not reconcile enterprise identity. Missing branches
+in the event inventory do not establish absence of historical surveys.
+
+The demo checks source-file hashes, all six copied terrain values/NoData/grids/CRS,
+saved/reopened context and report evidence; all pass. The hierarchy and overview
+figures were visually inspected. Source mapping, boundary checks and checksums
+are retained beside the report. Earlier v1/v2 runs stopped at incidental CRS and
+row-name comparisons before rendering; the final run checks semantic CRS/exact
+coordinates and uses ordinary row names without dropping records. No public R
+API, scientific method, QGIS provider or installed package changed, so package
+checks and desktop qualification were not repeated for this fixture/doc update.
+Explicit standardized hierarchy storage and fuller archive reconstruction remain
+future work rather than inferred conventions embedded in a general importer.
 
 ## Purpose and design direction
 
