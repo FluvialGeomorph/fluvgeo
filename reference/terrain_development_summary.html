@@ -68,7 +68,8 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 <span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
 <span>  survey_dems <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reconstruction <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  folder_manifest <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  folder_manifest <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legacy_staging <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -138,6 +139,13 @@ Schema-2 event links resolve against supplied Survey Events. Explicitly
 selected, unblocked GeoTIFFs supply event grid views; conflicting survey_dems
 inputs fail rather than choosing a precedence. Missing context/files remain
 findings. Associations do not prove provenance, coverage or acceptance.</p></dd>
+
+
+<dt id="arg-legacy-staging">legacy_staging<a class="anchor" aria-label="anchor" href="#arg-legacy-staging"></a></dt>
+<dd><p>Optional FileGDB staging Study Area directory, freshly
+inspected with inspect_legacy_staging(). Adds source-layer inventories and
+missing-structure prompts, not inferred hierarchy or conversion approval.
+This link is not persisted by the current Study Context binding.</p></dd>
 
 </dl></div>
     <div id="value">
