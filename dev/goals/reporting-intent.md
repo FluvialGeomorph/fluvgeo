@@ -1,6 +1,6 @@
 # Reporting intent: a reviewable record of the complete study
 
-Status: user-established intent, 2026-09-06. The design targets below are not a
+Status: user-established intent, 2026-09-06, clarified 2026-09-10. The design targets below are not a
 claim of implemented functionality. Current behavior is recorded in the
 [Terrain Development feature](../features/terrain-development-report.md).
 
@@ -47,7 +47,29 @@ study and its choices with maps and figures, not replace it with validation
 tables. The current Terrain Development prototype supplies an initial inventory
 and overview, not the complete record described here.
 
-## Three jobs for one evolving report
+## Distinct reports sharing one study record
+
+The user clarified on 2026-09-10 that project reconstruction and structural
+specification belong primarily in a **Staging Report**, rather than overloading
+the Terrain Development Report. This refines the earlier "one evolving report"
+presentation, not the underlying study model or the three reporting jobs below.
+
+- **Staging Report:** what the project contains, how Study Area/Streams/Reaches/
+  Survey Events are defined, which artifacts support them, and which structural
+  interpretations or migration inputs the analyst must resolve. It should also
+  describe a correctly specified project, not only its failures.
+- **Terrain Development Report:** terrain sources, derivation and conditioning,
+  grid/coverage evidence, reference systems, scientific limitations and intended
+  uses. It reuses the study definition rather than becoming another hierarchy
+  editor or requiring duplicate analyst input.
+
+Both consume shared fluvgeo context and assessments. Their review outcomes remain
+separate from conversion fidelity and enterprise acceptance. The first
+[Staging Report](../features/study-staging-report.md) now provides a focused
+presentation; existing Terrain report callers remain compatible while further
+content separation can proceed incrementally.
+
+### Three continuing reporting jobs
 
 1. **Help build and configure the study.** Show intended scope alongside available
    evidence, candidate definitions, consequences and the next decisions. Keep
@@ -63,7 +85,7 @@ and overview, not the complete record described here.
    hierarchy without explicit reconciliation. This job was added by the user on
    2026-09-06 and shares the same report components, not a separate scientific model.
 
-Use reusable sections in an evolving report, rather than require a separate
+Use reusable context and focused report variants, rather than require a separate
 document for every operation. Later Reach reports should be traceable to this
 parent context without repeating the entire Study Area narrative.
 

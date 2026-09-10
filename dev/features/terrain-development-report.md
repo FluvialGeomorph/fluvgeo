@@ -4,6 +4,13 @@ Status: read-only visual Study Area/event evidence, archive interpretation and
 saved-context reopening and bounded name/note revision implemented; full coverage
 and migration remain. Updated: 2026-09-10.
 
+The user now distinguishes the [Staging Report](study-staging-report.md), focused
+on reconstruction and correctly specified project structure, from Terrain
+Development's terrain-source/processing/quality role. The shared summary and
+existing report API remain compatible. New archive work uses the focused staging
+view; the older combined presentation below is retained, not a requirement to
+duplicate structural decisions in two reports.
+
 The [saved-context binding](../schemas/study-context.md) now retains supplied
 hierarchy/optional AOIs, event inventory, interpretations and notes alongside
 pinned relative links to the network and terrain manifest. The `--folder` demo

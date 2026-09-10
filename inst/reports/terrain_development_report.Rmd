@@ -94,6 +94,12 @@ cat("<p><small>Snapshot generated ", esc(format(r$generated_at, tz = "UTC", uset
 
 ```{r review-focus, results='asis'}
 cat('<div class="terrain-review">')
+if (!is.null(r$staging_inventory)) {
+  g <- r$staging_inventory$geodatabases
+  cat('<p><strong>Legacy staging:</strong> ', nrow(g), ' geodatabase directories found; ',
+    sum(g$listing_status != 'UNREADABLE'), ' vector/table layer listings obtained. ',
+    'These are source containers, not confirmed Survey Events. Raster content and conversion readiness are not assessed.</p>', sep = '')
+}
 if (!is.null(r$folder_inventory)) {
   a <- r$folder_inventory$artifacts
   cat('<p><strong>Selected files:</strong> ', sum(a$available), ' of ', nrow(a),
@@ -126,7 +132,7 @@ if (is.null(actions)) {
     ifelse(actions$requires_input, 'Analyst input', 'Further assessment'))
   units <- c(FILE_INTEGRITY = 'file(s)', TERRAIN_REVIEW = 'event(s)',
     STUDY_DEFINITION = 'Study Area reference(s)', HIERARCHY_RECONSTRUCTION = 'archive case(s)',
-    EVENT_ASSOCIATION = 'event reference(s)')
+    EVENT_ASSOCIATION = 'event reference(s)', LEGACY_STAGING = 'staging location(s)')
   affected <- unname(units[actions$stage]); affected[is.na(affected)] <- 'record(s)'
   display <- data.frame(Work = work, `Applies to` = paste(actions$entity_count, affected),
     `Next action` = actions$next_action, check.names = FALSE)
@@ -261,6 +267,21 @@ table_html(r$event_evidence, c("reach_label", "date_label", "evidence_status", "
 
 <details class="terrain-detail">
 <summary>Legacy project reconstruction and portable intake files</summary>
+
+```{r legacy-staging, results='asis'}
+if (!is.null(r$staging_inventory)) {
+  cat('<h3>FileGDB staging inventory</h3><p>Read-only comparison with staging draft 0.1. Locations are not governed identities. Layer metadata does not verify feature values, clean source selection, rasters, acquisition dates or archive-to-copy equality.</p>')
+  table_html(r$staging_inventory$geodatabases)
+  cat('<h4>Expected catalog records</h4><p>Presence only: fields, values, parentage and boundary validity are not checked. Missing records refer to the draft profile, not a previously imposed archive requirement.</p>')
+  catalogs <- r$staging_inventory$catalogs
+  catalogs$present <- ifelse(is.na(catalogs$present), 'Unknown: location not inspected or container unreadable',
+    ifelse(catalogs$present, 'Present; values not validated', 'Not found'))
+  table_html(catalogs)
+  cat('<details><summary>Driver-reported vector and table layers</summary><p>Unknown feature counts are not zero. Geometry types include driver-reported Z/M dimensions; this listing does not test their values. Rasters are outside this inventory.</p>')
+  table_html(r$staging_inventory$layers)
+  cat('</details>')
+}
+```
 
 <h3>Portable intake files</h3>
 

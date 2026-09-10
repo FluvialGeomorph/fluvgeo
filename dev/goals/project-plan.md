@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-09
+Last updated: 2026-09-10
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -23,6 +23,22 @@ Papillion Creek / Cole Creek example. See the current feature design in
 description and configuration aid, not only an FGDB compliance report.
 
 ## Immediate focus
+
+The user paused toolbox expansion to clarify the
+[analyst-staged archive migration](../../../FG-architecture/dev/decisions/adr-0005-analyst-staged-archive-migration.md):
+leave the USACE archive untouched; manually copy clean event FileGDBs and
+reconstruct explicit Study Area/Stream context in FileGDB staging; then convert
+to the GPKG desktop folder standard that alone feeds new FGDB file-based intake.
+Define the staging/target contracts before more toolbox trials or converter work.
+External GeoTIFF terrain and shared fluvgeo validation/reporting remain unchanged.
+
+The first [staging inspector and Staging Report](../features/study-staging-report.md)
+now inventory FileGDB locations/vector-layer metadata and missing catalog/event
+structure without writing sources. The user separated structural reconstruction
+from terrain-development reporting; both use the same supplied study context.
+Next is explicit catalog-value/parent/date/source-association validation against
+the reviewed staging profile, with analyst dates still unresolved for Copperas.
+Do not promote inventory to conversion readiness or resume toolbox deployment.
 
 The network-review desktop trial and bounded cancellation test are complete,
 owned by fg-qgis-toolbox. Runtime discovery, provider selection and actual R

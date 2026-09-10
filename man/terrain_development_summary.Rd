@@ -15,7 +15,8 @@ terrain_development_summary(
   analyst_notes = NA_character_,
   survey_dems = NULL,
   reconstruction = NULL,
-  folder_manifest = NULL
+  folder_manifest = NULL,
+  legacy_staging = NULL
 )
 }
 \arguments{
@@ -60,6 +61,11 @@ Schema-2 event links resolve against supplied Survey Events. Explicitly
 selected, unblocked GeoTIFFs supply event grid views; conflicting survey_dems
 inputs fail rather than choosing a precedence. Missing context/files remain
 findings. Associations do not prove provenance, coverage or acceptance.}
+
+\item{legacy_staging}{Optional FileGDB staging Study Area directory, freshly
+inspected with inspect_legacy_staging(). Adds source-layer inventories and
+missing-structure prompts, not inferred hierarchy or conversion approval.
+This link is not persisted by the current Study Context binding.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.

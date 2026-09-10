@@ -101,6 +101,13 @@ limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
 
 ## Other contracts
 
+### Legacy staging inventory and report
+
+The [legacy staging inspection contract](legacy-staging-inspection.md) defines
+the read-only directory/vector-layer inventory and its optional integration with
+the shared report summary. The focused Staging Report separates reconstruction
+from terrain assessment; no catalog-value validation or conversion is implied.
+
 ### Planned folder delivery boundary
 
 Under [ADR-0002](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md),

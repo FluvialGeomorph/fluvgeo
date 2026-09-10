@@ -1,0 +1,170 @@
+---
+title: "Study Area Staging Report"
+subtitle: "Project structure, source evidence and the next analyst decisions"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+    toc: true
+    toc_depth: 2
+params:
+  report: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+r <- params$report
+esc <- function(x) {
+  x <- gsub('&', '&amp;', x, fixed = TRUE)
+  x <- gsub('<', '&lt;', x, fixed = TRUE)
+  gsub('>', '&gt;', x, fixed = TRUE)
+}
+tab <- function(x, fields = names(x)) {
+  if (is.null(x) || !nrow(x)) return(cat('<p>No records supplied.</p>'))
+  cat(as.character(knitr::kable(as.data.frame(sf::st_drop_geometry(x))[intersect(fields, names(x))],
+    format = 'html', escape = TRUE, row.names = FALSE)))
+}
+# A view selection only: the supplied summary and its full assessment are unchanged.
+actions <- r$review_actions
+if (!is.null(actions)) actions <- actions[actions$stage != 'TERRAIN_REVIEW', , drop = FALSE]
+```
+
+## What is known
+
+This report asks whether the project structure is explicitly specified and what
+an analyst must still resolve. It is not a terrain-quality assessment, a
+conversion certificate or FGDB load approval. The Terrain Development Report
+addresses terrain sources, processing and scientific limitations separately.
+
+```{r known, results='asis'}
+tab(data.frame(Item = c('Study Area', 'Selected Streams', 'Defined Reaches', 'Survey Events', 'Study Area boundary'),
+  Evidence = c(if (is.null(r$study_area)) 'Not supplied' else r$study_area$study_area_name,
+    if (is.null(r$streams)) 'Not supplied' else paste(r$streams$stream_name, collapse = ', '),
+    if (is.null(r$reaches)) 'Not supplied as explicit records' else as.character(nrow(r$reaches)),
+    if (!nrow(r$surveys)) 'No dated event records supplied; no dates inferred' else as.character(nrow(r$surveys)),
+    if (inherits(r$study_area, 'sf')) 'Supplied AOI; see interpretation evidence' else 'Not supplied; no boundary inferred')))
+if (!is.na(r$analyst_notes)) {
+  cat(paste0('<p>', esc(strsplit(r$analyst_notes, '\n[[:space:]]*\n', perl = TRUE)[[1]]), '</p>', collapse = '\n'))
+}
+if (!is.null(r$staging_inventory)) {
+  g <- r$staging_inventory$geodatabases
+  cat('<p><strong>Inspected staging:</strong> ', nrow(g), ' geodatabase directories; ',
+    sum(g$listing_status != 'UNREADABLE'), ' vector/table listings obtained. ',
+    'These are source containers, not confirmed Survey Events. Rasters are not inspected.</p>', sep = '')
+}
+cat('<p><small>Snapshot: ', esc(format(r$generated_at, tz = 'UTC', usetz = TRUE)), '</small></p>', sep = '')
+```
+
+## What the analyst needs to do next
+
+Repeated prompts are grouped for readability, not permission to make one decision
+for every affected source. Required scientific interpretations remain human
+decisions; mechanical catalog entry and integrity checks should be automated.
+
+```{r next, results='asis'}
+if (is.null(actions) || !nrow(actions)) {
+  cat('<p>No pending staging prompts in this supplied assessment. This does not establish readiness.</p>')
+} else tab(data.frame(Work = ifelse(actions$requires_input, 'Analyst input', 'Further validation'),
+  Status = actions$status, `Affected references` = actions$entity_count,
+  `Next action` = actions$next_action, check.names = FALSE))
+pending <- r$reconstruction
+if (!is.null(pending)) pending <- pending[pending$status %in% c('UNKNOWN', 'PROPOSED'), , drop = FALSE]
+if (!is.null(pending) && nrow(pending)) {
+  cat('<h3>Specific unresolved interpretations</h3>')
+  tab(pending, c('source_ref', 'evidence', 'proposed_structure', 'status'))
+}
+```
+
+## Study structure and boundary
+
+Only supplied parent relationships are shown. Staged folder names do not create
+identities or Survey Events. A Study Area and its sole Stream may share a boundary
+while retaining distinct identities.
+
+```{r structure, fig.width=10, fig.height=max(3, 0.55 * nrow(r$hierarchy)), fig.cap='Supplied geographic hierarchy; no relationships inferred from staging paths.'}
+h <- r$hierarchy
+if (!is.null(h)) h <- h[h$entity_type %in% c('Study Area', 'Stream', 'Reach', 'Survey Event'), , drop = FALSE]
+if (!is.null(h) && nrow(h)) {
+  h$y <- rev(seq_len(nrow(h)))
+  h$text <- vapply(paste(h$entity_type, h$label, sep = ': '),
+    function(x) paste(strwrap(x, width = 28), collapse = '\n'), character(1))
+  edges <- h[!is.na(h$parent_key) & h$parent_key %in% h$node_key, , drop = FALSE]
+  parents <- match(edges$parent_key, h$node_key)
+  edges$x0 <- h$depth[parents]; edges$y0 <- h$y[parents]
+  print(ggplot2::ggplot(h, ggplot2::aes(x = depth, y = y)) +
+    ggplot2::geom_segment(data = edges, ggplot2::aes(x = x0, y = y0, xend = depth, yend = y), colour = '#aab8bf') +
+    ggplot2::geom_point(size = 3, colour = '#254c59') +
+    ggplot2::geom_label(ggplot2::aes(label = text), hjust = 0, nudge_x = 0.07, size = 3.4) +
+    ggplot2::scale_x_continuous(limits = c(-0.1, max(h$depth) + 1.4)) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = 0.8)) + ggplot2::theme_void())
+} else cat('No explicit hierarchy supplied. Source folders remain inventory only.')
+```
+
+```{r boundary, fig.width=9, fig.height=6, fig.cap='Supplied Study Area (solid) and Stream (dotted) boundaries. Coincidence is a supplied interpretation, not inferred parentage.'}
+if (inherits(r$study_area, 'sf') || inherits(r$streams, 'sf')) {
+  p <- ggplot2::ggplot()
+  if (inherits(r$study_area, 'sf')) p <- p + ggplot2::geom_sf(data = r$study_area, fill = '#edf3f0', colour = '#203b48')
+  if (inherits(r$streams, 'sf')) p <- p + ggplot2::geom_sf(data = r$streams, fill = NA, colour = '#54816b', linetype = 'dotted')
+  print(p + ggplot2::theme_minimal() + ggplot2::labs(x = NULL, y = NULL))
+} else cat('No supplied polygon available for mapping.')
+```
+
+## Supporting record
+
+<details open>
+<summary>Streams, Reaches and Survey Event inventory</summary>
+
+```{r hierarchy-inventory, results='asis'}
+cat('<h3>Streams</h3>'); tab(r$streams, 'stream_name')
+cat('<h3>Reaches</h3>'); tab(r$reaches, c('stream_name', 'reach_name'))
+cat('<h3>Survey Events</h3>'); tab(r$surveys, c('reach_name', 'date_label', 'source_dataset', 'availability_notes'))
+```
+
+</details>
+
+<details>
+<summary>Source containers and catalog presence</summary>
+
+Presence is not validation of fields, values, geometry or parent references.
+Missing records refer to staging draft 0.1, not a historical archive requirement.
+
+```{r source-record, results='asis'}
+if (!is.null(r$staging_inventory)) {
+  tab(r$staging_inventory$geodatabases)
+  cat('<h3>Expected catalog records</h3>')
+  x <- r$staging_inventory$catalogs
+  x$present <- ifelse(is.na(x$present), 'Unknown: not inspected or unreadable',
+    ifelse(x$present, 'Present; values not validated', 'Not found'))
+  tab(x)
+  cat('<details><summary>Driver-reported vector/table layers</summary><p>Unknown feature counts are not zero. Z/M types are reported, not validated. Raster content is outside this listing.</p>')
+  tab(r$staging_inventory$layers)
+  cat('</details>')
+} else cat('<p>No staging inspection supplied.</p>')
+```
+
+</details>
+
+<details>
+<summary>Interpretations and analyst decisions</summary>
+
+Confirmed means analyst-confirmed interpretation, not independent verification
+or enterprise acceptance. Proposed and unknown interpretations remain separate.
+
+```{r decisions, results='asis'}
+tab(r$reconstruction)
+```
+
+</details>
+
+<details>
+<summary>Detailed staging findings and evidence limits</summary>
+
+```{r findings, results='asis'}
+if (!is.null(r$assessment)) tab(r$assessment[r$assessment$stage != 'TERRAIN_REVIEW', , drop = FALSE])
+```
+
+The source inventory does not verify rasters, acquisition dates, clean-source
+selection, complete catalog values, archive-copy equality or conversion mappings.
+Missing evidence is not fabricated. Rendering changes no source data or decisions.
+
+</details>

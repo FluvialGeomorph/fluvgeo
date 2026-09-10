@@ -1,5 +1,11 @@
 # fluvgeo 2026.09.10.9000
 
+- Added read-only `inspect_legacy_staging()` and optional `legacy_staging` report
+  input for FileGDB source-layer inventory and missing staging structure.
+  Added `study_staging_report()` to separate project reconstruction and analyst
+  decisions from terrain-quality reporting, using the existing shared context.
+  No dates, identities, clean-source approval or conversion readiness are inferred.
+
 - Added `revise_study_context()` for intentional Study Area display-name changes
   and appended scope notes, saved in a new same-folder context copy with optional
   refreshed reporting. Other records and evidence links remain unchanged. No

@@ -35,6 +35,10 @@
 #'   selected, unblocked GeoTIFFs supply event grid views; conflicting survey_dems
 #'   inputs fail rather than choosing a precedence. Missing context/files remain
 #'   findings. Associations do not prove provenance, coverage or acceptance.
+#' @param legacy_staging Optional FileGDB staging Study Area directory, freshly
+#'   inspected with inspect_legacy_staging(). Adds source-layer inventories and
+#'   missing-structure prompts, not inferred hierarchy or conversion approval.
+#'   This link is not persisted by the current Study Context binding.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
 #'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
 #'   reconstruction and a limited stage-specific assessment with requires_input
@@ -50,7 +54,8 @@
 terrain_development_summary <- function(study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, network = NULL, dem = NULL,
     terrain_notes = NA_character_, analyst_notes = NA_character_,
-    survey_dems = NULL, reconstruction = NULL, folder_manifest = NULL) {
+    survey_dems = NULL, reconstruction = NULL, folder_manifest = NULL,
+    legacy_staging = NULL) {
   terrain_notes <- .fg_optional_text(terrain_notes, "terrain_notes")
   analyst_notes <- .fg_optional_text(analyst_notes, "analyst_notes")
   if (is.character(network)) network <- read_stream_network_geodatabase(network, validate = FALSE)
@@ -146,12 +151,15 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     survey_dems, reconstruction, network)
   if (!is.null(folder)) visual$assessment <- rbind(visual$assessment, folder$assessment)
   if (!is.null(linked)) visual$assessment <- rbind(visual$assessment, linked$assessment)
+  staging <- if (is.null(legacy_staging)) NULL else inspect_legacy_staging(legacy_staging)
+  if (!is.null(staging)) visual$assessment <- rbind(visual$assessment, staging$assessment)
   review <- .fg_terrain_review_actions(visual$assessment)
   c(list(study_area = study_area, streams = streams, reaches = reaches, surveys = surveys,
     configuration = if (is.null(network)) data.frame() else network$stream_network_configuration,
     observation = observation, segments = segments, dem_extent = footprint, terrain = terrain,
     validation = validation, gaps = unique(gaps), terrain_notes = terrain_notes, analyst_notes = analyst_notes,
-    folder_inventory = folder, event_artifacts = if (is.null(linked)) NULL else linked$event_artifacts,
+    folder_inventory = folder, staging_inventory = staging,
+    event_artifacts = if (is.null(linked)) NULL else linked$event_artifacts,
     generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual, review)
 }
 
@@ -197,6 +205,29 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
 #'   requires a local hard-link-capable filesystem, failing safely otherwise.
 #' @export
 terrain_development_report <- function(summary, output_file) {
+  .fg_render_study_report(summary, output_file, "terrain_development_report.Rmd")
+}
+
+#' Render a Study Area Staging Report
+#'
+#' Describes project structure, source inventory and unresolved reconstruction
+#' decisions using the same supplied context as terrain_development_report().
+#' It does not present terrain-quality assessment as a staging requirement and
+#' never certifies conversion or FGDB readiness. Rendering does not refresh the
+#' inspection; build a fresh summary when current filesystem evidence is needed.
+#'
+#' @param summary Output of terrain_development_summary(), optionally including
+#'   legacy_staging and reconstruction. Inputs and their full assessment remain
+#'   unchanged; the staging view omits TERRAIN_REVIEW prompts.
+#' @param output_file New .html path in an existing directory; never overwritten.
+#' @return Normalized report path invisibly. Requires knitr, Pandoc and a local
+#'   hard-link-capable filesystem for non-replacing publication.
+#' @export
+study_staging_report <- function(summary, output_file) {
+  .fg_render_study_report(summary, output_file, "study_staging_report.Rmd")
+}
+
+.fg_render_study_report <- function(summary, output_file, template_name) {
   if (!is.list(summary) || length(summary$schema) != 1L ||
       !summary$schema %in% c("TERRAIN_DEVELOPMENT_REPORT_1", "TERRAIN_DEVELOPMENT_REPORT_2")) .fg_abort("Supply a terrain_development_summary() result.")
   output_file <- .fg_required_text(output_file, "output_file")
@@ -206,7 +237,7 @@ terrain_development_report <- function(summary, output_file) {
   if (!requireNamespace("knitr", quietly = TRUE) || !rmarkdown::pandoc_available()) .fg_abort("Rendering requires knitr and Pandoc.")
   stage <- tempfile("terrain-report-", tmpdir = dirname(output_file), fileext = ".html")
   on.exit(unlink(stage), add = TRUE)
-  template <- system.file("reports", "terrain_development_report.Rmd", package = "fluvgeo")
+  template <- system.file("reports", template_name, package = "fluvgeo")
   rmarkdown::render(template, output_file = stage, intermediates_dir = tempdir(),
     params = list(report = summary), envir = new.env(parent = baseenv()), quiet = TRUE)
   if (!isTRUE(suppressWarnings(file.link(stage, output_file)))) .fg_abort("Could not publish report without replacement; use a local hard-link-capable filesystem.")
