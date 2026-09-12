@@ -7,6 +7,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/news/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/FluvialGeomorphicMetric-class.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/accept_stream_network.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/add_study_reaches.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/arcgis_auth.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_radius.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_raduis_plot.html</loc></url>
@@ -37,6 +38,8 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section_dimensions_L1.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section_dimensions_L2.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cross_section_points.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/define_study_area_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/define_study_streams.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/detrend.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/estimate_bankfull.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/explore_long_profile.html</loc></url>
@@ -83,6 +86,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_network_geodatabase.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/revise_study_context.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_reach_areas.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf2csv.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_fix_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_get_z.html</loc></url>
@@ -108,7 +112,9 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sin_valleyline_sf.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/slope_sinuosity.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/start_left.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/start_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/stream_power.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_context_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_staging_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/table_xs_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_report.html</loc></url>

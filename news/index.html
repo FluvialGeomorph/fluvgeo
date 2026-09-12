@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.10.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.11.9004</span>
       </span>
     </div>
 
@@ -47,6 +47,34 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9004" id="fluvgeo-202609119004">fluvgeo 2026.09.11.9004<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119004"></a></h2>
+<ul><li>Added <code><a href="../reference/set_study_reach_areas.html">set_study_reach_areas()</a></code> to assign or revise explicitly keyed polygons without changing Reach identities, parentage, events or other context.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9003" id="fluvgeo-202609119003">fluvgeo 2026.09.11.9003<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119003"></a></h2>
+<ul><li>Added <code><a href="../reference/add_study_reaches.html">add_study_reaches()</a></code> for progressive, explicitly parented Reach additions that preserve existing hierarchy, event identities and linked evidence.</li>
+<li>Define Study Area reports show Reach names/parents, optional areas and Streams still lacking Reach definitions. Partial inventories do not imply completeness.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9002" id="fluvgeo-202609119002">fluvgeo 2026.09.11.9002<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119002"></a></h2>
+<ul><li>Added <code><a href="../reference/define_study_streams.html">define_study_streams()</a></code> for an explicitly named initial inventory with optional native polygon areas under a saved Study Area. Existing Streams or related hierarchy/network records are refused, not re-identified.</li>
+<li>Define Study Area reports add a numbered Stream inventory and optional area map.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9001" id="fluvgeo-202609119001">fluvgeo 2026.09.11.9001<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119001"></a></h2>
+<ul><li>
+<code><a href="../reference/revise_study_context.html">revise_study_context()</a></code> can explicitly supply or replace the Study Area boundary, preserving identity, other records and source context. Requires a valid single XY polygon feature and an appended source/rationale note.</li>
+<li>Define Study Area reports map supplied boundaries in their stored CRS.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9000" id="fluvgeo-202609119000">fluvgeo 2026.09.11.9000<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119000"></a></h2>
+<ul><li>Added <code><a href="../reference/study_context_report.html">study_context_report()</a></code> for explicit terrain/definition/staging views of saved context, and optional <code>report_purpose</code> for name/note revisions. Existing calls retain Terrain Development reporting; view selection does not alter the context schema, study identity or acquisition/acceptance semantics.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.10.9001" id="fluvgeo-202609109001">fluvgeo 2026.09.10.9001<a class="anchor" aria-label="anchor" href="#fluvgeo-202609109001"></a></h2>
+<ul><li>Added <code><a href="../reference/start_study_context.html">start_study_context()</a></code> for genuinely new, named drafts with optional purpose/scope notes, using the existing saved context and one new local UUID. Added <code><a href="../reference/define_study_area_report.html">define_study_area_report()</a></code> as a prospective design view, without legacy-staging prerequisites or terrain gates. No geometry or Survey Events are inferred. Existing context, revision and reporting APIs remain compatible.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.10.9000" id="fluvgeo-202609109000">fluvgeo 2026.09.10.9000<a class="anchor" aria-label="anchor" href="#fluvgeo-202609109000"></a></h2>
 <ul><li><p>Added read-only <code><a href="../reference/inspect_legacy_staging.html">inspect_legacy_staging()</a></code> and optional <code>legacy_staging</code> report input for FileGDB source-layer inventory and missing staging structure. Added <code><a href="../reference/study_staging_report.html">study_staging_report()</a></code> to separate project reconstruction and analyst decisions from terrain-quality reporting, using the existing shared context. No dates, identities, clean-source approval or conversion readiness are inferred.</p></li>
