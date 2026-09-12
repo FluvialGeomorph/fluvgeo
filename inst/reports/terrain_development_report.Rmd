@@ -297,8 +297,11 @@ if (!is.null(r$folder_inventory)) {
   inventory$available <- ifelse(inventory$available, "Present", "Missing")
   inventory$hash_verified <- ifelse(inventory$hash_verified, "Matches snapshot", "Not verified")
   for (field in c("vertical_reference", "vertical_unit")) inventory[[field]][is.na(inventory[[field]])] <- "Unknown"
-  names(inventory) <- c("Artifact", "Role / source label", "Relative path", "Format",
-    "File", "Snapshot integrity", "Vertical reference", "Elevation units")
+  labels <- c(artifact_id="Artifact", role="Role / source label", path="Relative path", format="Format",
+    available="File", hash_verified="Snapshot integrity", vertical_reference="Vertical reference",
+    vertical_unit="Elevation units", metadata_evidence="Metadata evidence")
+  known <- intersect(names(labels),names(inventory))
+  names(inventory)[match(known,names(inventory))] <- labels[known]
   cat('<div class="table-responsive">')
   table_html(inventory)
   cat('</div>')

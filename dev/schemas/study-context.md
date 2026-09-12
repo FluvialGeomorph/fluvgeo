@@ -227,3 +227,60 @@ do not confuse grid extent with valid-cell coverage, a historic delineation or
 a confirmed multi-period Reach boundary. No universal buffering, union or
 intersection rule is established by this option. New projects can deliberately
 define their areas without a DEM or legacy staging step.
+
+### Explicit acquired-event recording
+
+`record_study_survey_event(dsn, output_file, reach_id, acquired_date,
+source_dataset, evidence_note, report_file = NULL, report_purpose = "definition")`
+appends one local Survey Event UUID under an exact saved Reach ID. Existing
+hierarchy, areas, event identities, notes and links remain unchanged. Reuse schema
+1 and the same-folder new-file publication/recovery contract; no archive or
+enterprise identity reconciliation occurs.
+
+Accept YYYY, YYYY-MM or YYYY-MM-DD with valid calendar values. Missing month/day
+remain typed integer NA; no fabricated January 1 is saved. Reject date periods
+entirely in the future. Planned or undated observations remain in scope or
+reconstruction notes until a separate planning interface is defined. Require a
+source reference and evidence note, saved in `source_dataset` and
+`availability_notes`; the reference is text, not an opened, verified or pinned
+asset. Sparse existing event tables gain missing optional columns with typed NAs.
+
+Refuse exact repeats of Reach, date precision/value and trimmed source reference.
+This is a narrow repeat guard, not general acquisition identity detection:
+alternate labels or precision require analyst review, and multiple acquisitions
+within a year are allowed. Recording an event does not link terrain, demonstrate
+coverage, confirm a multi-period Reach area or establish comparison readiness.
+The Define Study Area view shows acquisition precision/source and directs the
+analyst toward associating and assessing the intended terrain files.
+
+### Explicit terrain association
+
+`associate_study_terrain(dsn, output_file, survey_event_id, terrain_file, evidence,
+analyst, manifest_file, report_file = NULL, report_purpose = "definition")`
+selects one single-band GeoTIFF for an existing event's grid review. No hierarchy,
+dates, source-to-copy equivalence, elevation units or vertical datum are inferred.
+No polygon is required. The same-file association to another event is permitted
+with explicit evidence; this does not endorse its scientific interpretation.
+
+The new manifest lives inside the context tree, beside an existing linked manifest
+when present. Terrain must already be in that manifest folder or a descendant.
+Reuse existing safe-path resolution and context SHA-256 pinning; no copying,
+conversion, external shared assets or new schema is introduced. Existing selected
+event terrain and duplicate artifact/event pairs are refused, not replaced.
+
+New files receive local artifact IDs and the existing writer's observations.
+Previously inventoried files retain their complete original records/fingerprints,
+including unknown metadata as JSON null. Reusing a file with blocking findings is
+refused; adding another file does not erase unrelated missing/changed-file findings.
+All previous event links and context records are preserved. Manifest creation time
+describes this inventory revision, not re-observation of every retained artifact.
+The software stamp describes the current writer, not re-observation of retained
+artifacts. Prior manifests retain their earlier software stamps. This is not a
+per-artifact provenance ledger.
+
+Publishing manifest, context and report is not one transaction. Existing destinations
+are checked before work; failure after publication leaves evidence with recovery
+instructions. Retain a saved context and retry read-only reporting after report
+failure. Do not mutate the intake folder concurrently. Partial publication recovery,
+selection replacement, vertical-metadata editing and full event delivery remain
+separate capabilities, not silent upgrades to this additive operation.

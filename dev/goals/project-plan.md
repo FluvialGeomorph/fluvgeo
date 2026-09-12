@@ -42,9 +42,18 @@ areas and new local IDs, without replacing existing hierarchy. The user accepted
 that report increment. `add_study_reaches()` now records progressive explicit
 Reach names/parentage and optional areas, preserving existing identities/events.
 `set_study_reach_areas()` now provides keyed initial area assignment and selected
-revisions while preserving identities. Mixed missing/supplied areas and
-planned-versus-acquired observation capture remain configuration gaps; partial
-inventories never imply complete segmentation. Historical Reach polygons were
+revisions while preserving identities. `record_study_survey_event()` now records
+explicit acquired events, retaining known date precision and existing identities.
+Its source references are text, not verified file links. `associate_study_terrain()`
+now connects a chosen local GeoTIFF to a recorded event using existing intake
+schemas and integrity checks, preserving prior file snapshots. `record_study_terrain_metadata()` now fills evidenced unknown vertical metadata.
+The percentage-coverage experiment was withdrawn: intentional NoData/AOI masks
+are not missing data, and rectangle occupancy is not a meaningful quality metric.
+Next use actual source metadata to exercise this entry and review remaining
+terrain decisions. Comparison-specific AOIs and grid choices remain separate.
+Mixed missing/supplied areas, structured future plans and general event editing
+remain configuration gaps; partial inventories never imply complete segmentation.
+Historical Reach polygons were
 not required; a selected `dem_hydro` extent may supply a documented reconstruction
 candidate, not a newly imposed historic deliverable.
 External GeoTIFF terrain and shared fluvgeo validation/reporting remain unchanged.
@@ -102,7 +111,7 @@ and FGDB loading are separate acceptance questions, not one compliance score.
   intent, grounded in review of the existing Level 1–3 and bankfull templates.
 - [x] Build the first visual Study Area structure/event-grid slice and forensic
   interpretation ledger. Supply a limited shared stage-specific assessment;
-  distinguish grid metadata from valid-cell coverage and inventory from readiness.
+  distinguish grid metadata from analysis-specific AOI suitability and inventory from readiness.
 - [x] Record the GeoPackage local-standard decision and inspect historical CRS
   fixes. Run the bounded Cole Creek vector/terrain conformance probe, retaining
   failures and the limits of the passing path; no archive-wide conversion.
@@ -127,8 +136,9 @@ and FGDB loading are separate acceptance questions, not one compliance score.
   resolve selected event DEMs through the intake manifest, and retain blocked or
   unresolved associations in the report. This does not persist the parent catalog
   or implement the complete FGDB event-folder/shared-external-asset binding.
-- [ ] Expand shared assessment to hierarchy conflict inspection, valid-cell
-  coverage and migration findings; wire selective prompts into Shiny separately.
+- [ ] Expand shared assessment to hierarchy conflict inspection, analysis-specific
+  AOI suitability and migration findings; wire selective prompts into Shiny separately.
+  Do not reinstate rectangle-occupancy percentages or treat intentional NoData masks as missing data.
 - [x] Reduce report reading burden with a grouped review overview and expandable
   supporting record; preserve source findings, affected identities and explicit
   blockers. This is presentation triage, not the full hierarchy binding above.

@@ -1,5 +1,11 @@
 # Reporting intent: a reviewable record of the complete study
 
+Terrain reports must respect intentional NoData/AOI masking as a normal processing
+decision. Raster-rectangle occupancy percentages depend on layout and orientation,
+not scientific quality, and are not report requirements. The analyst withdrew that
+experiment on 2026-09-11. Distinguish absent/corrupt files from intentionally masked
+cells; ask whether a proposed metric informs a geographic decision before adding it.
+
 Status: user-established intent, 2026-09-06, clarified 2026-09-10. The design targets below are not a
 claim of implemented functionality. This is the maintained requirements home for
 the new-project/legacy-project distinction. Current behavior is recorded in the
@@ -184,7 +190,7 @@ choices; use clear names, legends, units and consistent identifiers.
 | What are we studying, and why this extent? | Study Area locator and detailed AOI map, purpose and scope rationale; distinguish selected Streams from the wider available network. |
 | How is the study organized? | Study Area → Stream → Reach → Survey Event overview paired with labelled maps and explanations of Reach boundaries. Show Collection context when relevant. |
 | What exists for each place and time? | Reach-by-Survey-Event inventory/coverage matrix and comparable coverage maps; distinguish planned, retained, assessed and usable evidence. |
-| How was the terrain and network developed? | Source-to-output lineage, elevation/hillshade views, valid-cell coverage and relevant before/after processing comparisons. |
+| How was the terrain and network developed? | Source-to-output lineage, elevation/hillshade views, intended AOI/masking decisions and relevant before/after processing comparisons. |
 | Can periods be compared meaningfully? | Side-by-side extents and terrain properties, stated horizontal/vertical references, methods and explicit temporal/Reach-identity qualifications. |
 | What was decided, and what remains to do? | Spatially located findings and concise decision explanations, linked to evidence, affected entities and the next action. |
 
@@ -259,7 +265,7 @@ Legacy-specific prompts must not appear merely because a new project has no
 archive, and new-project planning must not erase uncertainty in historical data.
 
 The first visual Study Area structure/event-grid view and reconstruction ledger
-are now implemented, with a limited shared assessment; valid-cell coverage and
+are now implemented, with a limited shared assessment; analysis-specific AOI review and
 complete migration validation remain future work. A larger,
 analyst-supplied fixture is needed to verify multi-Stream/multi-Reach behavior;
 its absence need not stop every presentation improvement. Exact provenance fields,

@@ -1,3 +1,30 @@
+# fluvgeo 2026.09.11.9008
+
+- Removed the experimental finite-cell/rectangle coverage API and report metrics:
+  intentional AOI masking is not missing-data or quality evidence.
+- Added `record_study_terrain_metadata()` for evidenced, attributed initial
+  elevation-unit/vertical-reference entries without altering raster data.
+
+# fluvgeo 2026.09.11.9007 (withdrawn experiment)
+
+- Added read-only `review_study_terrain_coverage()` for explicitly selected event
+  terrain: whole-grid finite-cell counts and optional Reach coverage fractions.
+  Optional reporting adds a coverage table/chart without resampling or acceptance.
+
+# fluvgeo 2026.09.11.9006
+
+- Added `associate_study_terrain()` for explicit event-to-GeoTIFF selection,
+  preserving prior artifact snapshots in a new manifest and linked context.
+- Define Study Area reports display terrain associations, integrity/grid status,
+  unknown vertical metadata and the next scientific review decisions.
+
+# fluvgeo 2026.09.11.9005
+
+- Added `record_study_survey_event()` for explicit acquired-event inventory under
+  existing Reaches, preserving date precision and existing identities.
+- Define Study Area reports summarize recorded acquisitions and distinguish
+  source references from verified terrain links and comparison readiness.
+
 # fluvgeo 2026.09.11.9004
 
 - Added `set_study_reach_areas()` to assign or revise explicitly keyed polygons

@@ -76,7 +76,31 @@ The inspector checks link structure and artifact references but has no event
 registry. Schema-2 inspection returns `FLUVGEO_TERRAIN_INTAKE_REVIEW_2` and an
 `event_links` data frame; schema-1 inspection output remains unchanged.
 
+The additive `associate_study_terrain()` context editor now exposes this binding
+for one explicit saved-event grid selection. It validates event membership in the
+saved context, snapshots only a newly selected file, preserves all older artifact
+records/links, and publishes a new manifest and linked context. Unknown metadata
+round-trips as JSON null, not empty lists. Reuse of a conflicted file is refused;
+unrelated missing/changed-file findings remain visible. See
+[the context contract](study-context.md#explicit-terrain-association). The original
+writer remains available for deliberately prepared inventories; this editor is not
+a generic snapshot-refresh, selection-replacement or migration interface.
+
 ## Inspection output and reporting
+
+`record_study_terrain_metadata()` fills unknown vertical fields for an explicitly
+selected event artifact in new manifest/context snapshots. Blank inputs preserve
+unknown/current values; known values cannot be replaced by this initial-entry
+interface. Attributed evidence is appended to `metadata_evidence`. Shared-file
+assertions apply to all its links. The inspector exposes that evidence as an
+additive character column in `artifacts`. Original observations, hashes and raster
+data are untouched. This records assertions, not independent verification.
+
+Intentional NoData masking defines the chosen AOI and improves processing/storage
+efficiency. NoData is not by itself missing required data. Raster-rectangle or
+extent-derived-Reach occupancy percentages are not useful quality criteria; the
+experimental calculation/tool was withdrawn at analyst direction. Do not infer
+incompleteness, prescribe filling masks or impose percentage thresholds.
 
 `FLUVGEO_TERRAIN_INTAKE_REVIEW_1` returns `intake_id`, `artifacts` (availability,
 hash verification and declared vertical metadata), and `assessment`. Findings use

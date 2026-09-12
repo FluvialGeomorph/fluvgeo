@@ -59,6 +59,37 @@ if (count(r$reaches)) {
 }
 ```
 
+```{r survey-inventory, results='asis'}
+if (count(r$surveys)) {
+  cat('### Recorded Survey Events\n\n')
+  ri <- match(r$surveys$reach_id, r$reaches$reach_id)
+  source <- if ('source_dataset' %in% names(r$surveys)) r$surveys$source_dataset else rep(NA_character_, count(r$surveys))
+  tab(data.frame(Stream = r$reaches$stream_name[ri], Reach = r$surveys$reach_name,
+    Acquisition = r$surveys$date_label,
+    Precision = ifelse(is.na(r$surveys$survey_month), 'Year only', ifelse(is.na(r$surveys$survey_day), 'Month', 'Day')),
+    `Source reference` = ifelse(is.na(source), 'Not recorded', source), check.names = FALSE))
+  cat('<p>Recorded acquisition evidence is not a verified terrain-file link or proof of comparability. Event evidence notes and saved identities are in the Supporting record.</p>')
+}
+```
+
+```{r event-terrain, results='asis'}
+if (count(r$event_artifacts)) {
+  cat('### Associated terrain files\n\n')
+  links <- r$event_artifacts
+  si <- match(links$survey_event_id, r$surveys$survey_event_id)
+  files <- r$folder_inventory$artifacts
+  ai <- match(links$artifact_id, files$artifact_id)
+  tab(data.frame(Reach = r$surveys$reach_name[si], Acquisition = r$surveys$date_label[si],
+    File = links$path,
+    `File fingerprint` = ifelse(files$hash_verified[ai], 'Matches snapshot', 'Missing or changed'),
+    `Grid preview` = ifelse(links$grid_status == 'GRID_LOADED', 'Available',
+      ifelse(links$grid_status == 'NOT_SELECTED', 'Not selected', 'Not loaded; review findings')),
+    `Vertical reference / unit` = paste(ifelse(is.na(files$vertical_reference[ai]), 'Unknown', files$vertical_reference[ai]),
+      ifelse(is.na(files$vertical_unit[ai]), 'Unknown', files$vertical_unit[ai]), sep = ' / '), check.names = FALSE))
+  cat('<p>Association and matching fingerprints do not establish terrain suitability. Preview availability concerns grid metadata, not comparability. NoData masking can deliberately define the area of interest; its percentage is not a quality score. Review unresolved findings in the Supporting record.</p>')
+}
+```
+
 ### Purpose and scope notes
 
 ```{r notes, results='asis'}
@@ -116,12 +147,15 @@ if (count(r$reaches) && any(reach_counts == 0L)) tasks <- c(tasks, paste(
 if (count(r$reaches) && !inherits(r$reaches, 'sf')) tasks <- c(tasks,
   'Reach names and parent Streams are recorded; their spatial extent is not yet supplied as a polygon. Decide whether an area is useful for scope review; its absence alone does not prevent analysis.')
 if (!count(r$surveys)) tasks <- c(tasks, 'Discuss intended observations and periods in the scope notes. Add Survey Event records only when actual acquisition evidence is available.')
+selected_events <- if (count(r$event_artifacts)) r$event_artifacts$survey_event_id[r$event_artifacts$use_for_report] else character()
+if (count(r$surveys) && any(!r$surveys$survey_event_id %in% selected_events)) tasks <- c(tasks, 'Review source evidence and associate the intended terrain files with each event before comparing periods. Record additional plans separately; this inventory does not establish completeness or comparability.')
+if (count(r$event_artifacts)) tasks <- c(tasks, 'Resolve file-integrity or metadata findings, confirm elevation units and vertical reference, then review suitability for the intended comparison. Associated terrain is not yet approved for analysis.')
 if (!length(tasks)) tasks <- 'Review whether the supplied scope and its rationale still answer the customer question; table presence alone does not establish completeness.'
 cat('<ul>', paste0('<li>', esc(tasks), '</li>', collapse = ''), '</ul>')
 ```
 
 The current starter, name/note editor, boundary, initial Stream-definition and
-Reach-addition and Reach-area tools capture the beginning of this process. Existing identity
+Reach-addition, Reach-area and acquired-event tools capture the beginning of this process. Existing identity
 renaming/removal, mixed missing/supplied Reach areas, structured alternatives and planned campaigns
 are not yet offered by these QGIS forms. No legacy archive or FileGDB staging
 step is required for a new project. Terrain suitability is reviewed separately.
@@ -148,3 +182,14 @@ Supplied notes are analyst statements, not independently verified facts.
 Changing report purpose does not change saved records or approve a study.
 
 </details>
+
+```{r terrain-record, results='asis'}
+if (!is.null(r$folder_inventory)) {
+  cat('<details><summary>Terrain associations and review findings</summary>')
+  if (count(r$event_artifacts)) tab(r$event_artifacts)
+  findings <- r$assessment[r$assessment$stage %in% c('FILE_INTEGRITY', 'EVENT_ASSOCIATION'), , drop = FALSE]
+  if (nrow(findings)) tab(findings)
+  tab(r$folder_inventory$artifacts)
+  cat('</details>')
+}
+```

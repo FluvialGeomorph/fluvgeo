@@ -63,9 +63,15 @@ write_terrain_manifest <- function(root, artifacts, intake_id,
                     terra = as.character(utils::packageVersion("terra")),
                     gdal = terra::gdal()), artifacts = records)
   if (!is.null(event_links)) manifest$event_links <- links
+  .fg_publish_terrain_manifest(manifest, root, filename)
+}
+
+.fg_publish_terrain_manifest <- function(manifest, root, filename) {
+  destination <- .fg_manifest_path(root, filename)
+  if (file.exists(destination)) .fg_abort("Manifest destination already exists.")
   stage <- tempfile("terrain-manifest-", tmpdir = root, fileext = ".json")
   on.exit(unlink(stage), add = TRUE)
-  jsonlite::write_json(manifest, stage, auto_unbox = TRUE, pretty = TRUE, na = "null", digits = NA)
+  jsonlite::write_json(manifest, stage, auto_unbox = TRUE, pretty = TRUE, na = "null", null = "null", digits = NA)
   inspect_terrain_folder(stage) # Structural/read-back verification; review findings are allowed.
   if (!isTRUE(suppressWarnings(file.link(stage, destination))))
     .fg_abort("Could not publish manifest without replacement; use a hard-link-capable filesystem.")
@@ -150,7 +156,8 @@ inspect_terrain_folder <- function(manifest) {
     data.frame(artifact_id = a$artifact_id, role = a$role, path = a$path,
       format = a$observed$format, available = exists, hash_verified = hash_ok,
       vertical_reference = if (is.null(a$vertical_reference)) NA_character_ else a$vertical_reference,
-      vertical_unit = if (is.null(a$vertical_unit)) NA_character_ else a$vertical_unit)
+      vertical_unit = if (is.null(a$vertical_unit)) NA_character_ else a$vertical_unit,
+      metadata_evidence = if (is.null(a$metadata_evidence)) NA_character_ else a$metadata_evidence)
   })
   if (anyDuplicated(ids) || anyDuplicated(paths)) .fg_abort("Artifact IDs and paths must be unique.")
   result <- list(schema = "FLUVGEO_TERRAIN_INTAKE_REVIEW_1", intake_id = x$intake_id,
