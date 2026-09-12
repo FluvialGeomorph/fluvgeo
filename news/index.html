@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.11.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.11.9008</span>
       </span>
     </div>
 
@@ -47,6 +47,25 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9008" id="fluvgeo-202609119008">fluvgeo 2026.09.11.9008<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119008"></a></h2>
+<ul><li>Removed the experimental finite-cell/rectangle coverage API and report metrics: intentional AOI masking is not missing-data or quality evidence.</li>
+<li>Added <code><a href="../reference/record_study_terrain_metadata.html">record_study_terrain_metadata()</a></code> for evidenced, attributed initial elevation-unit/vertical-reference entries without altering raster data.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9007" id="fluvgeo-202609119007-withdrawn-experiment">fluvgeo 2026.09.11.9007 (withdrawn experiment)<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119007-withdrawn-experiment"></a></h2>
+<ul><li>Added read-only <code>review_study_terrain_coverage()</code> for explicitly selected event terrain: whole-grid finite-cell counts and optional Reach coverage fractions. Optional reporting adds a coverage table/chart without resampling or acceptance.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9006" id="fluvgeo-202609119006">fluvgeo 2026.09.11.9006<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119006"></a></h2>
+<ul><li>Added <code><a href="../reference/associate_study_terrain.html">associate_study_terrain()</a></code> for explicit event-to-GeoTIFF selection, preserving prior artifact snapshots in a new manifest and linked context.</li>
+<li>Define Study Area reports display terrain associations, integrity/grid status, unknown vertical metadata and the next scientific review decisions.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.11.9005" id="fluvgeo-202609119005">fluvgeo 2026.09.11.9005<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119005"></a></h2>
+<ul><li>Added <code><a href="../reference/record_study_survey_event.html">record_study_survey_event()</a></code> for explicit acquired-event inventory under existing Reaches, preserving date precision and existing identities.</li>
+<li>Define Study Area reports summarize recorded acquisitions and distinguish source references from verified terrain links and comparison readiness.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.11.9004" id="fluvgeo-202609119004">fluvgeo 2026.09.11.9004<a class="anchor" aria-label="anchor" href="#fluvgeo-202609119004"></a></h2>
 <ul><li>Added <code><a href="../reference/set_study_reach_areas.html">set_study_reach_areas()</a></code> to assign or revise explicitly keyed polygons without changing Reach identities, parentage, events or other context.</li>

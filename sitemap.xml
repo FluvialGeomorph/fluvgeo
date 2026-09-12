@@ -9,6 +9,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/accept_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/add_study_reaches.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/arcgis_auth.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/associate_study_terrain.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_radius.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_raduis_plot.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/build_gof_stats.html</loc></url>
@@ -85,6 +86,8 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/reach_rhg_graph.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_network_geodatabase.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_study_context.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_survey_event.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_terrain_metadata.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/revise_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_reach_areas.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf2csv.html</loc></url>
