@@ -1,3 +1,44 @@
+# fluvgeo 2026.09.11.9004
+
+- Added `set_study_reach_areas()` to assign or revise explicitly keyed polygons
+  without changing Reach identities, parentage, events or other context.
+
+# fluvgeo 2026.09.11.9003
+
+- Added `add_study_reaches()` for progressive, explicitly parented Reach additions
+  that preserve existing hierarchy, event identities and linked evidence.
+- Define Study Area reports show Reach names/parents, optional areas and Streams
+  still lacking Reach definitions. Partial inventories do not imply completeness.
+
+# fluvgeo 2026.09.11.9002
+
+- Added `define_study_streams()` for an explicitly named initial inventory with
+  optional native polygon areas under a saved Study Area. Existing Streams or
+  related hierarchy/network records are refused, not re-identified.
+- Define Study Area reports add a numbered Stream inventory and optional area map.
+
+# fluvgeo 2026.09.11.9001
+
+- `revise_study_context()` can explicitly supply or replace the Study Area
+  boundary, preserving identity, other records and source context. Requires a
+  valid single XY polygon feature and an appended source/rationale note.
+- Define Study Area reports map supplied boundaries in their stored CRS.
+
+# fluvgeo 2026.09.11.9000
+
+- Added `study_context_report()` for explicit terrain/definition/staging views
+  of saved context, and optional `report_purpose` for name/note revisions.
+  Existing calls retain Terrain Development reporting; view selection does not
+  alter the context schema, study identity or acquisition/acceptance semantics.
+
+# fluvgeo 2026.09.10.9001
+
+- Added `start_study_context()` for genuinely new, named drafts with optional
+  purpose/scope notes, using the existing saved context and one new local UUID.
+  Added `define_study_area_report()` as a prospective design view, without
+  legacy-staging prerequisites or terrain gates. No geometry or Survey Events
+  are inferred. Existing context, revision and reporting APIs remain compatible.
+
 # fluvgeo 2026.09.10.9000
 
 - Added read-only `inspect_legacy_staging()` and optional `legacy_staging` report

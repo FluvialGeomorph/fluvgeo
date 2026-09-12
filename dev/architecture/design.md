@@ -57,6 +57,15 @@ When multiple approaches are acceptable, prefer open-source solutions over propr
 
 ## Open questions
 
+The [reporting foundation](../goals/reporting-intent.md) now distinguishes
+prospective Define Study Area work from forensic legacy staging, both using one
+configuration and supporting a neutral Study Area description. Terrain Development
+reuses that configuration for terrain evidence. Do not derive a general editor
+solely from the FileGDB migration example: evolving customer requirements,
+alternatives and planned observations need an explicit design without weakening
+actual acquisition/identity contracts. These capabilities exceed the current
+saved-context binding and bounded name/note editor.
+
 The [folder/GeoTIFF migration decision](../decisions/ADR-0002-folder-deliverables-and-geotiff-terrain.md)
 settles the storage direction, but its manifest binding, shared-raster resolver,
 export/conformance adapters and cross-client qualification remain to be designed

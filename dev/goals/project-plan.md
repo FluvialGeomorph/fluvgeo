@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-10
+Last updated: 2026-09-11
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -15,43 +15,70 @@ This file is the canonical ordered task list for active development work.
 
 Stream Network normalization, logical-link consolidation, DEM direction,
 connectivity, explicit review/acceptance and new-file GeoPackage persistence have
-been implemented. The current objective is an open-source pre-Level-1 Terrain
-Development workflow, beginning with reusable reporting and the user-selected
-Papillion Creek / Cole Creek example. See the current feature design in
+been implemented. The current objective is an open-source pre-Level-1 Study Area
+definition and terrain-development workflow, with reusable reporting and the
+Papillion Creek / Cole Creek and Copperas examples. See the current feature design in
 `dev/features/terrain-development-report.md`. The accepted
 [reporting intent](reporting-intent.md) makes this a durable visual Study Area
 description and configuration aid, not only an FGDB compliance report.
 
 ## Immediate focus
 
-The user paused toolbox expansion to clarify the
+The user paused toolbox expansion, then resumed bounded desktop work after clarifying the
 [analyst-staged archive migration](../../../FG-architecture/dev/decisions/adr-0005-analyst-staged-archive-migration.md):
 leave the USACE archive untouched; manually copy clean event FileGDBs and
 reconstruct explicit Study Area/Stream context in FileGDB staging; then convert
 to the GPKG desktop folder standard that alone feeds new FGDB file-based intake.
-Define the staging/target contracts before more toolbox trials or converter work.
+Complete staging/target contracts before converter work. The resumed
+[toolbox plan](../../../fg-qgis-toolbox/dev/goals/project-plan.md) first qualifies
+the existing name/note editor with one isolated analyst trial, now closed with
+positive usability feedback. `start_study_context()` and the prospective
+`define_study_area_report()` are implemented; the returned starter run is technically
+verified. Saved-context report selectors and explicit Study Area boundary revision
+are developer-qualified. The user confirmed the report's stepwise clarity.
+The current increment,
+`define_study_streams()`, creates an explicit first Stream inventory with optional
+areas and new local IDs, without replacing existing hierarchy. The user accepted
+that report increment. `add_study_reaches()` now records progressive explicit
+Reach names/parentage and optional areas, preserving existing identities/events.
+`set_study_reach_areas()` now provides keyed initial area assignment and selected
+revisions while preserving identities. Mixed missing/supplied areas and
+planned-versus-acquired observation capture remain configuration gaps; partial
+inventories never imply complete segmentation. Historical Reach polygons were
+not required; a selected `dem_hydro` extent may supply a documented reconstruction
+candidate, not a newly imposed historic deliverable.
 External GeoTIFF terrain and shared fluvgeo validation/reporting remain unchanged.
 
 The first [staging inspector and Staging Report](../features/study-staging-report.md)
 now inventory FileGDB locations/vector-layer metadata and missing catalog/event
-structure without writing sources. The user separated structural reconstruction
-from terrain-development reporting; both use the same supplied study context.
-Next is explicit catalog-value/parent/date/source-association validation against
-the reviewed staging profile, with analyst dates still unresolved for Copperas.
-Do not promote inventory to conversion readiness or resume toolbox deployment.
+structure without writing sources. The clarified foundation distinguishes new
+project **Define Study Area** design from legacy **Staging Report** reconstruction,
+both feeding one configuration and a neutral **Study Area Report**. Terrain
+Development reuses that definition for scientific terrain review. The dedicated
+neutral view and general draft editing remain unimplemented. A first new-project
+starter now saves a name and optional scope notes with no acquired-data prerequisite;
+its short prospective report is not yet the complete design experience.
+Before extending general configuration tools, apply the two-workflow requirements
+in [reporting intent](reporting-intent.md), including planned-versus-acquired
+observations and progressive review without fabricated dates or forced FileGDB
+staging. Within the legacy slice, the next validation work is explicit catalog
+values/parents/dates/source associations; Copperas dates remain analyst inputs.
+Do not promote inventory to conversion readiness or a development trial to
+production deployment.
 
 The network-review desktop trial and bounded cancellation test are complete,
 owned by fg-qgis-toolbox. Runtime discovery, provider selection and actual R
 invocation are complete; do not repeat that investigation.
 See [its current plan](../../../fg-qgis-toolbox/dev/goals/project-plan.md).
 
-The larger backend outcome remains a report that helps analysts **configure a
-study, describe it durably and reconstruct archived projects**. The initial saved
+The larger backend outcome remains shared context and focused views that help
+analysts **configure a study, describe it durably and reconstruct archived projects**. The initial saved
 context slice now saves supplied parent records and pinned local file links in a
 separate [context GeoPackage](../schemas/study-context.md), allowing a read-only
 QGIS wrapper to reopen the Cole Creek folder report. Complete event delivery,
 general hierarchy/AOI/event editing and external shared assets remain future work.
-Bounded name/note revision is implemented. QGIS usability, storage fidelity
+Bounded name/note and explicit Study Area boundary revision are implemented;
+child-AOI editing remains separate. QGIS usability, storage fidelity
 and FGDB loading are separate acceptance questions, not one compliance score.
 
 ## Delivery record and remaining work

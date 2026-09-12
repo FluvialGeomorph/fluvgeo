@@ -5,11 +5,13 @@ QGIS deployment or enterprise loader is introduced.
 
 ## Purpose and scope
 
-At the user's direction, the Staging Report answers **what is known about project
-structure and what must the analyst resolve next?** Reconstruction, explicit
-hierarchy and artifact associations belong here. Terrain Development remains
-the terrain-source, processing and scientific-quality view. Both reuse the same
-fluvgeo context; there is no second identity model or duplicate context entry.
+For **legacy preparation**, the Staging Report answers **what is known about
+project structure and what must the analyst reconstruct next?** Its name and
+migration checks must not become the default new-project design experience.
+New projects instead need the planned **Define Study Area** view as customer
+requirements evolve. Either origin should support a neutral **Study Area Report**
+once defined; Terrain Development remains the terrain-source/processing/quality
+view. All reuse one configuration, with no duplicate identity model or entry.
 See [reporting intent](../goals/reporting-intent.md).
 
 The new `inspect_legacy_staging()` inventories staged GDB locations and
@@ -65,8 +67,11 @@ production qualification. Browser automation could not attach to the preview;
 HTML rendering/escaping and embedded figures were generated, but screenshot-based
 layout review was not completed in this run.
 
-Next: validate explicit catalog fields/values, parent references, acquisition
+Next within the legacy slice: validate explicit catalog fields/values, parent references, acquisition
 dates and event-source associations, then help analysts populate missing records.
 Copperas dates still require analyst evidence. Full source/raster qualification
 and conversion remain later work. No production ArcGIS, Shiny, QGIS, RegionalCurve
 or fluvgeodata behavior is changed; the backend APIs are additive and undeployed.
+General configuration development must also exercise the new-project case in
+[reporting intent](../goals/reporting-intent.md); this Copperas migration trial
+does not demonstrate prospective design or planned-survey support.

@@ -4,12 +4,18 @@ Status: read-only visual Study Area/event evidence, archive interpretation and
 saved-context reopening and bounded name/note revision implemented; full coverage
 and migration remain. Updated: 2026-09-10.
 
-The user now distinguishes the [Staging Report](study-staging-report.md), focused
-on reconstruction and correctly specified project structure, from Terrain
-Development's terrain-source/processing/quality role. The shared summary and
-existing report API remain compatible. New archive work uses the focused staging
-view; the older combined presentation below is retained, not a requirement to
-duplicate structural decisions in two reports.
+The user now distinguishes **Define Study Area** for evolving new-project design,
+the [Staging Report](study-staging-report.md) for legacy reconstruction, and a
+neutral **Study Area Report** describing the shared configuration. Terrain
+Development owns terrain-source/processing/quality evidence and reuses that
+definition. See the foundational [reporting requirements](../goals/reporting-intent.md).
+The first staging view and a small prospective Define Study Area view are now
+implemented separately. `start_study_context()` supplies a name/notes-only entry
+for genuinely new projects; see [its contract](../schemas/study-context.md#new-study-entry-2026-09-10).
+The
+shared summary and existing Terrain API remain compatible; their older combined
+presentation is not a requirement to duplicate structural decisions or route
+new projects through legacy staging.
 
 The [saved-context binding](../schemas/study-context.md) now retains supplied
 hierarchy/optional AOIs, event inventory, interpretations and notes alongside
@@ -104,31 +110,32 @@ selective Shiny prompts and the durable desktop report. The selected-file intake
 slice below now supplies integrity findings and opt-in event associations; complete event/shared-terrain linkage
 and comprehensive folder qualification remain future work.
 
-The accepted [reporting intent](../goals/reporting-intent.md) establishes this as
-a visual, thorough, durable Study Area deliverable, valuable independently of
-FGDB. It fills the parent-level reporting gap above the existing Reach analysis
-reports. It must both guide study configuration and describe the resulting study,
-including when no compliance issues remain. It is also a concrete reasoning aid
-for evolving FGDB's design, not merely an ingestion diagnostic.
+The accepted [reporting intent](../goals/reporting-intent.md) establishes a visual,
+thorough Study Area record, valuable independently of FGDB. The original combined
+Terrain prototype helped expose the parent-level reporting gap. Its structural
+content now informs Define Study Area, legacy Staging and neutral Study Area views;
+terrain evidence retains its own purpose. These views guide configuration and
+describe the result even when no compliance issues remain, while helping reason
+through FGDB design rather than serving only as ingestion diagnostics.
 
-Its third accepted job is forensic reconstruction of archived projects by an
-analyst who did not create them. Proposed interpretations remain separate from
-supplied hierarchy and from identity reconciliation. The linked
+Legacy reconstruction is the Staging view's job. Proposed interpretations remain
+separate from supplied hierarchy and identity reconciliation. The linked
 [GeoPackage decision and migration evidence](../../../FGDB/dev/decisions/adr-0024-geopackage-local-standard-and-archive-reconstruction.md)
 sets the target local spatial-data standard without replacing source archives.
 
 Begin before Level 1, when an analyst defines a Study Area and chooses what to
-investigate. Use one evolving Terrain Development report with reusable sections,
-not another mandatory document at every processing step. The report should help
-an analyst/customer answer:
+investigate. Reuse context and sections across the clarified report views, not
+another mandatory document at every processing step. Collectively they should
+help an analyst/customer answer:
 
 1. What geographic scope and Streams are we studying?
 2. What terrain evidence and Survey Events are actually available?
 3. How does the selected network relate to Streams and Reaches?
 4. What has been checked, what remains uncertain, and which decision comes next?
 
-This is a new-production workflow, not merely a legacy-ingestion summary. The
-first implementation also works before a network or DEM has been supplied. It
+Reporting must support new production as well as legacy reconstruction. The
+first summary also works before a network or DEM has been supplied, but does not
+implement the complete prospective design/planning experience. It
 does not make Level 1 measurements a prerequisite for reporting terrain work.
 Missing inputs are visible; optional Stream/Reach polygons are not prerequisites
 for hierarchy identity. No polygon, Survey Event or acceptance is invented.

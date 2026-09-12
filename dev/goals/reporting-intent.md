@@ -1,8 +1,10 @@
 # Reporting intent: a reviewable record of the complete study
 
 Status: user-established intent, 2026-09-06, clarified 2026-09-10. The design targets below are not a
-claim of implemented functionality. Current behavior is recorded in the
-[Terrain Development feature](../features/terrain-development-report.md).
+claim of implemented functionality. This is the maintained requirements home for
+the new-project/legacy-project distinction. Current behavior is recorded in the
+[Terrain Development](../features/terrain-development-report.md) and
+[Staging Report](../features/study-staging-report.md) features.
 
 ## Purpose
 
@@ -42,32 +44,109 @@ heading. This finding concerns the reviewed templates, not all historical
 project documentation.
 
 Their useful pattern is visual orientation followed by comparisons and detailed
-evidence. Terrain Development should extend that pattern upstream: explain the
+evidence. Study Area and terrain reporting should extend that pattern upstream: explain the
 study and its choices with maps and figures, not replace it with validation
 tables. The current Terrain Development prototype supplies an initial inventory
 and overview, not the complete record described here.
 
-## Distinct reports sharing one study record
+## Two entry workflows, one Study Area configuration
 
-The user clarified on 2026-09-10 that project reconstruction and structural
-specification belong primarily in a **Staging Report**, rather than overloading
-the Terrain Development Report. This refines the earlier "one evolving report"
-presentation, not the underlying study model or the three reporting jobs below.
+**User-established clarification, 2026-09-10:** new projects are progressively
+designed as customer requirements develop; legacy projects are forensically
+reconstructed from limited surviving artifacts. The difference is how the study
+definition is established, not two different scientific models. This supersedes
+the earlier wording that made "staging" the general home for structural work.
 
-- **Staging Report:** what the project contains, how Study Area/Streams/Reaches/
-  Survey Events are defined, which artifacts support them, and which structural
-  interpretations or migration inputs the analyst must resolve. It should also
-  describe a correctly specified project, not only its failures.
-- **Terrain Development Report:** terrain sources, derivation and conditioning,
-  grid/coverage evidence, reference systems, scientific limitations and intended
-  uses. It reuses the study definition rather than becoming another hierarchy
-  editor or requiring duplicate analyst input.
+| View / workflow | Primary question | Appropriate evidence and feedback |
+| --- | --- | --- |
+| New project: **Define Study Area** | What do we intend to study, and which scope choices remain open? | Customer objectives, candidate AOIs, selected Streams, proposed Reach segmentation, intended observations and decision rationale. Undecided choices are normal design work, not archive defects. |
+| Legacy project: **Staging Report** | What did this project represent, and what must be reconstructed for migration? | Surviving artifacts, source selection, competing interpretations, analyst-confirmed hierarchy, acquisition evidence and missing migration inputs. Preserve uncertainty and the untouched archive. |
+| Either origin: **Study Area Report** | What is the resulting study definition and why? | A durable, customer-readable description of the shared configuration, its boundaries, relationships, decisions and qualifications, including outstanding limitations. |
+| Either origin: **Terrain Development Report** | What terrain was used, how was it developed, and what limitations affect its use? | Terrain sources, derivation/conditioning, grid/coverage evidence, reference systems and scientific suitability. Reuse the Study Area definition rather than defining it again. |
 
-Both consume shared fluvgeo context and assessments. Their review outcomes remain
-separate from conversion fidelity and enterprise acceptance. The first
-[Staging Report](../features/study-staging-report.md) now provides a focused
-presentation; existing Terrain report callers remain compatible while further
-content separation can proceed incrementally.
+These are purpose-specific views of one shared record, not four required documents
+at each step, a fixed wizard sequence or separate schemas. A draft can be reviewed
+before complete configuration; a defined study still deserves a description even
+when its action queue is empty. The Study Area Report is not a claim that every
+analysis product exists or that FGDB has accepted the project. The view names are
+working user-facing requirements, not new API names or persisted status codes.
+
+### New-project design requirements
+
+- Start with customer purpose and the decisions the study must support. Allow
+  an initial scope, candidate boundaries and alternatives to evolve without
+  demanding legacy sources, completed terrain or a final survey schedule.
+- Progressively specify Study Area extent, selected Streams, Reach segmentation
+  and intended temporal coverage. Record what is decided, what remains open,
+  whose input is needed and why each consequential choice was made.
+- Keep proposed observations distinct from actual Survey Events. An intended
+  year or planned campaign is not evidence of an acquisition. The existing
+  dated Survey Event contract remains strict; do not insert fabricated dates
+  or weaken accepted records to accommodate planning. A structured planning
+  representation and its promotion rules still need design.
+- Revisions should make affected relationships and evidence visible for review;
+  do not silently reparent entities or reuse identities after substantive
+  merge/split changes. Full draft editing and revision provenance are development
+  targets, not capabilities supplied by the current name/note editor.
+- New open-source projects target the GPKG folder standard directly. No FileGDB
+  staging, archive-copy provenance or legacy-conversion step is required.
+
+### Legacy reconstruction requirements
+
+- Begin with the untouched archive and analyst-selected clean copies. The
+  migrating analyst may not be the original maker; filenames, timestamps,
+  geometry overlap and repeated labels are evidence, not authoritative meaning.
+- Preserve verified source facts, inferred interpretations, proposed definitions,
+  analyst confirmations and unknowns separately. An unconfirmed interpretation
+  must not silently populate a governed hierarchy or acquisition record.
+- Reconstruct explicit parent-level context and event/source associations in
+  FileGDB staging, then qualify conversion to the GPKG folder standard. The
+  [legacy staging draft](../../../FGDB/dev/schemas/legacy-project-staging-contract.md)
+  supplies the source-side proposal, not universal new-project prerequisites.
+- Unknown acquisition dates remain analyst inputs. A missing date may block
+  conversion-ready status under that draft while still allowing inspection,
+  reconstruction discussion and reviewable reporting to proceed.
+
+### Shared configuration and acceptance boundaries
+
+Both workflows describe the same Collection / Study Area / Stream / Reach /
+Survey Event relationships. Share identity, explicit parentage, AOI meaning,
+evidence references, analyst decisions and descriptions across reports and
+clients; do not ask the user to maintain separate copies. A Study Area
+configuration is not the narrower Stream Network Configuration entity.
+
+Mixed projects may reconstruct old content while planning new observations;
+retain the evidence basis for each input or decision rather than imposing a
+permanent new-versus-legacy identity on the whole project. Switching report
+purpose must not rewrite data, generate new identities or change acceptance.
+
+For either workflow, distinguish an open design choice, an unknown historical
+fact, missing required data, unassessed evidence and an actual contradiction.
+Show the affected operation and next useful action. Block only work that needs
+the unresolved information; do not make a report an all-or-nothing gate to useful
+design progress. Structural definition, terrain suitability, conversion fidelity
+and FGDB load acceptance are different outcomes, not one compliance score.
+
+### Implemented versus still to build
+
+**Verified implementation:** shared partial report context, explicit supplied
+hierarchy and dated events, an interpretation ledger, bounded saved-context
+name/note revision, and the first legacy inventory/Staging Report. Existing
+Terrain report callers retain their earlier combined view for compatibility.
+
+**First prospective slice (2026-09-10):** `start_study_context()` creates a named
+new-study draft and optional scope notes without acquired data; the new
+`define_study_area_report()` offers a small prospective view of the shared
+context. This is not the complete progressive design experience. The new QGIS
+starter wrapper passed actual-provider qualification on 2026-09-11; its
+[analyst trial](../../../fg-qgis-toolbox/dev/workflows/qgis-desktop-trial.md)
+remains separate from that technical evidence.
+
+**Requirements not yet implemented:** structured customer requirements/alternatives/planned observations, general
+hierarchy editing and a dedicated neutral Study Area Report. The existing saved
+context is a limited development binding, not the complete shared configuration
+model. See [its schema and limits](../schemas/study-context.md). Full staging
+conformance, terrain qualification and enterprise loading remain separate work.
 
 ### Three continuing reporting jobs
 
@@ -161,7 +240,7 @@ terrain quality, cross-time comparability, Level 1 readiness or full FGDB compli
 
 ## Design feedback and success criteria
 
-This report is also a working aid for FGDB design. Concrete maps, relationship
+These report views are also working aids for FGDB design. Concrete maps, relationship
 views and multi-period examples should expose missing concepts and confusing
 associations before they become persistence contracts. Unresolved design questions
 belong in that discussion, not disguised as requirements already enforced by code.
@@ -171,6 +250,14 @@ development rationale, and a non-GIS customer can understand its scope, evidence
 and limitations. Users should make fewer repetitive decisions without losing
 control over consequential scientific choices.
 
+Future tools should demonstrate both entry cases before claiming general Study
+Area configuration support: a new study with changing scope and no acquired
+terrain, and a legacy project with incomplete provenance and unresolved dates.
+Both must produce a useful partial review without inventing accepted records;
+once explicitly configured, both must yield the same neutral study description.
+Legacy-specific prompts must not appear merely because a new project has no
+archive, and new-project planning must not erase uncertainty in historical data.
+
 The first visual Study Area structure/event-grid view and reconstruction ledger
 are now implemented, with a limited shared assessment; valid-cell coverage and
 complete migration validation remain future work. A larger,
@@ -178,3 +265,11 @@ analyst-supplied fixture is needed to verify multi-Stream/multi-Reach behavior;
 its absence need not stop every presentation improvement. Exact provenance fields,
 report edition storage and event/network associations remain design work, not
 new schema contracts established by this intent document.
+
+**Historic Reach-area clarification (2026-09-11):** polygons were not required by
+the historic workflow. Reports must not recast their absence as failed historical
+compliance or a universal barrier to analysis. A selected `dem_hydro` extent can
+provide a documented reconstruction candidate. Distinguish its rectangular grid
+envelope from valid-cell coverage and deliberate delineation; keep the chosen
+survey/raster and suitability across periods explicit. New-study area design
+does not require legacy terrain or staging.

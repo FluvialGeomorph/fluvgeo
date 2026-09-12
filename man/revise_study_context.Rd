@@ -2,14 +2,16 @@
 % Please edit documentation in R/revise_study_context.R
 \name{revise_study_context}
 \alias{revise_study_context}
-\title{Revise a Study Area label or append a scope note in a new context copy}
+\title{Revise Study Area details or boundary in a new context copy}
 \usage{
 revise_study_context(
   dsn,
   output_file,
   study_area_name = NULL,
   add_note = NULL,
-  report_file = NULL
+  report_file = NULL,
+  report_purpose = "terrain",
+  study_area_boundary = NULL
 )
 }
 \arguments{
@@ -25,6 +27,17 @@ paragraph break. NULL keeps existing notes. At least one change is required.}
 
 \item{report_file}{Optional new .html destination in an existing directory.
 If supplied, render the existing report from the saved revised context.}
+
+\item{report_purpose}{Report view: terrain (default, preserving existing
+behavior), definition, or staging. Validated before saving. View selection
+alone is not an edit; use study_context_report() to change only the report.}
+
+\item{study_area_boundary}{Optional sf object containing exactly one valid,
+nonempty XY POLYGON or MULTIPOLYGON with a known CRS. Copies geometry only,
+retaining the existing Study Area identity/name; input attributes are not
+imported. Supply a nonempty add_note explaining its source and rationale.
+Multiple features must first be deliberately combined by the analyst.
+No dissolve, repair, reprojection, clipping or child-boundary changes occur.}
 }
 \value{
 List with context and report paths (report NULL when not requested).
@@ -35,7 +48,8 @@ List with context and report paths (report NULL when not requested).
 }
 \description{
 A bounded editing operation, not identity reconciliation or an acceptance
-action. All other supplied records, native AOIs and relative evidence links
-are retained. The new context must be beside the source; moving an entire
+action. Other supplied records, child AOIs and relative evidence links
+are retained. The Study Area AOI changes only when explicitly supplied.
+The new context must be beside the source; moving an entire
 folder remains a separate operation. Prior notes are never replaced.
 }

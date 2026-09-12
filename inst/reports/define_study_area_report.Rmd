@@ -1,0 +1,150 @@
+---
+title: "Define Study Area"
+subtitle: "Working scope and the next design decisions"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+params:
+  report: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+r <- params$report
+esc <- function(x) {
+  x <- gsub('&', '&amp;', x, fixed = TRUE)
+  x <- gsub('<', '&lt;', x, fixed = TRUE)
+  gsub('>', '&gt;', x, fixed = TRUE)
+}
+tab <- function(x) cat(as.character(knitr::kable(x,
+  format = 'html', escape = TRUE, row.names = FALSE)))
+count <- function(x) if (is.null(x)) 0L else nrow(x)
+reach_counts <- if (count(r$streams)) vapply(r$streams$stream_id, function(id)
+  if (!count(r$reaches)) 0L else sum(r$reaches$stream_id == id), integer(1)) else integer()
+```
+
+## What is known
+
+This is a working study definition, not approval of its scope or readiness for
+analysis. It can begin before a boundary, terrain or survey has been acquired.
+
+```{r known, results='asis'}
+tab(data.frame(Item = c('Working Study Area name', 'Boundary', 'Selected Streams',
+  'Defined Reaches', 'Recorded Survey Events'),
+  Description = c(if (is.null(r$study_area)) 'Not yet named' else r$study_area$study_area_name,
+    if (inherits(r$study_area, 'sf')) 'Supplied; review its suitability for the intended scope' else 'Not yet supplied; no extent inferred',
+    if (!count(r$streams)) 'Not yet specified' else paste(nrow(r$streams), 'explicitly named; inventory below'),
+    if (!count(r$reaches)) 'Not yet specified' else as.character(nrow(r$reaches)),
+    if (!count(r$surveys)) 'None recorded; this does not imply none are planned' else as.character(nrow(r$surveys)))))
+```
+
+```{r stream-inventory, results='asis'}
+if (count(r$streams)) {
+  cat('### Selected Streams\n\n')
+  tab(data.frame(Stream = seq_len(nrow(r$streams)), Name = r$streams$stream_name,
+    Area = if (inherits(r$streams, 'sf')) 'Supplied; suitability remains for review' else 'Not yet supplied',
+    Reaches = ifelse(reach_counts == 0L, 'Not yet defined', as.character(reach_counts))))
+}
+```
+
+```{r reach-inventory, results='asis'}
+if (count(r$reaches)) {
+  cat('### Defined Reaches\n\n')
+  tab(data.frame(Reach = seq_len(nrow(r$reaches)),
+    Stream = r$streams$stream_name[match(r$reaches$stream_id, r$streams$stream_id)],
+    Name = r$reaches$reach_name,
+    Area = if (inherits(r$reaches, 'sf')) 'Supplied; suitability remains for review' else 'Not yet supplied'))
+  cat('<p>This is the recorded inventory; a listed Reach does not establish that its Stream has been fully divided.</p>')
+}
+```
+
+### Purpose and scope notes
+
+```{r notes, results='asis'}
+if (is.na(r$analyst_notes)) {
+  cat('<p>Not yet recorded. Start with the customer question and intended use of the results.</p>')
+} else cat('<div style="white-space: pre-wrap">', esc(r$analyst_notes), '</div>', sep = '')
+```
+
+```{r boundary-heading, results='asis'}
+if (inherits(r$study_area, 'sf')) {
+  cat('## Working Study Area extent\n\nThe boundary is analyst supplied, not an approved scope or a derived watershed. Review the location and shape against the customer question. No online basemap is required.\n\n')
+} else if (inherits(r$streams, 'sf')) cat('## Selected Stream areas\n\nNo Study Area boundary has been inferred from these areas.\n\n') else if (inherits(r$reaches, 'sf')) cat('## Supplied Reach areas\n\nNo Study Area boundary has been inferred from these areas.\n\n')
+```
+
+```{r boundary-map, fig.width=8, fig.height=5, fig.alt='Supplied Study Area, Stream and Reach areas; only available geometry is shown'}
+if (inherits(r$study_area, 'sf') || inherits(r$streams, 'sf') || inherits(r$reaches, 'sf')) {
+  crs <- sf::st_crs(if (inherits(r$study_area, 'sf')) r$study_area else if (inherits(r$streams, 'sf')) r$streams else r$reaches)
+  p <- ggplot2::ggplot()
+  if (inherits(r$streams, 'sf')) {
+    areas <- r$streams
+    areas$stream_key <- factor(seq_len(nrow(areas)))
+    p <- p + ggplot2::geom_sf(data = areas, ggplot2::aes(fill = stream_key), colour = 'white', linewidth = 0.3)
+  }
+  if (inherits(r$study_area, 'sf')) p <- p + ggplot2::geom_sf(data = r$study_area,
+    fill = if (inherits(r$streams, 'sf')) NA else '#e8eef3', colour = '#1d3038')
+  if (inherits(r$reaches, 'sf')) {
+    reach_areas <- r$reaches
+    reach_areas$reach_key <- factor(seq_len(nrow(reach_areas)))
+    p <- p + ggplot2::geom_sf(data = reach_areas, ggplot2::aes(colour = reach_key),
+      fill = NA, linewidth = 1, linetype = 'dashed')
+  }
+  print(p +
+    ggplot2::coord_sf(crs = crs, datum = crs) +
+    ggplot2::scale_x_continuous(n.breaks = 3) +
+    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1), legend.position = 'bottom') +
+    ggplot2::labs(x = NULL, y = NULL, fill = 'Stream number', colour = 'Reach number (dashed)',
+      caption = paste('Display CRS:', crs$Name, '| Units:', crs$units_gdal)))
+}
+```
+
+## What to decide next
+
+These are design conversations, not a mandatory sequence or compliance failures.
+Record decisions and unresolved alternatives as customer requirements develop.
+
+```{r next, results='asis'}
+tasks <- character()
+if (is.na(r$analyst_notes)) tasks <- c(tasks, 'Describe the customer question, intended decisions and initial scope in an analyst note.')
+if (!inherits(r$study_area, 'sf')) tasks <- c(tasks, 'Discuss the candidate Study Area extent and why it fits the customer question; supply a boundary when ready.')
+if (!count(r$streams)) tasks <- c(tasks, 'Choose the Streams to include and explain the naming and segmentation basis; HUC boundaries are optional.')
+if (!count(r$reaches)) tasks <- c(tasks, 'Agree on meaningful Reach divisions within the selected Streams.')
+if (count(r$reaches) && any(reach_counts == 0L)) tasks <- c(tasks, paste(
+  'Reach definitions remain open for:', paste(r$streams$stream_name[reach_counts == 0L], collapse = ', ')))
+if (count(r$reaches) && !inherits(r$reaches, 'sf')) tasks <- c(tasks,
+  'Reach names and parent Streams are recorded; their spatial extent is not yet supplied as a polygon. Decide whether an area is useful for scope review; its absence alone does not prevent analysis.')
+if (!count(r$surveys)) tasks <- c(tasks, 'Discuss intended observations and periods in the scope notes. Add Survey Event records only when actual acquisition evidence is available.')
+if (!length(tasks)) tasks <- 'Review whether the supplied scope and its rationale still answer the customer question; table presence alone does not establish completeness.'
+cat('<ul>', paste0('<li>', esc(tasks), '</li>', collapse = ''), '</ul>')
+```
+
+The current starter, name/note editor, boundary, initial Stream-definition and
+Reach-addition and Reach-area tools capture the beginning of this process. Existing identity
+renaming/removal, mixed missing/supplied Reach areas, structured alternatives and planned campaigns
+are not yet offered by these QGIS forms. No legacy archive or FileGDB staging
+step is required for a new project. Terrain suitability is reviewed separately.
+
+## Supporting record
+
+<details>
+<summary>Saved identity and supplied inventory</summary>
+
+```{r record, results='asis'}
+for (entry in c('study_area', 'streams', 'reaches', 'surveys')) {
+  x <- r[[entry]]
+  if (!count(x)) next
+  cat('<h3>', c(study_area = 'Study Area', streams = 'Streams', reaches = 'Reaches', surveys = 'Survey Events')[[entry]], '</h3>')
+  tab(as.data.frame(sf::st_drop_geometry(x)))
+}
+cat('<p>Snapshot: ', esc(format(r$generated_at, tz = 'UTC', usetz = TRUE)), '</p>', sep = '')
+```
+
+Keep the context GeoPackage as the editable record. The starter creates a new
+local identity; it does not register or reconcile a Study Area in FGDB. Reopen
+and revise that context instead of starting it again under a second identity.
+Supplied notes are analyst statements, not independently verified facts.
+Changing report purpose does not change saved records or approve a study.
+
+</details>

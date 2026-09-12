@@ -4,6 +4,12 @@ Status: implemented first inventory slice, 2026-09-10. The source-side
 [FGDB staging draft](../../../FGDB/dev/schemas/legacy-project-staging-contract.md)
 is the review profile, not a fully qualified physical binding.
 
+This is a legacy-source inventory, not the validator for new-project design.
+Absence of these FileGDB catalogs must not create migration prompts in a new
+project's Define Study Area workflow. Both workflows will use shared configuration
+under [reporting intent](../goals/reporting-intent.md); this slice does not implement
+prospective planning or a neutral Study Area report contract.
+
 `inspect_legacy_staging(root)` accepts one existing FileGDB staging Study Area
 directory. It never writes source files or output artifacts. It enumerates
 directories to eight levels, stops at `.gdb` containers and does not follow

@@ -1,0 +1,10 @@
+# Focused offline verification and help generation; use workstation Pandoc.
+pkgload::load_all("../fluvgeodata", quiet = TRUE)
+result <- testthat::test_local(".", filter = "study_context|start_study_context|terrain_(development_report|manifest|event_links)", reporter = "summary", stop_on_failure = TRUE)
+print(as.data.frame(result)[c("file", "failed", "warning", "skipped", "passed")])
+docs <- tempfile("report-view-help-"); dir.create(docs); dir.create(file.path(docs, "R"))
+file.copy("DESCRIPTION", docs)
+file.copy(c("R/study_context_report.R", "R/revise_study_context.R", "R/define_study_streams.R", "R/add_study_reaches.R", "R/set_study_reach_areas.R"), file.path(docs, "R"))
+roxygen2::roxygenise(docs, roclets = "rd", load_code = roxygen2::load_source)
+for (topic in c("study_context_report.Rd", "revise_study_context.Rd", "define_study_streams.Rd", "add_study_reaches.Rd", "set_study_reach_areas.Rd"))
+  stopifnot(file.copy(file.path(docs, "man", topic), file.path("man", topic), overwrite = TRUE))

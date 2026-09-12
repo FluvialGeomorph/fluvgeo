@@ -1,0 +1,30 @@
+test_that("report purpose selects existing views without changing saved context", {
+  skip_if_not(rmarkdown::pandoc_available())
+  root <- tempfile(); dir.create(root); withr::defer(unlink(root, recursive = TRUE))
+  context <- start_study_context(file.path(root, "draft.gpkg"), "Test study", "Customer scope")$context
+  before <- tools::md5sum(context)
+  titles <- c(terrain = "Terrain Development", definition = "Define Study Area", staging = "Study Area Staging Report")
+  for (purpose in names(titles)) {
+    output <- study_context_report(context, file.path(root, paste0(purpose, ".html")), purpose)
+    html <- paste(readLines(output, encoding = "UTF-8", warn = FALSE), collapse = "\n")
+    expect_match(html, paste0("<title>", titles[[purpose]], "</title>"), fixed = TRUE)
+    expect_identical(tools::md5sum(context), before)
+    expect_error(study_context_report(context, output, purpose), "already exists")
+  }
+  expect_error(study_context_report(context, file.path(root, "bad.html"), "other"), "purpose")
+  expect_false(file.exists(file.path(root, "bad.html")))
+  default <- study_context_report(context, file.path(root, "default.html"))
+  expect_match(paste(readLines(default, warn = FALSE), collapse = ""), "<title>Terrain Development</title>", fixed = TRUE)
+  original <- read_study_context(context)
+  revision <- revise_study_context(context, file.path(root, "revised.gpkg"), add_note = "More scope",
+    report_file = file.path(root, "revised.html"), report_purpose = "definition")
+  revised <- read_study_context(revision$context)
+  expect_identical(revised$study_area, original$study_area)
+  expect_identical(revised$analyst_notes, "Customer scope\n\nMore scope")
+  expect_match(paste(readLines(revision$report, warn = FALSE), collapse = ""), "<title>Define Study Area</title>", fixed = TRUE)
+  expect_error(revise_study_context(context, file.path(root, "bad.gpkg"), add_note = "X", report_purpose = "bad"), "report_purpose")
+  expect_false(file.exists(file.path(root, "bad.gpkg")))
+  expect_error(revise_study_context(context, file.path(root, "no-edit.gpkg"), report_purpose = "definition"), "No changes")
+  expect_false(file.exists(file.path(root, "no-edit.gpkg")))
+  expect_identical(tools::md5sum(context), before)
+})
