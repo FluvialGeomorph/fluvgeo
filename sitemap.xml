@@ -64,6 +64,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_legacy_staging.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_terrain_folder.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_terrain_vertical_reference.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/justify_gtable.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_1_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_1_report_b.html</loc></url>
@@ -119,9 +120,12 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/stream_power.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_context_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_staging_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_summary.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/table_xs_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_summary.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_reference_review.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/water_surface_poly.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/write_stream_network_geodatabase.html</loc></url>

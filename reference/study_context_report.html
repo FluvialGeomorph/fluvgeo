@@ -20,7 +20,7 @@ context/interpretations; it does not inspect an unsaved legacy staging path."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.11.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.12.9013</span>
       </span>
     </div>
 
@@ -59,7 +59,13 @@ context/interpretations; it does not inspect an unsaved legacy staging path.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">study_context_report</span><span class="op">(</span><span class="va">dsn</span>, <span class="va">output_file</span>, purpose <span class="op">=</span> <span class="st">"terrain"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">study_context_report</span><span class="op">(</span></span>
+<span>  <span class="va">dsn</span>,</span>
+<span>  <span class="va">output_file</span>,</span>
+<span>  purpose <span class="op">=</span> <span class="st">"terrain"</span>,</span>
+<span>  terrain_references <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,6 +83,16 @@ context/interpretations; it does not inspect an unsaved legacy staging path.</p>
 <dt id="arg-purpose">purpose<a class="anchor" aria-label="anchor" href="#arg-purpose"></a></dt>
 <dd><p>One of terrain (the compatible combined Terrain Development
 view), definition (prospective Define Study Area), or staging (Staging Report).</p></dd>
+
+
+<dt id="arg-terrain-references">terrain_references<a class="anchor" aria-label="anchor" href="#arg-terrain-references"></a></dt>
+<dd><p>Logical; opt in to the shared read-only reference
+review of explicitly selected saved event DEMs. Default FALSE preserves views.</p></dd>
+
+
+<dt id="arg-analysis-reference">analysis_reference<a class="anchor" aria-label="anchor" href="#arg-analysis-reference"></a></dt>
+<dd><p>Optional attributed choices for this report only,
+as in read_study_context_summary(). Requires terrain_references = TRUE.</p></dd>
 
 </dl></div>
     <div id="value">

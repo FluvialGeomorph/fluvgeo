@@ -21,7 +21,7 @@ reuses terrain_development_summary()."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.11.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.12.9013</span>
       </span>
     </div>
 
@@ -63,7 +63,11 @@ reuses terrain_development_summary().</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_study_context</span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">read_study_context_summary</span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">read_study_context_summary</span><span class="op">(</span></span>
+<span>  <span class="va">dsn</span>,</span>
+<span>  terrain_references <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,6 +76,18 @@ reuses terrain_development_summary().</p>
 
 <dl><dt id="arg-dsn">dsn<a class="anchor" aria-label="anchor" href="#arg-dsn"></a></dt>
 <dd><p>Context GeoPackage from write_study_context().</p></dd>
+
+
+<dt id="arg-terrain-references">terrain_references<a class="anchor" aria-label="anchor" href="#arg-terrain-references"></a></dt>
+<dd><p>Logical; opt in to fresh reference inspection of
+explicitly selected event DEMs in read_study_context_summary(). Defaults to
+FALSE. Blocked selections remain findings and are not inspected as substitutes.</p></dd>
+
+
+<dt id="arg-analysis-reference">analysis_reference<a class="anchor" aria-label="anchor" href="#arg-analysis-reference"></a></dt>
+<dd><p>Optional attributed project choices accepted by
+terrain_reference_review(). Requires terrain_references = TRUE. These are
+report inputs only, not saved context or inferred from manifest assertions.</p></dd>
 
 </dl></div>
     <div id="value">
