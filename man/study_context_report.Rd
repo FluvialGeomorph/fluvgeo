@@ -4,7 +4,13 @@
 \alias{study_context_report}
 \title{Render a selected view of saved Study Area context}
 \usage{
-study_context_report(dsn, output_file, purpose = "terrain")
+study_context_report(
+  dsn,
+  output_file,
+  purpose = "terrain",
+  terrain_references = FALSE,
+  analysis_reference = NULL
+)
 }
 \arguments{
 \item{dsn}{Existing Study Area context GeoPackage.}
@@ -13,6 +19,12 @@ study_context_report(dsn, output_file, purpose = "terrain")
 
 \item{purpose}{One of terrain (the compatible combined Terrain Development
 view), definition (prospective Define Study Area), or staging (Staging Report).}
+
+\item{terrain_references}{Logical; opt in to the shared read-only reference
+review of explicitly selected saved event DEMs. Default FALSE preserves views.}
+
+\item{analysis_reference}{Optional attributed choices for this report only,
+as in read_study_context_summary(). Requires terrain_references = TRUE.}
 }
 \value{
 Normalized report path invisibly. Requires the selected renderer's

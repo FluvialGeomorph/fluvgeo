@@ -1,3 +1,41 @@
+# fluvgeo 2026.09.12.9013
+
+* Improve early-workflow HTML report tables using the user-selected gt package,
+  padded separated cells, clear headers, alternating rows, wrapped text and contained
+  horizontal scrolling for wide inventories. Report width adapts to the viewport.
+  Data, decisions, row order and report workflows are unchanged. gt is
+  now declared as a suggested dependency, required for these HTML renderers.
+
+# fluvgeo 2026.09.12.9012
+
+* Saved Study Area summaries/reports opt in to deterministic reference review of
+  explicitly selected event DEMs. File observations, existing manifest assertions
+  and supplied project choices remain separate; blocked files are not substituted.
+  No saved context, metadata or scientific acceptance is changed.
+* Record the FG boundary between AI-assisted development and user tooling that
+  does not depend on AI services. Future AI experiments require separate approval.
+
+# fluvgeo 2026.09.12.9011
+
+- Added `terrain_reference_review()` and optional terrain evidence in the survey-
+  opportunity report: file declarations, evidenced analysis choices and preparation
+  history stay separate, with detailed definitions collapsed. Read failures and
+  unknown references remain visible; no metadata acceptance or conversion occurs.
+
+# fluvgeo 2026.09.12.9010
+
+- Added read-only `inspect_terrain_vertical_reference()` to compare ordinary GDAL
+  CRS exposure with internal compound-CRS declarations. Preserves observed units
+  and definitions without accepting metadata, modifying terrain or changing
+  existing intake manifests.
+
+# fluvgeo 2026.09.12.9009
+
+- Added offline `survey_opportunity_summary()` and a self-contained R Markdown
+  `survey_opportunity_report()` for one Study Area/focus. Multiple catalogs,
+  existing event intervals, explicit review evidence and search limitations remain
+  distinct; no source identity, new acquisition or scientific comparability is inferred.
+
 # fluvgeo 2026.09.11.9008
 
 - Removed the experimental finite-cell/rectangle coverage API and report metrics:

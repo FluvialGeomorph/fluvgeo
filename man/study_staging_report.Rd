@@ -14,7 +14,7 @@ unchanged; the staging view omits TERRAIN_REVIEW prompts.}
 \item{output_file}{New .html path in an existing directory; never overwritten.}
 }
 \value{
-Normalized report path invisibly. Requires knitr, Pandoc and a local
+Normalized report path invisibly. Requires knitr, gt, Pandoc and a local
   hard-link-capable filesystem for non-replacing publication.
 }
 \description{

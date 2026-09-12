@@ -14,7 +14,7 @@ evidence; intended observations can be discussed in notes, not event rows.}
 \item{output_file}{New .html path in an existing directory; never overwritten.}
 }
 \value{
-Normalized path invisibly. Requires knitr, Pandoc and a local
+Normalized path invisibly. Requires knitr, gt, Pandoc and a local
   hard-link-capable filesystem for non-replacing publication.
 }
 \description{

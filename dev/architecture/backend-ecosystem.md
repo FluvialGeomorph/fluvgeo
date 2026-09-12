@@ -75,7 +75,27 @@ upstream, but coverage remains partial. Therefore:
 The package must not be described as fully standalone until repository evidence
 supports that claim.
 
+### Future point-cloud-to-DEM boundary
+
+The owner confirmed on 2026-09-12 that DEM-first is the current entry point, not
+a permanent limit. Future shared tooling must be able to routinize lidar
+point-cloud-to-DEM production as suitable open-source capabilities are qualified.
+Point clouds complement, rather than displace, durable analysis DEMs. Preserve
+externally prepared DEM input and explicit terrain assumptions; do not require
+point clouds for archived FG products. Scientific preparation belongs in shared
+backend methods, with thin desktop/Shiny orchestration. No library or algorithm
+is selected, and no current implementation is claimed. See the accepted
+[future requirement and qualification scope](../../../FGDB/dev/goals/scientific-traceability-roadmap.md#future-extension-point-clouds-to-dems).
+Enterprise retention remains a separate FGDB concern, not automatic storage of
+point clouds or all upstream intermediates.
+
 ## Scientific and compatibility invariants
+
+Follow [FG ADR-0006](../../../FG-architecture/dev/decisions/adr-0006-deterministic-user-tooling.md):
+user-facing methods and reports must work without AI services. Use implemented
+deterministic rules, traditional web-service data and explicit attributed human
+inputs. AI-assisted development is not a runtime capability. Potential AI-based
+methods require a separately approved experiment and later deployment decision.
 
 - Methods and derived metrics must be scientifically defensible, repeatable,
   documented, and testable.
@@ -95,6 +115,13 @@ supports that claim.
   provenance, and failure handling.
 
 ## Related context
+
+Accepted [vertical-reference recovery and preservation requirements](../../../FGDB/dev/decisions/adr-0026-vertical-reference-recovery-and-preservation.md)
+place read-only evidence collection and recovery support in this shared backend.
+The historical interoperability/adoption gap must not become a blanket metadata
+gate on archive staging. New products require explicit, qualified preservation.
+The first [GeoTIFF observation interface](../schemas/vertical-reference-observation.md)
+distinguishes reader exposure from embedded declarations without assigning a CRS.
 
 Network processing uses sfnetworks/tidygraph/igraph for spatial topology and
 hydroloom for non-dendritic connectivity and hydrologic ordering. fluvgeo owns reusable

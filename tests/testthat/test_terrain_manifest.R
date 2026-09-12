@@ -124,6 +124,7 @@ test_that("metadata comparison tolerates representation but not grid shifts", {
 })
 
 test_that("the report presents intake results and escapes supplied labels", {
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available())
   f <- manifest_fixture()
   m <- write_terrain_manifest(f$root, f$artifacts, "<b>local case</b>")

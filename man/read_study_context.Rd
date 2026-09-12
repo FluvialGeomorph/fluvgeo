@@ -7,10 +7,22 @@
 \usage{
 read_study_context(dsn)
 
-read_study_context_summary(dsn)
+read_study_context_summary(
+  dsn,
+  terrain_references = FALSE,
+  analysis_reference = NULL
+)
 }
 \arguments{
 \item{dsn}{Context GeoPackage from write_study_context().}
+
+\item{terrain_references}{Logical; opt in to fresh reference inspection of
+explicitly selected event DEMs in read_study_context_summary(). Defaults to
+FALSE. Blocked selections remain findings and are not inspected as substitutes.}
+
+\item{analysis_reference}{Optional attributed project choices accepted by
+terrain_reference_review(). Requires terrain_references = TRUE. These are
+report inputs only, not saved context or inferred from manifest assertions.}
 }
 \value{
 Named arguments for terrain_development_summary(), with resolved local

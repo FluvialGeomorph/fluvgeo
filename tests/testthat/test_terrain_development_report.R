@@ -93,6 +93,7 @@ test_that("network GeoPackage reporting preserves history and does not accept", 
 
 test_that("HTML render is self-contained, escaped, and non-replacing", {
   skip_if_not_installed("knitr")
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), "Pandoc not available")
   x <- terrain_test_context()
   x$analyst_notes <- "<script>alert('unsafe')</script>"
@@ -190,6 +191,7 @@ test_that("per-event DEM metadata does not infer availability or comparability",
 
 test_that("visual report handles archive-only and named-AOI-missing inputs safely", {
   skip_if_not_installed("knitr")
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), "Pandoc not available")
   cases <- terrain_test_reconstruction()
   cases$evidence <- "<script>untrusted archive text</script>"
@@ -269,6 +271,7 @@ test_that("summary grouping retains every affected event without name-based merg
 
 test_that("report reduces default detail without dropping evidence or safe escaping", {
   skip_if_not_installed("knitr")
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), "Pandoc not available")
   s <- do.call(terrain_development_summary, terrain_test_context())
   s$review_actions$next_action[1] <- "<script>not trusted</script>"
@@ -314,6 +317,7 @@ test_that("template separates hierarchy types without changing identity or owner
   start <- grep('^```\\{r setup', template)
   end <- which(seq_along(template) > start & template == '```')[1]
   env <- new.env(); env$params <- list(report = s)
+  env$report_table <- .fg_report_table
   eval(parse(text = template[(start + 1):(end - 1)]), envir = env)
   expect_identical(s, before)
   expect_identical(as.list(env$geographic_hierarchy), as.list(h))

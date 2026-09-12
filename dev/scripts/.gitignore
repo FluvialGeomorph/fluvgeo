@@ -1,0 +1,3 @@
+# Local Quarto fixture caches; rendered evidence belongs in dev/outputs.
+/.quarto/
+**/*.quarto_ipynb

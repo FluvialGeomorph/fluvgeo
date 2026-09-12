@@ -55,7 +55,7 @@ start_study_context <- function(output_file, study_area_name,
 #'   reopened by read_study_context_summary(). Actual Survey Events remain dated
 #'   evidence; intended observations can be discussed in notes, not event rows.
 #' @param output_file New .html path in an existing directory; never overwritten.
-#' @return Normalized path invisibly. Requires knitr, Pandoc and a local
+#' @return Normalized path invisibly. Requires knitr, gt, Pandoc and a local
 #'   hard-link-capable filesystem for non-replacing publication.
 #' @export
 define_study_area_report <- function(summary, output_file) {

@@ -145,6 +145,13 @@ snapshot, not a live monitor.
 
 ## Remaining boundaries
 
+The additive [vertical-reference observer](vertical-reference-observation.md)
+can separately recover a compound CRS hidden by ordinary GeoTIFF reader options.
+It does not alter this manifest's observed WKT, assertion fields or schema, and
+the existing inspector/report does not yet consume its results. In particular,
+`VERTICAL_REFERENCE_UNKNOWN` describes unresolved intake assertions, not proof
+that no vertical declaration exists inside the file.
+
 This binding does not establish complete event membership, revision/terrain-edition
 relations, source lineage reconciliation, valid-cell coverage, full grid/NoData
 semantics, arbitrary companion support, cross-client metadata fidelity or enterprise

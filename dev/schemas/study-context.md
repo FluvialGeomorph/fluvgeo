@@ -24,6 +24,16 @@ field, API or validation behavior in this documentation pass.
 
 ## Interface and storage
 
+### Opt-in terrain-reference review
+
+Development 9012 appends `terrain_references=FALSE, analysis_reference=NULL` to
+`read_study_context_summary()` and `study_context_report()`. Opting in inspects
+only existing explicitly selected event DEMs and attaches the shared
+[reference evidence module](terrain-reference-review.md#saved-study-area-integration-development-9012).
+Declarations, manifest assertions and supplied project choices remain separate.
+The default behavior and context schema are unchanged; this does not save choices,
+create source lineage, alter events or introduce an AI-service dependency.
+
 `write_study_context()` creates a **new** GeoPackage. `read_study_context()` returns
 validated summary arguments; `read_study_context_summary()` reruns the existing
 report checks. Scientific rules stay in `terrain_development_summary()`. QGIS

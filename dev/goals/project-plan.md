@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-11
+Last updated: 2026-09-12
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -92,6 +92,50 @@ and FGDB loading are separate acceptance questions, not one compliance score.
 
 ## Delivery record and remaining work
 
+- [x] Implement the first offline summary/report for a Study Area and explicit
+  focus under [the input contract](../schemas/survey-opportunity-inputs.md), using
+  saved 3DEP and USIEI snapshots in the Cole Creek demonstration. Catalog listings
+  remain distinct from acquired observations and confirmed source lineage.
+- [ ] Extend shared read-only source discovery and a Study Area opportunity
+  report for [additional survey periods](../../../FGDB/dev/features/survey-discovery-opportunities.md).
+  Begin with explicit existing-event/source records and a catalog snapshot; retain
+  old/new acquisitions, reissues, duplicate work units and unresolved candidates
+  distinctly. Batch FGDB review and client scheduling follow separate qualification.
+- [ ] Plan and qualify future shared point-cloud-to-DEM production under the
+  [accepted boundary extension](../architecture/backend-ecosystem.md#future-point-cloud-to-dem-boundary).
+  Retain DEM-first entry and durable terrain outputs; assess existing open-source
+  tools before choosing dependencies. This does not gate current toolbox work.
+- [ ] Deliver the shared-backend portions of the accepted
+  [scientific traceability roadmap](../../../FGDB/dev/goals/scientific-traceability-roadmap.md):
+  vertical-reference interoperability, source-to-derivative provenance and
+  analysis-variable unit handling. Required future cycles, not blanket blockers
+  for the current toolbox. Start with a bounded terrain contract/fixture; preserve
+  unknowns and automate metadata bookkeeping before broad calculation refactoring.
+  The owner's feet confirmation is evidence, not a vertical datum or an automatic
+  choice between international and U.S. survey feet.
+- [x] Add a read-only GeoTIFF vertical-reference observer under
+  [ADR-0026](../../../FGDB/dev/decisions/adr-0026-vertical-reference-recovery-and-preservation.md):
+  preserve ordinary and internal compound-CRS observations separately. Existing
+  manifests and client behavior remain unchanged.
+- [x] Integrate those observations into the survey-opportunity report through
+  [terrain_reference_review()](../schemas/terrain-reference-review.md): separate
+  file declarations, supplied analysis choices and preparation accounts. Preserve
+  source review qualifications and do not automatically accept metadata or alter
+  catalog classifications.
+- [x] Reuse the shared terrain-reference module in opt-in saved Study Area review,
+  selecting only explicitly linked event DEMs. Preserve blocked selections and
+  keep existing manifest assertions separate from fresh declarations and choices.
+- [x] Adopt compact shared gt tables for the early-workflow reports. The user
+  accepted readability; use real reports rather than separate responsive-preview
+  fixtures. The next client increment exposes the existing reference review in
+  QGIS; scientific methods and stored records do not change.
+- [ ] Define the evidenced source-to-derivative binding and persistence/editor
+  for analysis-reference choices, without inventing archive lineage or hiding
+  legitimate source/analysis CRS differences. Do not infer execution from a note.
+- [x] Establish the [deterministic user-tooling boundary](../../../FG-architecture/dev/decisions/adr-0006-deterministic-user-tooling.md).
+  Developer AI assistance is distinct from runtime capabilities. Future AI
+  experiments/deployment need separate explicit approval; Survey Opportunities
+  must use implemented rules, traditional service data and attributed human input.
 - [x] Record fg-qgis-toolbox as the separate open-source desktop migration path,
   sharing fluvgeo methods with Shiny while preserving production ArcGIS use.
 - [x] Support the first QGIS execution slice: the actual R Provider invokes

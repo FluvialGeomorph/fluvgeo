@@ -9,21 +9,18 @@ output:
     toc_depth: 2
 params:
   report: null
+  terrain_template: null
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE, error = FALSE)
 r <- params$report
 esc <- function(x) {
   x <- gsub("&", "&amp;", x, fixed = TRUE)
   x <- gsub("<", "&lt;", x, fixed = TRUE)
   gsub(">", "&gt;", x, fixed = TRUE)
 }
-table_html <- function(x, fields = names(x)) {
-  if (is.null(x) || !nrow(x)) return(cat("<p>Not supplied or no records supplied.</p>\n"))
-  x <- as.data.frame(sf::st_drop_geometry(x))
-  cat('<div class="table-responsive">', as.character(knitr::kable(x[intersect(fields, names(x))], format = "html", escape = TRUE, row.names = FALSE)), '</div>')
-}
+table_html <- report_table
 paragraphs_html <- function(x) {
   if (is.null(x) || is.na(x)) return(invisible(NULL))
   paragraphs <- strsplit(x, "\n[[:space:]]*\n", perl = TRUE)[[1]]
@@ -63,6 +60,10 @@ draw_hierarchy <- function(h) {
 .terrain-controls button { margin-right: 0.5em; padding: 0.4em 0.8em; }
 @media print { .terrain-controls { display: none; } }
 </style>
+
+```{r report-table-style, results='asis'}
+cat('<style>',report_table_css,'</style>',sep='\n')
+```
 
 ## Study scope
 
@@ -246,6 +247,13 @@ if (!is.null(r$survey_dem_extents)) {
 
 ## Supporting record
 
+```{r terrain-reference-module, results='asis'}
+if (!is.null(r$terrain_review)) {
+  stopifnot(length(params$terrain_template)==1L,file.exists(params$terrain_template))
+  cat(knitr::knit_child(params$terrain_template,envir=new.env(parent=environment()),quiet=TRUE),sep='\n')
+}
+```
+
 The sections below retain the detailed evidence for another analyst or customer.
 Expand them as needed; expanding a section does not change any data or decisions.
 Printing this HTML expands the record automatically when JavaScript is enabled.
@@ -302,9 +310,7 @@ if (!is.null(r$folder_inventory)) {
     vertical_unit="Elevation units", metadata_evidence="Metadata evidence")
   known <- intersect(names(labels),names(inventory))
   names(inventory)[match(known,names(inventory))] <- labels[known]
-  cat('<div class="table-responsive">')
   table_html(inventory)
-  cat('</div>')
 } else cat("<p>No portable intake manifest supplied.</p>")
 ```
 

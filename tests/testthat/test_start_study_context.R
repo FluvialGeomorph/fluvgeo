@@ -57,6 +57,7 @@ test_that("report failure retains the draft with actionable recovery", {
 })
 
 test_that("Define Study Area describes open design without legacy or terrain gates", {
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available())
   root <- tempfile(); dir.create(root); withr::defer(unlink(root, recursive = TRUE))
   result <- start_study_context(file.path(root, "draft.gpkg"), "A <draft>",

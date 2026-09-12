@@ -12,7 +12,7 @@ terrain_development_report(summary, output_file)
 \item{output_file}{New .html file in an existing directory; never overwritten.}
 }
 \value{
-Normalized report path, invisibly. Requires Pandoc and knitr. Publication
+Normalized report path, invisibly. Requires Pandoc, knitr and gt. Publication
   requires a local hard-link-capable filesystem, failing safely otherwise.
 }
 \description{

@@ -33,6 +33,31 @@ feedback, not to add paperwork or automate away scientific judgment.
 
 ## What existing reports establish
 
+### Readability is part of functional review
+
+User clarification, 2026-09-12: readable tables and responsive page layout are
+required during incremental development, not postponed until feature completion.
+An analyst must be able to distinguish adjacent cells and review evidence on
+different screen widths. Reuse the established R reporting ecosystem and shared
+presentation helpers; do not redesign scientific methods or report workflows as
+part of a styling pass. Preserve all values, qualifications and supporting records.
+Wrap narrative text, keep useful cell spacing and visibly distinguish headers/rows.
+When an inventory is intrinsically wide, use contained horizontal scrolling
+rather than shrinking fonts or allowing the entire page to overflow. The same
+HTML table approach should work in R Markdown and Quarto; format-specific PDF
+and Word layouts require their own qualification.
+
+The user selected **gt** as the preferred table-formatting package for this new
+report family, superseding the initial plan to reuse kable/kableExtra. Keep the
+existing reports' readability goals while adopting this shared modern table layer;
+do not rewrite legacy report templates as part of this bounded improvement.
+
+The user accepted the compact gt tables on 2026-09-12. Review actual generated
+reports, not separate `responsive-preview.html` pages or bespoke device-preview
+fixtures. Prefer mature reporting-package defaults and bounded content/render
+checks; investigate layout further only for a concrete defect or delivery need.
+Package reuse reduces custom maintenance, but is not proof of every output format.
+
 The following shipped R Markdown templates were reviewed in full:
 
 | Templates | Existing strengths to carry forward |

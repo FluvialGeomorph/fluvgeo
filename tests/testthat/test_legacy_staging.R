@@ -127,6 +127,7 @@ test_that("real OpenFileGDB metadata inspection preserves source bytes", {
 })
 
 test_that("legacy inventory renders escaped within the existing report", {
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), "Pandoc unavailable")
   root <- legacy_test_root(); on.exit(unlink(root, recursive = TRUE))
   dir.create(file.path(root, "fixture.gdb"))
@@ -142,6 +143,7 @@ test_that("legacy inventory renders escaped within the existing report", {
 })
 
 test_that("Staging Report separates reconstruction from terrain assessment", {
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), "Pandoc unavailable")
   s <- terrain_development_summary()
   terrain_row <- s$assessment[1, , drop = FALSE]

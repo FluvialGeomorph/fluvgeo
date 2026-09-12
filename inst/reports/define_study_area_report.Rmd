@@ -7,24 +7,28 @@ output:
     mathjax: null
 params:
   report: null
+  terrain_template: null
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE, error = FALSE)
 r <- params$report
 esc <- function(x) {
   x <- gsub('&', '&amp;', x, fixed = TRUE)
   x <- gsub('<', '&lt;', x, fixed = TRUE)
   gsub('>', '&gt;', x, fixed = TRUE)
 }
-tab <- function(x) cat(as.character(knitr::kable(x,
-  format = 'html', escape = TRUE, row.names = FALSE)))
+tab <- report_table
 count <- function(x) if (is.null(x)) 0L else nrow(x)
 reach_counts <- if (count(r$streams)) vapply(r$streams$stream_id, function(id)
   if (!count(r$reaches)) 0L else sum(r$reaches$stream_id == id), integer(1)) else integer()
 ```
 
 ## What is known
+
+```{r report-table-style, results='asis'}
+cat('<style>',report_table_css,'</style>',sep='\n')
+```
 
 This is a working study definition, not approval of its scope or readiness for
 analysis. It can begin before a boundary, terrain or survey has been acquired.
@@ -159,6 +163,13 @@ Reach-addition, Reach-area and acquired-event tools capture the beginning of thi
 renaming/removal, mixed missing/supplied Reach areas, structured alternatives and planned campaigns
 are not yet offered by these QGIS forms. No legacy archive or FileGDB staging
 step is required for a new project. Terrain suitability is reviewed separately.
+
+```{r terrain-reference-module, results='asis'}
+if (!is.null(r$terrain_review)) {
+  stopifnot(length(params$terrain_template)==1L,file.exists(params$terrain_template))
+  cat(knitr::knit_child(params$terrain_template,envir=new.env(parent=environment()),quiet=TRUE),sep='\n')
+}
+```
 
 ## Supporting record
 

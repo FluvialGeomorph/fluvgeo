@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2026.09.11.9008
+Version: 2026.09.12.9013
 Authors@R: c(
     person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
            role = "aut",
@@ -78,6 +78,7 @@ Imports:
     utils
 Suggests: 
     fluvgeodata,
+    gt,
     knitr
 Remotes: 
     FluvialGeomorph/RegionalCurve,

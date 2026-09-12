@@ -9,27 +9,28 @@ output:
     toc_depth: 2
 params:
   report: null
+  terrain_template: null
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = TRUE, error = FALSE)
 r <- params$report
 esc <- function(x) {
   x <- gsub('&', '&amp;', x, fixed = TRUE)
   x <- gsub('<', '&lt;', x, fixed = TRUE)
   gsub('>', '&gt;', x, fixed = TRUE)
 }
-tab <- function(x, fields = names(x)) {
-  if (is.null(x) || !nrow(x)) return(cat('<p>No records supplied.</p>'))
-  cat(as.character(knitr::kable(as.data.frame(sf::st_drop_geometry(x))[intersect(fields, names(x))],
-    format = 'html', escape = TRUE, row.names = FALSE)))
-}
+tab <- report_table
 # A view selection only: the supplied summary and its full assessment are unchanged.
 actions <- r$review_actions
 if (!is.null(actions)) actions <- actions[actions$stage != 'TERRAIN_REVIEW', , drop = FALSE]
 ```
 
 ## What is known
+
+```{r report-table-style, results='asis'}
+cat('<style>',report_table_css,'</style>',sep='\n')
+```
 
 This report asks whether the project structure is explicitly specified and what
 an analyst must still resolve. It is not a terrain-quality assessment, a
@@ -110,6 +111,13 @@ if (inherits(r$study_area, 'sf') || inherits(r$streams, 'sf')) {
 ```
 
 ## Supporting record
+
+```{r terrain-reference-module, results='asis'}
+if (!is.null(r$terrain_review)) {
+  stopifnot(length(params$terrain_template)==1L,file.exists(params$terrain_template))
+  cat(knitr::knit_child(params$terrain_template,envir=new.env(parent=environment()),quiet=TRUE),sep='\n')
+}
+```
 
 <details open>
 <summary>Streams, Reaches and Survey Event inventory</summary>

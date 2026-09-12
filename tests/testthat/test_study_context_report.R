@@ -1,4 +1,5 @@
 test_that("report purpose selects existing views without changing saved context", {
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available())
   root <- tempfile(); dir.create(root); withr::defer(unlink(root, recursive = TRUE))
   context <- start_study_context(file.path(root, "draft.gpkg"), "Test study", "Customer scope")$context

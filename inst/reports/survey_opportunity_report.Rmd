@@ -1,0 +1,136 @@
+---
+title: "Survey opportunities"
+subtitle: "Additional observations for change-over-time analysis"
+output:
+  html_document:
+    self_contained: true
+    mathjax: null
+params:
+  report: null
+  terrain_template: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=TRUE, error=FALSE)
+r <- params$report
+x <- sf::st_drop_geometry(r$records)
+esc <- function(z) gsub('>', '&gt;', gsub('<', '&lt;', gsub('&', '&amp;', z, fixed=TRUE), fixed=TRUE), fixed=TRUE)
+tab <- report_table
+```
+
+## 1. What is known
+
+```{r report-table-style, results='asis'}
+cat('<style>',report_table_css,'</style>',sep='\n')
+```
+
+```{r scope, results='asis'}
+tab(data.frame(Item=c('Study Area','Review focus','Existing observations','Catalog records supplied','Report generated'),
+  Description=c(r$study_area$study_area_name, r$focus_label,
+  paste(nrow(r$survey_events),'records; inventory may be incomplete'),
+  paste(nrow(x),'listings, NOT independent surveys'),r$generated_at)))
+tab(r$survey_events[c('label','date_label')])
+```
+
+This is a source-discovery review, not confirmation of provenance or scientific
+comparability. Year/month intervals preserve the precision supplied; they do not
+claim exact acquisition days. A newly cataloged dataset is not necessarily a new
+survey. Planned collections are not observations.
+
+## 2. What to review next
+
+```{r next, results='asis'}
+active <- !x$classification %in% c('OUTSIDE_FOCUS','REPRESENTED','REISSUE','DISMISSED','REVIEW_LOCATION')
+q <- x[active, , drop=FALSE]
+q <- q[order(q$collection_start,na.last=TRUE), , drop=FALSE]
+if (nrow(q)) {
+  tab(data.frame(Ref=q$review_id, Catalog=q$catalog, Collection=q$title,
+    Acquired=q$date_label, Finding=gsub('_',' ',q$classification),
+    Footprint=gsub('_',' ',q$spatial_relation), Next=q$next_action))
+} else cat('<p>No unreviewed in-focus candidates in this snapshot. This is not proof that no additional surveys exist.</p>')
+if (any(x$classification=='REVIEW_LOCATION')) cat('<p>',sum(x$classification=='REVIEW_LOCATION'),
+  'catalog footprints need a technical location check. They remain in the supporting record and are not counted as in-focus candidates.</p>')
+```
+
+Catalog entries may duplicate the same acquisition. Matching names, years or
+footprints are clues, not identity. Confirm data access, source relationships,
+vertical references, processing assumptions and uncertainty before proposing analysis.
+Footprints are catalog representations, not guarantees of usable terrain coverage.
+
+```{r terrain-review, results='asis'}
+if (!is.null(r$terrain_review)) {
+  stopifnot(length(params$terrain_template)==1L,file.exists(params$terrain_template))
+  cat(knitr::knit_child(params$terrain_template,envir=environment(),quiet=TRUE),sep='\n')
+}
+```
+
+## 3. Observation periods and candidates
+
+```{r timeline, fig.width=10, fig.height=7}
+events <- r$survey_events
+dated <- !is.na(x$collection_start) & !is.na(x$collection_end) & active
+z <- data.frame(label=c(events$label, paste(x$review_id[dated],x$catalog[dated])),
+  start=c(events$collection_start,x$collection_start[dated]),
+  end=c(events$collection_end,x$collection_end[dated]),
+  type=c(rep('Recorded',nrow(events)), ifelse(x$status[dated]=='PLANNED','Planned','Candidate')))
+z <- z[!is.na(z$start) & !is.na(z$end), , drop=FALSE]
+if (nrow(z)) {
+  z$label <- factor(z$label, levels=rev(unique(z$label)))
+  p <- ggplot2::ggplot(z, ggplot2::aes(x=start,xend=end,y=label,yend=label,color=type)) +
+    ggplot2::geom_segment(linewidth=2) + ggplot2::geom_point(size=2) +
+    ggplot2::scale_color_manual(values=c(Recorded='#243b53',Candidate='#007c83',Planned='#9a6700')) +
+    ggplot2::labs(x='Acquisition interval (not publication date)',y=NULL,color=NULL) +
+    ggplot2::theme_minimal(base_size=11)
+  print(p)
+} else cat('No known acquisition intervals to plot.')
+```
+
+Undated records remain in the review table. Several bars can describe one acquisition;
+this is not a count of independent observations.
+
+## 4. Where the catalog footprints fall
+
+```{r map, fig.width=10, fig.height=7}
+valid <- sf::st_is_valid(r$records)
+draw <- which(!is.na(valid) & valid & !sf::st_is_empty(r$records) &
+  x$spatial_relation %in% c('OUTSIDE_FOCUS','COVERS_FOCUS','INTERSECTS_FOCUS'))
+bb <- sf::st_bbox(r$study_area)
+p <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data=r$study_area,fill='#f3f4f6',color='#243b53',linewidth=0.8)
+if (length(draw)) p <- p + ggplot2::geom_sf(data=sf::st_transform(r$records[draw,],sf::st_crs(r$study_area)),
+  ggplot2::aes(color=catalog),fill=NA,alpha=0.7,linewidth=0.5)
+p <- p + ggplot2::geom_sf(data=r$focus,fill=NA,color='#b42318',linewidth=1) +
+  ggplot2::scale_color_viridis_d(end=0.75) +
+  ggplot2::coord_sf(xlim=c(bb[['xmin']],bb[['xmax']]),ylim=c(bb[['ymin']],bb[['ymax']])) +
+  ggplot2::labs(color='Catalog',caption='Red: review focus. Dark boundary: Study Area. Catalog boundaries are not authoritative.') +
+  ggplot2::theme_minimal(base_size=11)
+print(p)
+```
+
+Invalid/empty footprints are reported, not silently repaired or drawn. A listing
+elsewhere in the Study Area is not automatically an opportunity for the focus Reach.
+
+## 5. Search scope and limitations
+
+```{r searches, results='asis'}
+tab(r$searches)
+```
+
+COMPLETE means the stated query completed, not that a catalog covers every source.
+PARTIAL, FAILED and NOT_SEARCHED require follow-up. Retrieval dates identify the
+snapshots reviewed; no automatic refresh or background monitoring occurs.
+
+<details>
+<summary>Supporting record: all listings and supplied review evidence</summary>
+
+```{r supporting, results='asis'}
+for (i in seq_len(nrow(x))) {
+  cat('<h4>',esc(paste(x$review_id[i],x$title[i])),'</h4>')
+  cols <- c('catalog','record_id','snapshot_id','date_label','status','spatial_relation',
+    'classification','next_action','source_group','identity_evidence','disposition',
+    'event_id','review_note','metadata_url')
+  tab(data.frame(Field=cols,Value=as.character(unlist(x[i,cols],use.names=FALSE))))
+}
+```
+
+</details>

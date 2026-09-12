@@ -1,0 +1,60 @@
+/* Shared with early-workflow HTML reports. No data-dependent styling or CDN. */
+.main-container {
+  width: 100%;
+  max-width: 1440px;
+  padding-left: clamp(16px, 3vw, 40px);
+  padding-right: clamp(16px, 3vw, 40px);
+  box-sizing: border-box;
+}
+.fg-report-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: .6rem 0 1.2rem;
+  border: 1px solid #d4dde4;
+  border-radius: 5px;
+}
+.fg-report-table-wrap:focus-visible { outline: 3px solid #31708f; outline-offset: 2px; }
+.fg-report-table-inner { width: 100%; }
+.fg-report-table-wrap table.gt_table {
+  width: 100%;
+  margin: 0 !important;
+  border-collapse: collapse;
+  font-size: 1em;
+  line-height: 1.5;
+}
+.fg-report-table-wrap table.gt_table th,
+.fg-report-table-wrap table.gt_table td {
+  padding: 8px 14px;
+  vertical-align: top;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  border-right: 1px solid #e1e7ec;
+  border-bottom: 1px solid #d4dde4;
+}
+.fg-report-table-wrap table.gt_table th {
+  background: #e8eff4;
+  color: #233746;
+  font-weight: 600;
+  border-bottom: 2px solid #a7bac7;
+}
+.fg-report-table-wrap table.gt_table tbody tr:nth-child(odd) { background: #f5f8fa; }
+.fg-report-table-wrap table.gt_table tbody tr:hover { background: #edf4f8; }
+.fg-report-pairs th:first-child, .fg-report-pairs td:first-child { width: 28%; }
+.fg-report-table-wrap table.gt_table th:last-child,
+.fg-report-table-wrap table.gt_table td:last-child { border-right: 0; }
+details { min-width: 0; max-width: 100%; }
+details > summary { cursor: pointer; padding: .5em 0; }
+pre { max-width: 100%; overflow-x: auto; }
+@media (max-width: 600px) {
+  .fg-report-table-wrap table.gt_table th,
+  .fg-report-table-wrap table.gt_table td { padding: 8px 12px; }
+  .fg-report-pairs th:first-child, .fg-report-pairs td:first-child { width: 32%; }
+}
+@media print {
+  .main-container { max-width: none; padding: 0; }
+  .fg-report-table-wrap { overflow: visible; border: 0; }
+  .fg-report-table-inner { min-width: 0 !important; }
+  .fg-report-table-wrap table.gt_table { table-layout: fixed; }
+}

@@ -201,7 +201,7 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
 #'
 #' @param summary Output of terrain_development_summary().
 #' @param output_file New .html file in an existing directory; never overwritten.
-#' @return Normalized report path, invisibly. Requires Pandoc and knitr. Publication
+#' @return Normalized report path, invisibly. Requires Pandoc, knitr and gt. Publication
 #'   requires a local hard-link-capable filesystem, failing safely otherwise.
 #' @export
 terrain_development_report <- function(summary, output_file) {
@@ -220,7 +220,7 @@ terrain_development_report <- function(summary, output_file) {
 #'   legacy_staging and reconstruction. Inputs and their full assessment remain
 #'   unchanged; the staging view omits TERRAIN_REVIEW prompts.
 #' @param output_file New .html path in an existing directory; never overwritten.
-#' @return Normalized report path invisibly. Requires knitr, Pandoc and a local
+#' @return Normalized report path invisibly. Requires knitr, gt, Pandoc and a local
 #'   hard-link-capable filesystem for non-replacing publication.
 #' @export
 study_staging_report <- function(summary, output_file) {
@@ -239,7 +239,9 @@ study_staging_report <- function(summary, output_file) {
   on.exit(unlink(stage), add = TRUE)
   template <- system.file("reports", template_name, package = "fluvgeo")
   rmarkdown::render(template, output_file = stage, intermediates_dir = tempdir(),
-    params = list(report = summary), envir = new.env(parent = baseenv()), quiet = TRUE)
+    params = list(report = summary,
+      terrain_template = system.file("reports", "terrain_reference_review.Rmd", package = "fluvgeo")),
+    envir = .fg_report_environment(), quiet = TRUE)
   if (!isTRUE(suppressWarnings(file.link(stage, output_file)))) .fg_abort("Could not publish report without replacement; use a local hard-link-capable filesystem.")
   invisible(output_file)
 }

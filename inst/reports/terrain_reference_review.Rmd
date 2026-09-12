@@ -1,0 +1,124 @@
+### Terrain references: what is known
+
+File declarations, the chosen analysis reference, and the preparation history
+answer different questions. Source and analysis CRS may legitimately differ.
+None of the observations below automatically confirms lineage or accepts terrain
+for change-over-time analysis.
+
+```{r terrain-files, results='asis'}
+tab <- report_table
+tr <- r$terrain_review
+f <- tr$files
+for (role in c('SOURCE_PRODUCT','ANALYSIS_DEM')) {
+  z <- f[f$role==role,,drop=FALSE]
+  cat('<h4>',if (role=='SOURCE_PRODUCT') 'Selected source products' else 'Selected analysis DEMs','</h4>')
+  if (nrow(z)) tab(data.frame(Artifact=z$label, Horizontal=z$horizontal,
+    Vertical=z$vertical, 'Vertical CRS unit'=z$vertical_unit, check.names=FALSE))
+  else cat('<p>None selected for this review.</p>')
+}
+```
+
+“Not exposed” does not prove that metadata is absent. A file declaration is not
+proof that its elevations were processed correctly. These are file-level
+observations, not a quality score or an assessment of intentional NoData masking.
+
+#### Chosen project analysis reference
+
+```{r terrain-analysis-choice, results='asis'}
+a <- tr$analysis_reference
+component <- c(horizontal='Horizontal reference',vertical='Vertical reference',elevation_unit='Elevation unit')
+basis <- c(UNRESOLVED='Not yet recorded',PROJECT_RECORD='Supplied project record',
+  OWNER_RECOLLECTION='Owner recollection',PROPOSED='Proposed; not established')
+tab(data.frame(Component=unname(component[a$component]),
+  Choice=ifelse(is.na(a$value),'Not yet recorded',a$value),
+  Basis=unname(basis[a$basis])))
+```
+
+Preparing project DEMs in a common analysis reference can avoid repeated
+transformations downstream. The source collection's reference must not simply
+fill an unknown analysis reference; the connecting preparation record matters.
+
+```{r terrain-recorded-metadata, results='asis'}
+if (!is.null(tr$recorded_metadata) && nrow(tr$recorded_metadata)) {
+  cat('<h4>Previously recorded artifact metadata</h4><p>These are supplied manifest assertions, not newly observed file declarations or a project-wide analysis choice.</p>')
+  recorded <- tr$recorded_metadata
+  tab(data.frame(Artifact=tr$files$label[match(recorded$artifact_id,tr$files$artifact_id)],
+    'Recorded vertical reference'=ifelse(is.na(recorded$vertical_reference),'Not recorded',recorded$vertical_reference),
+    'Recorded elevation unit'=ifelse(is.na(recorded$vertical_unit),'Not recorded',recorded$vertical_unit),
+    Evidence=ifelse(is.na(recorded$metadata_evidence),'Not recorded',recorded$metadata_evidence),check.names=FALSE))
+}
+```
+
+### Terrain references: what to do next
+
+```{r terrain-next, results='asis'}
+actions <- data.frame(Question=character(),Next=character())
+if (any(a$basis=='UNRESOLVED')) actions <- rbind(actions,data.frame(
+  Question='Which analysis reference was chosen?',
+  Next='Recover or define the unresolved project choices, retaining attributed evidence and exceptions.'))
+if (any(a$basis %in% c('OWNER_RECOLLECTION','PROPOSED'))) actions <- rbind(actions,data.frame(
+  Question='How strong is the recorded choice?',
+  Next='Keep recollections and proposals distinct from a supported project record; obtain corroboration where needed.'))
+dems <- f[f$role=='ANALYSIS_DEM',,drop=FALSE]
+if (!nrow(dems) || anyNA(dems$preparation_note)) actions <- rbind(actions,data.frame(
+  Question='How did the source become the analysis DEM?',
+  Next='Locate the source edition and preparation recipe: reference changes, unit conversion, grid and conditioning. Do not infer a link from dates or names.'))
+if (nrow(f)) {
+  groups <- split(seq_len(nrow(f)), f$next_action)
+  for (g in groups) actions <- rbind(actions,data.frame(
+    Question=paste(f$label[g],collapse='; '),Next=f$next_action[g[1]]))
+  noted <- which(!is.na(f$review_note))
+  for (g in split(noted,f$review_note[noted])) actions <- rbind(actions,data.frame(
+    Question=paste(f$label[g],collapse='; '),Next=paste('Supplied review note:',f$review_note[g[1]])))
+}
+if (nrow(actions)) {
+  tab(actions)
+} else cat('<p>No file or analysis-choice questions were generated for this supplied snapshot; this is not scientific acceptance.</p>')
+```
+
+Unit conversion, vertical-datum transformation and resampling are different
+operations. Missing preparation records do not demonstrate mishandling by the
+original analyst. Evidence can be added later without relabeling the archive.
+
+<details>
+<summary>Supporting terrain record: evidence, preparation notes and reader definitions</summary>
+
+```{r terrain-details, results='asis'}
+cat('<p>Observation snapshot: ',esc(tr$generated_at),'. Rendering does not reopen files.</p>')
+if (!is.null(tr$context_links) && nrow(tr$context_links)) {
+  cat('<h4>Explicit saved event selections</h4>')
+  tab(tr$context_links)
+}
+tab(data.frame(Component=unname(component[a$component]),
+  Evidence=ifelse(is.na(a$evidence),'Not yet recorded',a$evidence)))
+for (i in seq_len(nrow(f))) {
+  cat('<h4>',esc(f$label[i]),'</h4>')
+  tab(data.frame(Item=c('Local artifact ID','Supplied role/selection evidence',
+    'Inspection outcome','Reader comparison','Exposed band unit','Review note','Review evidence',
+    'Preparation account (supplied, not independently verified)','Preparation evidence'),
+    Record=c(f$artifact_id[i],f$evidence[i],f$inspection_status[i],f$reader_note[i],f$band_unit[i],
+      ifelse(is.na(f$review_note[i]),'None supplied',f$review_note[i]),
+      ifelse(is.na(f$review_evidence[i]),'None supplied',f$review_evidence[i]),
+      ifelse(is.na(f$preparation_note[i]),'Not yet recovered',f$preparation_note[i]),
+      ifelse(is.na(f$preparation_evidence[i]),'Not yet recovered',f$preparation_evidence[i]))))
+  o <- tr$observations[[f$artifact_id[i]]]
+  if (!is.null(o) && is.null(o$error)) {
+    cat('<p>File SHA-256: <code>',esc(o$sha256),'</code></p>')
+    tab(data.frame(Software=names(unlist(o$software)),Version=as.character(unlist(o$software))))
+    for (view in c('default_reader','internal_compound')) {
+      v <- o[[view]]
+      cat('<details><summary>',if (view=='default_reader') 'Ordinary reader definition' else 'Internal compound-CRS definition',
+        '</summary><p>',esc(v$status),'</p><pre>',esc(v$wkt),'</pre>')
+      cat('<pre>',esc(jsonlite::toJSON(list(open_options=v$open_options,config_options=v$config_options,
+        projjson=v$projjson),auto_unbox=TRUE,pretty=TRUE,null='null')),'</pre></details>')
+    }
+  }
+}
+```
+
+Differences between reader views may reflect reader options, sidecars or competing
+declarations. They are a reason to inspect evidence, not an automatic diagnosis.
+Original file paths and raw error messages are retained in the R review object,
+but omitted here to avoid exposing local workstation details.
+
+</details>

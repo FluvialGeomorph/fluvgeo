@@ -1,0 +1,38 @@
+---
+title: "Report table readability — synthetic verification"
+format:
+  html:
+    embed-resources: true
+    theme: cosmo
+engine: knitr
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+# Development-only fixture, not a scientific report or a public helper API.
+pkgload::load_all('../../../fluvgeo',quiet=TRUE)
+table_env <- fluvgeo:::.fg_report_environment()
+```
+
+```{r, results='asis'}
+cat('<style>',table_env$report_table_css,'</style>',sep='\n')
+```
+
+## What is known
+
+Synthetic tables exercise the same shared helper in Quarto HTML. They do not
+represent project evidence. On narrow screens, wide tables scroll within the page.
+
+```{r, results='asis'}
+table_env$report_table(data.frame(Item=c('Study scope','Long identifier'),
+  Description=c('A clear description wraps without touching the adjacent cell.',
+    paste(rep('0123456789abcdef',16),collapse=''))))
+table_env$report_table(data.frame(Artifact=c('2006 DEM','2010 DEM'),
+  Reference='Not exposed by this inspection',
+  Evidence='A long explanation remains legible without hiding or abbreviating the scientific qualification.',
+  Analyst='Supplied record',Status='Review required',
+  Next='Recover preparation evidence; do not infer a source-to-derivative relationship.'))
+```

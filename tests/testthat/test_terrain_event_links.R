@@ -130,6 +130,7 @@ test_that('changed selected files are blocked and linked evidence renders safely
   expect_true('FILE_CHANGED' %in% s$assessment$code)
   expect_true('EVENT_DEM_BLOCKED' %in% s$assessment$code)
   skip_if_not_installed('knitr')
+  skip_if_not_installed('gt')
   skip_if_not(rmarkdown::pandoc_available(), 'Pandoc not available')
   html_file <- tempfile(fileext = '.html')
   terrain_development_report(s, html_file)

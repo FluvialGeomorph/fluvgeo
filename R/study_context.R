@@ -80,6 +80,12 @@ write_study_context <- function(dsn, study_area = NULL, streams = NULL,
 #' reuses terrain_development_summary().
 #'
 #' @param dsn Context GeoPackage from write_study_context().
+#' @param terrain_references Logical; opt in to fresh reference inspection of
+#'   explicitly selected event DEMs in read_study_context_summary(). Defaults to
+#'   FALSE. Blocked selections remain findings and are not inspected as substitutes.
+#' @param analysis_reference Optional attributed project choices accepted by
+#'   terrain_reference_review(). Requires terrain_references = TRUE. These are
+#'   report inputs only, not saved context or inferred from manifest assertions.
 #' @return Named arguments for terrain_development_summary(), with resolved local
 #'   network/manifest paths. Absent context stays absent. No cached validation or
 #'   raster object is persisted. read_study_context_summary() returns the freshly
@@ -130,8 +136,21 @@ read_study_context <- function(dsn) {
 
 #' @rdname read_study_context
 #' @export
-read_study_context_summary <- function(dsn) {
-  do.call(terrain_development_summary, .fg_read_study_context(dsn))
+read_study_context_summary <- function(dsn, terrain_references = FALSE,
+    analysis_reference = NULL) {
+  if (!is.logical(terrain_references) || length(terrain_references) != 1L || is.na(terrain_references))
+    .fg_abort("terrain_references must be TRUE or FALSE.")
+  if (!terrain_references && !is.null(analysis_reference))
+    .fg_abort("analysis_reference requires terrain_references = TRUE.")
+  args <- .fg_read_study_context(dsn)
+  manifest_hash <- if (terrain_references && !is.null(args$folder_manifest))
+    .fg_file_sha256(args$folder_manifest) else NULL
+  summary <- do.call(terrain_development_summary, args)
+  if (terrain_references) summary$terrain_review <-
+    .fg_study_terrain_references(summary, args$folder_manifest, analysis_reference)
+  if (!is.null(manifest_hash) && !identical(manifest_hash, .fg_file_sha256(args$folder_manifest)))
+    .fg_abort("Manifest changed during reference review; retry with a stable saved context.")
+  summary
 }
 
 .fg_study_columns <- function() list(
