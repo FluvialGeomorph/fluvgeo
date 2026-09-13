@@ -39,6 +39,15 @@
 #'   inspected with inspect_legacy_staging(). Adds source-layer inventories and
 #'   missing-structure prompts, not inferred hierarchy or conversion approval.
 #'   This link is not persisted by the current Study Context binding.
+#' @param analysis_reference Optional attributed saved project-choice table, as
+#'   in write_study_context(). Kept separate from file declarations and assessment.
+#' @param terrain_sources Optional saved source-use records accepted by
+#'   write_study_context(). These attributed claims do not certify source lineage.
+#' @param terrain_evidence Optional retained attachment table, as in
+#'   retain_study_terrain_evidence(). Paths are relative to the terrain manifest's
+#'   folder. Fresh integrity results are returned separately as retained_evidence.
+#' @param terrain_processing Optional ordered, attributed preparation accounts
+#'   from record_study_terrain_processing(). These do not establish execution.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
 #'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
 #'   reconstruction and a limited stage-specific assessment with requires_input
@@ -55,7 +64,11 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, network = NULL, dem = NULL,
     terrain_notes = NA_character_, analyst_notes = NA_character_,
     survey_dems = NULL, reconstruction = NULL, folder_manifest = NULL,
-    legacy_staging = NULL) {
+    legacy_staging = NULL, analysis_reference = NULL, terrain_sources = NULL,
+    terrain_evidence = NULL, terrain_processing = NULL) {
+  .fg_study_analysis_check(analysis_reference)
+  if (!is.null(analysis_reference) && is.null(study_area))
+    .fg_abort("Saved analysis-reference choices require a Study Area.")
   terrain_notes <- .fg_optional_text(terrain_notes, "terrain_notes")
   analyst_notes <- .fg_optional_text(analyst_notes, "analyst_notes")
   if (is.character(network)) network <- read_stream_network_geodatabase(network, validate = FALSE)
@@ -145,6 +158,9 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
   if (is.na(terrain_notes)) add("Terrain source, processing history, vertical units/datum and qualifications have not been described.")
   if (is.na(analyst_notes)) add("Analyst scope and segmentation rationale have not been supplied.")
   folder <- if (is.null(folder_manifest)) NULL else inspect_terrain_folder(folder_manifest)
+  .fg_terrain_sources_bind(terrain_sources, folder_manifest, study_area)
+  retained <- .fg_terrain_evidence_inspect(terrain_evidence, terrain_sources, folder_manifest)
+  .fg_terrain_processing_check(terrain_processing, terrain_sources, terrain_evidence)
   linked <- if (is.null(folder)) NULL else .fg_terrain_resolve_events(folder, folder_manifest, surveys, survey_dems)
   if (!is.null(linked)) survey_dems <- linked$survey_dems
   visual <- .fg_terrain_visual_context(study_area, streams, reaches, surveys,
@@ -158,7 +174,10 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     configuration = if (is.null(network)) data.frame() else network$stream_network_configuration,
     observation = observation, segments = segments, dem_extent = footprint, terrain = terrain,
     validation = validation, gaps = unique(gaps), terrain_notes = terrain_notes, analyst_notes = analyst_notes,
-    folder_inventory = folder, staging_inventory = staging,
+    folder_inventory = folder, staging_inventory = staging, analysis_reference = analysis_reference,
+    terrain_sources = terrain_sources,
+    terrain_evidence = terrain_evidence, retained_evidence = retained,
+    terrain_processing = terrain_processing,
     event_artifacts = if (is.null(linked)) NULL else linked$event_artifacts,
     generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual, review)
 }

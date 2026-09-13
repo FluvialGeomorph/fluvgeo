@@ -24,7 +24,8 @@ view), definition (prospective Define Study Area), or staging (Staging Report).}
 review of explicitly selected saved event DEMs. Default FALSE preserves views.}
 
 \item{analysis_reference}{Optional attributed choices for this report only,
-as in read_study_context_summary(). Requires terrain_references = TRUE.}
+as in read_study_context_summary(). Requires terrain_references = TRUE.
+NULL reuses saved choices; report-only values cannot override a saved record.}
 }
 \value{
 Normalized report path invisibly. Requires the selected renderer's

@@ -16,7 +16,11 @@ terrain_development_summary(
   survey_dems = NULL,
   reconstruction = NULL,
   folder_manifest = NULL,
-  legacy_staging = NULL
+  legacy_staging = NULL,
+  analysis_reference = NULL,
+  terrain_sources = NULL,
+  terrain_evidence = NULL,
+  terrain_processing = NULL
 )
 }
 \arguments{
@@ -66,6 +70,19 @@ findings. Associations do not prove provenance, coverage or acceptance.}
 inspected with inspect_legacy_staging(). Adds source-layer inventories and
 missing-structure prompts, not inferred hierarchy or conversion approval.
 This link is not persisted by the current Study Context binding.}
+
+\item{analysis_reference}{Optional attributed saved project-choice table, as
+in write_study_context(). Kept separate from file declarations and assessment.}
+
+\item{terrain_sources}{Optional saved source-use records accepted by
+write_study_context(). These attributed claims do not certify source lineage.}
+
+\item{terrain_evidence}{Optional retained attachment table, as in
+retain_study_terrain_evidence(). Paths are relative to the terrain manifest's
+folder. Fresh integrity results are returned separately as retained_evidence.}
+
+\item{terrain_processing}{Optional ordered, attributed preparation accounts
+from record_study_terrain_processing(). These do not establish execution.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.

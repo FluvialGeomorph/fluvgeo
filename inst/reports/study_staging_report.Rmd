@@ -113,6 +113,8 @@ if (inherits(r$study_area, 'sf') || inherits(r$streams, 'sf')) {
 ## Supporting record
 
 ```{r terrain-reference-module, results='asis'}
+if (is.null(r$terrain_review)) report_analysis_reference(r$analysis_reference)
+report_terrain_sources(r$terrain_sources, r$folder_inventory, r$retained_evidence, r$terrain_processing)
 if (!is.null(r$terrain_review)) {
   stopifnot(length(params$terrain_template)==1L,file.exists(params$terrain_template))
   cat(knitr::knit_child(params$terrain_template,envir=new.env(parent=environment()),quiet=TRUE),sep='\n')

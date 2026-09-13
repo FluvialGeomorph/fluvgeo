@@ -17,20 +17,37 @@
 #'   Explicit event links in that manifest select external GeoTIFF grids; direct
 #'   SpatRaster objects and an independent overview DEM are not persisted.
 #' @param terrain_notes,analyst_notes Optional scalar text, as in the summary.
+#' @param analysis_reference Optional saved project-choice table with component,
+#'   value, basis, evidence, analyst and recorded_at character columns. Requires a
+#'   Study Area; uses schema 2. Prefer record_study_analysis_reference() for edits.
+#' @param terrain_sources Optional attributed source-use table, as documented by
+#'   record_study_terrain_source(). Requires a Study Area and manifest; uses schema 3.
+#' @param terrain_evidence Optional retained attachment table from
+#'   retain_study_terrain_evidence(). Requires source-use records; uses schema 4.
+#' @param terrain_processing Optional ordered preparation accounts from
+#'   record_study_terrain_processing(). Requires source-use records; uses schema 5.
 #' @return Normalized context path invisibly. New-file publication requires hard
 #'   links. Invalid hierarchy fails; missing AOIs and incomplete evidence remain
 #'   report findings. This is not a complete FGDB project or event-folder binding.
 #' @export
 write_study_context <- function(dsn, study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, reconstruction = NULL, network = NULL,
-    folder_manifest = NULL, terrain_notes = NA_character_, analyst_notes = NA_character_) {
+    folder_manifest = NULL, terrain_notes = NA_character_, analyst_notes = NA_character_,
+    analysis_reference = NULL, terrain_sources = NULL, terrain_evidence = NULL,
+    terrain_processing = NULL) {
   dsn <- .fg_network_dsn(dsn)
   if (file.exists(dsn)) .fg_abort("Context destination already exists.")
   tabs <- list(study_area = study_area, streams = streams, reaches = reaches,
-    survey_events = survey_events, reconstruction = reconstruction)
+    survey_events = survey_events, reconstruction = reconstruction, analysis_reference = analysis_reference,
+    terrain_sources = terrain_sources, terrain_evidence = terrain_evidence,
+    terrain_processing = terrain_processing)
   tabs <- tabs[!vapply(tabs, is.null, logical(1))]
   .fg_study_tables_check(tabs)
-  metadata <- data.frame(schema = "FLUVGEO_STUDY_CONTEXT_1",
+  schema <- if (!is.null(terrain_processing)) "FLUVGEO_STUDY_CONTEXT_5" else
+    if (!is.null(terrain_evidence)) "FLUVGEO_STUDY_CONTEXT_4" else
+    if (!is.null(terrain_sources)) "FLUVGEO_STUDY_CONTEXT_3" else
+    if (is.null(analysis_reference)) "FLUVGEO_STUDY_CONTEXT_1" else "FLUVGEO_STUDY_CONTEXT_2"
+  metadata <- data.frame(schema = schema,
     terrain_notes = .fg_optional_text(terrain_notes, "terrain_notes"),
     analyst_notes = .fg_optional_text(analyst_notes, "analyst_notes"),
     network = NA_character_, network_sha256 = NA_character_,
@@ -76,6 +93,8 @@ write_study_context <- function(dsn, study_area = NULL, streams = NULL,
 #' Reads supplied records and resolves pinned local references without changing
 #' sources. Missing/changed network or manifest files fail explicitly. Missing or
 #' changed terrain assets inside a valid manifest remain fresh report findings;
+#' retained supporting files likewise expose fresh integrity findings without
+#' discarding their saved records or certifying the account they support.
 #' no replacement grid or hierarchy is inferred. Structural/parentage validation
 #' reuses terrain_development_summary().
 #'
@@ -85,7 +104,8 @@ write_study_context <- function(dsn, study_area = NULL, streams = NULL,
 #'   FALSE. Blocked selections remain findings and are not inspected as substitutes.
 #' @param analysis_reference Optional attributed project choices accepted by
 #'   terrain_reference_review(). Requires terrain_references = TRUE. These are
-#'   report inputs only, not saved context or inferred from manifest assertions.
+#'   report inputs only. NULL reuses saved choices if present; explicitly supplied
+#'   choices cannot override saved choices. Neither is inferred from manifest assertions.
 #' @return Named arguments for terrain_development_summary(), with resolved local
 #'   network/manifest paths. Absent context stays absent. No cached validation or
 #'   raster object is persisted. read_study_context_summary() returns the freshly
@@ -108,7 +128,7 @@ read_study_context <- function(dsn) {
     "folder_manifest", "folder_manifest_sha256")
   if (inherits(metadata, "sf") || nrow(metadata) != 1L || !setequal(names(metadata), fields) ||
       !all(vapply(metadata, is.character, logical(1))) ||
-      !identical(metadata$schema, "FLUVGEO_STUDY_CONTEXT_1"))
+      !metadata$schema %in% paste0("FLUVGEO_STUDY_CONTEXT_", 1:5))
     .fg_abort("Unsupported or malformed Study Area context metadata.")
   catalog <- sf::st_read(dsn, layer = required[2], quiet = TRUE)
   if (inherits(catalog, "sf") || !setequal(names(catalog), c("table_name", "geometry_column")) ||
@@ -116,6 +136,13 @@ read_study_context <- function(dsn) {
       anyDuplicated(catalog$table_name) || any(!catalog$table_name %in% names(.fg_study_columns())) ||
       !setequal(layers, c(required, catalog$table_name)))
     .fg_abort("Malformed Study Area context table catalog.")
+  has_choices <- "analysis_reference" %in% catalog$table_name
+  expected <- if ("terrain_processing" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_5" else
+    if ("terrain_evidence" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_4" else
+    if ("terrain_sources" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_3" else
+    if (has_choices) "FLUVGEO_STUDY_CONTEXT_2" else "FLUVGEO_STUDY_CONTEXT_1"
+  if (!identical(metadata$schema, expected))
+    .fg_abort("Study Area context schema and catalog disagree; choices require schema 2, source-use records schema 3, retained evidence schema 4, processing accounts schema 5.")
   tabs <- list()
   for (i in seq_len(nrow(catalog))) {
     nm <- catalog$table_name[i]; geom <- catalog$geometry_column[i]
@@ -143,6 +170,11 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
   if (!terrain_references && !is.null(analysis_reference))
     .fg_abort("analysis_reference requires terrain_references = TRUE.")
   args <- .fg_read_study_context(dsn)
+  if (!is.null(args$analysis_reference)) {
+    if (!is.null(analysis_reference))
+      .fg_abort("Saved analysis-reference choices exist; revise the saved context or omit analysis_reference.")
+    analysis_reference <- args$analysis_reference
+  }
   manifest_hash <- if (terrain_references && !is.null(args$folder_manifest))
     .fg_file_sha256(args$folder_manifest) else NULL
   summary <- do.call(terrain_development_summary, args)
@@ -160,9 +192,19 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
   survey_events = c("survey_event_id", "reach_id", "survey_year", "survey_month",
     "survey_day", "source_dataset", "availability_notes"),
   reconstruction = c("case_id", "source_ref", "proposed_structure", "evidence",
-    "status", "analyst", "decision_notes"))
+    "status", "analyst", "decision_notes"),
+  analysis_reference = c("component", "value", "basis", "evidence", "analyst", "recorded_at"),
+  terrain_sources = .fg_terrain_source_fields(),
+  terrain_evidence = .fg_terrain_evidence_fields(),
+  terrain_processing = .fg_terrain_processing_fields())
 
 .fg_study_tables_check <- function(tabs) {
+  if (!is.null(tabs$analysis_reference) && is.null(tabs$study_area))
+    .fg_abort("Saved analysis-reference choices require a Study Area.")
+  .fg_study_analysis_check(tabs$analysis_reference)
+  .fg_terrain_sources_check(tabs$terrain_sources)
+  .fg_terrain_evidence_check(tabs$terrain_evidence, tabs$terrain_sources)
+  .fg_terrain_processing_check(tabs$terrain_processing, tabs$terrain_sources, tabs$terrain_evidence)
   for (nm in names(tabs)) {
     x <- tabs[[nm]]
     if (!is.data.frame(x) || anyDuplicated(names(x))) .fg_abort("Context requires data frames with unique fields.")
@@ -176,7 +218,7 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
     if (!all(names(x) %in% .fg_study_columns()[[nm]])) .fg_abort("Unsupported context columns; nothing was dropped.")
     for (field in names(x)) {
       v <- x[[field]]
-      kind <- if (field %in% c("survey_year", "survey_month", "survey_day")) "integer" else "character"
+      kind <- if (field %in% c("survey_year", "survey_month", "survey_day", "step_number")) "integer" else "character"
       if (is.object(v) || !is.null(dim(v)) || typeof(v) != kind)
         .fg_abort(paste("Context field", field, "must be a plain", kind, "column."))
     }

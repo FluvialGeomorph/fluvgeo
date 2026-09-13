@@ -66,6 +66,9 @@ Render errors stop publication rather than producing a success-shaped partial re
 Development 9012 also reuses this module in opt-in saved Study Area reports (see
 below). QGIS wrappers, Shiny, installed runtime libraries and enterprise storage
 are not changed. A governed source-to-derivative relation/editor remains future work.
+Development 9016 adds a bounded [attributed source-use editor](terrain-source-use.md)
+in the shared Study Area context. It is separate from these file observations and
+does not yet implement exact source assets or processing provenance.
 The separate synthetic write/read discrepancy is not resolved by successful reporting.
 
 Subsequent client integration: fgqgis development 0.0.0.9014 exposes this existing
@@ -73,6 +76,11 @@ opt-in through its read-only saved-context reviewer. See the
 [client verification](../../../fg-qgis-toolbox/dev/features/review-study-area.md#optional-terrain-reference-review-2026-09-12).
 No backend schema or scientific method changed for that checkbox. Previous
 analyst profiles and production runtimes remain unchanged.
+
+Development 9014 subsequently adds [explicit saved analysis choices](study-context.md#attributed-analysis-choices-development-9014)
+and their new-file editor. Saved-context reports reuse those attributed records
+without treating them as file declarations or transformation execution. Standalone
+`terrain_reference_review()` remains an in-memory review, not a persistence API.
 
 ## Cole Creek reproduction
 

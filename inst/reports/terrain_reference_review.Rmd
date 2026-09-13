@@ -29,6 +29,7 @@ a <- tr$analysis_reference
 component <- c(horizontal='Horizontal reference',vertical='Vertical reference',elevation_unit='Elevation unit')
 basis <- c(UNRESOLVED='Not yet recorded',PROJECT_RECORD='Supplied project record',
   OWNER_RECOLLECTION='Owner recollection',PROPOSED='Proposed; not established')
+if (!is.null(r$analysis_reference)) report_analysis_reference(r$analysis_reference, heading=FALSE) else
 tab(data.frame(Component=unname(component[a$component]),
   Choice=ifelse(is.na(a$value),'Not yet recorded',a$value),
   Basis=unname(basis[a$basis])))
@@ -89,7 +90,7 @@ if (!is.null(tr$context_links) && nrow(tr$context_links)) {
   cat('<h4>Explicit saved event selections</h4>')
   tab(tr$context_links)
 }
-tab(data.frame(Component=unname(component[a$component]),
+if (is.null(r$analysis_reference)) tab(data.frame(Component=unname(component[a$component]),
   Evidence=ifelse(is.na(a$evidence),'Not yet recorded',a$evidence)))
 for (i in seq_len(nrow(f))) {
   cat('<h4>',esc(f$label[i]),'</h4>')

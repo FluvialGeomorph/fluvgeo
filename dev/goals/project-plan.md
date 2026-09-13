@@ -127,11 +127,41 @@ and FGDB loading are separate acceptance questions, not one compliance score.
   keep existing manifest assertions separate from fresh declarations and choices.
 - [x] Adopt compact shared gt tables for the early-workflow reports. The user
   accepted readability; use real reports rather than separate responsive-preview
-  fixtures. The next client increment exposes the existing reference review in
-  QGIS; scientific methods and stored records do not change.
-- [ ] Define the evidenced source-to-derivative binding and persistence/editor
-  for analysis-reference choices, without inventing archive lineage or hiding
-  legitimate source/analysis CRS differences. Do not infer execution from a note.
+  fixtures. The QGIS client now exposes the existing reference review;
+  scientific methods and stored records do not change. Development 9015 also
+  protects gt CSS through Markdown rendering after a concrete qualification finding.
+- [x] Add explicit attributed analysis-reference persistence/editor in new context
+  snapshots; retain schema-1 compatibility and distinguish proposals/recollections
+  from source declarations and performed transformations. See the
+  [schema-2 contract](../schemas/study-context.md#attributed-analysis-choices-development-9014).
+  The [thin QGIS form](../../../fg-qgis-toolbox/dev/features/record-analysis-reference.md)
+  supplies the desktop interface without a second validation or persistence model.
+- [x] Implement the first [attributed source-use binding](../schemas/terrain-source-use.md)
+  in schema-3 context snapshots: distinguish candidates, recorded-use accounts and
+  rejections; pin the derivative fingerprint without inventing source editions,
+  archive lineage or preparation execution. Legitimate source/analysis CRS
+  differences remain explicit. No client runtime is upgraded.
+- [x] Expose the shared source-use editor through a thin, separately qualified
+  [QGIS form](../../../fg-qgis-toolbox/dev/features/record-terrain-source.md).
+- [x] Add [retained metadata and processing records](../schemas/retained-terrain-evidence.md)
+  to the shared backend, with exact copies, integrity review and schema-4 binding.
+  Retaining a record does not verify processing execution or source-product identity.
+- [x] Expose retention through a [compatible isolated QGIS form](../../../fg-qgis-toolbox/dev/features/retain-terrain-evidence.md),
+  developer-qualified against direct R without upgrading existing profiles.
+- [x] Add [ordered preparation accounts](../schemas/terrain-processing-accounts.md)
+  linked to source-use and optional retained processing documents, preserving
+  unknowns without inferring execution or changing scientific assessment.
+- [x] Expose account recording through a compatible, separately qualified thin
+  [QGIS interface](../../../fg-qgis-toolbox/dev/features/record-terrain-preparation.md);
+  eleven provider cases agree with direct R. Existing analyst runtimes remain unchanged.
+- [x] Review table-based account entry with an analyst: CSV editing and form
+  layout are acceptable, but purpose/vocabulary needed clarification. The client
+  now has a past-work label and field guide; no repeat trial is requested.
+- [ ] Prioritize one bounded execution tool with automatic capture of observed
+  inputs, parameters, software, outputs and outcome. Select its scientific
+  contract first; do not require manual CSV duplication of new-tool history.
+- [ ] Address normalized source-product identities and executable processing
+  provenance; attributed accounts and retained records do not establish execution.
 - [x] Establish the [deterministic user-tooling boundary](../../../FG-architecture/dev/decisions/adr-0006-deterministic-user-tooling.md).
   Developer AI assistance is distinct from runtime capabilities. Future AI
   experiments/deployment need separate explicit approval; Survey Opportunities

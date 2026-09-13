@@ -47,18 +47,7 @@ terrain_reference_review <- function(artifacts, analysis_reference = NULL) {
   }
   if (any(!is.na(files$preparation_note) & files$role != "ANALYSIS_DEM"))
     .fg_abort("Preparation notes belong to ANALYSIS_DEM artifacts.")
-  analysis <- data.frame(component = c("horizontal", "vertical", "elevation_unit"),
-    value = NA_character_, basis = "UNRESOLVED", evidence = NA_character_)
-  if (!is.null(analysis_reference)) {
-    .fg_require_table(analysis_reference, names(analysis), "analysis_reference")
-    for (field in names(analysis))
-      .fg_required_text(analysis_reference[[field]], field, nrow(analysis_reference))
-    if (anyDuplicated(analysis_reference$component) ||
-        any(!analysis_reference$component %in% analysis$component) ||
-        any(!analysis_reference$basis %in% c("PROJECT_RECORD", "OWNER_RECOLLECTION", "PROPOSED")))
-      .fg_abort("Supply unique supported analysis components and evidence bases.")
-    analysis[match(analysis_reference$component, analysis$component), ] <- analysis_reference[names(analysis)]
-  }
+  analysis <- .fg_reference_analysis(analysis_reference)
   observations <- setNames(vector("list", nrow(files)), files$artifact_id)
   files$inspection_status <- rep("NOT_SELECTED", nrow(files))
   files$horizontal <- files$vertical <- files$vertical_unit <- files$band_unit <- rep("Not inspected", nrow(files))
@@ -92,6 +81,22 @@ terrain_reference_review <- function(artifacts, analysis_reference = NULL) {
     analysis_reference = analysis, observations = observations,
     generated_at = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")),
     class = "fg_terrain_reference_review")
+}
+
+.fg_reference_analysis <- function(analysis_reference) {
+  analysis <- data.frame(component = c("horizontal", "vertical", "elevation_unit"),
+    value = NA_character_, basis = "UNRESOLVED", evidence = NA_character_)
+  if (!is.null(analysis_reference)) {
+    .fg_require_table(analysis_reference, names(analysis), "analysis_reference")
+    for (field in names(analysis))
+      .fg_required_text(analysis_reference[[field]], field, nrow(analysis_reference))
+    if (anyDuplicated(analysis_reference$component) ||
+        any(!analysis_reference$component %in% analysis$component) ||
+        any(!analysis_reference$basis %in% c("PROJECT_RECORD", "OWNER_RECOLLECTION", "PROPOSED")))
+      .fg_abort("Supply unique supported analysis components and evidence bases.")
+    analysis[match(analysis_reference$component, analysis$component), ] <- analysis_reference[names(analysis)]
+  }
+  analysis
 }
 
 .fg_reference_horizontal <- function(crs) {

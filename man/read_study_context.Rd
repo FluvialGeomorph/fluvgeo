@@ -22,7 +22,8 @@ FALSE. Blocked selections remain findings and are not inspected as substitutes.}
 
 \item{analysis_reference}{Optional attributed project choices accepted by
 terrain_reference_review(). Requires terrain_references = TRUE. These are
-report inputs only, not saved context or inferred from manifest assertions.}
+report inputs only. NULL reuses saved choices if present; explicitly supplied
+choices cannot override saved choices. Neither is inferred from manifest assertions.}
 }
 \value{
 Named arguments for terrain_development_summary(), with resolved local
@@ -34,6 +35,8 @@ Named arguments for terrain_development_summary(), with resolved local
 Reads supplied records and resolves pinned local references without changing
 sources. Missing/changed network or manifest files fail explicitly. Missing or
 changed terrain assets inside a valid manifest remain fresh report findings;
+retained supporting files likewise expose fresh integrity findings without
+discarding their saved records or certifying the account they support.
 no replacement grid or hierarchy is inferred. Structural/parentage validation
 reuses terrain_development_summary().
 }

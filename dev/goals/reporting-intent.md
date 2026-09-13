@@ -58,6 +58,13 @@ fixtures. Prefer mature reporting-package defaults and bounded content/render
 checks; investigate layout further only for a concrete defect or delivery need.
 Package reuse reduces custom maintenance, but is not proof of every output format.
 
+The QGIS analysis-choice qualification exposed Markdown inserting paragraph tags
+inside gt's generated CSS. Development 9015 protects the complete shared table
+fragment as raw HTML through knitr. Regression checks render the actual three
+report views, including collapsed attribution tables; this is a presentation fix,
+not a data, schema or scientific-method change. Existing ArcGIS/Shiny runtimes
+are not upgraded by this development qualification.
+
 The following shipped R Markdown templates were reviewed in full:
 
 | Templates | Existing strengths to carry forward |

@@ -14,7 +14,11 @@ write_study_context(
   network = NULL,
   folder_manifest = NULL,
   terrain_notes = NA_character_,
-  analyst_notes = NA_character_
+  analyst_notes = NA_character_,
+  analysis_reference = NULL,
+  terrain_sources = NULL,
+  terrain_evidence = NULL,
+  terrain_processing = NULL
 )
 }
 \arguments{
@@ -33,6 +37,19 @@ Explicit event links in that manifest select external GeoTIFF grids; direct
 SpatRaster objects and an independent overview DEM are not persisted.}
 
 \item{terrain_notes, analyst_notes}{Optional scalar text, as in the summary.}
+
+\item{analysis_reference}{Optional saved project-choice table with component,
+value, basis, evidence, analyst and recorded_at character columns. Requires a
+Study Area; uses schema 2. Prefer record_study_analysis_reference() for edits.}
+
+\item{terrain_sources}{Optional attributed source-use table, as documented by
+record_study_terrain_source(). Requires a Study Area and manifest; uses schema 3.}
+
+\item{terrain_evidence}{Optional retained attachment table from
+retain_study_terrain_evidence(). Requires source-use records; uses schema 4.}
+
+\item{terrain_processing}{Optional ordered preparation accounts from
+record_study_terrain_processing(). Requires source-use records; uses schema 5.}
 }
 \value{
 Normalized context path invisibly. New-file publication requires hard

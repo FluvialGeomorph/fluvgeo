@@ -13,6 +13,7 @@
 #'   review of explicitly selected saved event DEMs. Default FALSE preserves views.
 #' @param analysis_reference Optional attributed choices for this report only,
 #'   as in read_study_context_summary(). Requires terrain_references = TRUE.
+#'   NULL reuses saved choices; report-only values cannot override a saved record.
 #' @return Normalized report path invisibly. Requires the selected renderer's
 #'   Pandoc and hard-link filesystem support. Source context and linked evidence
 #'   are read-only; missing/changed pinned links retain the existing reader errors.

@@ -23,9 +23,11 @@
   # Preserve readable column widths instead of shrinking many columns on phones.
   minimum <- if (ncol(x) > 3L) paste0(' style="min-width:', ncol(x) * 10, 'em;"') else ""
   kind <- if (ncol(x) == 2L) " fg-report-pairs" else ""
-  cat('<div class="fg-report-table-wrap" tabindex="0" role="region" aria-label="Report table; scroll horizontally if needed">',
+  # Treat the complete gt fragment as HTML: Markdown must not turn CSS into
+  # paragraphs. This also protects nested tables inside supporting details.
+  cat('\n\n', knitr::raw_html(paste0('<div class="fg-report-table-wrap" tabindex="0" role="region" aria-label="Report table; scroll horizontally if needed">',
     '<div class="fg-report-table-inner', kind, '"', minimum, '>',
-    gt::as_raw_html(table, inline_css = FALSE), '</div></div>\n', sep = "")
+    gt::as_raw_html(table, inline_css = FALSE), '</div></div>')), '\n\n', sep = "")
 }
 
 .fg_report_environment <- function() {
@@ -33,7 +35,32 @@
     .fg_abort("HTML report tables require the gt package; install it before rendering.")
   env <- new.env(parent = baseenv())
   env$report_table <- .fg_report_table
+  env$report_analysis_reference <- .fg_report_analysis_reference
+  env$report_terrain_sources <- .fg_report_terrain_sources
   env$report_table_css <- paste(readLines(system.file("reports", "report-tables.css",
     package = "fluvgeo"), warn = FALSE), collapse = "\n")
   env
+}
+
+.fg_report_analysis_reference <- function(x, heading = TRUE) {
+  if (is.null(x)) return(invisible(NULL))
+  a <- .fg_reference_analysis(x)
+  component <- c(horizontal = "Horizontal reference", vertical = "Vertical reference",
+    elevation_unit = "Elevation unit")
+  basis <- c(UNRESOLVED = "Not yet recorded", PROJECT_RECORD = "Supplied project record",
+    OWNER_RECOLLECTION = "Owner recollection", PROPOSED = "Proposed; not established")
+  if (heading) cat('<h3>Saved Study Area analysis-reference choices</h3>')
+  cat('<p>These attributed project-wide records describe intended or recalled analysis choices. They do not certify every DEM or event, establish source lineage, or demonstrate that a transformation was performed.</p>')
+  .fg_report_table(data.frame(Component = unname(component[a$component]),
+    Choice = ifelse(is.na(a$value), "Not yet recorded", a$value), Basis = unname(basis[a$basis])))
+  steps <- c(if (any(a$basis == "UNRESOLVED")) "Resolve the unrecorded components when needed for the intended analysis.",
+    if (any(a$basis == "PROPOSED")) "Review proposed choices with the project analyst before adopting them.",
+    if (any(a$basis == "OWNER_RECOLLECTION")) "Seek corroborating records for the recalled choices.",
+    "Check preparation evidence and project exceptions before comparing terrain. Saving does not validate a CRS definition or perform conversion.")
+  cat('<p><strong>Next:</strong> ', paste(steps, collapse = ' '), '</p>', sep = '')
+  cat('<details><summary>Analysis-choice evidence and attribution</summary>')
+  .fg_report_table(data.frame(Component = unname(component[x$component]),
+    Evidence = x$evidence, Recorder = x$analyst, 'Recorded (UTC)' = x$recorded_at,
+    check.names = FALSE))
+  cat('</details>')
 }

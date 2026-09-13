@@ -1,6 +1,10 @@
 # Saved Study Area report context
 
-Development binding: `FLUVGEO_STUDY_CONTEXT_1`. This fills the missing ability to
+Development bindings: `FLUVGEO_STUDY_CONTEXT_1` and opt-in
+`FLUVGEO_STUDY_CONTEXT_2` (attributed analysis choices), plus
+`FLUVGEO_STUDY_CONTEXT_3` ([terrain source-use evidence](terrain-source-use.md)) and
+`FLUVGEO_STUDY_CONTEXT_4` ([retained supporting files](retained-terrain-evidence.md)), and
+`FLUVGEO_STUDY_CONTEXT_5` ([ordered preparation accounts](terrain-processing-accounts.md)). This fills the ability to
 reopen the supplied parent context used by the Terrain Development report. It is
 not FGDB's complete project/event-folder schema, an identity registry or an
 acceptance record. Existing network and terrain-intake schemas are unchanged.
@@ -31,8 +35,101 @@ Development 9012 appends `terrain_references=FALSE, analysis_reference=NULL` to
 only existing explicitly selected event DEMs and attaches the shared
 [reference evidence module](terrain-reference-review.md#saved-study-area-integration-development-9012).
 Declarations, manifest assertions and supplied project choices remain separate.
-The default behavior and context schema are unchanged; this does not save choices,
-create source lineage, alter events or introduce an AI-service dependency.
+That original opt-in does not itself save choices, create source lineage, alter
+events or introduce an AI-service dependency. Development 9014 adds the explicit
+persistence operation below; inspection remains optional.
+
+### Attributed analysis choices (development 9014)
+
+`record_study_analysis_reference(dsn, output_file, component, value, basis,
+evidence, analyst, report_file=NULL, report_purpose="definition")` records or
+explicitly revises one Study-Area-wide component in a **new same-folder context**.
+It requires an existing Study Area, not an acquired survey or DEM. Other component
+records, hierarchy, geometry, notes, event links, manifests and raster bytes stay
+unchanged. Repeating unchanged value/basis/evidence/recorder is refused as a no-op;
+the recorder and UTC recording time belong to the new supplied record, not the
+date a historical analysis was performed. Retain prior snapshots as history; no
+embedded revision ledger, automatic deletion or signature is supplied.
+
+The optional nonspatial `analysis_reference` table has **exactly six plain-text
+columns**, all nonempty and non-NULL:
+
+| Column | Meaning / constraints |
+| --- | --- |
+| component | Unique `horizontal`, `vertical`, or `elevation_unit`; at most three rows. |
+| value | Supplied descriptive choice, not parsed/validated CRS or executable conversion. |
+| basis | `PROJECT_RECORD`, `OWNER_RECOLLECTION`, or `PROPOSED`; saving never promotes the basis. |
+| evidence | Source/rationale and qualifications, including known exceptions to a common analysis reference. |
+| analyst | Recorder attribution; does not certify the original maker or approval. |
+| recorded_at | Valid UTC `YYYY-MM-DDTHH:MM:SSZ` recording timestamp. |
+
+Unrecorded components are absent from storage and shown as unresolved; do not
+persist guessed values or `UNRESOLVED` placeholder rows. Deletion/withdrawal and
+event-specific exceptions as structured relations are outside this bounded API.
+A project-wide choice does not certify every event/file or establish a source-to-
+derivative relationship. PROPOSED describes a candidate; legacy recollection is
+not proof of execution. Unit conversion, vertical transformation and resampling
+remain separate scientific actions requiring their own evidence.
+
+Writers append the optional `analysis_reference` argument. Without it or source-use
+records they still write schema 1. With choices alone they require a Study Area and write schema 2, registering
+the table in `fluvgeo_study_tables`. Schema 2 requires that nonempty table; schema
+1 forbids it. Existing strict older readers therefore fail instead of silently
+dropping choices. Current readers also accept schema 3, where analysis choices
+remain optional alongside required source-use records. Unsupported fields/types,
+duplicate components, malformed dates and catalog/version mismatches fail before
+publication. Read-back verifies exact scalar values; no source file is overwritten.
+Existing editors using the shared read/save path retain this table automatically.
+
+`read_study_context()` returns the table as a summary argument;
+`terrain_development_summary()` validates and retains it separately from scientific
+assessment. All three report views display saved choices, evidence and attribution
+without requiring `terrain_references=TRUE`. With inspection enabled, the same
+choices are reused beside fresh file declarations and recorded artifact assertions.
+Explicit report-only `analysis_reference` inputs cannot override a saved table:
+revise the saved context or omit that argument. Old contexts retain their opt-in
+report-only input behavior. No file metadata, readiness finding or units are inferred.
+
+Report output is optional and nontransactional with the new context: preflight
+refuses an existing destination, while a later render failure retains the saved
+context and explains how to retry read-only reporting. Do not mutate linked files
+concurrently. QGIS form exposure and schema-2 client qualification follow
+separately; production/previous analyst libraries are not upgraded in place.
+
+#### Reproduction and verification
+
+Run `dev/scripts/study-analysis-reference-example.R` from the workspace root with
+a new output directory. The retained example is
+`dev/outputs/terrain-development/study-analysis-choices-v1/define-study-area.html`.
+It starts a **synthetic** new-study draft, records two expressly proposed choices
+and leaves the vertical reference unresolved. It does not assign any choice to
+Cole Creek or claim customer approval. There are no device-preview fixtures.
+
+The focused storage/reference/report run passed 283 assertions (77 in the new
+suite); report/opportunity regression passed 196; context-editor regression passed
+308, all without test failures, warnings or skips. Some tests overlap across runs;
+these are run counts, not a count of distinct tests. The R 4.6.1-built testthat
+startup warning is separate. Tests cover new/old contexts, exact typed round trips,
+component revisions, retained snapshots, unchanged other context and input hashes,
+ordinary edit preservation, relocated folders, blocked DEMs, conflicting report
+inputs, malformed storage, all three report views with/without inspection,
+escaping, output collisions and recovery after render failure.
+
+An actual previously installed fluvgeo 2026.09.12.9013 reader successfully reopened
+the example's schema-1 draft and rejected its schema-2 choice context with the
+expected unsupported-metadata error (`older-reader-check.json`). It was not
+upgraded or modified. Installed-client/QGIS acceptance, production promotion,
+canonical CRS/unit validation and source-to-derivative binding remain separate.
+
+The 9014 source build and limited `R CMD check --no-manual --no-vignettes
+--no-tests --no-examples` completed with no errors/warnings and the two existing
+package-wide NOTEs (`methods` declaration and globals/imports). Focused tests ran
+separately; full-suite/live-service/client qualification is not claimed. Offline
+indexes, unavailable suggested fluvgeodata, the Windows size utility and existing
+minimum-R build message remain environmental/package limits. The log is under
+the example folder's `package-check/fluvgeo.Rcheck/00check.log`. Strict development
+context validation passed for fluvgeo and fg-qgis-toolbox with only existing
+seed-customization notices. No commits or production-library changes were made.
 
 `write_study_context()` creates a **new** GeoPackage. `read_study_context()` returns
 validated summary arguments; `read_study_context_summary()` reruns the existing
@@ -58,6 +155,8 @@ Optional tables use the summary's existing UUID/parentage/date requirements:
 | reaches | reach_id, stream_id, reach_name |
 | survey_events | survey_event_id, reach_id, survey_year; optional survey_month, survey_day, source_dataset, availability_notes |
 | reconstruction | case_id, source_ref, proposed_structure, evidence, status, analyst, decision_notes |
+| analysis_reference (schema 2 or 3) | component, value, basis, evidence, analyst, recorded_at; see exact constraints above |
+| terrain_sources (schema 3 only) | exact 13-column [source-use contract](terrain-source-use.md); attributed claims pinned to inventoried GeoTIFF fingerprints |
 
 Date components are R integer / GeoPackage integer; other scalar columns are
 text, with typed missing values. Unsupported columns/classes fail, never silently

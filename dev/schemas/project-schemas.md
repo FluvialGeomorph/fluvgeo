@@ -101,6 +101,21 @@ limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
 
 ## Other contracts
 
+### Terrain preparation accounts
+
+The [schema-5 account binding](terrain-processing-accounts.md) retains ordered,
+attributed operations, input/output descriptions, literal parameters and known
+software/execution details. Unknowns remain explicit. This is archive recovery,
+not verified execution, an executable recipe or normalized product lineage.
+
+### Terrain source-use evidence
+
+The [source-use binding](terrain-source-use.md) records attributed candidates,
+use accounts and rejections against inventoried GeoTIFF fingerprints. It uses
+Study Area context schema 3 without changing terrain manifests, event identities
+or scientific assessment. Source assets/recipes and enterprise lineage remain
+separate; references are not automatically fetched or matched.
+
 ### Legacy staging inventory and report
 
 The [legacy staging inspection contract](legacy-staging-inspection.md) defines

@@ -1,3 +1,38 @@
+# fluvgeo 2026.09.13.9018
+
+* Record ordered terrain preparation accounts in schema-5 Study Area snapshots,
+  linked to source-use claims and optional retained processing documents. All
+  report views show supplied steps, unknowns and next actions. Literal parameters
+  are not executed; no source claim, terrain reference or scientific finding is changed.
+
+# fluvgeo 2026.09.13.9017
+
+* Retain selected metadata snapshots and processing records against source-use
+  accounts in schema-4 contexts. Copies are fingerprinted, older snapshots are
+  preserved, and all report views show fresh attachment integrity and next actions.
+  No source claim is promoted and no processing execution is inferred.
+
+# fluvgeo 2026.09.13.9016
+
+* Record attributed terrain source-use evidence in new schema-3 Study Area
+  snapshots. Candidate, recorded-use and rejected claims remain distinct;
+  target fingerprints prevent transferring claims to replaced terrain bytes.
+  All three report views share the evidence and next actions. No source matching,
+  metadata acceptance, terrain processing or client deployment is performed.
+
+# fluvgeo 2026.09.12.9015
+
+* Protect shared gt table fragments as raw HTML during Markdown rendering, so
+  generated CSS is not rewritten into paragraphs. No data or schema changes.
+
+# fluvgeo 2026.09.12.9014
+
+* Record or revise explicitly attributed Study Area analysis-reference choices in
+  new context snapshots. Choices use schema 2; schema-1 inputs remain readable.
+  Reports reuse saved choices without changing DEMs, manifest assertions,
+  scientific assessment or source lineage. Proposals and recollections remain
+  qualified; recording does not certify transformation execution or CRS validity.
+
 # fluvgeo 2026.09.12.9013
 
 * Improve early-workflow HTML report tables using the user-selected gt package,

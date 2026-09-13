@@ -28,3 +28,24 @@ test_that('shared presentation is packaged and passed to isolated report environ
     expect_true(grepl(s,env$report_table_css,fixed=TRUE),info=s)
   expect_identical(parent.env(env),baseenv())
 })
+
+test_that('real report views preserve gt CSS through Markdown rendering', {
+  skip_if_not_installed('gt'); skip_if_not_installed('rmarkdown')
+  skip_if_not(rmarkdown::pandoc_available())
+  root <- tempfile(); dir.create(root); withr::defer(unlink(root,recursive=TRUE))
+  draft <- start_study_context(file.path(root,'draft.gpkg'),'Synthetic CSS regression')$context
+  ctx <- record_study_analysis_reference(draft,file.path(root,'choice.gpkg'),'horizontal',
+    'Synthetic candidate','PROPOSED','Test <not approval>','Fixture')$context
+  for (purpose in c('definition','terrain','staging')) {
+    path <- file.path(root,paste0(purpose,'.html'))
+    study_context_report(ctx,path,purpose=purpose)
+    doc <- xml2::read_html(path)
+    css <- xml2::xml_text(xml2::xml_find_all(doc,'//style'))
+    gt_css <- css[grepl('.gt_table {',css,fixed=TRUE)]
+    expect_gt(length(gt_css),0L)
+    expect_false(any(grepl('<p>',gt_css,fixed=TRUE)))
+    expect_false(any(grepl('</p>',gt_css,fixed=TRUE)))
+    expect_gt(length(xml2::xml_find_all(doc,'//table')),0L)
+    expect_true(any(grepl('Test <not approval>',xml2::xml_text(xml2::xml_find_all(doc,'//table')),fixed=TRUE)))
+  }
+})
