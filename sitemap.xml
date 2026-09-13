@@ -87,8 +87,12 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/reach_rhg_graph.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_network_geodatabase.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_study_context.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_analysis_reference.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_survey_event.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_terrain_metadata.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_terrain_processing.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/record_study_terrain_source.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/retain_study_terrain_evidence.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/revise_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_reach_areas.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf2csv.html</loc></url>

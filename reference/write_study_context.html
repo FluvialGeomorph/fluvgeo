@@ -21,7 +21,7 @@ pinned by SHA-256. Move the whole folder, not just this GeoPackage."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.12.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.13.9018</span>
       </span>
     </div>
 
@@ -71,7 +71,11 @@ pinned by SHA-256. Move the whole folder, not just this GeoPackage.</p>
 <span>  network <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  folder_manifest <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_sources <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_evidence <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +107,27 @@ SpatRaster objects and an independent overview DEM are not persisted.</p></dd>
 
 <dt id="arg-terrain-notes-analyst-notes">terrain_notes, analyst_notes<a class="anchor" aria-label="anchor" href="#arg-terrain-notes-analyst-notes"></a></dt>
 <dd><p>Optional scalar text, as in the summary.</p></dd>
+
+
+<dt id="arg-analysis-reference">analysis_reference<a class="anchor" aria-label="anchor" href="#arg-analysis-reference"></a></dt>
+<dd><p>Optional saved project-choice table with component,
+value, basis, evidence, analyst and recorded_at character columns. Requires a
+Study Area; uses schema 2. Prefer record_study_analysis_reference() for edits.</p></dd>
+
+
+<dt id="arg-terrain-sources">terrain_sources<a class="anchor" aria-label="anchor" href="#arg-terrain-sources"></a></dt>
+<dd><p>Optional attributed source-use table, as documented by
+record_study_terrain_source(). Requires a Study Area and manifest; uses schema 3.</p></dd>
+
+
+<dt id="arg-terrain-evidence">terrain_evidence<a class="anchor" aria-label="anchor" href="#arg-terrain-evidence"></a></dt>
+<dd><p>Optional retained attachment table from
+retain_study_terrain_evidence(). Requires source-use records; uses schema 4.</p></dd>
+
+
+<dt id="arg-terrain-processing">terrain_processing<a class="anchor" aria-label="anchor" href="#arg-terrain-processing"></a></dt>
+<dd><p>Optional ordered preparation accounts from
+record_study_terrain_processing(). Requires source-use records; uses schema 5.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -19,7 +19,7 @@ inferred. Context tables are report inputs, not new FGDB persistence relations."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.12.9013</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.13.9018</span>
       </span>
     </div>
 
@@ -69,7 +69,11 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 <span>  survey_dems <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reconstruction <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  folder_manifest <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  legacy_staging <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  legacy_staging <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_sources <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_evidence <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -146,6 +150,27 @@ findings. Associations do not prove provenance, coverage or acceptance.</p></dd>
 inspected with inspect_legacy_staging(). Adds source-layer inventories and
 missing-structure prompts, not inferred hierarchy or conversion approval.
 This link is not persisted by the current Study Context binding.</p></dd>
+
+
+<dt id="arg-analysis-reference">analysis_reference<a class="anchor" aria-label="anchor" href="#arg-analysis-reference"></a></dt>
+<dd><p>Optional attributed saved project-choice table, as
+in write_study_context(). Kept separate from file declarations and assessment.</p></dd>
+
+
+<dt id="arg-terrain-sources">terrain_sources<a class="anchor" aria-label="anchor" href="#arg-terrain-sources"></a></dt>
+<dd><p>Optional saved source-use records accepted by
+write_study_context(). These attributed claims do not certify source lineage.</p></dd>
+
+
+<dt id="arg-terrain-evidence">terrain_evidence<a class="anchor" aria-label="anchor" href="#arg-terrain-evidence"></a></dt>
+<dd><p>Optional retained attachment table, as in
+retain_study_terrain_evidence(). Paths are relative to the terrain manifest's
+folder. Fresh integrity results are returned separately as retained_evidence.</p></dd>
+
+
+<dt id="arg-terrain-processing">terrain_processing<a class="anchor" aria-label="anchor" href="#arg-terrain-processing"></a></dt>
+<dd><p>Optional ordered, attributed preparation accounts
+from record_study_terrain_processing(). These do not establish execution.</p></dd>
 
 </dl></div>
     <div id="value">
