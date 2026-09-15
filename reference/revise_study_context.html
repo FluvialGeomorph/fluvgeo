@@ -21,7 +21,7 @@ folder remains a separate operation. Prior notes are never replaced."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.13.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.14.9021</span>
       </span>
     </div>
 
@@ -68,7 +68,8 @@ folder remains a separate operation. Prior notes are never replaced.</p>
 <span>  add_note <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  report_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  report_purpose <span class="op">=</span> <span class="st">"terrain"</span>,</span>
-<span>  study_area_boundary <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  study_area_boundary <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  study_area_purpose <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -112,6 +113,12 @@ retaining the existing Study Area identity/name; input attributes are not
 imported. Supply a nonempty add_note explaining its source and rationale.
 Multiple features must first be deliberately combined by the analyst.
 No dissolve, repair, reprojection, clipping or child-boundary changes occur.</p></dd>
+
+
+<dt id="arg-study-area-purpose">study_area_purpose<a class="anchor" aria-label="anchor" href="#arg-study-area-purpose"></a></dt>
+<dd><p>Optional replacement current purpose. NULL keeps
+the existing value; nonempty text replaces it; NA_character_ clears it.
+Stored separately in schema 6, never replacing analyst/provenance notes.</p></dd>
 
 </dl></div>
     <div id="value">

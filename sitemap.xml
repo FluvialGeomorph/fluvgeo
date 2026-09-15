@@ -30,6 +30,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_valleyline_points.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_xs_dims.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/classify_stream_network_segments.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/clip_terrain_to_aoi.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_long_profile.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_xs_long_profile.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/connect_stream_network.html</loc></url>
@@ -54,6 +55,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/fluvgeo.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/gdb_raster2SpatRast.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_dem.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_drainage_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_leaflet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_results_leaflet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/get_terrain_leaflet.html</loc></url>
@@ -71,6 +73,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_2_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_2_report_b.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_3_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/locate_drainage_stream.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_extent.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_metric.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_overview.html</loc></url>
@@ -127,6 +130,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_summary.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/table_xs_dimensions.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_clip_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_summary.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_reference_review.html</loc></url>

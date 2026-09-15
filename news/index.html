@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.13.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.14.9021</span>
       </span>
     </div>
 
@@ -47,6 +47,18 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.14.9021" id="fluvgeo-202609149021">fluvgeo 2026.09.14.9021<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149021"></a></h2>
+<ul><li>Add <code><a href="../reference/locate_drainage_stream.html">locate_drainage_stream()</a></code> and <code><a href="../reference/get_drainage_context.html">get_drainage_context()</a></code> for review-only drainage discovery through hydrogeofetch. A near-channel click is snapped within 200 m; distant trace results are rejected. Return WBD 2025 HUC12, catchment-based basin and distance-limited upstream/downstream channels with per-layer availability. No project geometry or hierarchy is created or changed.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.14.9020" id="fluvgeo-202609149020">fluvgeo 2026.09.14.9020<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149020"></a></h2>
+<ul><li>Add opt-in <code>study_area_purpose</code> to Study Area creation/revision. Schema 6 separates the current customer question from retained analyst/provenance notes; NA explicitly clears Purpose. Existing calls and schema 1-5 reads are unchanged. Define Study Area reports display current Purpose separately from supporting notes.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.13.9019" id="fluvgeo-202609139019">fluvgeo 2026.09.13.9019<a class="anchor" aria-label="anchor" href="#fluvgeo-202609139019"></a></h2>
+<ul><li>Added <code><a href="../reference/clip_terrain_to_aoi.html">clip_terrain_to_aoi()</a></code> and <code><a href="../reference/terrain_clip_report.html">terrain_clip_report()</a></code>: real AOI crop/mask execution with automatic receipts, exact retained-value checks, preserved source data and a compact visual review. This first writer slice requires self-contained projected 2D GeoTIFFs and same-CRS polygon AOIs. No unit/datum conversion, event reassignment or retrospective account entry is performed.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.13.9018" id="fluvgeo-202609139018">fluvgeo 2026.09.13.9018<a class="anchor" aria-label="anchor" href="#fluvgeo-202609139018"></a></h2>
 <ul><li>Record ordered terrain preparation accounts in schema-5 Study Area snapshots, linked to source-use claims and optional retained processing documents. All report views show supplied steps, unknowns and next actions. Literal parameters are not executed; no source claim, terrain reference or scientific finding is changed.</li>

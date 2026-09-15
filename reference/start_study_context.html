@@ -21,7 +21,7 @@ generated once and retained by subsequent context revisions."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.13.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.14.9021</span>
       </span>
     </div>
 
@@ -65,7 +65,8 @@ generated once and retained by subsequent context revisions.</p>
 <span>  <span class="va">output_file</span>,</span>
 <span>  <span class="va">study_area_name</span>,</span>
 <span>  analyst_notes <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  report_file <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  report_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  study_area_purpose <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -90,6 +91,12 @@ an acquisition record or an approval signature. Outer whitespace is trimmed.</p>
 <dt id="arg-report-file">report_file<a class="anchor" aria-label="anchor" href="#arg-report-file"></a></dt>
 <dd><p>Optional new .html path in an existing directory. Renders
 define_study_area_report() from the reopened saved context.</p></dd>
+
+
+<dt id="arg-study-area-purpose">study_area_purpose<a class="anchor" aria-label="anchor" href="#arg-study-area-purpose"></a></dt>
+<dd><p>Optional current customer question/purpose, separate
+from analyst notes. NULL preserves the old binding; text or NA_character_
+opts into schema 6. NA records an explicitly unspecified purpose.</p></dd>
 
 </dl></div>
     <div id="value">
