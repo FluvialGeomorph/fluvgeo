@@ -43,7 +43,8 @@ write_study_context <- function(dsn, study_area = NULL, streams = NULL,
     terrain_processing = terrain_processing)
   tabs <- tabs[!vapply(tabs, is.null, logical(1))]
   .fg_study_tables_check(tabs)
-  schema <- if (!is.null(terrain_processing)) "FLUVGEO_STUDY_CONTEXT_5" else
+  schema <- if ("study_area_purpose" %in% names(study_area)) "FLUVGEO_STUDY_CONTEXT_6" else
+    if (!is.null(terrain_processing)) "FLUVGEO_STUDY_CONTEXT_5" else
     if (!is.null(terrain_evidence)) "FLUVGEO_STUDY_CONTEXT_4" else
     if (!is.null(terrain_sources)) "FLUVGEO_STUDY_CONTEXT_3" else
     if (is.null(analysis_reference)) "FLUVGEO_STUDY_CONTEXT_1" else "FLUVGEO_STUDY_CONTEXT_2"
@@ -128,7 +129,7 @@ read_study_context <- function(dsn) {
     "folder_manifest", "folder_manifest_sha256")
   if (inherits(metadata, "sf") || nrow(metadata) != 1L || !setequal(names(metadata), fields) ||
       !all(vapply(metadata, is.character, logical(1))) ||
-      !metadata$schema %in% paste0("FLUVGEO_STUDY_CONTEXT_", 1:5))
+      !metadata$schema %in% paste0("FLUVGEO_STUDY_CONTEXT_", 1:6))
     .fg_abort("Unsupported or malformed Study Area context metadata.")
   catalog <- sf::st_read(dsn, layer = required[2], quiet = TRUE)
   if (inherits(catalog, "sf") || !setequal(names(catalog), c("table_name", "geometry_column")) ||
@@ -141,7 +142,7 @@ read_study_context <- function(dsn) {
     if ("terrain_evidence" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_4" else
     if ("terrain_sources" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_3" else
     if (has_choices) "FLUVGEO_STUDY_CONTEXT_2" else "FLUVGEO_STUDY_CONTEXT_1"
-  if (!identical(metadata$schema, expected))
+  if (metadata$schema != "FLUVGEO_STUDY_CONTEXT_6" && !identical(metadata$schema, expected))
     .fg_abort("Study Area context schema and catalog disagree; choices require schema 2, source-use records schema 3, retained evidence schema 4, processing accounts schema 5.")
   tabs <- list()
   for (i in seq_len(nrow(catalog))) {
@@ -157,6 +158,9 @@ read_study_context <- function(dsn) {
     tabs[[nm]] <- x
   }
   .fg_study_tables_check(tabs)
+  if ("study_area_purpose" %in% names(tabs$study_area)) expected <- "FLUVGEO_STUDY_CONTEXT_6"
+  if (!identical(metadata$schema, expected))
+    .fg_abort("Study Area purpose requires schema 6; schema and fields disagree.")
   args <- .fg_study_arguments(tabs, metadata, dirname(dsn))
   args
 }
@@ -186,7 +190,7 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
 }
 
 .fg_study_columns <- function() list(
-  study_area = c("study_area_id", "study_area_name"),
+  study_area = c("study_area_id", "study_area_name", "study_area_purpose"),
   streams = c("stream_id", "study_area_id", "stream_name"),
   reaches = c("reach_id", "stream_id", "reach_name"),
   survey_events = c("survey_event_id", "reach_id", "survey_year", "survey_month",

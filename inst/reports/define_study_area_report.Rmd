@@ -97,7 +97,12 @@ if (count(r$event_artifacts)) {
 ### Purpose and scope notes
 
 ```{r notes, results='asis'}
-if (is.na(r$analyst_notes)) {
+current_purpose <- r$study_area$study_area_purpose
+if (!is.null(current_purpose)) {
+  if (is.na(current_purpose)) cat('<p>No current purpose recorded.</p>') else
+    cat('<div style="white-space: pre-wrap">', esc(current_purpose), '</div>', sep = '')
+  if (!is.na(r$analyst_notes)) cat('<details><summary>Supporting scope notes</summary><div style="white-space: pre-wrap">', esc(r$analyst_notes), '</div></details>', sep = '')
+} else if (is.na(r$analyst_notes)) {
   cat('<p>Not yet recorded. Start with the customer question and intended use of the results.</p>')
 } else cat('<div style="white-space: pre-wrap">', esc(r$analyst_notes), '</div>', sep = '')
 ```
@@ -142,7 +147,7 @@ Record decisions and unresolved alternatives as customer requirements develop.
 
 ```{r next, results='asis'}
 tasks <- character()
-if (is.na(r$analyst_notes)) tasks <- c(tasks, 'Describe the customer question, intended decisions and initial scope in an analyst note.')
+if (if (is.null(current_purpose)) is.na(r$analyst_notes) else is.na(current_purpose)) tasks <- c(tasks, 'Describe the current customer question, intended decisions and initial scope.')
 if (!inherits(r$study_area, 'sf')) tasks <- c(tasks, 'Discuss the candidate Study Area extent and why it fits the customer question; supply a boundary when ready.')
 if (!count(r$streams)) tasks <- c(tasks, 'Choose the Streams to include and explain the naming and segmentation basis; HUC boundaries are optional.')
 if (!count(r$reaches)) tasks <- c(tasks, 'Agree on meaningful Reach divisions within the selected Streams.')

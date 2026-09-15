@@ -73,10 +73,11 @@ changed. The shared backend adds no new dependency, web request or AI runtime.
 
 Normalized source-product identities, machine-readable multi-source dependency
 graphs, typed executable recipes and independently observed execution remain
-separate work. The next development priority is a bounded execution tool that
-automatically records its actual inputs, parameters, software, outputs and
-outcome. Analysts should select methods and review results, not retype observed
-execution into a retrospective account. The exact first operation still requires
-selection and a scientific contract; this is a requirement, not an implemented
-execution capability. Do not promote these attributed accounts into those future models
+separate work. The first bounded execution tool is now
+[explicit AOI terrain clipping](terrain-clipping.md): it automatically records
+its actual input/AOI/output fingerprints, parameters, software and outcome.
+Analysts select methods and review results, not retype observed execution into a
+retrospective account. Its function-specific receipt is separate from these
+accounts; it does not implement a general recipe or dependency graph. Do not
+promote these attributed accounts into those future models
 automatically. Keep prior context snapshots when interpreting conflicting accounts.

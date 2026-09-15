@@ -1,6 +1,7 @@
 # Saved Study Area report context
 
-Development bindings: `FLUVGEO_STUDY_CONTEXT_1` and opt-in
+Development bindings include opt-in `FLUVGEO_STUDY_CONTEXT_6` (current Study Area
+Purpose, described below), plus `FLUVGEO_STUDY_CONTEXT_1` and opt-in
 `FLUVGEO_STUDY_CONTEXT_2` (attributed analysis choices), plus
 `FLUVGEO_STUDY_CONTEXT_3` ([terrain source-use evidence](terrain-source-use.md)) and
 `FLUVGEO_STUDY_CONTEXT_4` ([retained supporting files](retained-terrain-evidence.md)), and
@@ -27,6 +28,40 @@ weakening actual Survey Event semantics. These requirements change no schema tag
 field, API or validation behavior in this documentation pass.
 
 ## Interface and storage
+
+### Current Study Area Purpose (development 9020)
+
+`start_study_context()` and `revise_study_context()` append an optional
+`study_area_purpose` argument. NULL leaves the previous behavior/value untouched;
+nonempty text records the current purpose/customer question; NA_character_ records
+an explicitly unspecified purpose (including clearing an earlier value).
+Store this nullable plain-character column on `study_area`, separately from
+append-only `analyst_notes`. Earlier snapshots remain untouched. No purpose is
+inferred by the backend from mixed historical notes.
+
+Presence of this column requires schema 6, including when its value is NULL in
+SQL. Schema 6 supports the existing schema 1-5 tables without weakening their
+validation or relative-link checks. Field/tag disagreement fails. Older readers
+reject schema 6 instead of silently discarding Purpose. Callers that omit it
+continue writing existing schemas; current readers retain schema 1-5 support.
+Purpose edits preserve all other supplied records/geometry/evidence and use the
+same new-file revision publication. This is a current narrative, not an approval,
+requirements ledger or enterprise FGDB schema change. Define Study Area reporting
+uses the explicit purpose when present, with analyst notes separately expandable.
+
+FG Studio alone can recover its original Purpose from its own immutable
+`study.gpkg` creation notes when the explicit field is absent. It never interprets
+later appended boundary/provenance notes as Purpose and does not rewrite on read.
+Other clients/archives must not infer this application-specific provenance rule.
+Only the isolated FG Studio development library is upgraded; production/QGIS
+client qualification remains separate.
+
+Verification for 9020: focused context, starter, boundary and Purpose tests passed;
+the final Purpose suite passed 16 assertions including a rendered Define Study
+Area report. Existing schema calls, identity preservation, note retention,
+clearing and field/tag mismatch refusal are covered. FG Studio's installed suite
+passed 139 assertions and its package check was OK against the isolated backend.
+The full fluvgeo suite/check and production/QGIS promotion are not claimed.
 
 ### Opt-in terrain-reference review
 
@@ -150,7 +185,7 @@ Optional tables use the summary's existing UUID/parentage/date requirements:
 
 | Table | Supported scalar columns |
 | --- | --- |
-| study_area | study_area_id, study_area_name |
+| study_area | study_area_id, study_area_name; optional study_area_purpose requires schema 6 |
 | streams | stream_id, study_area_id, stream_name |
 | reaches | reach_id, stream_id, reach_name |
 | survey_events | survey_event_id, reach_id, survey_year; optional survey_month, survey_day, source_dataset, availability_notes |

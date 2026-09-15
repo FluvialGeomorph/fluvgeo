@@ -1,0 +1,137 @@
+---
+title: "Terrain clipping: completed operation"
+output:
+  html_document:
+    self_contained: true
+    toc: false
+params:
+  report: null
+  terrain: null
+  aoi: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+r <- params$report
+```
+
+```{r styling, results='asis'}
+cat(knitr::raw_html(paste0('<style>', report_table_css, '</style>')))
+```
+
+## What happened
+
+The tool cropped a DEM to the supplied AOI bounds and masked cells outside the
+chosen polygon coverage. It preserved the source grid and retained elevations;
+it did not resample, convert units, transform a datum, fill gaps or condition a
+channel. Existing NoData stayed masked. NoData is not a quality percentage.
+
+```{r overview, results='asis'}
+report_table(data.frame(
+  Item = c(
+    'Source DEM',
+    'New DEM',
+    'Why this AOI was selected',
+    'Boundary-cell rule',
+    'Source / output rows and columns',
+    'Cell size (CRS units)',
+    'Elevation-band unit',
+    'Outcome'
+  ),
+  Detail = c(
+    r$input$filename,
+    r$output$path,
+    r$rationale,
+    if (r$parameters$touches) {
+      'Retain cells touched by the AOI'
+    } else {
+      'Retain cells whose centers are inside the AOI'
+    },
+    paste(
+      paste(unlist(r$input$grid$dimensions), collapse = ' x '),
+      paste(unlist(r$output$grid$dimensions), collapse = ' x '),
+      sep = ' / '
+    ),
+    paste(unlist(r$output$grid$resolution), collapse = ' x '),
+    if (nzchar(r$output$reference$band_unit)) {
+      r$output$reference$band_unit
+    } else {
+      'Not declared; no unit was inferred'
+    },
+    'Completed; local output fingerprints checked when this report was made'
+  )
+))
+```
+
+## Review the result
+
+The red outline is the supplied AOI. Edge cells follow the selected boundary
+rule; the output rectangle is aligned to the original raster grid.
+
+```{r map, fig.width=9, fig.height=6, out.width='100%'}
+dem <- terra::rast(params$terrain)
+aoi <- sf::st_read(params$aoi, layer = 'aoi', quiet = TRUE)
+terra::plot(dem, main = 'Clipped terrain and explicit AOI')
+plot(sf::st_geometry(aoi), add = TRUE, border = '#c62828', lwd = 2)
+```
+
+## What to do next
+
+Confirm that the chosen AOI and boundary-cell rule match the intended analysis.
+Keep `terrain.tif`, `aoi.gpkg`, `terrain-manifest.json` and the execution receipts
+together. Use the returned terrain in the appropriate Study Area / Survey Event
+workflow; this operation does not assign or replace an event's DEM automatically.
+**No CSV history entry is needed for this run.**
+
+Clipping does not establish source-collection lineage, recover unknown vertical
+metadata or prove that multiple surveys can be compared. The retained source hash
+identifies the local input used, not an original lidar collection. The original
+source is not copied into this folder or rechecked by this report.
+
+<details>
+<summary>Automatic execution record and scope</summary>
+
+```{r execution, results='asis'}
+report_table(data.frame(
+  Item = c(
+    'Operation',
+    'Started (UTC)',
+    'Completed (UTC)',
+    'Bounds / output storage',
+    'Source SHA-256',
+    'AOI SHA-256',
+    'Output SHA-256',
+    'Software'
+  ),
+  Detail = c(
+    r$operation,
+    r$started_at,
+    r$completed_at,
+    'Bounds snap out; Float64 GeoTIFF; DEFLATE compression',
+    r$input$sha256,
+    r$aoi$sha256,
+    r$output$sha256,
+    paste(
+      'fluvgeo',
+      r$software$fluvgeo,
+      '/ terra',
+      r$software$terra,
+      '/ R',
+      r$software$R
+    )
+  )
+))
+```
+
+`execution.json` stores the actual settings, software versions, reference/grid
+observations and successful checks. `started.json` preserves the start record.
+This tool-generated record is separate from attributed accounts of past work;
+it is not a signed certificate or a general-purpose executable recipe.
+
+This first implementation supports self-contained, single-band projected 2D
+GeoTIFFs and same-CRS polygon AOIs. It refuses auxiliary-file dependencies,
+compound/3D reference systems, rotated grids and categorical rasters. Those
+boundaries require separate qualification; known references must never be dropped
+to make a file pass.
+
+</details>

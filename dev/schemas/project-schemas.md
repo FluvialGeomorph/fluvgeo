@@ -12,6 +12,11 @@ This document records important structural contracts used by the repository, inc
 
 ## Cross-section watershed contract
 
+For the separate, review-only drainage discovery result (query/snap points,
+COMID, four candidate layers, per-layer status, sources and explicit network
+limits), see [drainage exploration](../features/drainage-exploration.md).
+It does not alter the persisted Study Area schema or imply exact pour-point area.
+
 `cross_section()` always returns a numeric `Watershed_Area_SqMile` field.
 Its `watershed` argument defines how that field is populated:
 
@@ -100,6 +105,18 @@ shared FGDB schema for manifest, field types, acceptance provenance, and filesys
 limitations. File-geodatabase and UPDATE bindings are reserved, not implemented.
 
 ## Other contracts
+
+### Current Study Area Purpose
+
+The [schema-6 context extension](study-context.md#current-study-area-purpose-development-9020)
+separates editable current Purpose from retained analyst/provenance notes.
+Existing schema 1-5 clients remain unchanged unless they opt into the new field.
+
+### Executed terrain clipping
+
+The [function-specific clipping receipt](terrain-clipping-run.md) records an
+actual crop/mask run and its output fingerprints in a new delivery folder. It
+does not add or reinterpret retrospective Study Area preparation accounts.
 
 ### Terrain preparation accounts
 

@@ -8,7 +8,8 @@ start_study_context(
   output_file,
   study_area_name,
   analyst_notes = NA_character_,
-  report_file = NULL
+  report_file = NULL,
+  study_area_purpose = NULL
 )
 }
 \arguments{
@@ -22,6 +23,10 @@ an acquisition record or an approval signature. Outer whitespace is trimmed.}
 
 \item{report_file}{Optional new .html path in an existing directory. Renders
 define_study_area_report() from the reopened saved context.}
+
+\item{study_area_purpose}{Optional current customer question/purpose, separate
+from analyst notes. NULL preserves the old binding; text or NA_character_
+opts into schema 6. NA records an explicitly unspecified purpose.}
 }
 \value{
 List of context and report paths (report NULL if not requested).

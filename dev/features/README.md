@@ -1,5 +1,11 @@
 # Features
 
+- [Drainage exploration](drainage-exploration.md): review-only stream snapping,
+  HUC12/basin candidates and bounded network navigation for human scope decisions.
+
+- [Terrain clipping](terrain-clipping.md): execute explicit AOI crop/mask with
+  automatic run evidence, source preservation and a short visual report.
+
 - [Terrain preparation accounts](terrain-processing-accounts.md): ordered,
   attributed preparation descriptions with explicit unknowns; no inferred execution.
 

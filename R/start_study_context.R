@@ -13,13 +13,16 @@
 #'   an acquisition record or an approval signature. Outer whitespace is trimmed.
 #' @param report_file Optional new .html path in an existing directory. Renders
 #'   define_study_area_report() from the reopened saved context.
+#' @param study_area_purpose Optional current customer question/purpose, separate
+#'   from analyst notes. NULL preserves the old binding; text or NA_character_
+#'   opts into schema 6. NA records an explicitly unspecified purpose.
 #' @return List of context and report paths (report NULL if not requested).
 #'   Existing destinations are refused. Outputs are not one transaction: a
 #'   rendering failure or cancellation after saving can leave the context.
 #'   Keep it and retry reporting without creating another study identity.
 #' @export
 start_study_context <- function(output_file, study_area_name,
-    analyst_notes = NA_character_, report_file = NULL) {
+    analyst_notes = NA_character_, report_file = NULL, study_area_purpose = NULL) {
   output_file <- .fg_network_dsn(output_file)
   if (file.exists(output_file)) .fg_abort("Context destination already exists.")
   study_area_name <- .fg_required_text(study_area_name, "study_area_name")
@@ -30,8 +33,10 @@ start_study_context <- function(output_file, study_area_name,
       .fg_abort("Supply a new .html report path in an existing directory.")
     if (file.exists(report_file)) .fg_abort("Report destination already exists.")
   }
-  context <- write_study_context(output_file, study_area = data.frame(
-    study_area_id = .fg_generate_uuid(1L), study_area_name = study_area_name),
+  study_area <- data.frame(study_area_id = .fg_generate_uuid(1L), study_area_name = study_area_name)
+  if (!is.null(study_area_purpose)) study_area$study_area_purpose <-
+    .fg_optional_text(study_area_purpose, "study_area_purpose")
+  context <- write_study_context(output_file, study_area = study_area,
     analyst_notes = analyst_notes)
   report <- NULL
   if (!is.null(report_file)) report <- tryCatch(

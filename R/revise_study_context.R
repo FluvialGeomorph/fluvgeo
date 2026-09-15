@@ -23,6 +23,9 @@
 #'   imported. Supply a nonempty add_note explaining its source and rationale.
 #'   Multiple features must first be deliberately combined by the analyst.
 #'   No dissolve, repair, reprojection, clipping or child-boundary changes occur.
+#' @param study_area_purpose Optional replacement current purpose. NULL keeps
+#'   the existing value; nonempty text replaces it; NA_character_ clears it.
+#'   Stored separately in schema 6, never replacing analyst/provenance notes.
 #' @return List with context and report paths (report NULL when not requested).
 #'   Publication is non-replacing, but the two outputs are not one transaction.
 #'   If rendering fails or execution is canceled after saving, the new context
@@ -31,7 +34,7 @@
 #' @export
 revise_study_context <- function(dsn, output_file, study_area_name = NULL,
     add_note = NULL, report_file = NULL, report_purpose = "terrain",
-    study_area_boundary = NULL) {
+    study_area_boundary = NULL, study_area_purpose = NULL) {
   report_purpose <- .fg_choice(report_purpose, c("terrain", "definition", "staging"), "report_purpose")
   dsn <- .fg_network_dsn(dsn)
   output_file <- .fg_network_dsn(output_file)
@@ -69,6 +72,12 @@ revise_study_context <- function(dsn, output_file, study_area_name = NULL,
     if (is.null(args$study_area)) .fg_abort("No supplied Study Area record to rename; no identity was created.")
     changed <- changed || !identical(study_area_name, args$study_area$study_area_name)
     args$study_area$study_area_name <- study_area_name
+  }
+  if (!is.null(study_area_purpose)) {
+    if (is.null(args$study_area)) .fg_abort("No Study Area record for a purpose.")
+    purpose <- .fg_optional_text(study_area_purpose, "study_area_purpose")
+    changed <- changed || !identical(purpose, args$study_area$study_area_purpose)
+    args$study_area$study_area_purpose <- purpose
   }
   if (!is.null(add_note)) {
     add_note <- .fg_required_text(add_note, "add_note")

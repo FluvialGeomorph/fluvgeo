@@ -11,7 +11,8 @@ revise_study_context(
   add_note = NULL,
   report_file = NULL,
   report_purpose = "terrain",
-  study_area_boundary = NULL
+  study_area_boundary = NULL,
+  study_area_purpose = NULL
 )
 }
 \arguments{
@@ -38,6 +39,10 @@ retaining the existing Study Area identity/name; input attributes are not
 imported. Supply a nonempty add_note explaining its source and rationale.
 Multiple features must first be deliberately combined by the analyst.
 No dissolve, repair, reprojection, clipping or child-boundary changes occur.}
+
+\item{study_area_purpose}{Optional replacement current purpose. NULL keeps
+the existing value; nonempty text replaces it; NA_character_ clears it.
+Stored separately in schema 6, never replacing analyst/provenance notes.}
 }
 \value{
 List with context and report paths (report NULL when not requested).

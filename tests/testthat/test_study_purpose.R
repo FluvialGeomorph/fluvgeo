@@ -1,0 +1,48 @@
+test_that("current purpose is independent of retained analyst notes", {
+  root <- withr::local_tempdir()
+  a <- file.path(root, "a.gpkg"); b <- file.path(root, "b.gpkg")
+  c <- file.path(root, "c.gpkg"); d <- file.path(root, "d.gpkg")
+  start_study_context(a, "Study", analyst_notes = "Provenance", study_area_purpose = "First question")
+  initial <- read_study_context(a)
+  expect_identical(initial$study_area$study_area_purpose, "First question")
+  expect_identical(sf::st_read(a, layer = "fluvgeo_study_context", quiet = TRUE)$schema, "FLUVGEO_STUDY_CONTEXT_6")
+  hash <- tools::md5sum(a)
+  revise_study_context(a, b, study_area_purpose = " Revised question ")
+  revised <- read_study_context(b)
+  expect_identical(revised$study_area$study_area_purpose, "Revised question")
+  expect_identical(revised$analyst_notes, "Provenance")
+  expect_identical(revised$study_area$study_area_id, initial$study_area$study_area_id)
+  expect_identical(tools::md5sum(a), hash)
+  revise_study_context(b, c, study_area_purpose = NA_character_)
+  expect_true(is.na(read_study_context(c)$study_area$study_area_purpose))
+  revise_study_context(c, d, study_area_name = "Renamed", add_note = "More evidence")
+  expect_true(is.na(read_study_context(d)$study_area$study_area_purpose))
+  expect_match(read_study_context(d)$analyst_notes, "Provenance")
+  expect_error(revise_study_context(d, file.path(root, "invalid.gpkg"), study_area_purpose = " "))
+  old <- file.path(root, "old.gpkg")
+  start_study_context(old, "Older", analyst_notes = "Old mixed notes")
+  expect_null(read_study_context(old)$study_area$study_area_purpose)
+  expect_identical(sf::st_read(old, layer = "fluvgeo_study_context", quiet = TRUE)$schema, "FLUVGEO_STUDY_CONTEXT_1")
+})
+
+test_that("purpose schema tags cannot silently omit the field", {
+  root <- withr::local_tempdir(); path <- file.path(root, "context.gpkg")
+  start_study_context(path, "Study", study_area_purpose = "Question")
+  metadata <- sf::st_read(path, layer = "fluvgeo_study_context", quiet = TRUE)
+  metadata$schema <- "FLUVGEO_STUDY_CONTEXT_1"
+  sf::st_write(metadata, path, layer = "fluvgeo_study_context", delete_layer = TRUE, quiet = TRUE)
+  expect_error(read_study_context(path), "purpose requires schema 6")
+})
+
+test_that("definition report separates current purpose from historical notes", {
+  skip_if_not_installed("gt")
+  skip_if_not(rmarkdown::pandoc_available())
+  root <- withr::local_tempdir()
+  result <- start_study_context(file.path(root, "draft.gpkg"), "Study",
+    analyst_notes = "Historical evidence", study_area_purpose = "Current <question>",
+    report_file = file.path(root, "report.html"))
+  html <- paste(readLines(result$report, warn = FALSE), collapse = "\n")
+  expect_match(html, "Current &lt;question&gt;", fixed = TRUE)
+  expect_match(html, "Supporting scope notes", fixed = TRUE)
+  expect_match(html, "Historical evidence", fixed = TRUE)
+})

@@ -1,3 +1,26 @@
+# fluvgeo 2026.09.14.9021
+
+* Add `locate_drainage_stream()` and `get_drainage_context()` for review-only
+  drainage discovery through hydrogeofetch. A near-channel click is snapped
+  within 200 m; distant trace results are rejected. Return WBD 2025 HUC12,
+  catchment-based basin and distance-limited upstream/downstream channels with
+  per-layer availability. No project geometry or hierarchy is created or changed.
+
+# fluvgeo 2026.09.14.9020
+
+* Add opt-in `study_area_purpose` to Study Area creation/revision. Schema 6
+  separates the current customer question from retained analyst/provenance notes;
+  NA explicitly clears Purpose. Existing calls and schema 1-5 reads are unchanged.
+  Define Study Area reports display current Purpose separately from supporting notes.
+
+# fluvgeo 2026.09.13.9019
+
+* Added `clip_terrain_to_aoi()` and `terrain_clip_report()`: real AOI crop/mask
+  execution with automatic receipts, exact retained-value checks, preserved
+  source data and a compact visual review. This first writer slice requires
+  self-contained projected 2D GeoTIFFs and same-CRS polygon AOIs. No unit/datum
+  conversion, event reassignment or retrospective account entry is performed.
+
 # fluvgeo 2026.09.13.9018
 
 * Record ordered terrain preparation accounts in schema-5 Study Area snapshots,

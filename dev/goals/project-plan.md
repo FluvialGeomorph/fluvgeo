@@ -1,6 +1,30 @@
 # Project Plan
 
-Last updated: 2026-09-12
+Last updated: 2026-09-14
+
+## Current owner direction — design before further replacement tools
+
+Pause early-geospatial replacement-tool implementation for the
+[owner-led toolbox charrette](../../../FG-architecture/dev/features/toolbox-redesign-charrette.md)
+under [ADR-0007](../../../FG-architecture/dev/decisions/adr-0007-owner-led-toolbox-redesign.md).
+The owner must shape workflow order, automation/human checkpoints, shared API and
+desktop/Shiny interaction, with both manuals and legacy production kept aligned.
+Preserve the clipping prototype as experimental work; its QGIS wrapper is on hold.
+Implementation resumes for an owner-approved slice, not whichever primitive is
+convenient to implement next. Delivery records below describe work done, not
+approval of the future toolbox design.
+
+The owner has selected **Shiny: start a new project** as the first design path,
+working forward to existing FG capabilities with a parallel QGIS toolbox view.
+See [ADR-0008](../../../FG-architecture/dev/decisions/adr-0008-shiny-led-new-project-design.md).
+New shared backend capabilities must preserve existing consumers. ArcGIS alignment
+is a later migration, not part of this design step; detailed APIs remain undecided.
+
+The concrete baseline is now ohwm2's existing UI, with the desktop L1 Report as
+the desired outcome. Use the [backward dependency trace](../../../FG-architecture/dev/features/shiny-l1-backward-trace.md)
+to distinguish existing functions, contract adaptations and genuinely missing
+capabilities. Design Study Area integration first; no new tool implementation is
+authorized by this dependency inventory.
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
@@ -157,9 +181,12 @@ and FGDB loading are separate acceptance questions, not one compliance score.
 - [x] Review table-based account entry with an analyst: CSV editing and form
   layout are acceptable, but purpose/vocabulary needed clarification. The client
   now has a past-work label and field guide; no repeat trial is requested.
-- [ ] Prioritize one bounded execution tool with automatic capture of observed
-  inputs, parameters, software, outputs and outcome. Select its scientific
-  contract first; do not require manual CSV duplication of new-tool history.
+- [x] Implement [explicit AOI terrain clipping](../features/terrain-clipping.md)
+  with automatic input/AOI/output fingerprints, parameters, software and outcome.
+  The initial backend executes crop/mask, not unit conversion or conditioning;
+  its report does not require manual CSV duplication of new-tool history.
+- [ ] **On hold for charrette:** decide whether clipping belongs in a public tool,
+  a larger workflow or an internal helper before authorizing any QGIS exposure.
 - [ ] Address normalized source-product identities and executable processing
   provenance; attributed accounts and retained records do not establish execution.
 - [x] Establish the [deterministic user-tooling boundary](../../../FG-architecture/dev/decisions/adr-0006-deterministic-user-tooling.md).
