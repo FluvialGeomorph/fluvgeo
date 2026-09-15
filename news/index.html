@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.14.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.15.9027</span>
       </span>
     </div>
 
@@ -47,6 +47,35 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.15.9027" id="fluvgeo-202609159027">fluvgeo 2026.09.15.9027<a class="anchor" aria-label="anchor" href="#fluvgeo-202609159027"></a></h2>
+<ul><li>Stream corridors now clip selected lines before buffering, then clip the resulting area. Preserve original and clipped line evidence with per-source retained lengths. Crossing selections no longer fail simply for crossing.</li>
+<li>Replace unlabelled longitude/latitude topology with sf/GEOS operations in an explicit local metric CRS, using sf/lwgeom geographic edge densification. Document the regional domain, 1 mm grid and 2 mm numerical margin; these are not source-accuracy claims. Boundary-aware previews retain their metric CRS. Unrestricted spherical previews remain compatible.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.15.9026" id="fluvgeo-202609159026">fluvgeo 2026.09.15.9026<a class="anchor" aria-label="anchor" href="#fluvgeo-202609159026"></a></h2>
+<ul><li>Fix false containment rejection after clipping against slanted Study Area edges. If the polygon predicate fails, verify the actual outside difference with GEOS overlay. No tolerance, boundary expansion or source edits are added; genuinely outside geometry still fails. Line coverage remains strict.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.15.9025" id="fluvgeo-202609159025">fluvgeo 2026.09.15.9025<a class="anchor" aria-label="anchor" href="#fluvgeo-202609159025"></a></h2>
+<ul><li>Stream corridors now require line coverage, then clip buffer overflow to the Study Area. Preview exposes original area, clipping flag and removed area; saved evidence retains clipping details. Source lines remain unchanged.</li>
+<li>Use boundary-inclusive GEOS topology on stored WGS84 coordinate edges for containment and clipping, avoiding S2 coincident-edge endpoint artifacts. S2 metric buffering remains unchanged; unrestricted previews remain supported.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.14.9024" id="fluvgeo-202609149024">fluvgeo 2026.09.14.9024<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149024"></a></h2>
+<ul><li>Add <code><a href="../reference/preview_stream_corridor.html">preview_stream_corridor()</a></code> for explicit per-side metre/international-foot buffers using sf/S2. An approximate outer buffer, not floodplain delineation.</li>
+<li>Add read-only <code><a href="../reference/check_study_area_containment.html">check_study_area_containment()</a></code> with inside/outside/unknown results and boundary-inclusive spherical coverage.</li>
+<li>Add <code><a href="../reference/add_study_stream_corridor.html">add_study_stream_corridor()</a></code> to publish one contained Stream with retained line/parameter evidence. Existing spatial identities remain; a single names-only Stream can receive an area by ID. Legacy context interfaces remain unchanged.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.14.9023" id="fluvgeo-202609149023">fluvgeo 2026.09.14.9023<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149023"></a></h2>
+<ul><li>Add <code><a href="../reference/combine_study_area_polygons.html">combine_study_area_polygons()</a></code> for explicitly selected polygon candidates. Spherical union returns a reviewable WGS84 boundary, retaining holes and disconnected parts without repair, buffering, simplification or file writes.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.14.9022" id="fluvgeo-202609149022">fluvgeo 2026.09.14.9022<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149022"></a></h2>
+<ul><li>Drainage discovery preserves per-request warnings and distinguishes explicit empty results, transport failures, and unresolved responses. The additive <code>status$outcome</code> field leaves existing available/unavailable status compatible. NULL without transport evidence is never interpreted as no coverage.</li>
+<li>Optional <code>include_names</code> adds attribute-only GNIS channel-name lookup by COMID. Default behavior for existing callers remains unchanged; failed name enrichment retains the candidate geometries and reports its own outcome.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.14.9021" id="fluvgeo-202609149021">fluvgeo 2026.09.14.9021<a class="anchor" aria-label="anchor" href="#fluvgeo-202609149021"></a></h2>
 <ul><li>Add <code><a href="../reference/locate_drainage_stream.html">locate_drainage_stream()</a></code> and <code><a href="../reference/get_drainage_context.html">get_drainage_context()</a></code> for review-only drainage discovery through hydrogeofetch. A near-channel click is snapped within 200 m; distant trace results are rejected. Return WBD 2025 HUC12, catchment-based basin and distance-limited upstream/downstream channels with per-layer availability. No project geometry or hierarchy is created or changed.</li>

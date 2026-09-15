@@ -8,6 +8,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/FluvialGeomorphicMetric-class.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/accept_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/add_study_reaches.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/add_study_stream_corridor.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/arcgis_auth.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/associate_study_terrain.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_radius.html</loc></url>
@@ -26,11 +27,13 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_flowline_points.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_loop_points.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_slope_sinuosity.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_study_area_containment.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_valleyline.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_valleyline_points.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_xs_dims.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/classify_stream_network_segments.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/clip_terrain_to_aoi.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/combine_study_area_polygons.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_long_profile.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/compare_xs_long_profile.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/connect_stream_network.html</loc></url>
@@ -86,6 +89,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_network_from_features.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/preview_stream_corridor.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/pt_watershed_area.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/reach_rhg_graph.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_network_geodatabase.html</loc></url>

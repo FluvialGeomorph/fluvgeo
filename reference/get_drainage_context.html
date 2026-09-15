@@ -23,7 +23,7 @@ No project files are read or written. Coordinates are sent to USGS services."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.14.9021</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.15.9027</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ No project files are read or written. Coordinates are sent to USGS services.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_drainage_context</span><span class="op">(</span><span class="va">location</span>, distance_km <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_drainage_context</span><span class="op">(</span><span class="va">location</span>, distance_km <span class="op">=</span> <span class="fl">50</span>, include_names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,13 +80,23 @@ No project files are read or written. Coordinates are sent to USGS services.</p>
 <dd><p>Navigation distance in kilometres, from 1 to 200, for each
 network direction. The basin and HUC12 queries do not use this distance.</p></dd>
 
+
+<dt id="arg-include-names">include_names<a class="anchor" aria-label="anchor" href="#arg-include-names"></a></dt>
+<dd><p>Retrieve optional GNIS channel names with one attribute-only
+Fabric query for up to 500 distinct returned COMIDs. Defaults to FALSE.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A list with `location`, `layers` (named sf or NULL), `status` (one row
-  per layer: layer, status, features, detail), `distance_km`, `retrieved_at`,
+  per layer: layer, status, features, detail, outcome), `distance_km`, `retrieved_at`,
   `sources`, and `network_complete` (NA). Individual layer failures are retained
-  as unavailable without discarding other results or asserting no coverage.</p>
+  as unavailable without discarding other results or asserting no coverage.
+  `outcome` distinguishes `available`, `no_features` (an explicit empty sf
+  response or no containing HUC), `service_unavailable` (transport evidence),
+  and `unresolved` (including NULL with no retained transport evidence).
+  `name_lookup` records optional name-query status and details; name-query
+  failure never discards successfully retrieved geometry.</p>
     </div>
 
   </div>
