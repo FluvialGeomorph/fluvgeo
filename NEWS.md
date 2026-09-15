@@ -1,3 +1,56 @@
+# fluvgeo 2026.09.15.9027
+
+* Stream corridors now clip selected lines before buffering, then clip the
+  resulting area. Preserve original and clipped line evidence with per-source
+  retained lengths. Crossing selections no longer fail simply for crossing.
+* Replace unlabelled longitude/latitude topology with sf/GEOS operations in an
+  explicit local metric CRS, using sf/lwgeom geographic edge densification.
+  Document the regional domain, 1 mm grid and 2 mm numerical margin; these are
+  not source-accuracy claims. Boundary-aware previews retain their metric CRS.
+  Unrestricted spherical previews remain compatible.
+
+# fluvgeo 2026.09.15.9026
+
+* Fix false containment rejection after clipping against slanted Study Area
+  edges. If the polygon predicate fails, verify the actual outside difference
+  with GEOS overlay. No tolerance, boundary expansion or source edits are added;
+  genuinely outside geometry still fails. Line coverage remains strict.
+
+# fluvgeo 2026.09.15.9025
+
+* Stream corridors now require line coverage, then clip buffer overflow to the
+  Study Area. Preview exposes original area, clipping flag and removed area;
+  saved evidence retains clipping details. Source lines remain unchanged.
+* Use boundary-inclusive GEOS topology on stored WGS84 coordinate edges for
+  containment and clipping, avoiding S2 coincident-edge endpoint artifacts.
+  S2 metric buffering remains unchanged; unrestricted previews remain supported.
+
+# fluvgeo 2026.09.14.9024
+
+* Add `preview_stream_corridor()` for explicit per-side metre/international-foot
+  buffers using sf/S2. An approximate outer buffer, not floodplain delineation.
+* Add read-only `check_study_area_containment()` with inside/outside/unknown
+  results and boundary-inclusive spherical coverage.
+* Add `add_study_stream_corridor()` to publish one contained Stream with retained
+  line/parameter evidence. Existing spatial identities remain; a single names-only
+  Stream can receive an area by ID. Legacy context interfaces remain unchanged.
+
+# fluvgeo 2026.09.14.9023
+
+* Add `combine_study_area_polygons()` for explicitly selected polygon candidates.
+  Spherical union returns a reviewable WGS84 boundary, retaining holes and
+  disconnected parts without repair, buffering, simplification or file writes.
+
+# fluvgeo 2026.09.14.9022
+
+* Drainage discovery preserves per-request warnings and distinguishes explicit
+  empty results, transport failures, and unresolved responses. The additive
+  `status$outcome` field leaves existing available/unavailable status compatible.
+  NULL without transport evidence is never interpreted as no coverage.
+* Optional `include_names` adds attribute-only GNIS channel-name lookup by COMID.
+  Default behavior for existing callers remains unchanged; failed name enrichment
+  retains the candidate geometries and reports its own outcome.
+
 # fluvgeo 2026.09.14.9021
 
 * Add `locate_drainage_stream()` and `get_drainage_context()` for review-only

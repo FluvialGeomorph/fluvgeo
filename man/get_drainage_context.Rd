@@ -4,19 +4,27 @@
 \alias{get_drainage_context}
 \title{Retrieve candidate drainage layers for a reviewed stream location}
 \usage{
-get_drainage_context(location, distance_km = 50)
+get_drainage_context(location, distance_km = 50, include_names = FALSE)
 }
 \arguments{
 \item{location}{A result of [locate_drainage_stream()].}
 
 \item{distance_km}{Navigation distance in kilometres, from 1 to 200, for each
 network direction. The basin and HUC12 queries do not use this distance.}
+
+\item{include_names}{Retrieve optional GNIS channel names with one attribute-only
+Fabric query for up to 500 distinct returned COMIDs. Defaults to FALSE.}
 }
 \value{
 A list with `location`, `layers` (named sf or NULL), `status` (one row
-  per layer: layer, status, features, detail), `distance_km`, `retrieved_at`,
+  per layer: layer, status, features, detail, outcome), `distance_km`, `retrieved_at`,
   `sources`, and `network_complete` (NA). Individual layer failures are retained
   as unavailable without discarding other results or asserting no coverage.
+  `outcome` distinguishes `available`, `no_features` (an explicit empty sf
+  response or no containing HUC), `service_unavailable` (transport evidence),
+  and `unresolved` (including NULL with no retained transport evidence).
+  `name_lookup` records optional name-query status and details; name-query
+  failure never discards successfully retrieved geometry.
 }
 \description{
 Retrieves WBD 2025 HUC12 polygons containing the snapped point, an NLDI

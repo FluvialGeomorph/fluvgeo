@@ -67,4 +67,47 @@ test_that("HUC response is spatially filtered and malformed layers are unavailab
   x <- get_drainage_context(locate_drainage_stream(drainage_test_point()))
   expect_true(all(x$status$status == "unavailable"))
   expect_true(all(vapply(x$layers, is.null, logical(1))))
+  expect_equal(x$status$outcome, c("no_features", "unresolved", "unresolved", "unresolved"))
+})
+
+test_that("optional names use one keyed attribute lookup without changing geometry", {
+  line <- drainage_test_line()
+  a <- line; a$comid <- "456"
+  layers <- list(huc12 = NULL, basin = NULL, upstream = rbind(line, a), downstream = line)
+  seen <- NULL
+  local_mocked_bindings(drainage_names_service = function(ids) {
+    seen <<- ids
+    data.frame(comid=c("456", "123"), gnis_name=c(" ", "Test Creek"))
+  })
+  x <- drainage_channel_names(layers)
+  expect_equal(seen, c("123", "456"))
+  expect_equal(x$layers$upstream$gnis_name, c("Test Creek", NA_character_))
+  expect_identical(sf::st_geometry(x$layers$upstream), sf::st_geometry(layers$upstream))
+  expect_equal(x$layers$downstream$gnis_name, "Test Creek")
+  local_mocked_bindings(drainage_names_service = function(ids) stop("HTTP 503"))
+  x <- drainage_channel_names(layers)
+  expect_identical(x$layers, layers)
+  expect_equal(x$status, "unresolved")
+  expect_match(x$detail, "503")
+  big <- line[rep(1,501), ]; big$comid <- as.character(seq_len(501))
+  expect_equal(drainage_channel_names(list(upstream=big))$status, "skipped")
+})
+
+test_that("layer outcomes retain transport evidence separately from empty and unknown", {
+  local_mocked_bindings(drainage_index_service = function(x) drainage_test_index(),
+    drainage_feature_service = function(id) drainage_test_line(),
+    drainage_huc_service = function(point) drainage_test_area()[0, ],
+    drainage_basin_service = function(id) { warning("Failed to get features: HTTP 502 Bad Gateway"); NULL },
+    drainage_navigation_service = function(id, mode, distance) if (mode == "UT") NULL else drainage_test_line())
+  x <- get_drainage_context(locate_drainage_stream(drainage_test_point()))
+  expect_equal(x$status$outcome, c("no_features", "service_unavailable", "unresolved", "available"))
+  expect_match(x$status$detail[2], "502")
+  expect_false(grepl("502", x$status$detail[3]))
+  expect_equal(nrow(x$layers$downstream), 1L)
+  local_mocked_bindings(drainage_index_service = function(x) drainage_test_index()[0, ])
+  e <- tryCatch(locate_drainage_stream(drainage_test_point()), error = identity)
+  expect_equal(e$code, "no_features")
+  local_mocked_bindings(drainage_index_service = function(x) { warning("Connection timed out"); drainage_test_index()[0, ] })
+  e <- tryCatch(locate_drainage_stream(drainage_test_point()), error = identity)
+  expect_equal(e$code, "service_unavailable")
 })

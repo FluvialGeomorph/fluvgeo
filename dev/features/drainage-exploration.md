@@ -51,3 +51,34 @@ access, not a user-facing AI capability. Public-service disclosure is required.
 
 Verification results and the owner-review boundary are maintained in
 [fgstudio's feature record](../../../fgstudio/dev/features/drainage-exploration.md).
+
+## Additive response evidence (9022)
+
+`status$outcome` distinguishes available, no_features, service_unavailable, and
+unresolved while `status$status` remains available/unavailable for compatibility.
+Warnings are captured separately for each service request and included in failure
+details. Explicit transport evidence takes precedence over an apparent empty
+response. Empty sf results (including no HUC containing the snapped point) mean
+no matches for that query, not a claim about coverage everywhere. A NULL without
+transport evidence remains unresolved: hydrogeofetch can suppress upstream errors.
+Stream-location errors retain the same structured code/details for client feedback.
+No geometry, snapping-distance, CRS, persistence or scientific method changes.
+fgstudio is the only updated consumer; no other client deployment is performed.
+
+Optional `include_names = TRUE` retrieves GNIS names through the existing
+hydrogeofetch get_nhdplus attribute-only Fabric query, joining by COMID without
+changing channel geometry. It defaults to FALSE for other consumers. One query
+covers up to 500 distinct upstream/downstream IDs; larger previews skip this
+optional enrichment and retain identifiers. `name_lookup` reports returned,
+unresolved, skipped or not_requested with details. Blank names are unspecified;
+lookup failure must not discard otherwise successful geometry.
+
+## Explicit polygon combination (9023)
+
+`combine_study_area_polygons()` combines 1-200 explicitly selected valid XY
+polygons using sf's spherical union in EPSG:4326. It returns a one-feature
+boundary, selected-feature count and polygon-part count; holes and disconnected
+parts remain. It does not repair, simplify, buffer, clip, assign FG identity or
+write files. The caller's sf spherical-geometry setting is restored. FG Studio
+uses the result for a review/explicit-save workflow; only its isolated library
+is updated. Other clients and existing revision APIs are unchanged.

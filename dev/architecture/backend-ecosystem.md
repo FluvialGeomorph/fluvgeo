@@ -36,6 +36,15 @@ appropriately general before it is added to `fluvgeo`.
 
 ## Responsibility boundary
 
+Owner requirement (2026-09-15): geospatial topology, including containment and
+coincidence, must be coordinate-system-aware and use mature R GIS libraries.
+Use geographic-aware operators or explicitly transform into an appropriate
+projected CRS before planar operations. Never strip CRS metadata to force
+longitude/latitude coordinates through planar topology. Separate display,
+temporary processing and project analysis CRS; document numerical precision
+and preserve original geometry evidence. The Stream corridor implementation
+uses sf/GEOS and sf/lwgeom; client code orchestrates and presents its results.
+
 Classify work before changing code:
 
 1. **Upstream geospatial input generation** produces source features or rasters
