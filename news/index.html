@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.15.9027</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.17.9032</span>
       </span>
     </div>
 
@@ -47,6 +47,30 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.17.9032" id="fluvgeo-202609179032">fluvgeo 2026.09.17.9032<a class="anchor" aria-label="anchor" href="#fluvgeo-202609179032"></a></h2>
+<ul><li>Add snapped saved-Reach splits in the inherited metric CRS, regenerating two buffered extents while retaining one identity and naming a new Reach.</li>
+<li>Preserve source COMIDs separately from versioned local piece IDs/assignments. Add/Combine continue after splitting; earlier evidence and contexts survive.</li>
+<li>Refuse dependent Survey Events, linked terrain/network references, ambiguous chains, endpoint cuts and distant clicks rather than guessing reassignment.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.17.9031" id="fluvgeo-202609179031">fluvgeo 2026.09.17.9031<a class="anchor" aria-label="anchor" href="#fluvgeo-202609179031"></a></h2>
+<ul><li>Add identity-preserving Stream/Reach name revisions with parent-scoped name validation. Source evidence and all geometry/child records remain unchanged.</li>
+<li>Add whole-network downstream-to-upstream ordering without a navigation origin. Saved Stream segment readers derive Reach candidate order from original reference lines, not clipped geometry, selection order or numeric COMIDs.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.17.9030" id="fluvgeo-202609179030">fluvgeo 2026.09.17.9030<a class="anchor" aria-label="anchor" href="#fluvgeo-202609179030"></a></h2>
+<ul><li>Allow one or more retained Stream segments to define one new Reach. Preserve every source ID, inherited buffer settings and prior single-segment mappings.</li>
+<li>Add reviewed saved-Reach merging under one selected retained identity. Preserve Survey Event IDs/attributes, redirect retired parents, retain earlier revisions, and block unresolved source evidence or linked network/terrain manifests.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.16.9029" id="fluvgeo-202609169029">fluvgeo 2026.09.16.9029<a class="anchor" aria-label="anchor" href="#fluvgeo-202609169029"></a></h2>
+<ul><li>Read retained Stream segments and preview/save one Reach per segment, inheriting buffer settings and processing CRS. Verify source checksums and containment; preserve previous records and retain Reach evidence without live discovery.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.15.9028" id="fluvgeo-202609159028">fluvgeo 2026.09.15.9028<a class="anchor" aria-label="anchor" href="#fluvgeo-202609159028"></a></h2>
+<ul><li>Add read-only <code><a href="../reference/order_drainage_flowlines.html">order_drainage_flowlines()</a></code> for branch-aware upstream/downstream browsing of NLDI reference channels using sfnetworks/igraph. Preserve all features and label unresolved order; no geometry repair or new service query.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.15.9027" id="fluvgeo-202609159027">fluvgeo 2026.09.15.9027<a class="anchor" aria-label="anchor" href="#fluvgeo-202609159027"></a></h2>
 <ul><li>Stream corridors now clip selected lines before buffering, then clip the resulting area. Preserve original and clipped line evidence with per-source retained lengths. Crossing selections no longer fail simply for crossing.</li>
