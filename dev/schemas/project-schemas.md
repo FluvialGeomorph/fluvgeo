@@ -157,6 +157,29 @@ Existing network and report schema tags are unchanged.
 
 ### Terrain Development report input contract
 
+Reach corridor increment (9029): context table/schema versions are unchanged.
+`read_study_stream_segments` resolves the exact filename and SHA256 in existing
+Stream evidence notes and checks retained segment identities/buffer settings.
+It is a bounded compatibility reader, not a generalized provenance schema.
+`preview_study_reach_corridor` and `add_study_reach_corridor` inherit distance,
+units, GEOS parameters and the retained processing CRS. One source segment
+becomes one Reach in 9029; 9030 permits several selected segments in that same
+new Reach. Areas clip to the Stream; adjacent buffer overlaps remain.
+The writer retains `reach-selection-<uuid>.gpkg` with `retained_line` and
+`reach_area` layers, and a note mapping Reach UUID, Stream UUID and source COMID
+to that file/checksum and parent evidence checksum. No extra Reach table fields
+or terrain bindings are introduced. Duplicate assignment within a Stream fails.
+9030 stores multiple source IDs as a comma-separated list inside the existing
+note mapping's source brackets; single-ID mappings remain compatible. Every
+retained segment stays a separate evidence row linked to the same Reach UUID.
+Saved-Reach merging retains an explicitly selected UUID and removes other selected
+UUIDs only from the new inventory. Survey Event UUIDs/attributes are unchanged;
+their retired Reach parents redirect to the retained UUID. Prior files remain.
+An appended `Reach merge` mapping supersedes the retained identity's previous
+mapping. Source evidence/current-area agreement is required. Network and terrain
+manifest references block merging pending separate reconciliation.
+See [the client workflow](../../../fgstudio/dev/features/reach-selection.md).
+
 `TERRAIN_DEVELOPMENT_REPORT_2` is a read-only presentation contract, not an FGDB
 entity schema or an extension to the network GeoPackage binding. Its optional
 inputs use canonical UUID identities:
@@ -244,3 +267,20 @@ Add an explicit schema here when a data object, spatial layer, file, table, or
 cross-repository interface has a durable shape that is not adequately governed
 by one function's documentation. Do not use illustrative placeholder fields as
 if they were implemented contracts.
+## Stream/Reach display names and custom pieces (2026-09-17)
+
+`rename_study_feature` changes one display-name value in a new context revision,
+retaining identity, geometry, relationships and all linked artifacts. Names are
+unique ignoring case within the Study Area (Streams) or Stream (Reaches).
+Historical source-evidence names are not rewritten to match current labels.
+
+Reference candidate order is downstream-to-upstream when requested without a
+navigation origin, based on sfnetworks/igraph topology, never COMID magnitude.
+The retained Stream reader uses original linework before clipping to establish
+that order. This is not stationing or mainstem selection.
+
+The [approved custom-segment design](../../../fgstudio/dev/decisions/adr-0005-custom-segment-editing.md)
+requires separate piece identities and source lineage to support splitting before
+or after assembly. The [9032 piece evidence contract](reach-pieces.md) implements
+saved-Reach splitting first. Whole-COMID contexts remain compatible; explicit
+piece-enabled editing requires 9032 or newer. No production clients are upgraded.

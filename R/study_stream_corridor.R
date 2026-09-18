@@ -69,9 +69,9 @@ preview_stream_corridor <- function(lines, distance, unit = "m", boundary = NULL
     sf::st_set_precision(1000)
 }
 
-.fg_clipped_corridor <- function(lines, metres, boundary) {
+.fg_clipped_corridor <- function(lines, metres, boundary, crs = NULL) {
   check_study_area_containment(boundary)
-  crs <- .fg_corridor_crs(boundary)
+  if (is.null(crs)) crs <- .fg_corridor_crs(boundary)
   parent <- .fg_corridor_grid(boundary, crs)
   g <- .fg_corridor_grid(lines, crs)
   retained <- list(); rows <- integer()

@@ -1,3 +1,40 @@
+# fluvgeo 2026.09.17.9032
+
+- Add snapped saved-Reach splits in the inherited metric CRS, regenerating two
+  buffered extents while retaining one identity and naming a new Reach.
+- Preserve source COMIDs separately from versioned local piece IDs/assignments.
+  Add/Combine continue after splitting; earlier evidence and contexts survive.
+- Refuse dependent Survey Events, linked terrain/network references, ambiguous
+  chains, endpoint cuts and distant clicks rather than guessing reassignment.
+
+# fluvgeo 2026.09.17.9031
+
+- Add identity-preserving Stream/Reach name revisions with parent-scoped name
+  validation. Source evidence and all geometry/child records remain unchanged.
+- Add whole-network downstream-to-upstream ordering without a navigation origin.
+  Saved Stream segment readers derive Reach candidate order from original
+  reference lines, not clipped geometry, selection order or numeric COMIDs.
+
+# fluvgeo 2026.09.17.9030
+
+* Allow one or more retained Stream segments to define one new Reach. Preserve
+  every source ID, inherited buffer settings and prior single-segment mappings.
+* Add reviewed saved-Reach merging under one selected retained identity. Preserve
+  Survey Event IDs/attributes, redirect retired parents, retain earlier revisions,
+  and block unresolved source evidence or linked network/terrain manifests.
+
+# fluvgeo 2026.09.16.9029
+
+* Read retained Stream segments and preview/save one Reach per segment, inheriting
+  buffer settings and processing CRS. Verify source checksums and containment;
+  preserve previous records and retain Reach evidence without live discovery.
+
+# fluvgeo 2026.09.15.9028
+
+* Add read-only `order_drainage_flowlines()` for branch-aware upstream/downstream
+  browsing of NLDI reference channels using sfnetworks/igraph. Preserve all
+  features and label unresolved order; no geometry repair or new service query.
+
 # fluvgeo 2026.09.15.9027
 
 * Stream corridors now clip selected lines before buffering, then clip the

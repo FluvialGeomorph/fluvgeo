@@ -34,6 +34,23 @@ segmentation remain optional analyst choices, not FG requirements.
 
 ## Execution and compatibility
 
+`order_drainage_flowlines()` (9028) provides read-only candidate browsing order
+using sfnetworks endpoint connectivity and igraph depth-first traversal. Start
+at the origin COMID and walk in the requested direction, keeping tributaries
+together. NLDI/NHDPlus downstream digitization is required; this is not direction
+recovery for raw extracted features. No coordinates are altered, endpoints
+snapped or crossing lines connected without a shared endpoint. Stable source-ID
+tie breaking is not an inferred mainstem preference. Unreachable features,
+cycles and unsupported inputs retain all source rows with explicit unresolved
+ordering. The returned input-row map leaves geometry and identities unchanged.
+This adds no remote dependency/request; sfnetworks and igraph were already
+package dependencies. Only FG Studio's isolated runtime is upgraded; existing
+ArcGIS, QGIS and ohwm2 clients are not changed.
+
+Sources: [sfnetworks structure](https://luukvdmeer.github.io/sfnetworks/articles/sfn01_structure.html),
+[igraph DFS](https://r.igraph.org/reference/dfs.html), and
+[NHD flow direction](https://www.usgs.gov/ngp-standards-and-specifications/national-hydrography-dataset-nhd-data-dictionary-feature-classes).
+
 fgstudio runs requests in an isolated, cancellable R worker with a 120-second
 deadline. Other callers must provide their own execution/time-budget policy:
 upstream library requests can retry and their network calls can be long-running.
