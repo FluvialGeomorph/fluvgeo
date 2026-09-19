@@ -1,3 +1,37 @@
+# fluvgeo 2026.09.19.9037
+
+- Clarify that an empty Stream DEM tile query does not imply absence elsewhere
+  in the Study Area.
+
+- Save/read immutable Stream DEM file-choice snapshots with source and query
+  evidence. Choices are acquisition intent, not downloaded or accepted terrain.
+
+# fluvgeo 2026.09.19.9036
+
+- Find source DEM file metadata for a Stream polygon using supported USGS source
+  directory links and CRS-aware file-bound intersection. Query limits, failures
+  and unsupported links are explicit; no raster downloads or schema migration.
+
+# fluvgeo 2026.09.19.9035
+
+- Expose explicit reported DEM pixel size in meters and screen the owner-required
+  1 m-or-finer resolution without asserting scientific suitability. Unknown raster
+  resolution is not inferred from lidar point spacing.
+
+# fluvgeo 2026.09.19.9034
+
+- Review product-specific catalog evidence without assuming availability.
+- Retain explicit DEM/point-cloud acquisition plans in v2 selection snapshots;
+  v1 remains readable. No downloading, processing or Event creation is implied.
+
+# fluvgeo 2026.09.19.9033
+
+- Discover reported Survey Collections using bounded USGS 3DEP/USIEI queries,
+  with catalog-specific success, partial and failure evidence.
+- Save/reopen immutable GeoPackage selection-intent snapshots without creating
+  Survey Events, downloading data or inferring cross-catalog acquisition identity.
+- Survey Collection terminology is distinct from FGDB Collection of Study Areas.
+
 # fluvgeo 2026.09.17.9032
 
 - Add snapped saved-Reach splits in the inherited metric CRS, regenerating two
