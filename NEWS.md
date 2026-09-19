@@ -1,3 +1,12 @@
+# fluvgeo 2026.09.19.9038
+
+- Prepare, execute, cancel and read local source DEM download attempts from saved
+  selections. Sequential bounded transfers preserve original files, SHA-256
+  identities, immutable receipts and per-file failures. Offline reopening and
+  reuse verify local integrity; acquisition does not establish terrain suitability.
+- Adoption is limited to FG Studio's isolated development library. Existing
+  selection/context/Event contracts and other clients remain compatible.
+
 # fluvgeo 2026.09.19.9037
 
 - Clarify that an empty Stream DEM tile query does not imply absence elsewhere

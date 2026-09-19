@@ -10,6 +10,9 @@ This document records important structural contracts used by the repository, inc
 - Record required fields, types, constraints, and invariants where relevant.
 - Update this file when new structured artifacts are introduced or existing ones change.
 
+Source DEM transfer receipts and study-local original files use the additive
+[download contract](stream-dem-downloads.md); hierarchy and Event schemas remain unchanged.
+
 ## Cross-section watershed contract
 
 For the separate, review-only drainage discovery result (query/snap points,

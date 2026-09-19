@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2026.09.19.9037
+Version: 2026.09.19.9038
 Authors@R: c(
     person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
            role = "aut",
@@ -32,6 +32,7 @@ Imports:
     arcgisutils,
     assertthat,
     conicfit,
+    curl,
     dplyr,
     ggplot2,
     ggrepel,
@@ -39,6 +40,7 @@ Imports:
     grid,
     gridExtra,
     gtable,
+    fs,
     httr2,
     igraph,
     jsonlite,
@@ -78,12 +80,14 @@ Imports:
     tools,
     utils
 Suggests: 
+    callr,
     fluvgeodata,
     gt,
+    httpuv,
     knitr
 Remotes: 
     FluvialGeomorph/RegionalCurve,
     FluvialGeomorph/fluvgeodata
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.1.0

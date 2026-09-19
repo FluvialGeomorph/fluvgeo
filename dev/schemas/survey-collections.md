@@ -1,5 +1,12 @@
 # Survey Collection selection snapshots
 
+Current acquisition extension (9038): saved file choices can now feed explicit
+local downloads with immutable receipts and SHA-256 verification under the
+additive [source download contract](stream-dem-downloads.md). Selection schemas
+below remain unchanged. Earlier preparation-only descriptions refer to the
+preceding 9037 increment; analytical terrain acceptance and Event linkage remain
+future work.
+
 Version 2 adds `acquisition_plan`: unique (candidate_key, product) pairs, with
 product in DEM/POINT_CLOUD and keys restricted to selected records. Empty plans
 are valid. The reader accepts v1 with an empty plan; the writer emits v2, retaining
