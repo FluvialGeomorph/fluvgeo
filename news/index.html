@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.17.9032</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.19.9037</span>
       </span>
     </div>
 
@@ -47,6 +47,30 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.19.9037" id="fluvgeo-202609199037">fluvgeo 2026.09.19.9037<a class="anchor" aria-label="anchor" href="#fluvgeo-202609199037"></a></h2>
+<ul><li><p>Clarify that an empty Stream DEM tile query does not imply absence elsewhere in the Study Area.</p></li>
+<li><p>Save/read immutable Stream DEM file-choice snapshots with source and query evidence. Choices are acquisition intent, not downloaded or accepted terrain.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.19.9036" id="fluvgeo-202609199036">fluvgeo 2026.09.19.9036<a class="anchor" aria-label="anchor" href="#fluvgeo-202609199036"></a></h2>
+<ul><li>Find source DEM file metadata for a Stream polygon using supported USGS source directory links and CRS-aware file-bound intersection. Query limits, failures and unsupported links are explicit; no raster downloads or schema migration.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.19.9035" id="fluvgeo-202609199035">fluvgeo 2026.09.19.9035<a class="anchor" aria-label="anchor" href="#fluvgeo-202609199035"></a></h2>
+<ul><li>Expose explicit reported DEM pixel size in meters and screen the owner-required 1 m-or-finer resolution without asserting scientific suitability. Unknown raster resolution is not inferred from lidar point spacing.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.19.9034" id="fluvgeo-202609199034">fluvgeo 2026.09.19.9034<a class="anchor" aria-label="anchor" href="#fluvgeo-202609199034"></a></h2>
+<ul><li>Review product-specific catalog evidence without assuming availability.</li>
+<li>Retain explicit DEM/point-cloud acquisition plans in v2 selection snapshots; v1 remains readable. No downloading, processing or Event creation is implied.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.19.9033" id="fluvgeo-202609199033">fluvgeo 2026.09.19.9033<a class="anchor" aria-label="anchor" href="#fluvgeo-202609199033"></a></h2>
+<ul><li>Discover reported Survey Collections using bounded USGS 3DEP/USIEI queries, with catalog-specific success, partial and failure evidence.</li>
+<li>Save/reopen immutable GeoPackage selection-intent snapshots without creating Survey Events, downloading data or inferring cross-catalog acquisition identity.</li>
+<li>Survey Collection terminology is distinct from FGDB Collection of Study Areas.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.17.9032" id="fluvgeo-202609179032">fluvgeo 2026.09.17.9032<a class="anchor" aria-label="anchor" href="#fluvgeo-202609179032"></a></h2>
 <ul><li>Add snapped saved-Reach splits in the inherited metric CRS, regenerating two buffered extents while retaining one identity and naming a new Reach.</li>
