@@ -19,7 +19,7 @@ inferred. Context tables are report inputs, not new FGDB persistence relations."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.19.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.20.9044</span>
       </span>
     </div>
 
@@ -73,7 +73,8 @@ inferred. Context tables are report inputs, not new FGDB persistence relations.<
 <span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_sources <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_evidence <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vertical_reference <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -171,6 +172,11 @@ folder. Fresh integrity results are returned separately as retained_evidence.</p
 <dt id="arg-terrain-processing">terrain_processing<a class="anchor" aria-label="anchor" href="#arg-terrain-processing"></a></dt>
 <dd><p>Optional ordered, attributed preparation accounts
 from record_study_terrain_processing(). These do not establish execution.</p></dd>
+
+
+<dt id="arg-vertical-reference">vertical_reference<a class="anchor" aria-label="anchor" href="#arg-vertical-reference"></a></dt>
+<dd><p>Optional structured vertical target specification,
+as in validate_study_vertical_reference(). No transformation is implied.</p></dd>
 
 </dl></div>
     <div id="value">

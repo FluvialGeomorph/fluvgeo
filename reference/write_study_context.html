@@ -21,7 +21,7 @@ pinned by SHA-256. Move the whole folder, not just this GeoPackage."><!-- mathja
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.19.9038</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.20.9044</span>
       </span>
     </div>
 
@@ -75,7 +75,8 @@ pinned by SHA-256. Move the whole folder, not just this GeoPackage.</p>
 <span>  analysis_reference <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_sources <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  terrain_evidence <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  terrain_processing <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  vertical_reference <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,6 +129,11 @@ retain_study_terrain_evidence(). Requires source-use records; uses schema 4.</p>
 <dt id="arg-terrain-processing">terrain_processing<a class="anchor" aria-label="anchor" href="#arg-terrain-processing"></a></dt>
 <dd><p>Optional ordered preparation accounts from
 record_study_terrain_processing(). Requires source-use records; uses schema 5.</p></dd>
+
+
+<dt id="arg-vertical-reference">vertical_reference<a class="anchor" aria-label="anchor" href="#arg-vertical-reference"></a></dt>
+<dd><p>Optional structured Study Area vertical target from
+validate_study_vertical_reference(). Requires a Study Area; uses schema 7.</p></dd>
 
 </dl></div>
     <div id="value">

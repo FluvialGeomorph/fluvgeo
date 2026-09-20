@@ -71,6 +71,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/hydroflatten_dem.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/index.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_legacy_staging.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_stream_dem_download.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_terrain_folder.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/inspect_terrain_vertical_reference.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/justify_gtable.html</loc></url>
@@ -95,6 +96,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_dem_download.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_network_from_features.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/preview_stream_corridor.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/preview_stream_dem_download.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/pt_watershed_area.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/reach_rhg_graph.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/read_stream_dem_download.html</loc></url>
@@ -111,7 +113,9 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/retain_study_terrain_evidence.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/revise_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/run_stream_dem_download.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_analysis_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_reach_areas.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/set_study_vertical_reference.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf2csv.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_fix_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/sf_get_z.html</loc></url>
@@ -141,9 +145,11 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/start_study_context.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/stream_power.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_context_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_crs_candidates.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_reach_corridor.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_reach_merge.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_staging_report.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/study_vertical_crs_candidates.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_collection_products.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/survey_opportunity_summary.html</loc></url>
@@ -153,6 +159,8 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_summary.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_reference_review.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_stream_network.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_analysis_crs.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_vertical_reference.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/water_surface_poly.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/write_stream_dem_selection.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/write_stream_network_geodatabase.html</loc></url>
