@@ -42,6 +42,8 @@ record_study_analysis_reference <- function(dsn, output_file, component, value,
   .fg_study_analysis_check(row)
   before <- .fg_file_sha256(dsn)
   args <- read_study_context(dsn)
+  if (!is.null(args$vertical_reference) && component %in% c("vertical","elevation_unit"))
+    .fg_abort("Revise the structured vertical specification with set_study_vertical_reference().")
   if (is.null(args$study_area)) .fg_abort("A supplied Study Area is required; no identity was created.")
   old <- args$analysis_reference
   if (is.null(old)) old <- row[FALSE, ]

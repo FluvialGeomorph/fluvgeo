@@ -28,6 +28,11 @@ do not treat a horizontal unit or geodetic 3D axis as a declaration of raster
 elevation units. A separate vertical component is not required for every valid
 three-dimensional reference system.
 
+Version 9039 adds each reader's `grid` observation (dimensions, source-unit pixel
+spacing and affine transform, horizontal unit, pixel type and declared NoData).
+See [source DEM inspection](stream-dem-inspection.md) for exact fields and limits.
+Existing observation identifiers and vertical status semantics are unchanged.
+
 Status `VERTICAL_CRS_EXPOSED` means the reader returned a VerticalCRS component
 or vertical WKT node. `VERTICAL_CRS_NOT_EXPOSED` means it did not: it does **not**
 prove absence, justify a default datum, or rule out information elsewhere.

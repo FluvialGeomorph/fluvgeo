@@ -1,5 +1,10 @@
 # Saved Study Area report context
 
+`FLUVGEO_STUDY_CONTEXT_7` adds the optional structured Study Area vertical target
+([contract](study-vertical-reference.md)). The marker takes precedence over earlier
+extensions when the table is present. It does not migrate source CRS declarations
+or change elevation values. Readers retain schemas 1-6; older readers reject 7.
+
 Development bindings include opt-in `FLUVGEO_STUDY_CONTEXT_6` (current Study Area
 Purpose, described below), plus `FLUVGEO_STUDY_CONTEXT_1` and opt-in
 `FLUVGEO_STUDY_CONTEXT_2` (attributed analysis choices), plus

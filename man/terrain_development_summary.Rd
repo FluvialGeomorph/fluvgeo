@@ -20,7 +20,8 @@ terrain_development_summary(
   analysis_reference = NULL,
   terrain_sources = NULL,
   terrain_evidence = NULL,
-  terrain_processing = NULL
+  terrain_processing = NULL,
+  vertical_reference = NULL
 )
 }
 \arguments{
@@ -83,6 +84,9 @@ folder. Fresh integrity results are returned separately as retained_evidence.}
 
 \item{terrain_processing}{Optional ordered, attributed preparation accounts
 from record_study_terrain_processing(). These do not establish execution.}
+
+\item{vertical_reference}{Optional structured vertical target specification,
+as in validate_study_vertical_reference(). No transformation is implied.}
 }
 \value{
 List of tables, map layers, fresh network validation and explicit gaps.

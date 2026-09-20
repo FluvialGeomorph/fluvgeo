@@ -13,7 +13,9 @@ inspect_terrain_vertical_reference(path)
 A list with schema, normalized path, SHA-256, software versions,
 default_reader and internal_compound observations, and crs_text_differs.
 Each observation contains status, WKT, optional PROJJSON, optional vertical
-CRS component, band unit, and the requested reader options. Status is
+CRS component, band unit, grid metadata, and the requested reader options.
+Grid size is columns/rows; spacing and affine coefficients retain source
+CRS units. Missing grid declarations remain empty or NULL. Status is
 VERTICAL_CRS_EXPOSED or VERTICAL_CRS_NOT_EXPOSED, never proof of absence.
 Text differences require review, not automatic conflict resolution.
 }

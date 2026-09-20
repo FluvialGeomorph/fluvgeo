@@ -48,6 +48,8 @@
 #'   folder. Fresh integrity results are returned separately as retained_evidence.
 #' @param terrain_processing Optional ordered, attributed preparation accounts
 #'   from record_study_terrain_processing(). These do not establish execution.
+#' @param vertical_reference Optional structured vertical target specification,
+#'   as in validate_study_vertical_reference(). No transformation is implied.
 #' @return List of tables, map layers, fresh network validation and explicit gaps.
 #'   Version 2 adds identity-based hierarchy, event_evidence, survey_dem_extents,
 #'   reconstruction and a limited stage-specific assessment with requires_input
@@ -65,7 +67,9 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     terrain_notes = NA_character_, analyst_notes = NA_character_,
     survey_dems = NULL, reconstruction = NULL, folder_manifest = NULL,
     legacy_staging = NULL, analysis_reference = NULL, terrain_sources = NULL,
-    terrain_evidence = NULL, terrain_processing = NULL) {
+    terrain_evidence = NULL, terrain_processing = NULL, vertical_reference = NULL) {
+  .fg_vertical_reference_check(vertical_reference)
+  if (!is.null(vertical_reference) && is.null(study_area)) .fg_abort("A vertical specification requires a Study Area.")
   .fg_study_analysis_check(analysis_reference)
   if (!is.null(analysis_reference) && is.null(study_area))
     .fg_abort("Saved analysis-reference choices require a Study Area.")
@@ -177,7 +181,7 @@ terrain_development_summary <- function(study_area = NULL, streams = NULL,
     folder_inventory = folder, staging_inventory = staging, analysis_reference = analysis_reference,
     terrain_sources = terrain_sources,
     terrain_evidence = terrain_evidence, retained_evidence = retained,
-    terrain_processing = terrain_processing,
+    terrain_processing = terrain_processing, vertical_reference = vertical_reference,
     event_artifacts = if (is.null(linked)) NULL else linked$event_artifacts,
     generated_at = Sys.time(), schema = "TERRAIN_DEVELOPMENT_REPORT_2"), visual, review)
 }

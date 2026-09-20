@@ -16,6 +16,18 @@ vertical_fixture <- function(compound = TRUE, version = "1.0", crs = "EPSG:26914
   output
 }
 
+test_that("grid observations preserve angular units and absent vertical evidence", {
+  root <- tempfile("angular-grid-");dir.create(root);on.exit(unlink(root,recursive=TRUE))
+  p <- file.path(root,"degrees.tif")
+  r <- terra::rast(nrows=2,ncols=2,xmin=-96,xmax=-95.98,ymin=41,ymax=41.02,crs="EPSG:4326")
+  terra::values(r) <- c(0,1,2,NA);terra::writeRaster(r,p)
+  x <- inspect_terrain_vertical_reference(p)$internal_compound
+  expect_equal(x$grid$spacing,c(.01,.01),tolerance=1e-10)
+  expect_match(x$grid$horizontal_unit,"degree")
+  expect_equal(x$grid$size,c(2,2))
+  expect_identical(x$status,"VERTICAL_CRS_NOT_EXPOSED")
+})
+
 test_that("GeoTIFF 1.0 vertical declarations are recovered without rewriting", {
   p <- vertical_fixture()
   before <- tools::md5sum(list.files(dirname(p), full.names = TRUE))

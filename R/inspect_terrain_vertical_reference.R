@@ -9,7 +9,9 @@
 #' @return A list with schema, normalized path, SHA-256, software versions,
 #'   default_reader and internal_compound observations, and crs_text_differs.
 #'   Each observation contains status, WKT, optional PROJJSON, optional vertical
-#'   CRS component, band unit, and the requested reader options. Status is
+#'   CRS component, band unit, grid metadata, and the requested reader options.
+#'   Grid size is columns/rows; spacing and affine coefficients retain source
+#'   CRS units. Missing grid declarations remain empty or NULL. Status is
 #'   VERTICAL_CRS_EXPOSED or VERTICAL_CRS_NOT_EXPOSED, never proof of absence.
 #'   Text differences require review, not automatic conflict resolution.
 #' @details No statistics, raster processing, metadata assignment or file writes
@@ -65,9 +67,16 @@ inspect_terrain_vertical_reference <- function(path) {
   projjson <- x$stac[["proj:projjson"]]
   vertical <- .fg_vertical_component(projjson)
   exposed <- !is.null(vertical) || grepl("(^|[[:space:],])(VERTCRS|VERT_CS)\\[", wkt)
+  transform <- unlist(x$geoTransform)
+  spacing <- if(length(transform)==6L) c(sqrt(sum(transform[c(2,5)]^2)),
+    sqrt(sum(transform[c(3,6)]^2))) else NULL
+  horizontal_unit <- tryCatch(sf::st_crs(wkt)$units_gdal, error=function(e) NULL)
   list(status = if (exposed) "VERTICAL_CRS_EXPOSED" else "VERTICAL_CRS_NOT_EXPOSED",
     wkt = wkt, projjson = projjson, vertical_crs = vertical,
     band_unit = if (is.null(x$bands[[1L]]$unit)) "" else x$bands[[1L]]$unit,
+    grid = list(size = unlist(x$size), geotransform = unlist(x$geoTransform),
+      spacing = spacing, horizontal_unit = horizontal_unit,
+      pixel_type = x$bands[[1L]]$type, nodata = x$bands[[1L]]$noDataValue),
     open_options = if (internal) "GEOREF_SOURCES=INTERNAL" else character(),
     config_options = as.list(config))
 }

@@ -21,6 +21,69 @@ download_response <- function(n=32,status=200L,headers=NULL) {
   list(status_code=status,headers=charToRaw(paste0("HTTP/1.1 ",status," Test\r\n",headers,"\r\n")))
 }
 
+test_that("display scaling preserves source NoData and row order", {
+  root <- tempfile("scaled-preview-");dir.create(root);on.exit(unlink(root,recursive=TRUE))
+  raw <- file.path(root,"raw.tif");source <- file.path(root,"scaled.tif")
+  r <- terra::rast(nrows=2,ncols=3,xmin=0,xmax=3,ymin=0,ymax=2,crs="EPSG:26914")
+  terra::values(r) <- c(0,-1,2,NA,4,5);terra::writeRaster(r,raw,datatype="INT2S",NAflag=-9999)
+  # One valid scaled value equals the original raw NoData sentinel.
+  sf::gdal_utils("translate",raw,source,options=c("-a_scale","2","-a_offset","-10003"),quiet=TRUE)
+  observation <- inspect_terrain_vertical_reference(source)
+  before <- tools::md5sum(list.files(root,full.names=TRUE))
+  with_mocked_bindings({
+    p <- preview_stream_dem_download("synthetic","tile")
+    expect_equal(p$preview$values,matrix(c(-10003,-10005,-9999,NA,-9995,-9993),2,3,byrow=TRUE))
+    expect_identical(tools::md5sum(list.files(root,full.names=TRUE)),before)
+  },inspect_stream_dem_download=function(...) list(observation=observation,sha256=observation$sha256))
+})
+
+test_that("inspection binds real GeoTIFF metadata to its receipt without writes", {
+  f <- download_fixture();on.exit(unlink(f$dir,recursive=TRUE))
+  source <- file.path(f$dir,"grid.tif")
+  raster <- terra::rast(nrows=2,ncols=3,xmin=500000,xmax=500003,
+    ymin=4500000,ymax=4500002,crs="EPSG:26914")
+  terra::values(raster) <- c(0,-1,2,NA,4,5)
+  terra::writeRaster(raster,source,datatype="FLT4S")
+  f$inventory$files$size_bytes <- file.info(source)$size
+  selection <- file.path(f$dir,"real.gpkg")
+  write_stream_dem_selection(f$inventory,"tile1",selection,"revision-000001.gpkg")
+  with_mocked_bindings({
+    a <- prepare_stream_dem_download(selection,f$destination)
+    expect_error(inspect_stream_dem_download(a,"tile1"),"no valid local")
+    d <- run_stream_dem_download(a)
+    before <- tools::md5sum(list.files(f$destination,recursive=TRUE,full.names=TRUE))
+    x <- inspect_stream_dem_download(a,"tile1")
+    expect_equal(x$observation$internal_compound$grid$size,c(3,2))
+    expect_equal(x$observation$internal_compound$grid$spacing,c(1,1))
+    expect_match(x$observation$internal_compound$grid$horizontal_unit,"met")
+    expect_identical(x$observation$internal_compound$status,"VERTICAL_CRS_NOT_EXPOSED")
+    p <- preview_stream_dem_download(a,"tile1")
+    expect_equal(p$preview$values,matrix(c(0,-1,2,NA,4,5),2,3,byrow=TRUE))
+    expect_equal(p$preview$sampled_size,c(3,2))
+    expect_true(p$preview$native)
+    expect_equal(p$preview$window,c(0,0,3,2))
+    detail <- preview_stream_dem_download(a,"tile1",window=c(1,0,2,2))
+    expect_equal(detail$preview$values,matrix(c(-1,2,4,5),2,2,byrow=TRUE))
+    expect_true(detail$preview$native)
+    expect_equal(preview_stream_dem_download(a,"tile1",window=c(0,1,1,1))$preview$values,matrix(NA_real_,1,1))
+    expect_error(preview_stream_dem_download(a,"tile1",window=c(2,0,2,2)),"inside the source")
+    expect_error(preview_stream_dem_download(a,"tile1",window=c(0,0,1.5,1)),"integer")
+    expect_error(preview_stream_dem_download(a,"tile1",window=c(-1,0,1,1)),"integer")
+    expect_false(preview_stream_dem_download(a,"tile1",2)$preview$native)
+    expect_equal(preview_stream_dem_download(a,"tile1",2)$preview$sampled_size,c(2,1))
+    expect_error(preview_stream_dem_download(a,"tile1",513),"max_dimension")
+    expect_identical(tools::md5sum(list.files(f$destination,recursive=TRUE,full.names=TRUE)),before)
+    expect_error(inspect_stream_dem_download(a,"missing"),"no valid local")
+    asset <- file.path(f$destination,d$files$asset)
+    bytes <- readBin(asset,"raw",file.info(asset)$size);bytes[length(bytes)] <- as.raw(127)
+    writeBin(bytes,asset)
+    expect_error(inspect_stream_dem_download(a,"tile1"),"checksum")
+    expect_error(preview_stream_dem_download(a,"tile1"),"checksum")
+  },.fg_dem_transfer=function(url,path,...) {
+    file.copy(source,path);download_response(file.info(source)$size)
+  })
+})
+
 test_that("immutable attempts publish, reopen, reuse and preserve corrupt earlier assets", {
   f <- download_fixture();on.exit(unlink(f$dir,recursive=TRUE))
   count <- 0

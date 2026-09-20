@@ -26,6 +26,8 @@
 #'   retain_study_terrain_evidence(). Requires source-use records; uses schema 4.
 #' @param terrain_processing Optional ordered preparation accounts from
 #'   record_study_terrain_processing(). Requires source-use records; uses schema 5.
+#' @param vertical_reference Optional structured Study Area vertical target from
+#'   validate_study_vertical_reference(). Requires a Study Area; uses schema 7.
 #' @return Normalized context path invisibly. New-file publication requires hard
 #'   links. Invalid hierarchy fails; missing AOIs and incomplete evidence remain
 #'   report findings. This is not a complete FGDB project or event-folder binding.
@@ -34,16 +36,17 @@ write_study_context <- function(dsn, study_area = NULL, streams = NULL,
     reaches = NULL, survey_events = NULL, reconstruction = NULL, network = NULL,
     folder_manifest = NULL, terrain_notes = NA_character_, analyst_notes = NA_character_,
     analysis_reference = NULL, terrain_sources = NULL, terrain_evidence = NULL,
-    terrain_processing = NULL) {
+    terrain_processing = NULL, vertical_reference = NULL) {
   dsn <- .fg_network_dsn(dsn)
   if (file.exists(dsn)) .fg_abort("Context destination already exists.")
   tabs <- list(study_area = study_area, streams = streams, reaches = reaches,
     survey_events = survey_events, reconstruction = reconstruction, analysis_reference = analysis_reference,
     terrain_sources = terrain_sources, terrain_evidence = terrain_evidence,
-    terrain_processing = terrain_processing)
+    terrain_processing = terrain_processing, vertical_reference = vertical_reference)
   tabs <- tabs[!vapply(tabs, is.null, logical(1))]
   .fg_study_tables_check(tabs)
-  schema <- if ("study_area_purpose" %in% names(study_area)) "FLUVGEO_STUDY_CONTEXT_6" else
+  schema <- if (!is.null(vertical_reference)) "FLUVGEO_STUDY_CONTEXT_7" else
+    if ("study_area_purpose" %in% names(study_area)) "FLUVGEO_STUDY_CONTEXT_6" else
     if (!is.null(terrain_processing)) "FLUVGEO_STUDY_CONTEXT_5" else
     if (!is.null(terrain_evidence)) "FLUVGEO_STUDY_CONTEXT_4" else
     if (!is.null(terrain_sources)) "FLUVGEO_STUDY_CONTEXT_3" else
@@ -129,7 +132,7 @@ read_study_context <- function(dsn) {
     "folder_manifest", "folder_manifest_sha256")
   if (inherits(metadata, "sf") || nrow(metadata) != 1L || !setequal(names(metadata), fields) ||
       !all(vapply(metadata, is.character, logical(1))) ||
-      !metadata$schema %in% paste0("FLUVGEO_STUDY_CONTEXT_", 1:6))
+      !metadata$schema %in% paste0("FLUVGEO_STUDY_CONTEXT_", 1:7))
     .fg_abort("Unsupported or malformed Study Area context metadata.")
   catalog <- sf::st_read(dsn, layer = required[2], quiet = TRUE)
   if (inherits(catalog, "sf") || !setequal(names(catalog), c("table_name", "geometry_column")) ||
@@ -138,7 +141,8 @@ read_study_context <- function(dsn) {
       !setequal(layers, c(required, catalog$table_name)))
     .fg_abort("Malformed Study Area context table catalog.")
   has_choices <- "analysis_reference" %in% catalog$table_name
-  expected <- if ("terrain_processing" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_5" else
+  expected <- if ("vertical_reference" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_7" else
+    if ("terrain_processing" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_5" else
     if ("terrain_evidence" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_4" else
     if ("terrain_sources" %in% catalog$table_name) "FLUVGEO_STUDY_CONTEXT_3" else
     if (has_choices) "FLUVGEO_STUDY_CONTEXT_2" else "FLUVGEO_STUDY_CONTEXT_1"
@@ -148,6 +152,9 @@ read_study_context <- function(dsn) {
   for (i in seq_len(nrow(catalog))) {
     nm <- catalog$table_name[i]; geom <- catalog$geometry_column[i]
     x <- sf::st_read(dsn, layer = nm, quiet = TRUE, stringsAsFactors = FALSE)
+    # GeoPackage text is UTF-8. sf/GDAL can leave it unmarked under the Windows
+    # C locale, making non-ASCII WKT fail comparison or corrupt on the next write.
+    for (field in names(x)) if (is.character(x[[field]])) Encoding(x[[field]]) <- "UTF-8"
     if (inherits(x, "sf") != nzchar(geom)) .fg_abort("Context geometry catalog mismatch.")
     if (nzchar(geom)) {
       old <- attr(x, "sf_column")
@@ -158,9 +165,9 @@ read_study_context <- function(dsn) {
     tabs[[nm]] <- x
   }
   .fg_study_tables_check(tabs)
-  if ("study_area_purpose" %in% names(tabs$study_area)) expected <- "FLUVGEO_STUDY_CONTEXT_6"
+  if ("study_area_purpose" %in% names(tabs$study_area) && is.null(tabs$vertical_reference)) expected <- "FLUVGEO_STUDY_CONTEXT_6"
   if (!identical(metadata$schema, expected))
-    .fg_abort("Study Area purpose requires schema 6; schema and fields disagree.")
+    .fg_abort("Context schema and saved fields disagree (purpose requires schema 6; vertical specification requires schema 7).")
   args <- .fg_study_arguments(tabs, metadata, dirname(dsn))
   args
 }
@@ -200,9 +207,13 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
   analysis_reference = c("component", "value", "basis", "evidence", "analyst", "recorded_at"),
   terrain_sources = .fg_terrain_source_fields(),
   terrain_evidence = .fg_terrain_evidence_fields(),
-  terrain_processing = .fg_terrain_processing_fields())
+  terrain_processing = .fg_terrain_processing_fields(),
+  vertical_reference = .fg_vertical_reference_fields())
 
 .fg_study_tables_check <- function(tabs) {
+  .fg_vertical_reference_check(tabs$vertical_reference)
+  if (!is.null(tabs$vertical_reference) && is.null(tabs$study_area))
+    .fg_abort("A vertical target specification requires a Study Area.")
   if (!is.null(tabs$analysis_reference) && is.null(tabs$study_area))
     .fg_abort("Saved analysis-reference choices require a Study Area.")
   .fg_study_analysis_check(tabs$analysis_reference)
@@ -222,7 +233,8 @@ read_study_context_summary <- function(dsn, terrain_references = FALSE,
     if (!all(names(x) %in% .fg_study_columns()[[nm]])) .fg_abort("Unsupported context columns; nothing was dropped.")
     for (field in names(x)) {
       v <- x[[field]]
-      kind <- if (field %in% c("survey_year", "survey_month", "survey_day", "step_number")) "integer" else "character"
+      kind <- if (nm=="vertical_reference" && field %in% c("unit_to_metre","coordinate_epoch","frame_epoch")) "double" else
+        if (field %in% c("survey_year", "survey_month", "survey_day", "step_number")) "integer" else "character"
       if (is.object(v) || !is.null(dim(v)) || typeof(v) != kind)
         .fg_abort(paste("Context field", field, "must be a plain", kind, "column."))
     }

@@ -18,7 +18,8 @@ write_study_context(
   analysis_reference = NULL,
   terrain_sources = NULL,
   terrain_evidence = NULL,
-  terrain_processing = NULL
+  terrain_processing = NULL,
+  vertical_reference = NULL
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ retain_study_terrain_evidence(). Requires source-use records; uses schema 4.}
 
 \item{terrain_processing}{Optional ordered preparation accounts from
 record_study_terrain_processing(). Requires source-use records; uses schema 5.}
+
+\item{vertical_reference}{Optional structured Study Area vertical target from
+validate_study_vertical_reference(). Requires a Study Area; uses schema 7.}
 }
 \value{
 Normalized context path invisibly. New-file publication requires hard

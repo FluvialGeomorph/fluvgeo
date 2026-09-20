@@ -1,6 +1,11 @@
 # Schemas
 
-Last updated: 2026-09-08
+Study Area context schema 7 adds a structured vertical target; see
+[study-vertical-reference.md](study-vertical-reference.md). Earlier schemas remain
+readable. The target is metadata only and does not certify source conformity or
+execute a coordinate operation.
+
+Last updated: 2026-09-20
 
 ## Purpose
 This document records important structural contracts used by the repository, including data objects, files, tables, configuration structures, and other interfaces whose shape must remain explicit.
@@ -13,7 +18,15 @@ This document records important structural contracts used by the repository, inc
 Source DEM transfer receipts and study-local original files use the additive
 [download contract](stream-dem-downloads.md); hierarchy and Event schemas remain unchanged.
 
+Receipt-bound read-only metadata inspection is defined in
+[source DEM inspection](stream-dem-inspection.md), including the additive grid
+fields in vertical-reference observations. It does not create accepted terrain.
+
 ## Cross-section watershed contract
+
+Validated Study Area CRS choices use the existing analysis_reference table;
+see [analysis CRS contract](study-analysis-crs.md). GeoPackage character fields
+are marked UTF-8 on read to preserve non-ASCII WKT across Windows C-locale revisions.
 
 For the separate, review-only drainage discovery result (query/snap points,
 COMID, four candidate layers, per-layer status, sources and explicit network

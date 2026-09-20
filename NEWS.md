@@ -1,3 +1,48 @@
+# fluvgeo 2026.09.20.9044
+
+- Add metadata-only vertical target specification, local vertical CRS discovery,
+  explicit elevation units, coordinate epoch/evidence and intended model fields.
+- Context schema 7 preserves the structured target through later revisions;
+  earlier schemas remain readable. No source or elevation conversions occur.
+
+# fluvgeo 2026.09.20.9043
+
+- Discover projected EPSG systems for Study Area bounds from the installed PROJ
+  database through sf/GDAL, including area coverage, datum, exact units and catalog
+  provenance. No network search or automatic selection is performed.
+- Block epoch-dependent analysis choices until an explicit coordinate-epoch
+  workflow is qualified; definitions may still be explored in the catalog.
+
+# fluvgeo 2026.09.19.9042
+
+- Add projected 2D Study Area analysis CRS validation and immutable recording of
+  canonical WKT with boundary checks and attributed rationale. Source geometry
+  and vertical references are preserved. Existing terrain processing records
+  block changes pending a product migration workflow.
+- Preserve UTF-8 GeoPackage text across context revisions under the Windows C
+  locale, including non-ASCII characters in coordinate-system WKT.
+
+# fluvgeo 2026.09.19.9041
+
+- Elevation previews accept validated source pixel windows and report whether
+  display data were downsampled. Value and mask reads use the same exact window;
+  source files and receipts remain unchanged.
+
+# fluvgeo 2026.09.19.9040
+
+- Add bounded source-grid elevation previews for recorded DEM downloads. The
+  receipt-bound worker samples base pixels and embedded masks, applies band
+  scale/offset, and verifies the unchanged original source afterward. Temporary
+  displays do not establish terrain suitability or create analytical terrain.
+
+# fluvgeo 2026.09.19.9039
+
+- Inspect a downloaded DEM against its immutable receipt, then compare ordinary
+  and embedded compound-CRS metadata. Reader observations now include grid size,
+  source-coordinate spacing, units, affine transform, type and declared NoData.
+  Inspection is read-only and does not establish terrain suitability.
+- Additive API consumed by FG Studio 9029; no other client migration required.
+
 # fluvgeo 2026.09.19.9038
 
 - Prepare, execute, cancel and read local source DEM download attempts from saved

@@ -15,3 +15,9 @@
 3. Prefer deterministic functions with structured return values for automation.
 4. Run focused `testthat` tests, regenerate documentation when needed, then run package-level checks.
 5. Review generated-file changes separately from hand-authored source changes.
+
+For a targeted help update, generate in a scratch package and copy only the
+intended Rd output back after review. Do not run `roclet_output()` on a partial
+block set against this repository: its default cleanup deletes other generated
+help files. Full roxygen regeneration can also reformat legacy NAMESPACE entries;
+inspect the baseline and preserve unrelated existing edits.
