@@ -1,3 +1,25 @@
+# fluvgeo 2026.09.21.9047
+
+- Add verified hierarchical One/NoData mask families with saved Event spacing,
+  shared-anchor subwindows, strict center membership, parent intersection,
+  bounded block I/O, resource admission and immutable attempt manifests.
+- Add mask reopening/checksum verification and reuse group validation in preflight.
+  No source elevation operations or DEM mosaics are enabled.
+
+# fluvgeo 2026.09.20.9046
+
+- Add read-only Stream/Event preflight with shared-anchor grid envelopes and
+  storage estimates, receipt-bound source screening, exact linear-unit conversion
+  and stale-input checks. No masks, mosaics or elevation operations are enabled.
+
+# fluvgeo 2026.09.20.9045
+
+- Add conservative acquisition-month proposals and immutable local acquisition
+  groups with reviewed collection/Stream membership, explicit Event spacing,
+  retained date evidence and optional links to existing Reach Events.
+- Preserve Reach Event ownership and original assets; no masks, mosaics or
+  coordinate operations are added.
+
 # fluvgeo 2026.09.20.9044
 
 - Add metadata-only vertical target specification, local vertical CRS discovery,

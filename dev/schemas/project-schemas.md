@@ -1,11 +1,21 @@
 # Schemas
 
+Hierarchical Event mask products use the additive [mask family contract](event-masks.md).
+It preserves original data and records verified One/NoData products separately from DEMs.
+
+Read-only Stream/Event grid and receipt-backed source screening uses the
+[preflight report contract](stream-dem-preflight.md); it authorizes no processing.
+
+Local reviewed acquisition groups and required Event spacing use the additive
+[acquisition group contract](survey-acquisition-groups.md), separate from
+Reach-owned Survey Events and context revisions.
+
 Study Area context schema 7 adds a structured vertical target; see
 [study-vertical-reference.md](study-vertical-reference.md). Earlier schemas remain
 readable. The target is metadata only and does not certify source conformity or
 execute a coordinate operation.
 
-Last updated: 2026-09-20
+Last updated: 2026-09-21
 
 ## Purpose
 This document records important structural contracts used by the repository, including data objects, files, tables, configuration structures, and other interfaces whose shape must remain explicit.
