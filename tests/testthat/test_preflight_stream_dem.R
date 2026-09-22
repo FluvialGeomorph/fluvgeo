@@ -2,7 +2,7 @@ test_that("shared-anchor plans snap outward and child envelopes are exact subwin
   area <- sf::st_sf(geometry=sf::st_as_sfc(sf::st_bbox(c(xmin=-2.1,ymin=-1.1,xmax=3.1,ymax=4.1),crs=26915)))
   p <- .fg_dem_grid_plan(area,26915,1)
   expect_equal(p$extent,c(-3,-2,4,5));expect_equal(p$cells,49)
-  expect_equal(p$mask_bytes,49);expect_equal(p$float64_bytes,392)
+  expect_equal(p$mask_bytes,49);expect_equal(p$float32_bytes,196);expect_equal(p$float64_bytes,392)
   same <- .fg_dem_grid_plan(area,26915,1)
   expect_identical(p$index,same$index)
   other <- .fg_dem_grid_plan(area,26915,1.5)

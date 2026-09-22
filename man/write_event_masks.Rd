@@ -4,14 +4,7 @@
 \alias{write_event_masks}
 \title{Write a verified Study Area, Stream and Reach mask family}
 \usage{
-write_event_masks(
-  context,
-  selection,
-  group,
-  stream_id,
-  directory,
-  max_cells = 5e+07
-)
+write_event_masks(context, selection, group, stream_id, directory)
 }
 \arguments{
 \item{context}{Current Study Area context GeoPackage.}
@@ -23,8 +16,6 @@ write_event_masks(
 \item{stream_id}{One Stream in the group.}
 
 \item{directory}{New, nonexistent attempt directory. Existing paths are never replaced.}
-
-\item{max_cells}{Maximum total cells admitted across the family; default 50 million.}
 }
 \value{
 Manifest with input hashes, grid, mask hashes, cell counts and software evidence.
@@ -33,13 +24,14 @@ Manifest with input hashes, grid, mask hashes, cell counts and software evidence
 Write a verified Study Area, Stream and Reach mask family
 }
 \details{
-Uses strict cell-center interior membership (edge centers are NoData),
+Uses terra polygon rasterization with touches=FALSE (cell centers),
   shared zero anchor and Event spacing. Children intersect their parent masks.
   Missing Reach polygons block the entire family. Disk-backed compressed Byte
-  GeoTIFFs contain only 1 and NoData. Processing uses at most 65536 centers per
-  block and rejects wider grids. Admission requires available disk space of at
-  least four times the uncompressed payload plus 256 MiB; this is an estimate,
-  not a reservation. A verified manifest is written last. Interrupted attempts
+  GeoTIFFs contain only 1 and NoData. Standard terra rasterize, crop and mask
+  operations write compressed disk-backed rasters with BigTIFF support.
+  No application cell-count, row-width or estimated-disk admission limit is
+  imposed. Actual I/O failures stop publication. A verified manifest is
+  written last. Interrupted attempts
   are incomplete. Applications should stage the directory and publish it only
   after checking that the original request is still current. No DEM is read.
 }

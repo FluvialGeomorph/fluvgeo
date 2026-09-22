@@ -7,11 +7,6 @@
   terra::rast(nrows=plan$rows,ncols=plan$columns,xmin=e[1],xmax=e[3],ymin=e[2],ymax=e[4],crs=wkt)
 }
 
-.fg_mask_blocks <- function(r, fun) {
-  rows <- max(1L,floor(65536/ncol(r)))
-  for(start in seq(1,nrow(r),by=rows)) fun(start,min(rows,nrow(r)-start+1))
-}
-
 .fg_mask_parent <- function(path, r) {
   p <- terra::rast(path)
   offset <- c((terra::xmin(r)-terra::xmin(p))/terra::res(r)[1],
@@ -23,83 +18,70 @@
   list(raster=p,col=round(offset[1])+1,row=round(offset[2]))
 }
 
-.fg_mask_parent_values <- function(parent,start,nrows,columns) {
-  terra::readValues(parent$raster,row=parent$row+start,nrows=nrows,col=parent$col,ncols=columns)
-}
-
 .fg_mask_write <- function(area, plan, wkt, path, parent=NULL) {
   r <- .fg_mask_template(plan,wkt)
   area <- sf::st_transform(area,wkt,partial=FALSE,allow_ballpark=FALSE)
+  temporary <- vapply(seq_len(3),function(i) tempfile("mask-",tmpdir=dirname(path),fileext=".tif"),character(1))
+  on.exit(unlink(temporary),add=TRUE)
+  options <- list(datatype="INT1U",NAflag=255,
+    gdal=c("COMPRESS=DEFLATE","TILED=YES","BIGTIFF=IF_SAFER"))
+  .fg_mask_checkpoint(dirname(path))
+  raw <- terra::rasterize(terra::vect(area),r,field=1,background=0,touches=FALSE,
+    filename=temporary[1],wopt=options)
+  # Reclassify zero background (including polygon holes) to the One/NoData contract.
+  burned <- terra::classify(raw,matrix(c(0,NA_real_),ncol=2),
+    filename=if(is.null(parent)) path else temporary[2],wopt=options)
   if(!is.null(parent)) {
-    parent <- .fg_mask_parent(parent,r)
-    terra::readStart(parent$raster); on.exit(terra::readStop(parent$raster),add=TRUE)
-  }
-  terra::writeStart(r,path,overwrite=FALSE,datatype="INT1U",NAflag=255,
-    gdal=c("COMPRESS=DEFLATE","TILED=YES"))
-  opened <- TRUE
-  on.exit(if(opened) try(terra::writeStop(r),silent=TRUE),add=TRUE)
-  expected_count <- 0
-  .fg_mask_blocks(r,function(start,nrows) {
     .fg_mask_checkpoint(dirname(path))
-    cells <- seq((start-1)*ncol(r)+1,(start+nrows-1)*ncol(r))
-    xy <- terra::xyFromCell(r,cells)
-    points <- sf::st_as_sf(data.frame(x=xy[,1],y=xy[,2]),coords=c("x","y"),crs=wkt)
-    # GEOS strict interior makes exact exterior/hole-edge centers NoData.
-    inside <- lengths(sf::st_within(points,area))>0L
-    if(!is.null(parent)) inside <- inside & !is.na(.fg_mask_parent_values(parent,start,nrows,ncol(r)))
-    expected_count <<- expected_count+sum(inside)
-    terra::writeValues(r,ifelse(inside,1,NA_real_),start,nrows)
-  })
-  terra::writeStop(r); opened <- FALSE
-  invisible(expected_count)
+    aligned <- .fg_mask_parent(parent,r)$raster
+    cropped <- terra::crop(aligned,terra::ext(r),snap="near",filename=temporary[3],wopt=options)
+    burned <- terra::mask(burned,cropped,filename=path,wopt=options)
+  }
+  invisible(as.numeric(terra::global(burned,"notNA")[1,1]))
 }
 
 .fg_mask_verify <- function(path, plan, wkt, parent=NULL) {
   r <- terra::rast(path)
-  if(ncol(r)>65536) stop("Mask exceeds the supported row-width budget.")
   if(!isTRUE(terra::compareGeom(r,.fg_mask_template(plan,wkt),stopOnError=FALSE)) ||
       any(abs(as.vector(terra::ext(r))-plan$extent[c(1,3,2,4)])>1e-8) ||
       !identical(terra::datatype(r),"INT1U")) stop("Reopened mask grid or datatype differs.")
-  terra::readStart(r); on.exit(terra::readStop(r),add=TRUE)
+  .fg_mask_checkpoint(dirname(path))
+  summary <- terra::global(r,c("min","max","sum"),na.rm=TRUE)
+  if((is.finite(summary$min) && summary$min!=1) || (is.finite(summary$max) && summary$max!=1))
+    stop("Mask contains values other than One/NoData.")
   if(!is.null(parent)) {
-    parent <- .fg_mask_parent(parent,r)
-    terra::readStart(parent$raster); on.exit(terra::readStop(parent$raster),add=TRUE)
+    temporary <- vapply(seq_len(2),function(i) tempfile("mask-check-",fileext=".tif"),character(1))
+    on.exit(unlink(temporary),add=TRUE)
+    options <- list(datatype="INT1U",NAflag=255,gdal=c("COMPRESS=DEFLATE","TILED=YES","BIGTIFF=IF_SAFER"))
+    aligned <- .fg_mask_parent(parent,r)$raster
+    cropped <- terra::crop(aligned,terra::ext(r),snap="near",filename=temporary[1],wopt=options)
+    outside <- terra::mask(r,cropped,inverse=TRUE,filename=temporary[2],wopt=options)
+    if(terra::global(outside,"notNA")[1,1]>0) stop("Child mask extends beyond its parent.")
   }
-  count <- 0
-  .fg_mask_blocks(r,function(start,nrows) {
-    .fg_mask_checkpoint(dirname(path))
-    v <- terra::readValues(r,row=start,nrows=nrows)
-    if(any(!is.na(v) & v!=1)) stop("Mask contains values other than One/NoData.")
-    if(!is.null(parent) && any(!is.na(v) & is.na(.fg_mask_parent_values(parent,start,nrows,ncol(r)))))
-      stop("Child mask extends beyond its parent.")
-    count <<- count+sum(!is.na(v))
-  })
-  count
+  if(is.na(summary$sum)) 0 else as.numeric(summary$sum)
 }
-
 #' Write a verified Study Area, Stream and Reach mask family
 #' @param context Current Study Area context GeoPackage.
 #' @param selection Current Survey Collection selection GeoPackage.
 #' @param group Reviewed acquisition-group GeoPackage.
 #' @param stream_id One Stream in the group.
 #' @param directory New, nonexistent attempt directory. Existing paths are never replaced.
-#' @param max_cells Maximum total cells admitted across the family; default 50 million.
 #' @return Manifest with input hashes, grid, mask hashes, cell counts and software evidence.
-#' @details Uses strict cell-center interior membership (edge centers are NoData),
+#' @details Uses terra polygon rasterization with touches=FALSE (cell centers),
 #'   shared zero anchor and Event spacing. Children intersect their parent masks.
 #'   Missing Reach polygons block the entire family. Disk-backed compressed Byte
-#'   GeoTIFFs contain only 1 and NoData. Processing uses at most 65536 centers per
-#'   block and rejects wider grids. Admission requires available disk space of at
-#'   least four times the uncompressed payload plus 256 MiB; this is an estimate,
-#'   not a reservation. A verified manifest is written last. Interrupted attempts
+#'   GeoTIFFs contain only 1 and NoData. Standard terra rasterize, crop and mask
+#'   operations write compressed disk-backed rasters with BigTIFF support.
+#'   No application cell-count, row-width or estimated-disk admission limit is
+#'   imposed. Actual I/O failures stop publication. A verified manifest is
+#'   written last. Interrupted attempts
 #'   are incomplete. Applications should stage the directory and publish it only
 #'   after checking that the original request is still current. No DEM is read.
 #' @export
-write_event_masks <- function(context, selection, group, stream_id, directory, max_cells=5e7) {
+write_event_masks <- function(context, selection, group, stream_id, directory) {
   x <- .fg_event_grid_inputs(context,selection,group,stream_id)
   if(length(directory)!=1L || is.na(directory) || file.exists(directory) || !dir.exists(dirname(directory)))
     stop("Supply a new mask attempt directory under an existing parent.")
-  if(length(max_cells)!=1L || !is.finite(max_cells) || max_cells<=0) stop("Invalid mask cell budget.")
   ctx <- x$ctx; wkt <- x$crs$wkt; size <- x$settings$cell_size
   stream <- ctx$streams[ctx$streams$stream_id==stream_id,,drop=FALSE]
   reaches <- if(is.null(ctx$reaches)) data.frame(reach_id=character(),stream_id=character()) else
@@ -113,11 +95,6 @@ write_event_masks <- function(context, selection, group, stream_id, directory, m
   for(i in seq_along(areas)) plans[[i]] <- .fg_dem_grid_plan(areas[[i]],wkt,size,
     if(!is.na(parents[i])) plans[[parents[i]]]$index else NULL)
   cells <- sum(vapply(plans,function(p) p$cells,numeric(1)))
-  if(cells>max_cells || any(vapply(plans,function(p) p$columns>65536,logical(1))))
-    stop("Mask family exceeds the cell or row-width budget. Review Event spacing or study extent.")
-  required <- 4*cells+256*1024^2
-  available <- ps::ps_disk_usage(dirname(directory))$available[1]
-  if(!is.finite(available) || available<required) stop("Insufficient available disk space for mask attempt.")
   if(!dir.create(directory)) stop("Could not create a new mask attempt.")
   products <- list()
   for(i in seq_along(areas)) {
@@ -136,9 +113,9 @@ write_event_masks <- function(context, selection, group, stream_id, directory, m
     created_at=.fg_dem_time(),inputs=as.list(x$hashes),
     revisions=as.list(stats::setNames(basename(x$paths),names(x$paths))),
     grid=list(wkt=wkt,unit=x$crs$unit,cell_size=size,anchor=c(0,0)),
-    boundary_rule="cell center strictly inside polygon; exterior and hole boundaries excluded",
+    boundary_rule="terra rasterize touches=FALSE (native cell-center rule)",
     datatype="INT1U",nodata=255,products=products,
-    admission=list(cells=cells,max_cells=max_cells,required_bytes=required,available_bytes=available),
+    admission=list(cells=cells),
     software=list(fluvgeo=as.character(utils::packageVersion("fluvgeo")),
       terra=as.character(utils::packageVersion("terra")),sf=as.character(utils::packageVersion("sf")),
       geospatial=as.list(sf::sf_extSoftVersion())))
@@ -163,7 +140,8 @@ read_event_masks <- function(directory) {
       !identical(as.numeric(m$grid$anchor),c(0,0)) || !identical(m$datatype,"INT1U") ||
       !identical(as.numeric(m$nodata),255)) stop("Invalid saved mask grid definition.")
   crs <- validate_study_analysis_crs(m$grid$wkt)
-  if(!identical(m$grid$unit,crs$unit) || !identical(m$boundary_rule,
+  if(!identical(m$grid$unit,crs$unit) || !m$boundary_rule %in% c(
+      "terra rasterize touches=FALSE (native cell-center rule)",
       "cell center strictly inside polygon; exterior and hole boundaries excluded"))
     stop("Unsupported mask units or boundary rule.")
   for(i in seq_along(m$products)) {

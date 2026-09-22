@@ -12,7 +12,7 @@ write_survey_acquisition_group(
   year,
   month = NA_integer_,
   cell_size,
-  rationale,
+  rationale = "",
   dsn,
   previous = NULL,
   event_ids = character()
@@ -33,7 +33,8 @@ write_survey_acquisition_group(
 
 \item{cell_size}{Positive finite output spacing in the saved planar CRS unit.}
 
-\item{rationale}{Analyst evidence for reviewed membership and date precision.}
+\item{rationale}{Optional analyst notes; an empty string is allowed. Provider
+acquisition evidence is retained independently.}
 
 \item{dsn}{New GeoPackage destination; never replaced.}
 

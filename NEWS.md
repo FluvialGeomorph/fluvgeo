@@ -1,3 +1,19 @@
+# fluvgeo 2026.09.21.9049
+
+- Default horizontal terrain outputs to Float32 storage with Float64 working
+  precision. Float64 storage remains explicit opt-in. Verify aligned samples
+  after storage rounding and reject samples outside Float32 range.
+- Add Float32 preflight byte estimates while retaining the Float64 estimate
+  for compatibility. No shared runtime or analyst source files are changed.
+
+# fluvgeo 2026.09.21.9048
+
+- Add a bounded horizontal terrain warp with explicit 2D operation selection,
+  disabled vertical shifts, Float64 output and retained compound-CRS evidence.
+  Static projected CRSs must share an identified geodetic reference. Datum/epoch
+  operations and nonidentity scale/offset remain blocked. No app mosaic workflow
+  or production runtime is enabled by this backend qualification increment.
+
 # fluvgeo 2026.09.21.9047
 
 - Add verified hierarchical One/NoData mask families with saved Event spacing,
@@ -920,3 +936,9 @@ See [Issue 20](https://github.com/FluvialGeomorph/fluvgeo/issues/20)
 ## Bug Fixes
 * Fixed several CMD Check issues.
 
+
+- Survey Event settings accept empty optional rationale notes; provider acquisition evidence remains retained independently.
+
+- Event masks now use standard terra rasterization, classification, crop and mask
+  operations. Removed custom per-cell geometry testing and arbitrary size/space
+  cutoffs. Native cell-center semantics are recorded; legacy masks remain readable.

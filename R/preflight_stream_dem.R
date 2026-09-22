@@ -51,7 +51,7 @@
       any(dimensions>.Machine$integer.max) || !is.finite(cells) || cells>2^53-1)
     stop("Grid dimensions exceed supported exact sizing or have no parent overlap.")
   list(index=index,extent=index*cell_size,columns=dimensions[1],rows=dimensions[2],cells=cells,
-    mask_bytes=cells,float64_bytes=8*cells)
+    mask_bytes=cells,float32_bytes=4*cells,float64_bytes=8*cells)
 }
 
 .fg_dem_source_screen <- function(observation, target, cell_size) {
@@ -117,7 +117,7 @@ preflight_stream_dem <- function(context, selection, group, stream_id, sources) 
   grids <- list(); append_grid <- function(level,id,plan) {
     grids[[length(grids)+1L]] <<- data.frame(level=level,id=id,xmin=plan$extent[1],ymin=plan$extent[2],
       xmax=plan$extent[3],ymax=plan$extent[4],columns=plan$columns,rows=plan$rows,cells=plan$cells,
-      mask_bytes=plan$mask_bytes,float64_bytes=plan$float64_bytes)
+      mask_bytes=plan$mask_bytes,float32_bytes=plan$float32_bytes,float64_bytes=plan$float64_bytes)
   }
   append_grid("Study Area",settings$study_area_id,parent); append_grid("Stream",stream_id,child)
   notes <- character()

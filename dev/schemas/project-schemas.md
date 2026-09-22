@@ -1,5 +1,9 @@
 # Schemas
 
+Static horizontal raster processing uses the additive
+[qualified warp contract](horizontal-terrain-warp.md). It retains source vertical
+evidence and blocks unqualified datum/epoch and elevation-unit operations.
+
 Hierarchical Event mask products use the additive [mask family contract](event-masks.md).
 It preserves original data and records verified One/NoData products separately from DEMs.
 

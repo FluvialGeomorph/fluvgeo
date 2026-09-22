@@ -1,6 +1,6 @@
 # Event mask families (EVENT_MASKS_1)
 
-`write_event_masks(context, selection, group, stream_id, directory, max_cells)`
+`write_event_masks(context, selection, group, stream_id, directory)`
 validates the same saved group/hierarchy/CRS evidence as grid preflight. It does
 not need DEM files, receipt approval or vertical operations. It requires polygons
 for the Study Area, selected Stream and every existing Reach in that Stream;
@@ -8,25 +8,25 @@ missing or invalid geometry blocks the family before any raster is written.
 
 The Study Area envelope snaps outward around (0, 0) at the saved Event spacing.
 Stream and Reach envelopes are cropped integer subwindows of their parents.
-GEOS `st_within` tests cell centers in the projected analysis CRS: centers exactly
-on exterior or hole boundaries are excluded. Child membership also requires a
-valid parent cell. Narrow polygons may legitimately produce all-NoData masks.
-The rule is deliberately independent of GDAL rasterization edge conventions.
+Standard terra polygon rasterization with `touches=FALSE` uses native cell-center
+membership. Background zero (including holes) is reclassified to NoData. Aligned
+children use terra crop and raster mask operations to intersect their parent.
+No custom point-in-polygon or edge correction is applied. The manifest records
+the native rasterization rule; older strict-center editions remain readable but
+are not automatically reused by the updated app.
 
-Each new directory contains sequential `mask-0001.tif` files: Study Area, Stream,
-then Reaches in saved context order. Lossless DEFLATE Byte rasters contain 1 or
-NoData (255). The writer handles at most 65,536 cell centers per block, reads
-only the matching parent row/column window, and rejects grids wider than 65,536
-columns. The default family budget is 50 million total cells. Disk admission
-uses ps available bytes and requires four times the uncompressed payload plus
-256 MiB. This conservative estimate is not a reservation; write failures still
-leave incomplete attempts. No whole Study Area value matrix is allocated.
+Each directory contains Study Area, Stream and Reach compressed Byte GeoTIFFs
+with 1 and NoData (255). Rasterize, classify, crop, mask and global summaries use
+terra's native raster operations with disk-backed output and BigTIFF support.
+There is no application cell-count, row-width, elapsed-time or estimated-space
+cutoff. Real I/O failures leave unpublished attempts. Memory/chunk management is
+an implementation concern, not a restriction on project size.
 
 `verified.json` is written last after reopening all rasters to check grid,
 datatype, values, parent containment, counts and SHA-256, and rehashing inputs.
 It records schema, group/Stream identities, input hashes and revision basenames,
 CRS WKT/units, anchor/spacing, boundary rule, product parent/identity/path/grid/hash/
-valid-cell count, resource admission and software versions. Existing directories
+valid-cell count, total cells and software versions. Existing directories
 are rejected, so retries cannot replace earlier output. A CANCEL file stops at
 block boundaries; process termination also leaves an unpublished staging attempt.
 `read_event_masks(directory)` requires the manifest, validates its grid/units,

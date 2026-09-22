@@ -27,7 +27,8 @@ Tables:
   to Reaches under the chosen Streams and have compatible year/month components.
 
 Every group requires at least one selected collection, one Stream, a known year,
-an explicit spacing and documented membership/date rationale. Analyst review can
+an explicit spacing. Rationale is an optional string, allowed to be empty; provider
+acquisition evidence remains independently retained in members. Analyst review can
 resolve missing or cross-month provider evidence; month stays absent for year
 precision. It never fabricates an exact day. Multiple groups may share a label.
 Editing via `previous` retains group identity and creates a new immutable snapshot.

@@ -28,8 +28,10 @@ envelopes. Missing Reach polygons are reported. Envelope overlap does not prove
 polygon containment, cell-center coverage or valid-data coverage. Actual masks
 must intersect their parent masks, preserve holes and use the approved boundary
 rule. Counts exceeding exact sizing or supported dimensions are rejected before
-any raster allocation. Byte estimates are one byte per mask cell and eight per
-Float64 cell, uncompressed; metadata, intermediates and free space are excluded.
+any raster allocation. Byte estimates are one byte per mask cell, four per
+Float32 cell (the default DEM storage), and eight per optional Float64 cell,
+uncompressed. The additive float32_bytes field accompanies the retained
+float64_bytes field; metadata, intermediates and free space are excluded.
 
 Projected linear source spacing is converted through sf's CRS `ud_unit` and
 `units::set_units`, preserving international versus U.S. survey feet. This screens

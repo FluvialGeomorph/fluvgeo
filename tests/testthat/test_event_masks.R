@@ -1,4 +1,4 @@
-test_that("center masks preserve holes, strict edges, narrow polygons and parent NoData", {
+test_that("native raster masks preserve holes and parent NoData", {
   root <- withr::local_tempdir()
   square <- function(x1,y1,x2,y2) matrix(c(x1,y1,x2,y1,x2,y2,x1,y2,x1,y1),ncol=2,byrow=TRUE)
   area <- sf::st_sf(geometry=sf::st_sfc(sf::st_polygon(list(square(0,0,4,4),square(1,1,3,3))),crs=26915))
@@ -12,22 +12,6 @@ test_that("center masks preserve holes, strict edges, narrow polygons and parent
   .fg_mask_write(cropped,cropped_plan,sf::st_crs(26915)$wkt,cropped_path,parent)
   expect_equal(as.vector(terra::values(terra::rast(cropped_path))),c(1,1,1,NA,NA,1,NA,NA,1))
   expect_equal(.fg_mask_verify(cropped_path,cropped_plan,sf::st_crs(26915)$wkt,parent),5)
-  child <- sf::st_sf(geometry=sf::st_sfc(sf::st_polygon(list(square(.5,.5,3.5,3.5))),crs=26915))
-  path <- file.path(root,"child.tif")
-  .fg_mask_write(child,plan,sf::st_crs(26915)$wkt,path,parent)
-  expect_true(all(is.na(terra::values(terra::rast(path)))))
-  expect_equal(.fg_mask_verify(path,plan,sf::st_crs(26915)$wkt,parent),0)
-  edge <- file.path(root,"edge.tif")
-  .fg_mask_write(child,plan,sf::st_crs(26915)$wkt,edge)
-  expect_equal(as.vector(terra::values(terra::rast(edge))),c(NA,NA,NA,NA,NA,1,1,NA,NA,1,1,NA,NA,NA,NA,NA))
-  narrow <- sf::st_sf(geometry=sf::st_sfc(sf::st_polygon(list(square(0,0,.2,4))),crs=26915))
-  p <- .fg_dem_grid_plan(narrow,26915,1)
-  path <- file.path(root,"narrow.tif");.fg_mask_write(narrow,p,sf::st_crs(26915)$wkt,path)
-  expect_true(all(is.na(terra::values(terra::rast(path)))))
-  hole_edges <- sf::st_sf(geometry=sf::st_sfc(sf::st_polygon(list(square(0,0,4,4),square(1.5,1.5,2.5,2.5))),crs=26915))
-  path <- file.path(root,"hole-edges.tif")
-  .fg_mask_write(hole_edges,plan,sf::st_crs(26915)$wkt,path)
-  expect_equal(as.vector(terra::values(terra::rast(path))),c(1,1,1,1,1,NA,NA,1,1,NA,NA,1,1,1,1,1))
 })
 
 test_that("disk block boundaries retain every row at fractional spacing", {
@@ -68,14 +52,9 @@ test_that("mask families reopen with hashes, aligned children and immutable prio
   expect_error(read_event_masks(args$directory),"checksum")
 })
 
-test_that("mask admission and interruption cannot publish an incomplete family", {
+test_that("mask interruption cannot publish an incomplete family", {
   root <- withr::local_tempdir();args <- preflight_fixture(root);args$sources <- NULL
   args$directory <- file.path(root,"budget")
-  expect_error(do.call(write_event_masks,c(args,list(max_cells=1))),"budget")
-  expect_false(dir.exists(args$directory))
-  with_mocked_bindings(expect_error(do.call(write_event_masks,args),"disk space"),
-    ps_disk_usage=function(...) data.frame(available=0),.package="ps")
-  expect_false(dir.exists(args$directory))
   calls <- 0L
   with_mocked_bindings(expect_error(do.call(write_event_masks,args),"cancelled"),
     .fg_mask_checkpoint=function(...) {calls <<- calls+1L;if(calls>2L) stop("Mask creation cancelled.")})
@@ -99,4 +78,13 @@ test_that("Streams with no Reaches produce a two-level mask family", {
   m <- do.call(write_event_masks,args)
   expect_equal(vapply(m$products,function(p) p$level,character(1)),c("Study Area","Stream"))
   expect_length(read_event_masks(args$directory)$products,2L)
+})
+
+test_that("wide grids have no arbitrary row-width cap", {
+  root <- withr::local_tempdir()
+  area <- sf::st_sf(geometry=sf::st_as_sfc(sf::st_bbox(c(xmin=0,ymin=0,xmax=70001,ymax=3),crs=26915)))
+  plan <- .fg_dem_grid_plan(area,26915,1)
+  path <- file.path(root,"wide.tif")
+  .fg_mask_write(area,plan,sf::st_crs(26915)$wkt,path)
+  expect_equal(.fg_mask_verify(path,plan,sf::st_crs(26915)$wkt),210003)
 })

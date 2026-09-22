@@ -58,14 +58,15 @@ propose_survey_acquisition_groups <- function(discovery) {
 #' @param year Known acquisition year (required).
 #' @param month Acquisition month or NA for year precision.
 #' @param cell_size Positive finite output spacing in the saved planar CRS unit.
-#' @param rationale Analyst evidence for reviewed membership and date precision.
+#' @param rationale Optional analyst notes; an empty string is allowed. Provider
+#'   acquisition evidence is retained independently.
 #' @param dsn New GeoPackage destination; never replaced.
 #' @param previous Previous group snapshot, or NULL for a new stable identity.
 #' @param event_ids Existing Reach-owned Survey Event IDs, or character().
 #' @return New snapshot path invisibly. Does not create FGDB Events or rasters.
 #' @export
 write_survey_acquisition_group <- function(context, selection, members, stream_ids,
-    year, month=NA_integer_, cell_size, rationale, dsn, previous=NULL,
+    year, month=NA_integer_, cell_size, rationale="", dsn, previous=NULL,
     event_ids=character()) {
   ctx <- read_study_context(context); discovery <- read_survey_collection_selection(selection)
   id <- ctx$study_area$study_area_id
@@ -91,8 +92,8 @@ write_survey_acquisition_group <- function(context, selection, members, stream_i
     stop("Reach Event dates conflict with the reviewed group.")
   if(!is.numeric(cell_size) || length(cell_size)!=1L || !is.finite(cell_size) || cell_size<=0)
     stop("Choose one positive finite output cell size.")
-  if(!is.character(rationale) || length(rationale)!=1L || is.na(rationale) || !nzchar(trimws(rationale)))
-    stop("Document the acquisition membership and date evidence.")
+  if(!is.character(rationale) || length(rationale)!=1L || is.na(rationale))
+    stop("Optional notes must be one non-missing string.")
   ref <- ctx$analysis_reference
   at <- which(ref$component=="horizontal" & ref$basis=="PROJECT_RECORD")
   if(length(at)!=1L) stop("Save the Study Area analysis CRS first.")
