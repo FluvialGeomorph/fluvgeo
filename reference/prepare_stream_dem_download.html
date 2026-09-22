@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9051</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.22.9053</span>
       </span>
     </div>
 
@@ -70,9 +70,9 @@ parent directory. The caller chooses and validates the study destination.</p></d
 
 
 <dt id="arg-limits">limits<a class="anchor" aria-label="anchor" href="#arg-limits"></a></dt>
-<dd><p>Named list overriding file_bytes (10 GiB), attempt_bytes (50 GiB),
-connect_seconds (30), idle_seconds (120), file_seconds (7200) and
-attempt_seconds (28800). Positive finite numbers.</p></dd>
+<dd><p>Named list overriding connect_seconds (30) and idle_seconds (120).
+Positive finite numbers. Legacy file_bytes, attempt_bytes, file_seconds and
+attempt_seconds entries are ignored. Healthy transfers have no size/duration cap.</p></dd>
 
 </dl></div>
     <div id="value">

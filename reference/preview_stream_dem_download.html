@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9051</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.22.9053</span>
       </span>
     </div>
 
@@ -57,7 +57,8 @@
 <span>  <span class="va">attempt</span>,</span>
 <span>  <span class="va">file_id</span>,</span>
 <span>  max_dimension <span class="op">=</span> <span class="fl">512L</span>,</span>
-<span>  window <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  window <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,6 +82,10 @@
 <dd><p>Optional integer vector: zero-based column offset, row offset,
 width and height in source pixels. Must lie entirely inside the source.</p></dd>
 
+
+<dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
+<dd><p>Optional session-owned inspection and display cache directory.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -95,7 +100,8 @@ width and height in source pixels. Must lie entirely inside the source.</p></dd>
   from the base raster, with existing overviews disabled. Band scale/offset are
   applied to Float64 display values. Temporary value/mask GeoTIFFs are removed
   on return. Embedded masks are used; external sidecars are excluded.
-  Original files are unchanged and their checksum is checked again afterward.
+  A cold inspection verifies the checksum once. Cached views use size/time
+  change indicators; these are not a new cryptographic integrity check.
   This is a whole-tile or source-window view, not an analytical derivative or proof of
   complete coverage, full pixel readability, or terrain suitability.</p>
     </div>
