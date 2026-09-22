@@ -8,7 +8,8 @@ preview_stream_dem_download(
   attempt,
   file_id,
   max_dimension = 512L,
-  window = NULL
+  window = NULL,
+  cache_dir = NULL
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ preview_stream_dem_download(
 
 \item{window}{Optional integer vector: zero-based column offset, row offset,
 width and height in source pixels. Must lie entirely inside the source.}
+
+\item{cache_dir}{Optional session-owned inspection and display cache directory.}
 }
 \value{
 The receipt-bound inspection with a preview list: values (row-major
@@ -35,7 +38,8 @@ Uses internal GeoTIFF georeferencing and nearest-neighbour sampling
   from the base raster, with existing overviews disabled. Band scale/offset are
   applied to Float64 display values. Temporary value/mask GeoTIFFs are removed
   on return. Embedded masks are used; external sidecars are excluded.
-  Original files are unchanged and their checksum is checked again afterward.
+  A cold inspection verifies the checksum once. Cached views use size/time
+  change indicators; these are not a new cryptographic integrity check.
   This is a whole-tile or source-window view, not an analytical derivative or proof of
   complete coverage, full pixel readability, or terrain suitability.
 }

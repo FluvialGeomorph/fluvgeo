@@ -2,6 +2,33 @@
   if(file.exists(file.path(directory,"CANCEL"))) stop("Mask creation cancelled.")
 }
 
+.fg_mask_recipe <- function(x,stream_id) {
+  stream <- x$ctx$streams[x$ctx$streams$stream_id==stream_id,,drop=FALSE]
+  reaches <- x$ctx$reaches
+  if(!is.null(reaches)) {
+    reaches <- reaches[reaches$stream_id==stream_id,,drop=FALSE]
+    reaches <- reaches[order(reaches$reach_id),,drop=FALSE]
+  }
+  geometry <- function(z) if(inherits(z,"sf")) list(crs=sf::st_crs(z)$wkt,
+    wkb=sf::st_as_binary(sf::st_geometry(z))) else NULL
+  recipe <- list(method="TERRA_MASK_1",group_id=x$settings$group_id,
+    stream_id=stream_id,reach_ids=if(is.null(reaches)) character() else reaches$reach_id,
+    study=geometry(x$ctx$study_area),stream=geometry(stream),reaches=geometry(reaches),
+    wkt=x$crs$wkt,cell_size=x$settings$cell_size,anchor=c(0,0),
+    terra=as.character(utils::packageVersion("terra")),gdal=unname(sf::sf_extSoftVersion()["GDAL"]))
+  unclass(as.character(openssl::sha256(serialize(recipe,NULL,version=2))))
+}
+
+#' Identify the raster-processing dependencies of saved Survey Event masks
+#' @inheritParams write_event_masks
+#' @return Stable recipe digest covering geometry, grid, identities, native method
+#'   and GIS versions. Unrelated labels, dates and metadata revisions are excluded.
+#'   This is a reuse key, not a checksum of a raster or scientific approval.
+#' @export
+event_mask_key <- function(context,selection,group,stream_id) {
+  .fg_mask_recipe(.fg_event_grid_inputs(context,selection,group,stream_id),stream_id)
+}
+
 .fg_mask_template <- function(plan, wkt) {
   e <- plan$extent
   terra::rast(nrows=plan$rows,ncols=plan$columns,xmin=e[1],xmax=e[3],ymin=e[2],ymax=e[4],crs=wkt)
@@ -37,7 +64,7 @@
     cropped <- terra::crop(aligned,terra::ext(r),snap="near",filename=temporary[3],wopt=options)
     burned <- terra::mask(burned,cropped,filename=path,wopt=options)
   }
-  invisible(as.numeric(terra::global(burned,"notNA")[1,1]))
+  invisible(NULL)
 }
 
 .fg_mask_verify <- function(path, plan, wkt, parent=NULL) {
@@ -49,27 +76,23 @@
   summary <- terra::global(r,c("min","max","sum"),na.rm=TRUE)
   if((is.finite(summary$min) && summary$min!=1) || (is.finite(summary$max) && summary$max!=1))
     stop("Mask contains values other than One/NoData.")
-  if(!is.null(parent)) {
-    temporary <- vapply(seq_len(2),function(i) tempfile("mask-check-",fileext=".tif"),character(1))
-    on.exit(unlink(temporary),add=TRUE)
-    options <- list(datatype="INT1U",NAflag=255,gdal=c("COMPRESS=DEFLATE","TILED=YES","BIGTIFF=IF_SAFER"))
-    aligned <- .fg_mask_parent(parent,r)$raster
-    cropped <- terra::crop(aligned,terra::ext(r),snap="near",filename=temporary[1],wopt=options)
-    outside <- terra::mask(r,cropped,inverse=TRUE,filename=temporary[2],wopt=options)
-    if(terra::global(outside,"notNA")[1,1]>0) stop("Child mask extends beyond its parent.")
-  }
+  if(!is.null(parent)) .fg_mask_parent(parent,r)
   if(is.na(summary$sum)) 0 else as.numeric(summary$sum)
 }
-#' Write a verified Study Area, Stream and Reach mask family
+#' Write verified Study Area, Stream and Reach masks
 #' @param context Current Study Area context GeoPackage.
 #' @param selection Current Survey Collection selection GeoPackage.
 #' @param group Reviewed acquisition-group GeoPackage.
 #' @param stream_id One Stream in the group.
 #' @param directory New, nonexistent attempt directory. Existing paths are never replaced.
+#' @param study_mask_source Optional previously published masks for the same saved
+#'   inputs. Reuse its Study Area mask instead of rasterizing that boundary again.
+#' @param ... Compatibility argument for earlier development previews. New callers
+#'   use study_mask_source.
 #' @return Manifest with input hashes, grid, mask hashes, cell counts and software evidence.
 #' @details Uses terra polygon rasterization with touches=FALSE (cell centers),
 #'   shared zero anchor and Event spacing. Children intersect their parent masks.
-#'   Missing Reach polygons block the entire family. Disk-backed compressed Byte
+#'   Missing Reach polygons block mask creation. Disk-backed compressed Byte
 #'   GeoTIFFs contain only 1 and NoData. Standard terra rasterize, crop and mask
 #'   operations write compressed disk-backed rasters with BigTIFF support.
 #'   No application cell-count, row-width or estimated-disk admission limit is
@@ -78,7 +101,13 @@
 #'   are incomplete. Applications should stage the directory and publish it only
 #'   after checking that the original request is still current. No DEM is read.
 #' @export
-write_event_masks <- function(context, selection, group, stream_id, directory) {
+write_event_masks <- function(context, selection, group, stream_id, directory, study_mask_source=NULL, ...) {
+  legacy <- list(...)
+  if(length(legacy)) {
+    if(!identical(names(legacy),"study_family") || !is.null(study_mask_source))
+      stop("Unused or conflicting mask arguments.")
+    study_mask_source <- legacy[[1L]]
+  }
   x <- .fg_event_grid_inputs(context,selection,group,stream_id)
   if(length(directory)!=1L || is.na(directory) || file.exists(directory) || !dir.exists(dirname(directory)))
     stop("Supply a new mask attempt directory under an existing parent.")
@@ -86,7 +115,7 @@ write_event_masks <- function(context, selection, group, stream_id, directory) {
   stream <- ctx$streams[ctx$streams$stream_id==stream_id,,drop=FALSE]
   reaches <- if(is.null(ctx$reaches)) data.frame(reach_id=character(),stream_id=character()) else
     ctx$reaches[ctx$reaches$stream_id==stream_id,,drop=FALSE]
-  if(nrow(reaches)>0 && !inherits(reaches,"sf")) stop("Save Reach polygons before creating this mask family.")
+  if(nrow(reaches)>0 && !inherits(reaches,"sf")) stop("Save Reach polygons before creating masks for this Stream.")
   areas <- c(list(ctx$study_area,stream),lapply(seq_len(nrow(reaches)),function(i) reaches[i,,drop=FALSE]))
   levels <- c("Study Area","Stream",rep("Reach",nrow(reaches)))
   ids <- c(x$settings$study_area_id,stream_id,reaches$reach_id)
@@ -97,19 +126,38 @@ write_event_masks <- function(context, selection, group, stream_id, directory) {
   cells <- sum(vapply(plans,function(p) p$cells,numeric(1)))
   if(!dir.create(directory)) stop("Could not create a new mask attempt.")
   products <- list()
+  shared <- if(!is.null(study_mask_source)) read_event_masks(study_mask_source,verify=FALSE) else NULL
+  if(!is.null(shared) && ((!identical(shared$inputs,as.list(x$hashes)) &&
+      (is.null(shared$study_key) || !identical(shared$study_key,.fg_mask_recipe(x,NULL)))) ||
+      !identical(shared$grid$wkt,wkt) || !isTRUE(shared$grid$cell_size==size)))
+    stop("Shared Study Area mask uses different saved inputs.")
   for(i in seq_along(areas)) {
     .fg_mask_checkpoint(directory)
     file <- sprintf("mask-%04d.tif",i)
     parent <- if(!is.na(parents[i])) file.path(directory,products[[parents[i]]]$file) else NULL
     path <- file.path(directory,file)
-    expected_count <- .fg_mask_write(areas[[i]],plans[[i]],wkt,path,parent)
+    if(i==1L && !is.null(shared)) {
+      previous <- shared$products[[1L]]
+      if(!isTRUE(all.equal(lapply(previous$plan,unlist),plans[[1L]],check.attributes=FALSE)))
+        stop("Shared Study Area mask uses a different grid.")
+      source <- file.path(study_mask_source,previous$file)
+      # Immutable editions can share bytes on one filesystem. Copy only when a
+      # native hard link is unavailable; no extra rasterization or value scan.
+      if(!suppressWarnings(file.link(source,path)) && !file.copy(source,path))
+        stop("Could not reuse the Study Area mask.")
+      previous$plan <- plans[[i]]
+      products[[i]] <- previous
+      next
+    }
+    .fg_mask_write(areas[[i]],plans[[i]],wkt,path,parent)
     count <- .fg_mask_verify(path,plans[[i]],wkt,parent)
-    if(count!=expected_count) stop("Reopened mask membership count differs from computed centers.")
     products[[i]] <- list(level=levels[i],id=ids[i],parent=parents[i],file=file,plan=plans[[i]],
-      valid_cells=count,sha256=.fg_dem_hash(path))
+      valid_cells=count,bytes=unname(file.info(path)$size),sha256=.fg_dem_hash(path))
   }
   if(!identical(x$hashes,vapply(x$paths,.fg_dem_hash,character(1)))) stop("Mask inputs changed during processing.")
   manifest <- list(schema="EVENT_MASKS_1",group_id=x$settings$group_id,stream_id=stream_id,
+    recipe_key=.fg_mask_recipe(x,stream_id),
+    study_key=.fg_mask_recipe(x,NULL),
     created_at=.fg_dem_time(),inputs=as.list(x$hashes),
     revisions=as.list(stats::setNames(basename(x$paths),names(x$paths))),
     grid=list(wkt=wkt,unit=x$crs$unit,cell_size=size,anchor=c(0,0)),
@@ -124,11 +172,12 @@ write_event_masks <- function(context, selection, group, stream_id, directory) {
   manifest
 }
 
-#' Reopen and verify a saved mask family
+#' Reopen and verify saved masks
 #' @param directory Directory produced by write_event_masks.
-#' @return Verified manifest. Missing manifests, corrupt files and invalid masks error.
+#' @param verify Verify product checksums (default TRUE). FALSE performs metadata-only reopening of managed products; it does not establish byte integrity.
+#' @return Manifest. Missing manifests and invalid metadata error; verify=TRUE also detects changed bytes.
 #' @export
-read_event_masks <- function(directory) {
+read_event_masks <- function(directory,verify=TRUE) {
   path <- file.path(directory,"verified.json")
   if(!file.exists(path)) stop("Mask attempt is incomplete.")
   m <- jsonlite::read_json(path,simplifyVector=TRUE)
@@ -160,10 +209,14 @@ read_event_masks <- function(directory) {
         !isTRUE(plan$columns==index[3]-index[1]) || !isTRUE(plan$rows==index[4]-index[2]) ||
         !isTRUE(plan$cells==plan$columns*plan$rows)) stop("Saved mask plan differs from the Event grid.")
     file <- file.path(directory,p$file); .fg_dem_inside(file,directory)
-    if(!identical(.fg_dem_hash(file),p$sha256)) stop("Mask checksum differs from verified manifest.")
+    if(isTRUE(verify) && !identical(.fg_dem_hash(file),p$sha256)) stop("Mask checksum differs from verified manifest.")
     parent <- if(i==1L) NULL else file.path(directory,sprintf("mask-%04d.tif",if(i==2L) 1L else 2L))
-    count <- .fg_mask_verify(file,plan,m$grid$wkt,parent)
-    if(!identical(as.numeric(count),as.numeric(p$valid_cells))) stop("Mask valid-cell count differs.")
+    r <- terra::rast(file)
+    if(!isTRUE(terra::compareGeom(r,.fg_mask_template(plan,m$grid$wkt),stopOnError=FALSE)) ||
+        !identical(terra::datatype(r),"INT1U") ||
+        (!is.null(p$bytes) && !isTRUE(file.info(file)$size==p$bytes)))
+      stop("Saved mask metadata differs from verified manifest.")
+    if(!is.null(parent)) .fg_mask_parent(parent,r)
   }
   m
 }

@@ -1,7 +1,8 @@
 #' Find reported source DEM files for a Stream and Survey Collection
 #' @param stream One valid polygon sf with stream_id. This is the acquisition AOI.
 #' @param collection One reviewed Survey Collection sf record.
-#' @param max_records Maximum catalog records fetched (1 to 500).
+#' @param max_records Catalog page size (1 to 500), retained under its existing
+#'   argument name for compatibility. All pages are fetched; this is not a total limit.
 #' @return List with stream, collection, files (sf bounding boxes), outcome,
 #'   message, retrieved_at and endpoint. File bounds are not valid-data footprints.
 #'   Only supported USGS source-directory links are resolved; no raster download,
@@ -20,7 +21,6 @@ discover_stream_dem_files <- function(stream, collection, max_records=200L) {
       max_records<1 || max_records>500 || max_records!=as.integer(max_records))
     stop("max_records must be an integer from 1 to 500.",call.=FALSE)
   aoi <- sf::st_transform(stream,4326); box <- as.numeric(sf::st_bbox(aoi))
-  if(box[3]-box[1]>6 || box[4]-box[2]>6) stop("Choose one regional Stream polygon.",call.=FALSE)
   out <- list(stream=stream,collection=collection,files=.fg_dem_files_empty(),outcome="UNSUPPORTED",
     message="This collection's product links require manual review; automatic file resolution is not supported.",
     retrieved_at=format(Sys.time(),"%Y-%m-%dT%H:%M:%SZ",tz="UTC"),
@@ -34,12 +34,28 @@ discover_stream_dem_files <- function(stream, collection, max_records=200L) {
     "Original Product Resolution (OPR) Digital Elevation Model (DEM)" else "Digital Elevation Model (DEM) 1 meter"
   out$outcome <- "FAILED"
   tryCatch({
-    page <- .fg_dem_products_get(list(datasets=dataset,bbox=paste(box,collapse=","),max=max_records,offset=0))
-    if(length(page$errors) || length(page$total)!=1L || !is.numeric(page$total) ||
-        !is.finite(page$total) || page$total<0 || is.null(page$items) || !is.list(page$items))
-      stop("Invalid product catalog response.")
-    if(length(page$items)!=min(page$total,max_records)) stop("Incomplete product catalog response.")
-    rows <- lapply(page$items,function(item) .fg_dem_file_row(item,prefix,product$dem_pixel_size_m[1],dataset))
+    offset <- 0; total <- NULL; rows <- list(); seen <- character()
+    repeat {
+      page <- .fg_dem_products_get(list(datasets=dataset,bbox=paste(box,collapse=","),max=max_records,offset=offset))
+      if(length(page$errors) || length(page$total)!=1L || !is.numeric(page$total) ||
+          !is.finite(page$total) || page$total<0 || page$total!=floor(page$total) ||
+          is.null(page$items) || !is.list(page$items)) stop("Invalid product catalog response.")
+      if(!is.null(total) && total!=page$total) stop("Catalog changed during paging; repeat the search.")
+      total <- page$total
+      if(length(page$items)!=min(total-offset,max_records)) stop("Incomplete product catalog response.")
+      ids <- vapply(page$items,function(item) {
+        id <- item$sourceId
+        if(length(id)!=1L || is.na(id) || !nzchar(id)) stop("Catalog product lacks identity.")
+        as.character(id)
+      },character(1))
+      # Deduplicate stable product identities, including overlap between pages.
+      fresh <- !duplicated(ids) & !ids %in% seen
+      if(length(ids) && !any(fresh)) stop("Catalog paging made no progress; repeat the search.")
+      rows <- c(rows,lapply(page$items[fresh],function(item)
+        .fg_dem_file_row(item,prefix,product$dem_pixel_size_m[1],dataset)))
+      seen <- c(seen,ids[fresh]);offset <- offset+length(page$items)
+      if(offset>=total) break
+    }
     rows <- Filter(Negate(is.null),rows)
     files <- if(length(rows)) do.call(rbind,rows) else .fg_dem_files_empty()
     if(nrow(files)) {
@@ -47,9 +63,8 @@ discover_stream_dem_files <- function(stream, collection, max_records=200L) {
       files <- files[lengths(sf::st_intersects(files,aoi))>0L,]
     }
     out$files <- files
-    out$outcome <- if(page$total>max_records) "PARTIAL" else "COMPLETE"
-    out$message <- if(out$outcome=="PARTIAL") "Catalog limit reached; returned files are incomplete. No coverage or absence conclusion is justified." else
-      if(!nrow(files)) "No DEM tiles from this collection intersect the selected Stream in the queried catalog. The collection may cover other parts of the Study Area." else
+    out$outcome <- "COMPLETE"
+    out$message <- if(!nrow(files)) "No DEM tiles from this collection intersect the selected Stream in the queried catalog. The collection may cover other parts of the Study Area." else
         "Source-directory matched; file bounding boxes intersect the Stream. Raster coverage, resolution and suitability still require verification."
   },error=function(e) {out$outcome <<- "FAILED"; out$files <<- .fg_dem_files_empty(); out$message <<- paste("File query failed; not evidence of absence:",conditionMessage(e))})
   out

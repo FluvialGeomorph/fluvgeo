@@ -1,6 +1,6 @@
 Package: fluvgeo
 Title: A Package for Fluvial Geomorphic Analysis
-Version: 2026.09.21.9051
+Version: 2026.09.22.9053
 Authors@R: c(
     person("Michael", "Dougherty", , "Michael.P.Dougherty@usace.army.mil", 
            role = "aut",
@@ -56,7 +56,6 @@ Imports:
     hydrogeofetch,
     hydroloom (>= 1.2.1),
     patchwork,
-    ps,
     purrr,
     raster,
     readr,

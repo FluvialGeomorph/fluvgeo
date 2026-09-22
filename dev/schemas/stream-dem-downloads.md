@@ -30,13 +30,13 @@ Create `assets/` and `attempts/<32 lowercase hex characters>/`. Under each attem
   completed/total file counts and timestamp. Missing/partial reads are ignored.
 - `incomplete/000001.part` onward: unregistered payloads, never completed assets.
 - `finished.json`: immutable terminal time, transferred byte count and attempt
-  outcome FINISHED, CANCELLED or LIMIT_REACHED. FINISHED is worker completion,
+  outcome FINISHED or CANCELLED (historic LIMIT_REACHED remains readable). FINISHED is worker completion,
   not a claim that every file succeeded.
 - `cancelled.json`: cancellation timestamp, written after the caller stops and
   joins the worker. Cleanup touches only this attempt's numbered `.part` files.
 
-All JSON numeric byte fields use exact integer-valued doubles within the configured
-limits; unknown metadata are JSON null. GeoPackage remains the spatial evidence
+JSON byte fields use R numeric values; unknown metadata are JSON null.
+GeoPackage remains the spatial evidence
 format; JSON records operational attempts and transfer receipts, not FGDB tables.
 Asset filenames are `<attempt-id>-<six-digit-index>-<sha256>.tif`. The original
 filename is evidence only. Paths stay relative when a whole study is relocated.
@@ -53,10 +53,12 @@ recorded evidence and are not claimed verified.
 
 Publish the original payload with a non-replacing hard link, then its immutable
 receipt. An orphan payload after receipt failure is retained and never reused
-without a completed source/content receipt. A same-source match uses a SHA-256
-key over R serialization version 2 of the saved collection/file metadata. Rehash
-local bytes before reuse; changed evidence or corrupt assets require a fresh
-attempt and never overwrite the earlier payload. No remote-freshness claim follows
+without a completed source/content receipt. Each receipt's source key uses SHA-256
+over R serialization version 2 of its saved collection/file metadata. Reuse can
+also match the same Collection key, file ID, URL and compatible known size across
+refreshed snapshots; the new receipt binds bytes to the new selection key. Rehash
+local bytes before reuse; corrupt assets require a fresh transfer and never
+overwrite the earlier payload. No remote-freshness claim follows
 from reuse. Unchanged source bytes can be associated with additional saved
 selections without inferring Survey Event identity.
 
@@ -73,11 +75,12 @@ The app uses background `verify=TRUE` reads on reopening, keeping Shiny responsi
 The adapter accepts direct HTTPS TIFF objects under the exact supported public
 USGS directory derived from the saved collection. Percent-encoded/ambiguous paths,
 query strings, redirects, archives and other providers/formats are unsupported.
-Default limits: 10 GiB/file, 50 GiB/attempt, 30 s connect, 120 s idle, 2 h/file,
-8 h/attempt. Known excess is rejected before preparing an attempt. Streaming
-enforces the remaining byte budget and checks cancellation. One worker downloads
-files sequentially; prior successes survive later failures. Limits can be supplied
-to `prepare_stream_dem_download`, with named positive finite numeric overrides.
+Healthy transfers have no file/attempt byte cap or total-duration cap. Defaults
+are 30 s connection and 120 s idle recovery, configurable through positive finite
+`connect_seconds` and `idle_seconds` entries in `limits`. Historic byte/duration
+entries are accepted but ignored, including during execution of old requests.
+One worker streams files sequentially and checks cancellation; prior successes
+survive later failures. Requests and receipts remain immutable.
 
 The transport uses curl's streaming and progress callbacks; see the
 [curl reference](https://jeroen.r-universe.dev/curl/doc/manual.html).

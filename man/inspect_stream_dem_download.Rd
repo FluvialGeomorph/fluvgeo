@@ -4,12 +4,21 @@
 \alias{inspect_stream_dem_download}
 \title{Inspect one recorded source DEM without modifying it}
 \usage{
-inspect_stream_dem_download(attempt, file_id)
+inspect_stream_dem_download(
+  attempt,
+  file_id,
+  cache_dir = NULL,
+  refresh = FALSE
+)
 }
 \arguments{
 \item{attempt}{Directory returned by prepare_stream_dem_download().}
 
 \item{file_id}{One file ID in the immutable saved selection.}
+
+\item{cache_dir}{Optional session-owned directory for reusable metadata.}
+
+\item{refresh}{Recheck the checksum even when a matching cache entry exists.}
 }
 \value{
 List containing file_id, title, receipt SHA-256 and observation from

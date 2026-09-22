@@ -15,8 +15,9 @@
 #'   VERTICAL_CRS_EXPOSED or VERTICAL_CRS_NOT_EXPOSED, never proof of absence.
 #'   Text differences require review, not automatic conflict resolution.
 #' @details No statistics, raster processing, metadata assignment or file writes
-#'   are requested. The file is hashed before and after inspection (two full byte
-#'   reads). GDAL errors and unsupported inputs fail, rather than becoming unknown
+#'   are requested. The file is hashed once; size and modification metadata are
+#'   checked for changes during inspection. GDAL errors and unsupported inputs fail,
+#'   rather than becoming unknown
 #'   metadata. The internal read disables PAM sidecars; the ordinary read may use
 #'   them. Options are scoped to each call. Existing intake manifests are unchanged.
 #'   A three-dimensional geodetic CRS is retained but is not classified as a
@@ -37,10 +38,11 @@ inspect_terrain_vertical_reference <- function(path) {
     .fg_abort("Expected a native TIFF, not a renamed virtual raster or other format.")
   if (!"config_options" %in% names(formals(sf::gdal_utils)))
     .fg_abort("This inspection requires sf::gdal_utils with scoped config_options support.")
+  stamp <- file.info(path)[,c("size","mtime","ctime"),drop=FALSE]
   before <- .fg_file_sha256(path)
   ordinary <- .fg_vertical_observe(path)
   internal <- .fg_vertical_observe(path, internal = TRUE)
-  if (!identical(before, .fg_file_sha256(path)))
+  if (!identical(stamp,file.info(path)[,c("size","mtime","ctime"),drop=FALSE]))
     .fg_abort("Artifact changed during vertical-reference inspection.")
   list(schema = "FLUVGEO_VERTICAL_REFERENCE_OBSERVATION_1", path = path,
     sha256 = before,

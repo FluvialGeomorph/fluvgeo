@@ -47,13 +47,15 @@ scaffolded here. Do not substitute Study Area bounds for the Stream acquisition 
 
 `discover_stream_dem_files(stream, collection)` queries the documented USGS
 [TNM products API](https://tnmaccess.nationalmap.gov/api/v1/docs) using the Stream
-envelope (maximum 6 degrees per axis). Fetch at most 200 records by default, 500
-maximum. Match only exact supported prd-tnm source-directory URL prefixes with a
+envelope. Fetch all pages, using 200 records per request by default (page sizes up
+to 500). There is no total record or arbitrary angular-extent cap. Match only exact supported prd-tnm source-directory URL prefixes with a
 trailing separator, then sf-intersect reported file bounding boxes with the Stream.
 No name/date-based collection matching, catalog identity merge or raster read.
 Only OPR or 1 m source-directory links are supported. Other links/providers return
-UNSUPPORTED, not successful-empty. Outcomes COMPLETE/PARTIAL/FAILED are distinct;
-query caps are PARTIAL even if the matched subset is empty. Failure clears output.
+UNSUPPORTED, not successful-empty. COMPLETE requires completed pagination;
+historic PARTIAL selections remain readable. Changed totals, incomplete pages,
+or stalled paging fail explicitly. Stable IDs deduplicate overlapping records.
+Failure clears output.
 
 Return Stream/collection evidence, retrieved_at, endpoint, outcome/message and sf
 file records: sourceId, title, URL, metadata URL, bytes, format, publication date,

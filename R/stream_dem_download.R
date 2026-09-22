@@ -24,10 +24,12 @@
   invisible(path)
 }
 .fg_dem_limits <- function(limits) {
-  defaults <- list(file_bytes=10*1024^3,attempt_bytes=50*1024^3,connect_seconds=30,
-    idle_seconds=120,file_seconds=7200,attempt_seconds=28800)
+  defaults <- list(connect_seconds=30,idle_seconds=120)
+  # Read old requests without reintroducing retired size/duration restrictions.
+  legacy <- c("file_bytes","attempt_bytes","file_seconds","attempt_seconds")
   if(!is.list(limits) || (length(limits) && (is.null(names(limits)) || anyDuplicated(names(limits)) ||
-      !all(names(limits) %in% names(defaults))))) stop("Unknown download limits.")
+      !all(names(limits) %in% c(names(defaults),legacy))))) stop("Unknown download limits.")
+  limits <- limits[intersect(names(limits),names(defaults))]
   defaults[names(limits)] <- limits
   if(!all(vapply(defaults,function(x) is.numeric(x) && length(x)==1L && is.finite(x) && x>0,logical(1))))
     stop("Download limits must be positive finite numbers.")
@@ -56,9 +58,9 @@
 #' @param selection_path Saved Stream DEM selection GeoPackage.
 #' @param destination Existing or new source-asset directory within an existing
 #'   parent directory. The caller chooses and validates the study destination.
-#' @param limits Named list overriding file_bytes (10 GiB), attempt_bytes (50 GiB),
-#'   connect_seconds (30), idle_seconds (120), file_seconds (7200) and
-#'   attempt_seconds (28800). Positive finite numbers.
+#' @param limits Named list overriding connect_seconds (30) and idle_seconds (120).
+#'   Positive finite numbers. Legacy file_bytes, attempt_bytes, file_seconds and
+#'   attempt_seconds entries are ignored. Healthy transfers have no size/duration cap.
 #' @return New attempt directory. No network request is made.
 #' @export
 prepare_stream_dem_download <- function(selection_path,destination,limits=list()) {
@@ -70,9 +72,6 @@ prepare_stream_dem_download <- function(selection_path,destination,limits=list()
   f <- r$files[match(r$selected,r$files$file_id),,drop=FALSE]
   if(!all(c("size_bytes","format","download_url","raw_metadata") %in% names(f)))
     stop("Saved file metadata are incomplete.")
-  known <- is.finite(f$size_bytes) & f$size_bytes>=0
-  if(any(f$size_bytes[known]>limits$file_bytes) || sum(f$size_bytes[known])>limits$attempt_bytes)
-    stop("Reported download size exceeds the configured byte limit.")
   parent <- as.character(fs::path_real(dirname(destination)))
   .fg_dem_inside(destination,parent)
   if(!dir.exists(destination) && !dir.create(destination)) stop("Cannot create source DEM storage.")
@@ -113,16 +112,15 @@ prepare_stream_dem_download <- function(selection_path,destination,limits=list()
   url
 }
 
-# Streaming callback writes only within the byte budget; progress callbacks also
-# run while waiting for data, so cancellation and idle limits do not need a body.
-.fg_dem_transfer <- function(url,path,limits,max_bytes,cancelled,progress) {
+# Stream to disk; progress callbacks also detect cancellation and stalled transfers.
+.fg_dem_transfer <- function(url,path,limits,cancelled,progress) {
   con <- file(path,"wb"); on.exit(close(con))
   received <- 0; last_bytes <- 0; last_change <- Sys.time(); reason <- NULL
   h <- curl::new_handle(followlocation=FALSE,connecttimeout_ms=ceiling(1000*limits$connect_seconds),
-    timeout_ms=ceiling(1000*limits$file_seconds),noprogress=FALSE,http_content_decoding=FALSE,
+    timeout_ms=0,noprogress=FALSE,http_content_decoding=FALSE,
     progressfunction=function(down,up) {
       if(down[2]>last_bytes) {last_bytes <<- down[2];last_change <<- Sys.time()}
-      reason <<- if(cancelled()) "Download cancelled." else if(down[2]>max_bytes) "Download byte limit exceeded." else
+      reason <<- if(cancelled()) "Download cancelled." else
         if(as.numeric(difftime(Sys.time(),last_change,units="secs"))>limits$idle_seconds) "Download idle timeout." else NULL
       progress(received,if(down[1]>0) down[1] else NA_real_)
       is.null(reason)
@@ -131,7 +129,6 @@ prepare_stream_dem_download <- function(selection_path,destination,limits=list()
   transport_warning <- NULL
   response <- tryCatch(withCallingHandlers(curl::curl_fetch_stream(url,function(chunk) {
     if(cancelled()) stop("Download cancelled.")
-    if(received+length(chunk)>max_bytes) stop("Download byte limit exceeded.")
     writeBin(chunk,con); received <<- received+length(chunk)
   },handle=h),warning=function(w) {
     transport_warning <<- conditionMessage(w);invokeRestart("muffleWarning")
@@ -251,8 +248,7 @@ run_stream_dem_download <- function(attempt) {
   limits <- .fg_dem_limits(m$limits)
   running <- .fg_dem_inside(file.path(attempt,"started.json"),a$root)
   .fg_dem_json(list(at=.fg_dem_time()),running) # Exclusive one-shot execution.
-  start <- Sys.time(); total <- 0; last_progress <- as.POSIXct(0,origin="1970-01-01")
-  elapsed <- function() as.numeric(difftime(Sys.time(),start,units="secs"))
+  total <- 0; last_progress <- as.POSIXct(0,origin="1970-01-01")
   cancelled <- function() file.exists(file.path(attempt,"cancelled.json"))
   completed <- 0L
   # Only registered source/content associations are candidates for reuse.
@@ -260,7 +256,7 @@ run_stream_dem_download <- function(attempt) {
   old <- lapply(receipts,function(p) tryCatch({.fg_dem_inside(p,a$root);jsonlite::read_json(p,simplifyVector=TRUE)},error=function(e) NULL))
   old <- Filter(function(x) !is.null(x) && identical(x$schema,"STREAM_DEM_RECEIPT_1"),old)
   for(i in seq_len(nrow(f))) {
-    if(cancelled() || elapsed()>=limits$attempt_seconds || total>=limits$attempt_bytes) break
+    if(cancelled()) break
     part <- .fg_dem_inside(file.path(attempt,"incomplete",sprintf("%06d.part",i)),a$root)
     file_start <- .fg_dem_time(); received <- 0; response <- NULL
     progress <- function(bytes=0,length=NA_real_,force=FALSE) {
@@ -280,17 +276,19 @@ run_stream_dem_download <- function(attempt) {
     tryCatch({
       url <- .fg_dem_url(r,f[i,,drop=FALSE])
       receipt$url <- url;receipt$source_filename <- basename(url)
-      matches <- Filter(function(x) identical(x$source_key,key) && .fg_dem_receipt_valid(x,a$root),old)
+      matches <- Filter(function(x) {
+        same_source <- identical(x$source_key,key) ||
+          (identical(x$candidate_key,m$candidate_key) && identical(x$file_id,f$file_id[i]) &&
+            identical(x$url,url) && (!is.finite(f$size_bytes[i]) || isTRUE(x$bytes==f$size_bytes[i])))
+        same_source && .fg_dem_receipt_valid(x,a$root)
+      },old)
       if(length(matches)) {
         reused <- matches[[1]]
         for(n in c("asset","sha256","bytes","headers","verification")) receipt[[n]] <- reused[[n]]
         receipt$outcome <- "REUSED"; receipt$message <- "Local source bytes rehashed and reused; remote freshness not checked."
       } else {
-        bound <- min(limits$file_bytes,limits$attempt_bytes-total)
-        file_limits <- limits;file_limits$file_seconds <- min(limits$file_seconds,limits$attempt_seconds-elapsed())
-        response <- .fg_dem_transfer(url,part,file_limits,bound,cancelled,progress)
+        response <- .fg_dem_transfer(url,part,limits,cancelled,progress)
         checked <- .fg_dem_verify(part,f$size_bytes[i],response)
-        if(checked$bytes>bound) stop("Download byte limit exceeded.")
         if(cancelled()) stop("Download cancelled.")
         asset <- paste0("assets/",m$id,"-",sprintf("%06d",i),"-",checked$sha256,".tif")
         target <- .fg_dem_inside(file.path(a$root,asset),a$root)
@@ -318,7 +316,7 @@ run_stream_dem_download <- function(attempt) {
     progress(received,force=TRUE)
   }
   .fg_dem_json(list(at=.fg_dem_time(),transferred_bytes=total,
-    outcome=if(cancelled()) "CANCELLED" else if(elapsed()>=limits$attempt_seconds || total>=limits$attempt_bytes) "LIMIT_REACHED" else "FINISHED"),
+    outcome=if(cancelled()) "CANCELLED" else "FINISHED"),
     file.path(attempt,"finished.json"))
   read_stream_dem_download(attempt,verify=TRUE)
 }

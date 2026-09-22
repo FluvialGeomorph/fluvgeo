@@ -27,8 +27,9 @@ used to produce the raster elevations or scientific acceptance.
 }
 \details{
 No statistics, raster processing, metadata assignment or file writes
-are requested. The file is hashed before and after inspection (two full byte
-reads). GDAL errors and unsupported inputs fail, rather than becoming unknown
+are requested. The file is hashed once; size and modification metadata are
+checked for changes during inspection. GDAL errors and unsupported inputs fail,
+rather than becoming unknown
 metadata. The internal read disables PAM sidecars; the ordinary read may use
 them. Options are scoped to each call. Existing intake manifests are unchanged.
 A three-dimensional geodetic CRS is retained but is not classified as a

@@ -2,16 +2,18 @@
 % Please edit documentation in R/event_masks.R
 \name{read_event_masks}
 \alias{read_event_masks}
-\title{Reopen and verify a saved mask family}
+\title{Reopen and verify saved masks}
 \usage{
-read_event_masks(directory)
+read_event_masks(directory, verify = TRUE)
 }
 \arguments{
 \item{directory}{Directory produced by write_event_masks.}
+
+\item{verify}{Verify product checksums (default TRUE). FALSE performs metadata-only reopening of managed products; it does not establish byte integrity.}
 }
 \value{
-Verified manifest. Missing manifests, corrupt files and invalid masks error.
+Manifest. Missing manifests and invalid metadata error; verify=TRUE also detects changed bytes.
 }
 \description{
-Reopen and verify a saved mask family
+Reopen and verify saved masks
 }

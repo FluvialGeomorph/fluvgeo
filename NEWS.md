@@ -1,3 +1,23 @@
+# fluvgeo 2026.09.22.9053
+
+- Inspect receipt-bound source DEMs with one cold checksum read and optional
+  session-owned metadata/display caches. Explicit refresh rechecks integrity.
+- Reuse Study Area masks across Streams, consolidate native summaries,
+  and reopen managed masks without repeated raster scans or temporary mask writes.
+- Repair horizontal warping by removing the deleted custom block dependency.
+  Use native summaries; remove cell/row-width/disk-estimate admission rules and
+  forced working precision/memory settings. Preserve explicit no-vertical-shift
+  behavior and Float32 storage. Affine rotated/unequal-spacing sources and
+  ordinary overviews no longer receive blanket rejection.
+
+# fluvgeo 2026.09.22.9052
+
+- Fetch all source DEM catalog pages; `max_records` now controls page size.
+- Stream downloads without file-size or healthy-transfer-duration caps, including
+  when executing legacy requests. Retain connection/idle recovery and cancellation.
+- Reuse verified local files across refreshed selection metadata when source ID,
+  collection, URL, and known size match. Remote freshness remains unchecked.
+
 # fluvgeo 2026.09.21.9049
 
 - Default horizontal terrain outputs to Float32 storage with Float64 working
@@ -16,7 +36,7 @@
 
 # fluvgeo 2026.09.21.9047
 
-- Add verified hierarchical One/NoData mask families with saved Event spacing,
+- Add verified hierarchical One/NoData Stream and Reach masks with saved Event spacing,
   shared-anchor subwindows, strict center membership, parent intersection,
   bounded block I/O, resource admission and immutable attempt manifests.
 - Add mask reopening/checksum verification and reuse group validation in preflight.

@@ -5,6 +5,7 @@
 #' @param max_dimension Maximum display rows or columns, integer from 2 to 512.
 #' @param window Optional integer vector: zero-based column offset, row offset,
 #'   width and height in source pixels. Must lie entirely inside the source.
+#' @param cache_dir Optional session-owned inspection and display cache directory.
 #' @return The receipt-bound inspection with a preview list: values (row-major
 #'   matrix, first row at top), source_size (columns, rows), sampled_size,
 #'   window, native (no display downsampling), method and band_unit.
@@ -13,16 +14,18 @@
 #'   from the base raster, with existing overviews disabled. Band scale/offset are
 #'   applied to Float64 display values. Temporary value/mask GeoTIFFs are removed
 #'   on return. Embedded masks are used; external sidecars are excluded.
-#'   Original files are unchanged and their checksum is checked again afterward.
+#'   A cold inspection verifies the checksum once. Cached views use size/time
+#'   change indicators; these are not a new cryptographic integrity check.
 #'   This is a whole-tile or source-window view, not an analytical derivative or proof of
 #'   complete coverage, full pixel readability, or terrain suitability.
 #' @export
-preview_stream_dem_download <- function(attempt, file_id, max_dimension = 512L, window = NULL) {
+preview_stream_dem_download <- function(attempt, file_id, max_dimension = 512L, window = NULL, cache_dir=NULL) {
   if (!is.numeric(max_dimension) || length(max_dimension)!=1L ||
       !is.finite(max_dimension) || max_dimension!=floor(max_dimension) ||
       max_dimension<2 || max_dimension>512) .fg_abort("max_dimension must be an integer from 2 to 512.")
-  result <- inspect_stream_dem_download(attempt, file_id)
+  result <- inspect_stream_dem_download(attempt, file_id,cache_dir=cache_dir)
   source <- result$observation$path
+  stamp <- .fg_dem_view_stamp(source)
   size <- result$observation$internal_compound$grid$size
   if (length(size)!=2L || any(!is.finite(size)) || any(size<1))
     .fg_abort("Source grid dimensions are unavailable.")
@@ -32,8 +35,16 @@ preview_stream_dem_download <- function(attempt, file_id, max_dimension = 512L, 
       any(window[1:2]+window[3:4]>size))
     .fg_abort("window must contain integer offsets and positive dimensions inside the source grid.")
   window <- unname(window)
+  cache <- NULL
+  if(!is.null(cache_dir)) {
+    key <- list(source=source,sha256=result$sha256,stamp=stamp,window=window,
+      max_dimension=max_dimension,version=as.character(utils::packageVersion("fluvgeo")))
+    cache <- file.path(cache_dir,paste0("preview-",as.character(openssl::sha256(serialize(key,NULL))),".rds"))
+    saved <- if(file.exists(cache)) tryCatch(readRDS(cache),error=function(e) NULL) else NULL
+    if(!is.null(saved) && identical(saved$key,key)) {result$preview <- saved$preview;return(result)}
+  }
   output_size <- pmax(1L, as.integer(floor(window[3:4] * min(1, max_dimension/max(window[3:4])))))
-  scratch <- tempfile("dem-preview-");dir.create(scratch)
+  scratch <- tempfile("dem-preview-",tmpdir=if(is.null(cache_dir)) tempdir() else cache_dir);dir.create(scratch)
   on.exit(unlink(scratch,recursive=TRUE),add=TRUE)
   target <- file.path(scratch,"preview.tif")
   sf::gdal_utils("translate",source,target,options=c("-of","GTiff","-ot","Float64",
@@ -54,11 +65,12 @@ preview_stream_dem_download <- function(attempt, file_id, max_dimension = 512L, 
     nrow=output_size[2],ncol=output_size[1],byrow=TRUE)
   values[is.na(valid) | valid==0] <- NA_real_
   values[!is.finite(values)] <- NA_real_
-  if (!identical(.fg_file_sha256(source),result$sha256))
+  if (!identical(stamp,.fg_dem_view_stamp(source)))
     .fg_abort("Source changed during preview.")
   result$preview <- list(values=values,source_size=size,sampled_size=output_size,window=window,
     native=all(output_size==window[3:4]),
     method="Nearest neighbour from base raster; band scale/offset applied",
     band_unit=result$observation$internal_compound$band_unit)
+  if(!is.null(cache)) saveRDS(list(key=key,preview=result$preview),cache)
   result
 }

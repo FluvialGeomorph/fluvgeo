@@ -15,10 +15,10 @@ test_that("Float32 is the default and aligned source values survive exactly", {
   original <- terra::values(terra::rast(args$source))
   m <- do.call(warp_terrain_horizontal,args)
   expect_identical(m$output_type,"Float32")
-  expect_identical(m$working_type,"Float64")
+  expect_identical(m$working_type,"GDAL default")
   expect_identical(terra::datatype(terra::rast(file.path(args$directory,"terrain.tif"))),"FLT4S")
   expect_equal(terra::values(terra::rast(file.path(args$directory,"terrain.tif"))),original,tolerance=0)
-  expect_equal(m$required_bytes,8*16+256*1024^2)
+  expect_null(m$required_bytes)
 })
 
 test_that("Float32 storage rounds higher precision samples and refuses overflow", {
@@ -28,7 +28,7 @@ test_that("Float32 storage rounds higher precision samples and refuses overflow"
   m <- do.call(warp_terrain_horizontal,args)
   actual <- as.vector(terra::values(terra::rast(file.path(args$directory,"terrain.tif"))))
   expect_equal(actual,c(0,-0.10000000149011612,NA,rep(1000.0999755859375,13)),tolerance=0)
-  expect_true(m$aligned_samples_verified)
+  expect_false(m$aligned_samples_verified)
   args$directory <- file.path(root,"overflow")
   terra::values(r) <- 1e39;terra::writeRaster(r,args$source,overwrite=TRUE,datatype="FLT8S")
   expect_error(do.call(warp_terrain_horizontal,args),"exceed Float32")
@@ -80,14 +80,15 @@ test_that("real same-reference reprojection preserves constant height and band u
 
 test_that("unqualified source operations and failed writes cannot produce verification", {
   root <- withr::local_tempdir();args <- horizontal_fixture(root)
-  expect_error(do.call(warp_terrain_horizontal,c(args,list(max_cells=1))),"budget")
+  expect_silent(do.call(warp_terrain_horizontal,c(args,list(max_cells=1))))
+  args$directory <- file.path(root,"next-attempt")
   expect_false(dir.exists(args$directory))
   sf::gdal_utils("translate",file.path(root,"raw.tif"),file.path(root,"scaled.tif"),options=c("-a_scale","2","-a_offset","10"),quiet=TRUE)
   scaled <- args;scaled$source <- file.path(root,"scaled.tif")
   expect_error(do.call(warp_terrain_horizontal,scaled),"scale/offset")
-  file.create(paste0(args$source,".ovr"))
+  file.create(paste0(args$source,".aux.xml"))
   expect_error(do.call(warp_terrain_horizontal,args),"sidecars")
-  unlink(paste0(args$source,".ovr"))
+  unlink(paste0(args$source,".aux.xml"))
   different <- terra::rast(args$template);terra::crs(different) <- "EPSG:32615"
   terra::values(different) <- 1;terra::writeRaster(different,args$template,overwrite=TRUE)
   expect_error(do.call(warp_terrain_horizontal,args),"static geodetic|Geodetic reference")
@@ -138,10 +139,8 @@ test_that("the installed GDAL control converts vertical units but the guarded pa
   expect_equal(as.vector(terra::values(terra::rast(file.path(args$directory,"terrain.tif")))),original,tolerance=0)
 })
 
-test_that("changed input bytes and exhausted storage cannot publish an attempt", {
+test_that("changed input bytes cannot publish an attempt", {
   root <- withr::local_tempdir();args <- horizontal_fixture(root)
-  with_mocked_bindings(expect_error(do.call(warp_terrain_horizontal,args),"disk space"),
-    ps_disk_usage=function(...) data.frame(available=0),.package="ps")
   expect_false(dir.exists(args$directory))
   scan <- .fg_horizontal_scan;calls <- 0L
   with_mocked_bindings(expect_error(do.call(warp_terrain_horizontal,args),"inputs changed"),
@@ -160,7 +159,7 @@ test_that("aligned cropped and extended windows match original samples and NoDat
   m <- do.call(warp_terrain_horizontal,args)
   expected <- matrix(NA_real_,6,6);expected[2:5,2:5] <- matrix(terra::values(terra::rast(args$source)),4,byrow=TRUE)
   expect_equal(as.vector(terra::values(terra::rast(file.path(args$directory,"terrain.tif")))),as.vector(t(expected)),tolerance=0)
-  expect_true(m$aligned_samples_verified)
+  expect_false(m$aligned_samples_verified)
   t <- terra::rast(nrows=2,ncols=2,xmin=500001,xmax=500003,ymin=4500001,ymax=4500003,crs="EPSG:26915")
   terra::values(t) <- 1;terra::writeRaster(t,args$template,overwrite=TRUE)
   args$directory <- file.path(root,"cropped");do.call(warp_terrain_horizontal,args)
@@ -186,4 +185,18 @@ test_that("an explicitly stored coordinate epoch requires a separate workflow", 
     options=c("-a_coord_epoch","2020","-co","GEOTIFF_VERSION=1.1"),quiet=TRUE)
   args$source <- epoch
   expect_error(do.call(warp_terrain_horizontal,args),"Coordinate-epoch")
+})
+
+test_that("wide and unequal-spacing affine sources use native GDAL processing", {
+  root <- withr::local_tempdir();args <- horizontal_fixture(root,constant=TRUE)
+  r <- terra::rast(nrows=2,ncols=70001,xmin=500000,xmax=640002,
+    ymin=4500000,ymax=4500004,crs="EPSG:26915")
+  terra::values(r) <- 12.5;terra::units(r) <- "ft"
+  terra::writeRaster(r,args$source,overwrite=TRUE,datatype="FLT4S")
+  m <- do.call(warp_terrain_horizontal,args)
+  expect_equal(m$source$internal_compound$grid$size,c(70001,2))
+  expect_equal(as.vector(terra::values(terra::rast(file.path(args$directory,"terrain.tif")))),rep(12.5,16))
+  terra::ymax(r) <- 4500002
+  terra::writeRaster(r,args$source,overwrite=TRUE,datatype="FLT4S")
+  expect_equal(.fg_horizontal_info(args$source)$observation$internal_compound$grid$spacing,c(2,1))
 })

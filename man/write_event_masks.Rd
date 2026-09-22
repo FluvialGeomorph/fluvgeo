@@ -2,9 +2,17 @@
 % Please edit documentation in R/event_masks.R
 \name{write_event_masks}
 \alias{write_event_masks}
-\title{Write a verified Study Area, Stream and Reach mask family}
+\title{Write verified Study Area, Stream and Reach masks}
 \usage{
-write_event_masks(context, selection, group, stream_id, directory)
+write_event_masks(
+  context,
+  selection,
+  group,
+  stream_id,
+  directory,
+  study_mask_source = NULL,
+  ...
+)
 }
 \arguments{
 \item{context}{Current Study Area context GeoPackage.}
@@ -16,17 +24,23 @@ write_event_masks(context, selection, group, stream_id, directory)
 \item{stream_id}{One Stream in the group.}
 
 \item{directory}{New, nonexistent attempt directory. Existing paths are never replaced.}
+
+\item{study_mask_source}{Optional previously published masks for the same saved
+inputs. Reuse its Study Area mask instead of rasterizing that boundary again.}
+
+\item{...}{Compatibility argument for earlier development previews. New callers
+use study_mask_source.}
 }
 \value{
 Manifest with input hashes, grid, mask hashes, cell counts and software evidence.
 }
 \description{
-Write a verified Study Area, Stream and Reach mask family
+Write verified Study Area, Stream and Reach masks
 }
 \details{
 Uses terra polygon rasterization with touches=FALSE (cell centers),
   shared zero anchor and Event spacing. Children intersect their parent masks.
-  Missing Reach polygons block the entire family. Disk-backed compressed Byte
+  Missing Reach polygons block mask creation. Disk-backed compressed Byte
   GeoTIFFs contain only 1 and NoData. Standard terra rasterize, crop and mask
   operations write compressed disk-backed rasters with BigTIFF support.
   No application cell-count, row-width or estimated-disk admission limit is

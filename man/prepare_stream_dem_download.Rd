@@ -12,9 +12,9 @@ prepare_stream_dem_download(selection_path, destination, limits = list())
 \item{destination}{Existing or new source-asset directory within an existing
 parent directory. The caller chooses and validates the study destination.}
 
-\item{limits}{Named list overriding file_bytes (10 GiB), attempt_bytes (50 GiB),
-connect_seconds (30), idle_seconds (120), file_seconds (7200) and
-attempt_seconds (28800). Positive finite numbers.}
+\item{limits}{Named list overriding connect_seconds (30) and idle_seconds (120).
+Positive finite numbers. Legacy file_bytes, attempt_bytes, file_seconds and
+attempt_seconds entries are ignored. Healthy transfers have no size/duration cap.}
 }
 \value{
 New attempt directory. No network request is made.

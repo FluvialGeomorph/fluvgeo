@@ -23,11 +23,18 @@ test_that("disk block boundaries retain every row at fractional spacing", {
   expect_equal(terra::res(terra::rast(path)),c(1.5,1.5))
 })
 
-test_that("mask families reopen with hashes, aligned children and immutable prior editions", {
+test_that("Stream and Reach masks reopen with hashes, aligned children and immutable prior editions", {
   root <- withr::local_tempdir(); args <- preflight_fixture(root);args$sources <- NULL
   originals <- tools::md5sum(c(args$context,args$selection,args$group))
   args$directory <- file.path(root,"first")
   m <- do.call(write_event_masks,args)
+  expect_identical(m$recipe_key,do.call(event_mask_key,args[c("context","selection","group","stream_id")]))
+  inputs <- do.call(.fg_event_grid_inputs,args[c("context","selection","group","stream_id")])
+  renamed <- inputs;renamed$ctx$streams$stream_name <- "New label"
+  renamed$settings$year <- 2021
+  expect_identical(.fg_mask_recipe(inputs,args$stream_id),.fg_mask_recipe(renamed,args$stream_id))
+  renamed$settings$cell_size <- 2
+  expect_false(identical(.fg_mask_recipe(inputs,args$stream_id),.fg_mask_recipe(renamed,args$stream_id)))
   expect_equal(vapply(m$products,function(p) p$valid_cells,numeric(1)),c(121,25,4))
   reopened <- read_event_masks(args$directory)
   expect_equal(reopened$grid$anchor,c(0,0));expect_equal(reopened$grid$cell_size,1)
@@ -35,7 +42,15 @@ test_that("mask families reopen with hashes, aligned children and immutable prio
   expect_identical(tools::md5sum(c(args$context,args$selection,args$group)),originals)
   before <- tools::md5sum(list.files(args$directory,full.names=TRUE))
   expect_error(do.call(write_event_masks,args),"new mask attempt")
-  args$directory <- file.path(root,"second");m2 <- do.call(write_event_masks,args)
+  args$study_mask_source <- args$directory
+  args$directory <- file.path(root,"second")
+  write <- .fg_mask_write;writes <- 0L
+  with_mocked_bindings(m2 <- do.call(write_event_masks,args),
+    .fg_mask_write=function(...) {writes <<- writes+1L;write(...)})
+  expect_equal(writes,2L)
+  with_mocked_bindings(expect_length(read_event_masks(args$directory,verify=FALSE)$products,3L),
+    .fg_mask_verify=function(...) stop("Unexpected pixel scan"),
+    .fg_dem_hash=function(...) stop("Unexpected checksum scan"))
   expect_identical(lapply(m$products,function(p) p$plan),lapply(m2$products,function(p) p$plan))
   expect_identical(tools::md5sum(names(before)),before)
   manifest_path <- file.path(args$directory,"verified.json")
@@ -52,7 +67,7 @@ test_that("mask families reopen with hashes, aligned children and immutable prio
   expect_error(read_event_masks(args$directory),"checksum")
 })
 
-test_that("mask interruption cannot publish an incomplete family", {
+test_that("mask interruption cannot publish an incomplete masks", {
   root <- withr::local_tempdir();args <- preflight_fixture(root);args$sources <- NULL
   args$directory <- file.path(root,"budget")
   calls <- 0L
@@ -61,8 +76,8 @@ test_that("mask interruption cannot publish an incomplete family", {
   expect_false(file.exists(file.path(args$directory,"verified.json")))
   expect_error(read_event_masks(args$directory),"incomplete")
   mismatch <- args;mismatch$directory <- file.path(root,"mismatched-count")
-  with_mocked_bindings(expect_error(do.call(write_event_masks,mismatch),"membership count differs"),
-    .fg_mask_verify=function(...) 0)
+  with_mocked_bindings(expect_error(do.call(write_event_masks,mismatch),"verification failed"),
+    .fg_mask_verify=function(...) stop("verification failed"))
   expect_false(file.exists(file.path(mismatch$directory,"verified.json")))
   missing <- preflight_fixture(withr::local_tempdir(),reach_polygon=FALSE);missing$sources <- NULL
   missing$directory <- file.path(dirname(missing$context),"masks")
@@ -72,7 +87,7 @@ test_that("mask interruption cannot publish an incomplete family", {
   expect_error(do.call(write_event_masks,stale),"changed")
 })
 
-test_that("Streams with no Reaches produce a two-level mask family", {
+test_that("Streams with no Reaches produce a two-level masks", {
   root <- withr::local_tempdir();args <- preflight_fixture(root,no_reaches=TRUE);args$sources <- NULL
   args$directory <- file.path(root,"masks")
   m <- do.call(write_event_masks,args)

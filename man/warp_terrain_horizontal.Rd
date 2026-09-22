@@ -8,7 +8,7 @@ warp_terrain_horizontal(
   source,
   template,
   directory,
-  max_cells = 5e+07,
+  max_cells = NULL,
   output_type = c("Float32", "Float64")
 )
 }
@@ -20,7 +20,7 @@ Its pixel values are ignored; this function does not apply a mask.}
 
 \item{directory}{New nonexistent output directory under an existing parent.}
 
-\item{max_cells}{Combined source/output cell budget, default 50 million.}
+\item{max_cells}{Deprecated compatibility argument; ignored. No cell-count limit.}
 
 \item{output_type}{Storage type: Float32 by default, or explicit Float64.
 Float32 rounds samples to single precision, including higher-precision inputs.}
@@ -32,19 +32,22 @@ Verification manifest, also written last as verified.json beside terrain.tif.
 Warp terrain on a qualified static horizontal grid without elevation conversion
 }
 \details{
-This bounded backend primitive accepts static east/north projected
+This backend primitive accepts static east/north projected
   CRSs with identical identified geodetic references and a unique exact,
   grid-free PROJ operation. Compound source vertical declarations are retained
   in evidence; an extracted horizontal definition and explicit GDAL -novshift
   prevent implicit height operations. Dynamic frames, datum changes, external
-  sidecars, rotated grids and nonidentity scale/offset are refused. Aligned
+  georeferencing/mask sidecars and nonidentity scale/offset are refused. Rotated
+  and unequal-spacing affine source grids are handled by GDAL. Aligned
   grids use nearest sampling; others use bilinear interpolation, which changes
   samples but performs no elevation-unit or vertical-datum conversion. Output
-  defaults to Float32 storage with Float64 working precision. Aligned samples
-  are checked exactly after conversion to the selected storage precision.
-  Float64 storage is optional. Original bytes are rehashed.
-  GDAL warp/cache budgets are each 64 MiB, not a total process-memory limit.
-  Pixel checks use bounded row blocks.
+  defaults to Float32 storage; GDAL selects working precision and memory settings.
+  Native summaries check the value range and count. Exact pixel comparisons
+  belong to small reference tests, not an additional production cell audit.
+  Float64 storage is optional. Original bytes are rehashed. External overviews
+  are allowed, but analytical warping uses original pixels (-ovr NONE) to avoid
+  inheriting an unknown overview resampling method. No application cell-count,
+  row-width or estimated-disk admission limit is imposed.
   Failed/interrupted attempts have no verified manifest and are never overwritten.
   This is not a Stream mosaic, scientific acceptance, or source-reference
   reconciliation. Assemble compatible tiles with interpolation halos before

@@ -74,11 +74,20 @@ test_that("inspection binds real GeoTIFF metadata to its receipt without writes"
     expect_error(preview_stream_dem_download(a,"tile1",513),"max_dimension")
     expect_identical(tools::md5sum(list.files(f$destination,recursive=TRUE,full.names=TRUE)),before)
     expect_error(inspect_stream_dem_download(a,"missing"),"no valid local")
+    cache <- file.path(f$dir,"view-cache")
+    cached <- preview_stream_dem_download(a,"tile1",cache_dir=cache)
+    with_mocked_bindings({
+      expect_equal(preview_stream_dem_download(a,"tile1",cache_dir=cache)$preview,cached$preview)
+      expect_equal(preview_stream_dem_download(a,"tile1",window=c(1,0,2,2),cache_dir=cache)$preview$values,
+        matrix(c(-1,2,4,5),2,2,byrow=TRUE))
+      expect_error(inspect_stream_dem_download(a,"tile1",cache_dir=cache,refresh=TRUE),"integrity read")
+    },.fg_file_sha256=function(...) stop("integrity read"))
     asset <- file.path(f$destination,d$files$asset)
     bytes <- readBin(asset,"raw",file.info(asset)$size);bytes[length(bytes)] <- as.raw(127)
     writeBin(bytes,asset)
     expect_error(inspect_stream_dem_download(a,"tile1"),"checksum")
     expect_error(preview_stream_dem_download(a,"tile1"),"checksum")
+    expect_error(preview_stream_dem_download(a,"tile1",cache_dir=cache),"checksum")
   },.fg_dem_transfer=function(url,path,...) {
     file.copy(source,path);download_response(file.info(source)$size)
   })
@@ -108,7 +117,7 @@ test_that("immutable attempts publish, reopen, reuse and preserve corrupt earlie
     expect_identical(readBin(asset,"raw",32),as.raw(rep(1,32)))
     moved <- paste0(f$dir,"-moved");fs::dir_copy(f$dir,moved);on.exit(unlink(moved,recursive=TRUE),add=TRUE)
     expect_identical(read_stream_dem_download(file.path(moved,"source-dem","attempts",basename(d)))$files$outcome,"DOWNLOADED")
-  },.fg_dem_transfer=function(url,path,limits,max_bytes,cancelled,progress) {
+  },.fg_dem_transfer=function(url,path,limits,cancelled,progress) {
     count <<- count+1;writeBin(f$body,path);progress(32,32);download_response()
   })
 })
@@ -137,7 +146,7 @@ test_that("failed transfers, interrupted attempts and explicit retries preserve 
 
 test_that("size, response, signature, source and path guards fail closed", {
   f <- download_fixture();on.exit(unlink(f$dir,recursive=TRUE))
-  expect_error(prepare_stream_dem_download(f$selection,f$destination,list(file_bytes=16)),"byte limit")
+  expect_true(dir.exists(prepare_stream_dem_download(f$selection,f$destination,list(file_bytes=16))))
   expect_error(prepare_stream_dem_download(f$selection,f$destination,list(idle_seconds=0)),"positive")
   path <- file.path(f$dir,"body");writeBin(f$body,path)
   expect_error(.fg_dem_verify(path,32,download_response(status=302)),"HTTP 302")
@@ -154,6 +163,28 @@ test_that("size, response, signature, source and path guards fail closed", {
     row$download_url <- url;expect_error(.fg_dem_url(r,row),"Unsupported")
   }
   expect_error(.fg_dem_inside(tempdir(),f$dir),"outside")
+})
+
+test_that("large catalog sizes are admitted and refreshed evidence reuses stable source bytes", {
+  f <- download_fixture();on.exit(unlink(f$dir,recursive=TRUE))
+  large <- f$inventory;large$files$size_bytes <- 60*1024^3
+  large_path <- file.path(f$dir,"large.gpkg")
+  write_stream_dem_selection(large,"tile1",large_path,"revision")
+  expect_true(dir.exists(prepare_stream_dem_download(large_path,f$destination)))
+  transfers <- 0L
+  with_mocked_bindings({
+    a <- prepare_stream_dem_download(f$selection,f$destination)
+    expect_identical(run_stream_dem_download(a)$files$outcome,"DOWNLOADED")
+    refreshed <- f$inventory;refreshed$collection$snapshot_id <- "refreshed"
+    refreshed$files$title <- "Updated catalog title"
+    path <- file.path(f$dir,"refreshed.gpkg")
+    write_stream_dem_selection(refreshed,"tile1",path,"later-revision")
+    b <- prepare_stream_dem_download(path,f$destination)
+    expect_identical(run_stream_dem_download(b)$files$outcome,"REUSED")
+    expect_equal(transfers,1L)
+  },.fg_dem_transfer=function(url,path,...) {
+    transfers <<- transfers+1L;writeBin(f$body,path);download_response()
+  })
 })
 
 test_that("receipt failure never turns an orphan into a registered asset", {
@@ -174,7 +205,7 @@ test_that("receipt failure never turns an orphan into a registered asset", {
   expect_length(list.files(file.path(f$destination,"assets")),1L)
 })
 
-test_that("curl streaming enforces limits and cancellation using a local HTTP fixture", {
+test_that("curl streaming preserves cancellation and stalled-transfer recovery", {
   skip_if_not_installed("httpuv");skip_if_not_installed("callr")
   port <- httpuv::randomPort()
   server <- callr::r_bg(function(port) httpuv::runServer("127.0.0.1",port,
@@ -194,18 +225,16 @@ test_that("curl streaming enforces limits and cancellation using a local HTTP fi
   expect_true(ready)
   path <- tempfile();on.exit(unlink(path),add=TRUE)
   limits <- .fg_dem_limits(list())
-  response <- .fg_dem_transfer(url,path,limits,32,function() FALSE,function(...) NULL)
+  response <- .fg_dem_transfer(url,path,limits,function() FALSE,function(...) NULL)
   expect_equal(.fg_dem_verify(path,32,response)$bytes,32)
-  expect_error(.fg_dem_transfer(url,path,limits,16,function() FALSE,function(...) NULL),"byte limit")
-  expect_lte(file.info(path)$size,16)
-  expect_error(.fg_dem_transfer(url,path,limits,32,function() TRUE,function(...) NULL),"cancelled")
+  expect_error(.fg_dem_transfer(url,path,limits,function() TRUE,function(...) NULL),"cancelled")
   limits$idle_seconds <- .1
-  expect_error(.fg_dem_transfer(sub("/tile$","/slow",url),path,limits,32,function() FALSE,function(...) NULL),"idle timeout")
+  expect_error(.fg_dem_transfer(sub("/tile$","/slow",url),path,limits,function() FALSE,function(...) NULL),"idle timeout")
   limits$idle_seconds <- 120;limits$file_seconds <- .1
-  expect_error(.fg_dem_transfer(sub("/tile$","/slow",url),path,limits,32,function() FALSE,function(...) NULL),"[Tt]imeout|[Tt]imed out")
+  expect_equal(.fg_dem_transfer(sub("/tile$","/slow",url),path,limits,function() FALSE,function(...) NULL)$status_code,200)
 })
 
-test_that("unknown sizes cannot evade budgets and altered snapshots cannot execute", {
+test_that("old admission caps do not stop transfers and altered snapshots cannot execute", {
   f <- download_fixture(2);on.exit(unlink(f$dir,recursive=TRUE))
   f$inventory$files$size_bytes <- NA_real_
   selection <- file.path(f$dir,"unknown.gpkg")
@@ -213,12 +242,12 @@ test_that("unknown sizes cannot evade budgets and altered snapshots cannot execu
   with_mocked_bindings({
     a <- prepare_stream_dem_download(selection,f$destination,list(attempt_bytes=32))
     x <- run_stream_dem_download(a)
-    expect_identical(x$files$outcome,c("DOWNLOADED","NOT_STARTED"))
-    expect_identical(jsonlite::read_json(file.path(a,"finished.json"))$outcome,"LIMIT_REACHED")
+    expect_identical(x$files$outcome,c("DOWNLOADED","DOWNLOADED"))
+    expect_identical(jsonlite::read_json(file.path(a,"finished.json"))$outcome,"FINISHED")
     b <- prepare_stream_dem_download(selection,f$destination)
     writeBin(as.raw(1),file.path(b,"selection.gpkg"))
     expect_error(run_stream_dem_download(b),"checksum")
-  },.fg_dem_transfer=function(url,path,limits,max_bytes,cancelled,progress) {
+  },.fg_dem_transfer=function(url,path,limits,cancelled,progress) {
     writeBin(f$body,path);progress(32,NA_real_);download_response(headers="")
   })
 })

@@ -25,11 +25,8 @@ test_that("file query matches source directory and intersects Stream with sf", {
   })
 })
 
-test_that("file query distinguishes partial, unsupported, empty and failure", {
+test_that("file query distinguishes unsupported, empty and failure", {
   f <- dem_file_fixture()
-  with_mocked_bindings({
-    expect_identical(discover_stream_dem_files(f$stream,f$collection,1)$outcome,"PARTIAL")
-  },.fg_dem_products_get=function(...) list(total=2,items=list(f$item),errors=list()))
   with_mocked_bindings({
     expect_identical(discover_stream_dem_files(f$stream,f$collection)$outcome,"FAILED")
   },.fg_dem_products_get=function(...) stop("Synthetic timeout"))
@@ -44,6 +41,26 @@ test_that("file query distinguishes partial, unsupported, empty and failure", {
   expect_null(.fg_dem_source_prefix("https://example.org/?prefix=anything"))
   expect_null(.fg_dem_source_prefix("https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/OPR/Projects/Project/../Survey"))
   expect_error(discover_stream_dem_files(sf::st_drop_geometry(f$stream),f$collection),"Stream polygon")
+})
+
+test_that("all catalog pages are searched before collection filtering", {
+  f <- dem_file_fixture(); other <- f$item
+  other$sourceId <- "other";other$downloadURL <- sub("Survey/","Other/",other$downloadURL)
+  offsets <- numeric()
+  with_mocked_bindings({
+    r <- discover_stream_dem_files(f$stream,f$collection,1)
+    expect_identical(r$outcome,"COMPLETE")
+    expect_identical(r$files$file_id,"tile-one")
+    expect_equal(offsets,c(0,1))
+  },.fg_dem_products_get=function(query) {
+    offsets <<- c(offsets,query$offset)
+    list(total=2,items=list(if(query$offset==0) other else f$item),errors=list())
+  })
+  with_mocked_bindings({
+    r <- discover_stream_dem_files(f$stream,f$collection,1)
+    expect_identical(r$outcome,"FAILED");expect_equal(nrow(r$files),0)
+    expect_match(r$message,"no progress")
+  },.fg_dem_products_get=function(query) list(total=2,items=list(f$item),errors=list()))
 })
 
 test_that("malformed matched file evidence fails closed", {
