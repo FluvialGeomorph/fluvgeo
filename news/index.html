@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9047</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9051</span>
       </span>
     </div>
 
@@ -47,6 +47,15 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.21.9049" id="fluvgeo-202609219049">fluvgeo 2026.09.21.9049<a class="anchor" aria-label="anchor" href="#fluvgeo-202609219049"></a></h2>
+<ul><li>Default horizontal terrain outputs to Float32 storage with Float64 working precision. Float64 storage remains explicit opt-in. Verify aligned samples after storage rounding and reject samples outside Float32 range.</li>
+<li>Add Float32 preflight byte estimates while retaining the Float64 estimate for compatibility. No shared runtime or analyst source files are changed.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.21.9048" id="fluvgeo-202609219048">fluvgeo 2026.09.21.9048<a class="anchor" aria-label="anchor" href="#fluvgeo-202609219048"></a></h2>
+<ul><li>Add a bounded horizontal terrain warp with explicit 2D operation selection, disabled vertical shifts, Float64 output and retained compound-CRS evidence. Static projected CRSs must share an identified geodetic reference. Datum/epoch operations and nonidentity scale/offset remain blocked. No app mosaic workflow or production runtime is enabled by this backend qualification increment.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.21.9047" id="fluvgeo-202609219047">fluvgeo 2026.09.21.9047<a class="anchor" aria-label="anchor" href="#fluvgeo-202609219047"></a></h2>
 <ul><li>Add verified hierarchical One/NoData mask families with saved Event spacing, shared-anchor subwindows, strict center membership, parent intersection, bounded block I/O, resource admission and immutable attempt manifests.</li>
@@ -777,7 +786,9 @@
 <h2 class="page-header" data-toc-text="0.1.26" id="fluvgeo-v0126-2020-07-23">fluvgeo v0.1.26 (2020-07-23)<a class="anchor" aria-label="anchor" href="#fluvgeo-v0126-2020-07-23"></a></h2>
 <div class="section level3">
 <h3 id="bug-fixes-0-1-26">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-26"></a></h3>
-<ul><li>Fixed several CMD Check issues.</li>
+<ul><li><p>Fixed several CMD Check issues.</p></li>
+<li><p>Survey Event settings accept empty optional rationale notes; provider acquisition evidence remains retained independently.</p></li>
+<li><p>Event masks now use standard terra rasterization, classification, crop and mask operations. Removed custom per-cell geometry testing and arbitrary size/space cutoffs. Native cell-center semantics are recorded; legacy masks remain readable.</p></li>
 </ul></div>
 </div>
   </div>

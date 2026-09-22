@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9047</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.21.9051</span>
       </span>
     </div>
 
@@ -53,14 +53,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_event_masks</span><span class="op">(</span></span>
-<span>  <span class="va">context</span>,</span>
-<span>  <span class="va">selection</span>,</span>
-<span>  <span class="va">group</span>,</span>
-<span>  <span class="va">stream_id</span>,</span>
-<span>  <span class="va">directory</span>,</span>
-<span>  max_cells <span class="op">=</span> <span class="fl">5e+07</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">write_event_masks</span><span class="op">(</span><span class="va">context</span>, <span class="va">selection</span>, <span class="va">group</span>, <span class="va">stream_id</span>, <span class="va">directory</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,10 +79,6 @@
 <dt id="arg-directory">directory<a class="anchor" aria-label="anchor" href="#arg-directory"></a></dt>
 <dd><p>New, nonexistent attempt directory. Existing paths are never replaced.</p></dd>
 
-
-<dt id="arg-max-cells">max_cells<a class="anchor" aria-label="anchor" href="#arg-max-cells"></a></dt>
-<dd><p>Maximum total cells admitted across the family; default 50 million.</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -97,13 +86,14 @@
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>Uses strict cell-center interior membership (edge centers are NoData),
+    <p>Uses terra polygon rasterization with touches=FALSE (cell centers),
   shared zero anchor and Event spacing. Children intersect their parent masks.
   Missing Reach polygons block the entire family. Disk-backed compressed Byte
-  GeoTIFFs contain only 1 and NoData. Processing uses at most 65536 centers per
-  block and rejects wider grids. Admission requires available disk space of at
-  least four times the uncompressed payload plus 256 MiB; this is an estimate,
-  not a reservation. A verified manifest is written last. Interrupted attempts
+  GeoTIFFs contain only 1 and NoData. Standard terra rasterize, crop and mask
+  operations write compressed disk-backed rasters with BigTIFF support.
+  No application cell-count, row-width or estimated-disk admission limit is
+  imposed. Actual I/O failures stop publication. A verified manifest is
+  written last. Interrupted attempts
   are incomplete. Applications should stage the directory and publish it only
   after checking that the original request is still current. No DEM is read.</p>
     </div>
