@@ -18,7 +18,7 @@ or elevation conversion. The caller supplies source priority explicitly."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.23.9056</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.24.9057</span>
       </span>
     </div>
 
@@ -55,7 +55,7 @@ or elevation conversion. The caller supplies source priority explicitly.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mosaic_terrain_tiles</span><span class="op">(</span><span class="va">sources</span>, <span class="va">filename</span>, <span class="va">overlap</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mosaic_terrain_tiles</span><span class="op">(</span><span class="va">sources</span>, <span class="va">filename</span>, <span class="va">overlap</span>, extent <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,6 +73,13 @@ establish common acquisition, elevation units and vertical reference.</p></dd>
 
 <dt id="arg-overlap">overlap<a class="anchor" aria-label="anchor" href="#arg-overlap"></a></dt>
 <dd><p>Either `"first"` or `"last"` valid source value in overlap cells.</p></dd>
+
+
+<dt id="arg-extent">extent<a class="anchor" aria-label="anchor" href="#arg-extent"></a></dt>
+<dd><p>Optional numeric `c(xmin, xmax, ymin, ymax)` window in the source
+CRS. Native terra crop snaps outward to source cells before assembly. This
+is suitable for aligned, non-interpolated processing; callers must preserve
+any support needed by a later interpolation operation. NULL uses full tiles.</p></dd>
 
 </dl></div>
     <div id="value">
