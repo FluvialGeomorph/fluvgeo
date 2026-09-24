@@ -1,3 +1,21 @@
+# fluvgeo 2026.09.23.9056
+
+* Add native terra conversion from explicit NAVD88 metre elevations to international feet, preserving the horizontal grid and Float32 storage.
+
+# fluvgeo 2026.09.23.9055
+
+- Add `mask_terrain_mosaic()` to apply a saved aligned one/NoData raster using
+  native terra crop/mask. Preserve the terrain grid, datatype, full CRS and units;
+  compare horizontal CRS components when terrain has a compound vertical CRS.
+  Real Reach-window tests cover retained elevations and excluded cells.
+
+# fluvgeo 2026.09.23.9054
+
+- Add `mosaic_terrain_tiles()` for native, file-backed joining of compatible
+  source-grid elevation tiles with explicit first/last-valid precedence.
+  No resampling or elevation conversion. Initial validation uses small windows
+  from actual downloaded DEMs; full Stream assembly is not yet integrated.
+
 # fluvgeo 2026.09.22.9053
 
 - Inspect receipt-bound source DEMs with one cold checksum read and optional
