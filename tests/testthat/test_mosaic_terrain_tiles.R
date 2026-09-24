@@ -29,3 +29,28 @@ test_that("real DEM windows mosaic without changing sampled source elevations", 
   last <- tempfile(fileext = ".tif"); on.exit(unlink(last), add = TRUE)
   expect_identical(mosaic_terrain_tiles(paths, last, "last")$overlap, "last")
 })
+
+test_that("real saved source files can be assembled only within the requested window", {
+  fixture <- Sys.getenv("FLUVGEO_REAL_MOSAIC_INPUTS")
+  skip_if(!nzchar(fixture), "Provide the existing real DEM fixture")
+  trial <- readRDS(fixture)
+  reference <- readRDS(file.path(trial$root,"result.rds"))$result$path
+  expected <- terra::rast(reference)
+  extent <- as.vector(terra::ext(expected))
+  root <- tempfile(); dir.create(root); withr::defer(unlink(root,recursive=TRUE))
+  before <- file.info(trial$originals)[c("size","mtime")]
+  result <- mosaic_terrain_tiles(trial$originals,file.path(root,"dem.tif"),"first",extent)
+  actual <- terra::rast(result$path)
+  expect_true(terra::compareGeom(expected,actual))
+  expect_identical(terra::datatype(actual),"FLT4S")
+  expect_identical(terra::units(actual),terra::units(expected))
+  rc <- expand.grid(row=round(seq(1,terra::nrow(expected),length.out=8)),
+                    col=round(seq(1,terra::ncol(expected),length.out=8)))
+  xy <- terra::xyFromCell(expected,terra::cellFromRowCol(expected,rc$row,rc$col))
+  expect_identical(terra::extract(actual,xy)[[1]],terra::extract(expected,xy)[[1]])
+  expect_identical(file.info(trial$originals)[c("size","mtime")],before)
+  expect_length(list.dirs(root,recursive=FALSE),0L)
+  expect_error(mosaic_terrain_tiles(trial$originals,file.path(root,"bad.tif"),"first",c(1,0,1,2)),"extent")
+  expect_error(mosaic_terrain_tiles(trial$originals,file.path(root,"away.tif"),"first",extent+1e7),"intersects")
+  expect_false(file.exists(file.path(root,"away.tif")))
+})

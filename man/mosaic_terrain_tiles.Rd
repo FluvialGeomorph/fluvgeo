@@ -4,7 +4,7 @@
 \alias{mosaic_terrain_tiles}
 \title{Mosaic compatible elevation tiles on their existing grid}
 \usage{
-mosaic_terrain_tiles(sources, filename, overlap)
+mosaic_terrain_tiles(sources, filename, overlap, extent = NULL)
 }
 \arguments{
 \item{sources}{Ordered paths to compatible elevation rasters. The caller must
@@ -13,6 +13,11 @@ establish common acquisition, elevation units and vertical reference.}
 \item{filename}{New output GeoTIFF path. Existing files are never overwritten.}
 
 \item{overlap}{Either `"first"` or `"last"` valid source value in overlap cells.}
+
+\item{extent}{Optional numeric `c(xmin, xmax, ymin, ymax)` window in the source
+CRS. Native terra crop snaps outward to source cells before assembly. This
+is suitable for aligned, non-interpolated processing; callers must preserve
+any support needed by a later interpolation operation. NULL uses full tiles.}
 }
 \value{
 A compact list describing the output path, source order, grid and

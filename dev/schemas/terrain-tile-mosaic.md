@@ -68,3 +68,20 @@ occurs. Unsupported source references fail explicitly rather than being relabele
 This additive API is consumed by FG Studio's small real-data development worker;
 other clients and shared installed libraries are unchanged. Full Stream/Event
 publication and large-scale performance remain outside this trial.
+
+## Source-window assembly
+
+`mosaic_terrain_tiles(..., extent = c(xmin, xmax, ymin, ymax))` accepts an
+optional source-CRS processing window. All supplied sources still undergo the
+existing common-grid checks. Native file-backed terra crops snap outward to
+source cells, preserve input priority and omit nonintersecting tiles. NoData
+coverage gaps remain gaps. Temporary crops are job-owned and removed on return
+or error. No interpolation or mask is applied at this stage. This early crop
+is suitable for the aligned workflow; a later warp requires its interpolation
+support to be included by the caller. Output may be smaller than the requested
+window if source coverage is incomplete. Default NULL retains full-tile behavior.
+
+The real-data opt-in test reads the original downloaded files and compares the
+requested seam window against the earlier independently cropped reference,
+including grid, full CRS, units, Float32 and 64 sampled values. No full-Stream
+performance or general source compatibility is claimed.

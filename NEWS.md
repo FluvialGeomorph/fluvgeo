@@ -1,3 +1,7 @@
+# fluvgeo 2026.09.24.9057
+
+* Mosaic a requested source-grid window directly from saved DEM files with native file-backed terra crops before assembly. Existing full-tile calls remain supported.
+
 # fluvgeo 2026.09.23.9056
 
 * Add native terra conversion from explicit NAVD88 metre elevations to international feet, preserving the horizontal grid and Float32 storage.
