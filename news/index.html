@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.22.9053</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.23.9056</span>
       </span>
     </div>
 
@@ -47,6 +47,18 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.23.9056" id="fluvgeo-202609239056">fluvgeo 2026.09.23.9056<a class="anchor" aria-label="anchor" href="#fluvgeo-202609239056"></a></h2>
+<ul><li>Add native terra conversion from explicit NAVD88 metre elevations to international feet, preserving the horizontal grid and Float32 storage.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.23.9055" id="fluvgeo-202609239055">fluvgeo 2026.09.23.9055<a class="anchor" aria-label="anchor" href="#fluvgeo-202609239055"></a></h2>
+<ul><li>Add <code><a href="../reference/mask_terrain_mosaic.html">mask_terrain_mosaic()</a></code> to apply a saved aligned one/NoData raster using native terra crop/mask. Preserve the terrain grid, datatype, full CRS and units; compare horizontal CRS components when terrain has a compound vertical CRS. Real Reach-window tests cover retained elevations and excluded cells.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.23.9054" id="fluvgeo-202609239054">fluvgeo 2026.09.23.9054<a class="anchor" aria-label="anchor" href="#fluvgeo-202609239054"></a></h2>
+<ul><li>Add <code><a href="../reference/mosaic_terrain_tiles.html">mosaic_terrain_tiles()</a></code> for native, file-backed joining of compatible source-grid elevation tiles with explicit first/last-valid precedence. No resampling or elevation conversion. Initial validation uses small windows from actual downloaded DEMs; full Stream assembly is not yet integrated.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.22.9053" id="fluvgeo-202609229053">fluvgeo 2026.09.22.9053<a class="anchor" aria-label="anchor" href="#fluvgeo-202609229053"></a></h2>
 <ul><li>Inspect receipt-bound source DEMs with one cold checksum read and optional session-owned metadata/display caches. Explicit refresh rechecks integrity.</li>

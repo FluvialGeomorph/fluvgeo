@@ -86,9 +86,11 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_metric.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_overview.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_xs.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/mask_terrain_mosaic.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/meander_length.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/meander_width.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/metric_colors.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/mosaic_terrain_tiles.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/normalize_retained_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/order_drainage_flowlines.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/orient_lines_from_dem.html</loc></url>
@@ -163,6 +165,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_development_summary.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_reference_review.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_to_international_feet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_analysis_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_vertical_reference.html</loc></url>
