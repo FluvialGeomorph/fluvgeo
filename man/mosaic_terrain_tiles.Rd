@@ -2,9 +2,15 @@
 % Please edit documentation in R/mosaic_terrain_tiles.R
 \name{mosaic_terrain_tiles}
 \alias{mosaic_terrain_tiles}
-\title{Mosaic compatible elevation tiles on their existing grid}
+\title{Mosaic compatible elevation tiles with optional output-grid resampling}
 \usage{
-mosaic_terrain_tiles(sources, filename, overlap, extent = NULL)
+mosaic_terrain_tiles(
+  sources,
+  filename,
+  overlap,
+  extent = NULL,
+  template = NULL
+)
 }
 \arguments{
 \item{sources}{Ordered paths to compatible elevation rasters. The caller must
@@ -16,22 +22,34 @@ establish common acquisition, elevation units and vertical reference.}
 
 \item{extent}{Optional numeric `c(xmin, xmax, ymin, ymax)` window in the source
 CRS. Native terra crop snaps outward to source cells before assembly. This
-is suitable for aligned, non-interpolated processing; callers must preserve
-any support needed by a later interpolation operation. NULL uses full tiles.}
+is suitable for aligned, non-interpolated processing. Without a template,
+callers preserve support for any later interpolation; NULL uses full tiles.
+With a template, extent restricts its grid and source support is automatic.}
+
+\item{template}{Optional single-band raster path defining the output grid in
+the same horizontal CRS. Bilinear resampling follows source-grid assembly;
+template values are ignored. With extent, snap the target window outward
+to template cells. Source reads retain a two-cell interpolation halo at the
+larger of source and target spacing. Apply the analysis mask afterwards.}
 }
 \value{
 A compact list describing the output path, source order, grid and
   processing method. This is not scientific acceptance or a Survey Event product.
 }
 \description{
-Joins file-backed single-band tiles without projection, resampling, blending
-or elevation conversion. The caller supplies source priority explicitly.
+Joins file-backed single-band tiles in source priority order, optionally
+resampling differing source grids to a same-CRS output template.
 }
 \details{
-Uses native terra merge with missing values ignored and resampling
-  disabled. Inputs must share their CRS, resolution and cell alignment. This
-  primitive deliberately does not select a new analysis grid or reconcile
-  vertical references. Output is file-backed Float32 with lossless compression.
+Inputs share full CRS and elevation units. Without a template they
+  must also share resolution and alignment. With a template, consecutive
+  same-grid tiles are joined before bilinear resampling to the exact Event
+  grid. Resampled runs are merged in source order with first/last-valid
+  precedence and no additional interpolation. NoData follows native terra
+  semantics; no blending, gap filling or reference conversion is added.
+  Each run uses the full target template to keep native interpolation edge
+  weights consistent; source reads remain windowed with interpolation support.
+  Output is file-backed Float32 with lossless compression.
   Use small windows of actual source DEMs for development. No processing-size
   limits are imposed. Applications should invoke it in a background worker.
 }

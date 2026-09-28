@@ -1,3 +1,29 @@
+# fluvgeo 2026.09.28.9061
+
+* Identify matching horizontal and vertical datums independently of projection
+  and units, avoiding unnecessary datum choices while retaining review for
+  distinct realizations and unresolved or epoch-dependent references.
+
+# fluvgeo 2026.09.28.9060
+
+* Add reference-pair operation catalogs for terrain transformation planning.
+  Retain full pipelines, local grid checksums, area screening and software/database
+  identity. Missing-resource, ballpark and epoch-dependent operations remain
+  visible but unselectable. Discovery neither selects nor executes an operation.
+
+# fluvgeo 2026.09.28.9059
+
+* Template-driven DEM mosaics support differing source cell sizes/alignment in
+  one CRS. Consecutive compatible tiles are joined before bilinear resampling;
+  outputs retain saved first/last-valid priority, compound CRS and elevation units.
+
+# fluvgeo 2026.09.28.9058
+
+* `mosaic_terrain_tiles(template=...)` joins compatible native-grid DEM tiles with
+  interpolation support, then bilinearly resamples to a same-horizontal-CRS
+  template. Output retains source elevation units and compound CRS. Existing
+  calls without a template retain source-grid behavior.
+
 # fluvgeo 2026.09.24.9057
 
 * Mosaic a requested source-grid window directly from saved DEM files with native file-backed terra crops before assembly. Existing full-tile calls remain supported.

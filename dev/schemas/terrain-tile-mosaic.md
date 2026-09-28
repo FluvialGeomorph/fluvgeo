@@ -1,4 +1,4 @@
-# Source-grid terrain tile mosaic
+# Source-grid terrain assembly and Event-grid resampling
 
 ## Applying an existing mask
 
@@ -43,9 +43,8 @@ limits. An error removes this call's partial output. The return value contains
 output path, ordered source paths, overlap rule, method, CRS, resolution, extent,
 dimensions, datatype, terra version and `scientific_acceptance=false`.
 
-This does not publish a study product, bind a Survey Event, establish vertical
-compatibility or select a target grid. FG Studio currently exercises it only with
-small real DEM windows in an explicitly enabled development preview. The existing
+This does not publish a study product, bind a Survey Event or establish vertical
+compatibility. FG Studio invokes it in its serial Event worker. The existing
 horizontal-warp primitive and saved masks are unchanged. Other downstream clients
 have no new caller or migration requirement.
 
@@ -65,9 +64,8 @@ Float32 sources retain Float32 storage. Output vertical CRS is EPSG:8228 (NAVD88
 height in international feet). GDAL may report the band-unit synonym `foot`
 while terra reports `ft`. No resampling, datum transformation or source mutation
 occurs. Unsupported source references fail explicitly rather than being relabeled.
-This additive API is consumed by FG Studio's small real-data development worker;
-other clients and shared installed libraries are unchanged. Full Stream/Event
-publication and large-scale performance remain outside this trial.
+This additive API is consumed by FG Studio's Event worker; other clients and
+shared installed libraries are unchanged.
 
 ## Source-window assembly
 
@@ -85,3 +83,55 @@ The real-data opt-in test reads the original downloaded files and compares the
 requested seam window against the earlier independently cropped reference,
 including grid, full CRS, units, Float32 and 64 sampled values. No full-Stream
 performance or general source compatibility is claimed.
+
+## Resampling to the Event grid
+
+`mosaic_terrain_tiles(..., template=path)` uses the template geometry as the exact
+output grid, optionally cropped outward to `extent`. Its values are ignored.
+Source tiles share full CRS and band units; their horizontal CRS equals the
+projected template CRS. Source and output spacing/alignment may differ, including
+between source tiles. Cross-CRS operations remain explicitly unsupported.
+
+Native source crops retain two cells at the larger source/output spacing beyond
+the requested output extent. Merge joins consecutive same-grid tiles with
+first/last-valid precedence before native `terra::resample(method="bilinear")`.
+Runs retain input order: equal-grid tiles separated by another contributing priority
+are not regrouped. Runs outside the output extent are omitted, and newly adjacent
+compatible runs are joined so irrelevant inputs cannot split a seam.
+Every run resamples onto the identical full Event template; an
+independently cropped target changed native interpolation weights at partial
+coverage edges in real-data comparisons. Source reads remain bounded. Native
+merge combines aligned run outputs using the requested first/last-valid rule,
+ignoring NoData and without another interpolation or overlap averaging. Runs
+outside the output extent are omitted; no intersecting run fails without output.
+This is a loop over input metadata and native file-backed operations, not cells.
+Masking happens
+after resampling. See the native [terra resample reference](https://rspatial.github.io/terra/reference/resample.html).
+The transient source-grid mosaic is removed on success/error;
+failed outputs are not published. Float32 GeoTIFF output preserves source compound
+CRS and band units by using that same full CRS on the target geometry; no
+horizontal/vertical transformation is invoked. NoData follows native bilinear
+interpolation rules; no separate gap-fill operation is used. The subsequent
+analysis mask retains NoData outside the analysis domain.
+
+The returned mosaic metadata retains `template`, `resampling` and `units`.
+Single-grid results retain `source_resolution` and `halo`. Mixed results set
+`mixed_source_grids=TRUE`, list distinct `source_resolutions`, and record ordered
+`source_grid_runs` with source indices, resolution, origin and halo. Temporary
+run outputs are deleted on completion/failure and are never published separately.
+Calls without a template still require one grid. FG Studio recipe v3 identifies
+ordered source-grid handling; earlier v1/v2 editions remain reusable on identical
+inputs. No shared package library is upgraded. The ArcGIS/QGIS
+toolboxes, ohwm2, RegionalCurve and fluvgeodata have no changed calls or data.
+
+`test_terrain_resampling.R` uses the existing opt-in actual DEM seam windows:
+0.5/2/3.3 m shifted targets, independently calculated fine-grid bilinear samples,
+comparison against an uncropped reference to check halo support, CRS/unit/datatype
+preservation, foot conversion and unchanged source hashes. The app's opt-in worker
+test adds actual Reach masking, immutable publication/reopening and method display.
+`test_terrain_mixed_grids.R` derives a 2 m mean-aggregated copy and a shifted
+1 m copy from the same actual terrain. It verifies seams in compatible runs,
+first/last precedence, interleaved grid priorities, NoData fallback, exact Event
+geometry, vertical/unit preservation, input hashes and staging cleanup. These
+controlled derivatives test the processing method; they are not independently
+acquired surveys or a full-Stream mixed-grid performance qualification.
