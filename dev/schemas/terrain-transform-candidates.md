@@ -62,6 +62,38 @@ shifts, coupled transformations, resampling seams or selected-plan execution.
 The source remains unchanged. The test is opt-in through
 `FLUVGEO_REAL_MOSAIC_INPUTS`; it does not process a whole Stream.
 
+`test_terrain_projected_operation_execution.R` checks the combined projection,
+bilinear resampling and unit-conversion path on the same bounded actual window.
+It changes UTM 15N to UTM 16N within NAD83(2011), uses 2 m cells and compares
+the explicit catalog pipeline with terra's horizontal-only projection followed
+by metres / 0.3048. Required agreement is 0.0001 ft with identical NoData and
+output grid, preserved source bytes, target compound CRS and foot band units.
+Both routes use installed GDAL, so this is configuration qualification rather
+than independent scientific validation. No datum shift or actual Study target
+change is involved. Datum-grid, coupled-operation and mosaic seam qualification
+remain prerequisites to broader execution integration.
+
+`test_terrain_datum_operation_execution.R` qualifies the NAD83(2011) to NAD83
+horizontal realization chain with unchanged NAVD88 datum and metre-to-foot
+conversion. It requires the four official PROJ NADCON5 CONUS grids for
+1986/HARN, HARN/FBN, FBN/2007 and 2007/2011, plus the installed PROJ database in an
+isolated directory supplied by `FLUVGEO_TEST_PROJ_DATA`. No grids are downloaded
+by tests. Candidate evidence retains their SHA-256 checksums and exact pipeline.
+At three real-window sample points the horizontal displacement is approximately
+0.22 m west and 0.11 m north; inverse round-trip error is below 0.00001 m, and
+bilinear raster values agree with inverse-coordinate sampling within 0.0001 ft.
+The pipeline's `no_z_transform` steps preserve height through intermediate
+realization shifts. This is not qualification of a vertical datum change.
+
+On the installed Windows bindings, a single self-contained PROJ directory resolves
+these resources consistently. Multiple configured paths did not make the grids
+instantiable in the observed sf pipeline context. Loaded resources can remain
+cached after changing search paths, so missing-grid behavior is verified in a
+fresh process. The test explicitly checks sf's inverse-pipeline candidate warning
+and the numerical inverse result. Neither a warning-free lookup nor a changed
+search path alone establishes successful isolation or numerical correctness.
+Resources originate from the [official PROJ grid distribution](https://cdn.proj.org/).
+
 It has not connected these plans to the warp/mosaic worker. The standalone warp
 primitive retains its earlier narrow contract. Other ecosystem clients and the
 shared package library are unchanged. Tests cover discovery identity, local grid
