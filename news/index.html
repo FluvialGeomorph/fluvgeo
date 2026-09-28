@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.24.9057</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.09.28.9061</span>
       </span>
     </div>
 
@@ -47,6 +47,23 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.28.9061" id="fluvgeo-202609289061">fluvgeo 2026.09.28.9061<a class="anchor" aria-label="anchor" href="#fluvgeo-202609289061"></a></h2>
+<ul><li>Identify matching horizontal and vertical datums independently of projection and units, avoiding unnecessary datum choices while retaining review for distinct realizations and unresolved or epoch-dependent references.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.28.9060" id="fluvgeo-202609289060">fluvgeo 2026.09.28.9060<a class="anchor" aria-label="anchor" href="#fluvgeo-202609289060"></a></h2>
+<ul><li>Add reference-pair operation catalogs for terrain transformation planning. Retain full pipelines, local grid checksums, area screening and software/database identity. Missing-resource, ballpark and epoch-dependent operations remain visible but unselectable. Discovery neither selects nor executes an operation.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.28.9059" id="fluvgeo-202609289059">fluvgeo 2026.09.28.9059<a class="anchor" aria-label="anchor" href="#fluvgeo-202609289059"></a></h2>
+<ul><li>Template-driven DEM mosaics support differing source cell sizes/alignment in one CRS. Consecutive compatible tiles are joined before bilinear resampling; outputs retain saved first/last-valid priority, compound CRS and elevation units.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.09.28.9058" id="fluvgeo-202609289058">fluvgeo 2026.09.28.9058<a class="anchor" aria-label="anchor" href="#fluvgeo-202609289058"></a></h2>
+<ul><li>
+<code>mosaic_terrain_tiles(template=...)</code> joins compatible native-grid DEM tiles with interpolation support, then bilinearly resamples to a same-horizontal-CRS template. Output retains source elevation units and compound CRS. Existing calls without a template retain source-grid behavior.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.24.9057" id="fluvgeo-202609249057">fluvgeo 2026.09.24.9057<a class="anchor" aria-label="anchor" href="#fluvgeo-202609249057"></a></h2>
 <ul><li>Mosaic a requested source-grid window directly from saved DEM files with native file-backed terra crops before assembly. Existing full-tile calls remain supported.</li>
