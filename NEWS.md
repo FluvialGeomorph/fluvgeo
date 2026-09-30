@@ -1,3 +1,34 @@
+# fluvgeo 2026.09.29.9066
+
+* Allow viewport display without building missing full-raster pyramids. Reuse
+  existing caches; otherwise calculate hillshade only on the bounded display
+  window, leaving analytical elevations and input files unchanged.
+
+# fluvgeo 2026.09.29.9065
+
+* Restrict cutline zone calculations to a padded, grid-aligned cutline envelope.
+  Merge the resulting patch over the complete source using file-backed native
+  operations, preserving elevations, NoData, grid, CRS, units and provenance.
+
+# fluvgeo 2026.09.29.9064
+
+* Cache elevation and hillshade COG display pyramids independently of source
+  DEMs; viewport extraction uses GDAL overview-aware window reads.
+* Identify NoData cutlines individually and apply valid cutlines while reporting
+  omitted lines. Fully covered cutlines no longer block other cuts.
+
+# fluvgeo 2026.09.29.9063
+
+* Clip geographic view bounds to the DEM before local projection; wrapped/world
+  views and views outside terrain no longer fail with a crop-overlap error.
+* Add file-backed cutline hydro modification with touched-cell zones, minimum
+  elevations, deterministic shared-cell assignment and retained source masks.
+
+# fluvgeo 2026.09.28.9062
+
+* Prepare cropped elevation and hillshade views for close-scale channel inspection,
+  retaining analytical inputs and reporting whether display aggregation occurred.
+
 # fluvgeo 2026.09.28.9061
 
 * Identify matching horizontal and vertical datums independently of projection
