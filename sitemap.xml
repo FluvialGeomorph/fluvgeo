@@ -15,6 +15,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/bend_raduis_plot.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/build_gof_stats.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/build_logical_stream_links.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/burn_hydro_cutlines.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/cancel_stream_dem_download.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_bankline_points.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/check_banklines.html</loc></url>
@@ -97,6 +98,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/planform_dimensions.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/preflight_stream_dem.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_hydro_dem_view.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_dem_download.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/prepare_stream_network_from_features.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/preview_stream_corridor.html</loc></url>
