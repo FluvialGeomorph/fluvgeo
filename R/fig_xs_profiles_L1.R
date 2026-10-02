@@ -21,7 +21,6 @@
 #' @return A patchwork figure.
 #'
 #' @importFrom grDevices dev.new dev.off
-#' @importFrom tmap tmap_grob
 #' @importFrom ggplot2 theme unit
 #' @importFrom gtable gtable gtable_add_grob
 #' @importFrom patchwork plot_layout wrap_elements

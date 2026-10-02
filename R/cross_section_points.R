@@ -16,7 +16,6 @@
 #' @importFrom dplyr %>% mutate arrange select rename
 #' @importFrom tibble as_tibble
 #' @importFrom sf st_cast st_sf st_coordinates st_as_sf st_drop_geometry
-#' @importFrom stars st_as_stars st_extract
 #' @importFrom terra tighten
 #'
 cross_section_points <- function(cross_section, dem, rem, station_distance) {

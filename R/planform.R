@@ -14,12 +14,11 @@
 #' @examples
 #' pf <- planform(fluvgeo::sin_bankline_points_sf)
 #'
-#' @importFrom testthat expect_true
 #' @importFrom dplyr right_join
 #'
 planform <- function(bankline_points) {
   # Check parameters
-  expect_true(check_bankline_points(bankline_points))
+  .fg_require_bankline_points(bankline_points)
 
   # Calculate the bend radius of curvature
   bends <- bend_radius(bankline_points)

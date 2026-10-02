@@ -19,10 +19,6 @@
 #'
 #' @importFrom sf st_crs st_transform st_bbox st_as_sfc
 #' @importFrom grDevices colorRampPalette gray.colors
-#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_scale_continuous
-#'             tm_layout tm_legend tm_pos_out opt_tm_text
-#'             tm_compass tm_scalebar tm_title_out
-#' @importFrom terrainr get_tiles
 #' @importFrom terra shade terrain rast
 #'
 map_reach_overview <- function(flowline_sf, cross_section_sf,
@@ -30,6 +26,15 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
                                xs_label_freq = 1,
                                exaggeration = 20,
                                extent_factor = 1.1) {
+  if (!requireNamespace("tmap",quietly=TRUE))
+    stop("Package 'tmap' is required to create reach overview maps.",call.=FALSE)
+  tm_shape <- tmap::tm_shape; tm_raster <- tmap::tm_raster
+  tm_lines <- tmap::tm_lines; tm_symbols <- tmap::tm_symbols
+  tm_text <- tmap::tm_text; tm_scale_continuous <- tmap::tm_scale_continuous
+  tm_layout <- tmap::tm_layout; tm_legend <- tmap::tm_legend
+  tm_pos_out <- tmap::tm_pos_out; opt_tm_text <- tmap::opt_tm_text
+  tm_compass <- tmap::tm_compass; tm_scalebar <- tmap::tm_scalebar
+  tm_title_out <- tmap::tm_title_out; tm_rgb <- tmap::tm_rgb
   # Check data structure
   check_flowline(flowline_sf, step = "create_flowline")
   check_cross_section(cross_section_sf, step = "assign_ids")
@@ -96,8 +101,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
       scaling_factor = "2x",
       buffer_dist = 0,
       crop = TRUE,
-      username = "mikedoc",
-      access_token = "pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
+      username = "mikedoc")
 
     background_map <- tm_shape(aerial_photos, raster.downsample = TRUE) +
                         tm_rgb()

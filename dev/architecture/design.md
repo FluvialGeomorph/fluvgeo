@@ -55,6 +55,21 @@ When multiple approaches are acceptable, prefer open-source solutions over propr
 - improve portability and adoption
 - preserve reproducibility and maintenance viability
 
+### Terrain-preserving stream-network extraction
+
+`fluvgeo` owns reusable routing, accumulation, vector derivation, validation and
+processing evidence for terrain-derived candidate networks. Client applications
+own selection of exact saved terrain editions, background-job orchestration,
+interactive preview and local publication. Governed network persistence remains
+a separate FGDB contract.
+
+The accepted [terrain-preserving extraction decision](../decisions/ADR-0003-terrain-preserving-flowline-extraction.md)
+and [feature design](../features/terrain-preserving-flowline-extraction.md) retain
+the prepared DEM as measurement terrain, use analyst-cutline Hydro DEMs where
+applicable and isolate any additional bounded fill or breach operation in an
+attributable routing representation. The historical first-cut vector product is
+`stream_network`; it is not accepted merely because processing completes.
+
 ## Open questions
 
 The [reporting foundation](../goals/reporting-intent.md) now distinguishes

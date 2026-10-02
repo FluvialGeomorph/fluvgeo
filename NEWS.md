@@ -1,5 +1,9 @@
 # fluvgeo 2026.09.29.9066
 
+* Add native, file-backed synthetic stream extraction from a reviewed Hydro DEM:
+  outlet approximation, compact Priority-Flood conditioning, resolved D8 routing,
+  upstream-cell accumulation, hectare thresholding and consolidated GeoPackage
+  linework. Threshold-only updates reuse saved direction and accumulation rasters.
 * Allow viewport display without building missing full-raster pyramids. Reuse
   existing caches; otherwise calculate hillshade only on the bounded display
   window, leaving analytical elevations and input files unchanged.

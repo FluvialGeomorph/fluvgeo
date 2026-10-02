@@ -8,7 +8,6 @@
 #' @export
 #' @importFrom leaflet leaflet setView addProviderTiles addLayersControl
 #'                     addScaleBar addMeasure
-#' @importFrom leafem addMouseCoordinates
 #' @importFrom leaflet.extras addSearchOSM searchOptions
 get_leaflet <- function(search = FALSE, zoom = 5) {
 
@@ -19,7 +18,7 @@ get_leaflet <- function(search = FALSE, zoom = 5) {
     addLayersControl(
       baseGroups = c("USGS Topo", "Imagery"),
       position = "topleft") %>%
-    addMouseCoordinates() %>%
+    leafem::addMouseCoordinates() %>%
     addScaleBar(position = "bottomleft") %>%
     addMeasure(position = "bottomleft")
 

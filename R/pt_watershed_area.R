@@ -6,7 +6,6 @@
 #'  * drainage_basing - The upstream drainage area of the snapped point.
 #' @export
 #' @importFrom sf st_sfc st_point st_as_sfc st_as_sf st_area
-#' @importFrom hydrogeofetch get_raindrop_trace get_split_catchment
 #' @importFrom dplyr mutate filter select
 #'
 pt_watershed_area <- function(point_sf) {
@@ -14,14 +13,14 @@ pt_watershed_area <- function(point_sf) {
               msg = "point_sf must be an sf object")
 
   # Find the nearest downslope NHD flowline
-  trace <- get_raindrop_trace(st_as_sfc(point_sf))
+  trace <- hydrogeofetch::get_raindrop_trace(st_as_sfc(point_sf))
 
   # Extract the point located along the NHD network
   snap_point <- st_sfc(st_point(trace$intersection_point[[1]]),
                        crs = 4326)
 
   # Get the catchment and the upstream drainage basin
-  catchment <- get_split_catchment(snap_point, upstream = TRUE)
+  catchment <- hydrogeofetch::get_split_catchment(snap_point, upstream = TRUE)
 
   # Create the drainage area polygon
   drainage_basin <- catchment |>

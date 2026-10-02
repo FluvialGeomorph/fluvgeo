@@ -72,7 +72,6 @@
 #' `output_dir` in the requested file format.
 #'
 #' @importFrom purrr discard map
-#' @importFrom rmarkdown render
 #'
 estimate_bankfull <- function(stream, flowline_fc, xs_dims_fc,
                               xs_points_ch_1, xs_points_ch_2,

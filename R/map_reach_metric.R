@@ -39,10 +39,6 @@
 #'
 #' @importFrom sf st_crs st_transform st_as_sf st_as_sfc
 #' @importFrom grDevices colorRampPalette gray.colors
-#' @importFrom tmap tm_shape tm_rgb tm_lines tm_symbols tm_text tm_compass
-#'             tm_legend tm_scalebar tm_layout tm_pos_out tm_scale_intervals
-#'             opt_tm_text
-#' @importFrom terrainr get_tiles
 #' @importFrom terra terrain shade rast
 #'
 map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
@@ -50,6 +46,14 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
                              background = "none",
                              exaggeration = 20,
                              extent_factor = 1.1) {
+  if (!requireNamespace("tmap",quietly=TRUE))
+    stop("Package 'tmap' is required to create reach metric maps.",call.=FALSE)
+  tm_shape <- tmap::tm_shape; tm_rgb <- tmap::tm_rgb; tm_lines <- tmap::tm_lines
+  tm_symbols <- tmap::tm_symbols; tm_text <- tmap::tm_text
+  tm_compass <- tmap::tm_compass; tm_legend <- tmap::tm_legend
+  tm_scalebar <- tmap::tm_scalebar; tm_layout <- tmap::tm_layout
+  tm_pos_out <- tmap::tm_pos_out; tm_scale_intervals <- tmap::tm_scale_intervals
+  opt_tm_text <- tmap::opt_tm_text; tm_raster <- tmap::tm_raster
   # Check data structure
   check_flowline(flowline_sf, step = "create_flowline")
   check_cross_section_dimensions(xs_dimensions_sf, step = "stream_power")
@@ -123,8 +127,7 @@ map_reach_metric <- function(metric, flowline_sf, xs_dimensions_sf,
       scaling_factor = "2x",
       buffer_dist = 0,
       crop = TRUE,
-      username = "mikedoc",
-      access_token = "pk.eyJ1IjoibWlrZWRvYyIsImEiOiJja2VwcThtcm4wbHMxMnJxdm1wNjE5eXhmIn0.WE_PG_GiKhpqr6JIJbTsmQ")
+      username = "mikedoc")
 
     background_map <- tm_shape(aerial_photos) +
                         tm_rgb()

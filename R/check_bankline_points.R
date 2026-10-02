@@ -258,3 +258,9 @@ check_bankline_points <- function(bankline_points) {
   TRUE
 }
 
+.fg_require_bankline_points <- function(x) {
+  if (!isTRUE(check_bankline_points(x)))
+    stop("`bankline_points` failed validation.",call.=FALSE)
+  invisible(x)
+}
+

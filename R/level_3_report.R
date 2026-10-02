@@ -53,7 +53,6 @@
 #' @return Produces a FluvialGeomorph Level 3 Report in the `output_dir` in the
 #' requested file format.
 #'
-#' @importFrom rmarkdown render
 #' @importFrom purrr discard
 #'
 level_3_report <- function(stream, flowline_fc, xs_fc, xs_dims_fc,

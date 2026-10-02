@@ -7,3 +7,7 @@ Rplots.pdf
 docs
 dev/outputs/terrain-development/
 dev/outputs/vertical-reference-check-*/
+src/*.o
+src/*.so
+src/*.dll
+src/symbols.rds

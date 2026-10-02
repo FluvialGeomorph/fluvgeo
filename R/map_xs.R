@@ -18,15 +18,21 @@
 #' @importFrom dplyr %>% filter
 #' @importFrom terra crop terrain shade
 #' @importFrom grDevices colorRampPalette grey.colors pdf.options
-#' @importFrom tmap tm_shape tm_raster tm_lines tm_text tm_scale_continuous
-#'             tm_layout tm_legend tm_pos_out opt_tm_text
-#'             tm_compass tm_scalebar tm_title_out tm_add_legend tm_borders
 #'
 #'
 map_xs <- function(cross_section, xs_number, dem,
                    channel = NULL,
                    floodplain = NULL,
                    extent_factor = 1) {
+  if (!requireNamespace("tmap",quietly=TRUE))
+    stop("Package 'tmap' is required to create cross-section maps.",call.=FALSE)
+  tm_shape <- tmap::tm_shape; tm_raster <- tmap::tm_raster
+  tm_lines <- tmap::tm_lines; tm_text <- tmap::tm_text
+  tm_scale_continuous <- tmap::tm_scale_continuous; tm_layout <- tmap::tm_layout
+  tm_legend <- tmap::tm_legend; tm_pos_out <- tmap::tm_pos_out
+  opt_tm_text <- tmap::opt_tm_text; tm_compass <- tmap::tm_compass
+  tm_scalebar <- tmap::tm_scalebar; tm_title_out <- tmap::tm_title_out
+  tm_add_legend <- tmap::tm_add_legend; tm_borders <- tmap::tm_borders
   # Check data structure
   check_cross_section(cross_section, step = "assign_ids")
 

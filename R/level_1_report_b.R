@@ -59,7 +59,6 @@
 #'
 #' @importFrom stats setNames
 #' @importFrom purrr discard map
-#' @importFrom rmarkdown render
 #'
 level_1_report_b <- function(stream, flowline_fc, cross_section_fc,
                            flowline_points_1, flowline_points_2,

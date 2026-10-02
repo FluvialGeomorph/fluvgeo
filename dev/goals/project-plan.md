@@ -1,6 +1,6 @@
 # Project Plan
 
-Last updated: 2026-09-14
+Last updated: 2026-10-02
 
 ## Current owner direction — design before further replacement tools
 
@@ -25,6 +25,103 @@ the desired outcome. Use the [backward dependency trace](../../../FG-architectur
 to distinguish existing functions, contract adaptations and genuinely missing
 capabilities. Design Study Area integration first; no new tool implementation is
 authorized by this dependency inventory.
+
+## Accepted terrain-preserving stream-network feature
+
+The owner accepted the implemented local feature for an efficient,
+high-resolution synthetic `stream_network` from hydro-modified Stream terrain.
+This is the historical first-cut vector product for analyst review. Terrain
+preservation is the optimization objective, not an absolute prohibition on
+filling or breaching: use analyst cutlines for identified artificial barriers and
+isolate any additional bounded conditioning in an attributable routing
+representation. See the accepted [ADR-0003](../decisions/ADR-0003-terrain-preserving-flowline-extraction.md)
+and [feature design](../features/terrain-preserving-flowline-extraction.md).
+
+Completed implementation path:
+
+1. **Completed for the first diagnostic:** retain the immediate NLDI downstream continuation with Stream-selection
+   evidence, then use its rounded-cap crossing as outlet-location evidence. Select
+   the lowest Hydro DEM boundary pixel in a small explicit neighborhood and
+   refuse ambiguous service, topology, crossing or terrain results.
+2. **Completed for the first diagnostic:** implement the native compiled Priority-Flood engine described by the
+   [research specification](../features/priority-flood-routing-surface-research.md).
+   The terra blockwise mask/run preflight now passes all three real Hydro DEMs;
+   retain its conservative refusal gate. Do not substitute an external executable
+   or naive independent tile fills.
+3. **Completed, with routing failure retained for review:** qualify one routing iteration on the smallest saved Spencer
+   Creek Hydro DEM. Provide an analyst-reviewable map of the filled pixels and a
+   map of the derived stream line. Keep output outside the saved FG Studio Study
+   and preserve the Hydro DEM unchanged.
+4. **Completed for the first candidate:** accumulation is upstream D8 cell count,
+   with accumulated area derived from cell area; 1 hectare is the provisional
+   simple threshold for the focused 1 m Stream AOI. Do not port D8 cell-count and
+   TauDEM specific-area thresholds interchangeably.
+5. **Completed for the smallest Spencer case:** the analyst confirmed that the
+   derived network accurately finds the channel. Retain terrain-change evidence
+   and rerun resource qualification before extending that acceptance to larger
+   Stream DEMs.
+6. **Completed:** define the smallest reusable `fluvgeo` API and candidate-network provenance
+   contract, then implement focused backend tests and documentation.
+7. **Completed:** integrate exact-edition selection, background execution, preview and immutable
+   local `stream_network` publication in FG Studio. Keep governed FGDB network
+   delivery outside this slice until its binding is designed.
+
+This acceptance does not resume unrelated toolbox replacement work or authorize
+governed FGDB network delivery. The public local API and candidate schema are now
+implemented; broader terrain validation remains future qualification.
+
+The feature was functionally accepted on 2026-10-02 after whole-app review of the
+three Spencer Creek candidates, saved-result restoration, threshold-only updates,
+working feedback and terrain-overlay behavior. The dated investigation notes
+below retain performance evidence only; their intermediate “next” and “do not”
+directions are superseded by this accepted status.
+
+Current real-terrain status (2026-09-30): the native sparse Priority-Flood filled
+the smallest Spencer Hydro DEM in 6.66 seconds, changing 44,353 of 1,956,115
+valid cells (2.267 percent). Subsequent terra D8-LTD took 72.57 seconds, exceeded
+its iteration limit, left 44,400 direction-zero cells and 7,447 interior pit
+zones, and accumulated at most 12,208 cells. A 100-cell threshold produces a
+dense but disconnected diagnostic, not `stream_network`. Review the paired maps
+before choosing explicit flat resolution, Float64 epsilon or direct Priority-
+Flood D8 directions. Do not run the two larger Spencer rasters until the analyst
+accepts the method.
+
+Flat-resolution follow-up (2026-09-30): the Barnes-style integer drainage mask
+resolved all 44,399 non-outlet flat cells in 0.26 seconds without modifying the
+routing elevations. Terra accumulation then reached all 1,956,115 valid cells at
+the reviewed outlet in 1.51 seconds. The 100-cell threshold yields 174,483 D8
+segments in the first complete-drainage `stream_network` candidate GeoPackage.
+Next review the paired map and vector density; do not tune the threshold, merge
+cell segments, or run a larger Stream until the analyst accepts this routing
+behavior.
+
+Threshold/consolidation follow-up (2026-10-01): comparison of 100 through 10,000
+accumulated 1 m cells identifies 10,000 cells (1 ha) as the provisional simple
+review threshold. It retains longitudinal continuity while reducing the dense
+100-cell diagnostic from 174,483 to 10,564 edges. Lossless topology
+consolidation produces 99 valid lines totaling 12.58 km, with 50 heads and 49
+junctions. Next obtain analyst review of the comparison and consolidated map,
+especially conspicuous lateral or straight branches. Do not smooth, prune,
+publish a stable API, or process a larger Stream before that review.
+
+Memory-conservative performance follow-up (2026-10-01): the accepted native D8
+candidate now calculates cell-count accumulation on its compact resolved graph,
+matching the prior terra accumulation exactly. Compact queue indices, removal of
+redundant full-raster scans and lazy loading of feature-specific mapping, report,
+raster-conversion and network-service packages reduced the complete smallest-
+Spencer worker peak from 1,261.89 to 592.53 MiB (53.0 percent). The repeat took
+14.89 seconds including package startup, and all four output GeoTIFFs are byte-
+identical to the preceding optimized run. Do not run the medium terrain yet: the
+restored Spencer server-side session and concurrent routing worker peaked at
+1,479.57 MiB together. Browser rendering was outside the server container and is
+not counted. The calibrated preflight now reserves 960 MiB for the active session
+and 416 MiB for fixed worker cost in addition to terrain-dependent arrays and
+transients; it blocks a two-GiB deployment and passes a three-GiB deployment for
+the small case under the 75-percent safety policy. A read-only preflight of the
+21,195,084-cell medium Hydro DEM found 2,411,766 valid corridor cells and a
+1,584.42 MiB co-resident estimate; it also blocks at two GiB and passes at three
+GiB. No medium routing was run. Next establish the actual deployment memory
+budget; do not process the medium terrain below three GiB.
 
 ## Purpose
 This file is the canonical ordered task list for active development work.

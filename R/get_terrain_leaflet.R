@@ -10,7 +10,6 @@
 #'
 #' @importFrom leaflet colorNumeric addRasterImage addPolylines labelOptions
 #'                     addLabelOnlyMarkers
-#' @importFrom leafem updateLayersControl
 #' @importFrom leaflegend addLegendNumeric
 #' @importFrom fluvgeo map_extent
 #' @importFrom assertthat assert_that
@@ -86,7 +85,7 @@ get_terrain_leaflet <- function(xs, dem) {
       group = "Cross Sections",
       labelOptions = labelOptions(noHide = TRUE, direction = 'top',
                                   textsize = "14px", textOnly = TRUE)) %>%
-    updateLayersControl(
+    leafem::updateLayersControl(
       addOverlayGroups = c("Elevation", "Cross Sections"),
       position = "topleft")
 

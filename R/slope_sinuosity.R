@@ -41,7 +41,6 @@
 #' @importFrom assertthat assert_that
 #' @importFrom stats loess predict
 #' @importFrom dplyr first last lead lag
-#' @importFrom raster pointDistance
 #'
 slope_sinuosity <-function(channel_features, lead_n, lag_n,
                            use_smoothing = FALSE,

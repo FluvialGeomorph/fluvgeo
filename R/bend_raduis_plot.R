@@ -14,7 +14,6 @@
 #'
 #' @return a ggplot2 object
 #'
-#' @importFrom testthat expect_true
 #' @importFrom conicfit CircleFitByTaubin
 #' @importFrom conicfit calculateCircle
 #' @importFrom rlang .data
@@ -22,7 +21,7 @@
 #'
 bend_raduis_plot <- function(bankline_points, loop, bend, coord_system) {
   # Check parameters
-  expect_true(check_bankline_points(bankline_points))
+  .fg_require_bankline_points(bankline_points)
 
   # Convert sf to a data frame
   bankline_points <- data.frame(bankline_points)

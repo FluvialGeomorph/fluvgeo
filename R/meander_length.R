@@ -14,7 +14,6 @@
 #' meander_length(fluvgeo::sin_bankline_points_sf)
 #'
 #' @importFrom sf st_crs
-#' @importFrom testthat expect_true
 #' @importFrom stats aggregate
 #' @importFrom dplyr last lead lag
 #' @importFrom terra distance
@@ -22,7 +21,7 @@
 #'
 meander_length <- function(bankline_points) {
   # Check parameters
-  expect_true(check_bankline_points(bankline_points))
+  .fg_require_bankline_points(bankline_points)
 
   # POINT_X, POINT_Y - X and Y horizontal units are in the units of the
   # channel_features' coordinate system. Distances calculated using them are

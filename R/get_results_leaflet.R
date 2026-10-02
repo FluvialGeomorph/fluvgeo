@@ -11,7 +11,6 @@
 #'
 #' @importFrom assertthat assert_that
 #' @importFrom leaflet addPolylines addPolygons
-#' @importFrom leafem updateLayersControl
 #' @importFrom sf st_transform
 #'
 get_results_leaflet <- function(fl, xs, dem,
@@ -51,7 +50,7 @@ get_results_leaflet <- function(fl, xs, dem,
       layerId = "floodplain_poly",
       color = "forestgreen", weight = 1,
       group = "Floodplain") %>%
-    updateLayersControl(
+    leafem::updateLayersControl(
       addOverlayGroups = c("Elevation", "Cross Sections", "Flowline",
                            "Channel", "Floodplain"),
       position = "topleft")
