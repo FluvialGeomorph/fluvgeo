@@ -53,6 +53,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/estimate_bankfull.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/event_mask_key.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/explore_long_profile.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/extract_synthetic_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/fc2sf.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/fig_xs_profiles_L1.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/fig_xs_profiles_L2.html</loc></url>
@@ -83,6 +84,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_2_report_b.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/level_3_report.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/locate_drainage_stream.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/locate_stream_outlet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_extent.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_metric.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/map_reach_overview.html</loc></url>
@@ -170,6 +172,7 @@
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_reference_review.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_to_international_feet.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/terrain_transform_candidates.html</loc></url>
+<url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/threshold_synthetic_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_stream_network.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_analysis_crs.html</loc></url>
 <url><loc>https://fluvialgeomorph.github.io/fluvgeo/reference/validate_study_vertical_reference.html</loc></url>
