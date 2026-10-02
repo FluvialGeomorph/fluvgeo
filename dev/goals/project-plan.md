@@ -129,6 +129,24 @@ the small case under the 75-percent safety policy. A read-only preflight of the
 GiB. No medium routing was run. Next establish the actual deployment memory
 budget; do not process the medium terrain below three GiB.
 
+## Proposed next feature: reviewed Flowline derivation
+
+The owner selected Flowline as the next feature after the accepted local
+`stream_network`. The functional gap is path selection and Reach binding, not
+another terrain-routing calculation: the legacy tool expected an analyst-pruned,
+Reach-named network before it dissolved and smoothed the line. The proposed
+[Stream Network to Flowline design](../features/stream-network-to-flowline.md)
+uses the directed terrain network to recommend one Stream-level head-to-outlet
+path, requires efficient visual review, smooths the continuous path once, and
+then splits it at ordered retained Reach-source boundaries. NHDPlusV2 remains
+approximate branch/extent evidence and never supplies output coordinates.
+
+Implementation should begin with real Spencer Creek route and smoothing
+comparisons. Do not silently define a mainstem from maximum accumulation, clip
+the branched network by overlapping Reach polygons, or claim an open smoothing
+method is equivalent to PAEK. The first owner review selects the path behavior
+and smoothing default before the local candidate contract is finalized.
+
 ## Purpose
 This file is the canonical ordered task list for active development work.
 

@@ -6,6 +6,10 @@
 - [Terrain clipping](terrain-clipping.md): execute explicit AOI crop/mask with
   automatic run evidence, source preservation and a short visual report.
 
+- [Reviewed Flowline derivation](stream-network-to-flowline.md): select one
+  Stream-level path from a saved synthetic network, review bounded smoothing,
+  and divide it into Reach/event-setting Flowline candidates.
+
 - [Terrain preparation accounts](terrain-processing-accounts.md): ordered,
   attributed preparation descriptions with explicit unknowns; no inferred execution.
 
