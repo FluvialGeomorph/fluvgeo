@@ -99,10 +99,10 @@ requiring result verification. D8-LTD is therefore an initial benchmark candidat
 not an accepted final method. Terra's experimental `pitfiller()` is likewise
 evidence of an available candidate, not a selected conditioning policy.
 
-## Proposed extraction sequence
+## Implemented extraction sequence
 
-The first implementation should preserve the historical product while replacing
-the legacy black-box sequence with explicit stages:
+The implemented workflow preserves the historical product while replacing the
+legacy black-box sequence with explicit stages:
 
 1. Select and fingerprint an exact prepared or hydro-modified Stream DEM edition.
    Prefer an explicitly selected applicable Hydro DEM; never infer that the newest
@@ -120,9 +120,8 @@ the legacy black-box sequence with explicit stages:
 6. Preview the candidate over the hydro terrain and cutlines. Retain conditioning
    evidence as diagnostics without requiring fill depth on the review map.
 
-Direction/accumulation should be computed once per routing recipe where practical;
-threshold previews should reuse that result instead of repeating the expensive
-terrain stage.
+Direction and accumulation are computed once per routing recipe. Threshold
+previews reuse that result instead of repeating the expensive terrain stage.
 
 ## Conditioning evidence
 
@@ -142,26 +141,25 @@ It does not establish that every changed cell is scientifically acceptable.
 
 ## Threshold and output meaning
 
-The first interface should avoid making threshold selection the central analyst
-task. Supply a defensible default, expose its explicit accumulation meaning and
-units, and allow a limited adjustment with a fast preview. Cell count may be
+The interface avoids making threshold selection the central analyst task. It
+supplies a one-hectare default, exposes its explicit accumulation meaning and
+units, and allows adjustment with a fast preview. Cell count may be
 reported as cells and optionally converted using grid cell area. A weighted
 accumulation must identify its weight and resulting units. Never label a TauDEM
 specific-area value, a cell count or a horizontal length as generic square area.
 
-`stream_network` is the first-cut vector derivation. A future structural contract
-must decide fields, segment/node relations and acceptance linkage after the method
-benchmark demonstrates what the output reliably contains. Until then, retain at
-least the exact terrain edition, cutline revision when applicable, routing recipe,
-threshold, accumulation semantics, hashes, software and review state alongside
-the candidate.
+`stream_network` is the first-cut vector derivation. The implemented local
+contract retains the exact terrain edition, cutline revision when applicable,
+routing recipe, threshold, accumulation semantics, hashes, software and review
+state alongside the candidate. A future governed-delivery contract must decide
+FGDB fields, segment/node relations and formal acceptance linkage.
 
-## Spencer Creek evaluation
+## Spencer Creek acceptance evidence
 
-Use the FG Studio local Study Area for Spencer Creek, Iowa, as the first real
-evaluation. Read the saved data in place and publish experiments outside the
-Study's `.local-data` tree so development cannot overwrite accepted inputs or
-confuse diagnostics with saved editions.
+The FG Studio local Study Area for Spencer Creek, Iowa, supplied the first real
+evaluation. Development read the saved data in place and published experiments
+outside the Study's `.local-data` tree so development could not overwrite
+accepted inputs or confuse diagnostics with saved editions.
 
 The 2019-12 Event currently has three latest saved Hydro DEM results on 1 m grids:
 
@@ -232,7 +230,7 @@ AOI cells. Threshold semantics must follow the selected accumulation/routing
 method and the connected drainage result rather than rectangular or masked raster
 occupancy.
 
-## Current real-terrain experiment
+## Development evidence and reviewed progression
 
 The first native package implementation now combines registered C++ Priority-
 Flood with terra block I/O, sparse valid-cell state, conservative memory refusal
@@ -445,7 +443,7 @@ namespace at 630.98 MiB. Isolated dependency probes showed that the package's
 broad spatial and reporting dependency graph, rather than compact hydrology
 arrays, dominated startup memory. The second dependency pass therefore made
 feature-specific mapping, report, raster-conversion and network-service packages
-lazy: `tmap`, `leafem`, `hydrogeofetch`, `mapboxapi`, `raster`, `rmarkdown`,
+lazy: `tmap`, `leafem`, `hydrogeofetch`, `raster`, `rmarkdown`,
 `stars`, `terrainr` and `testthat` are now optional and loaded only by functions
 that use them. This reduced a routing worker's fluvgeo startup peak to 260.37 MiB.
 
@@ -506,3 +504,27 @@ at elevation 660.3914 feet, 19.80 metres from the downstream reference crossing.
 At one hectare the public API produced 95 lines totaling 12,493.84 metres, with
 44,352 changed cells and maximum fill 19.10022 feet. This is integration evidence
 for the first analyst workflow, not validation across other terrain forms.
+
+## Completion and accepted local behavior (2026-10-02)
+
+The owner reviewed the saved outputs for all three Spencer Creek Stream
+candidates and accepted the local first-cut `stream_network` workflow. One
+hectare is the default initiation threshold. Threshold changes reuse the saved
+direction and accumulation rasters and rebuild only the vector candidate. The
+NLDI-assisted outlet locator retains a terminal-segment fallback, so absence of a
+next downstream segment does not prevent extraction when the saved reference
+geometry and terrain provide sufficient evidence.
+
+FG Studio preserves the exact Hydro DEM edition, restores saved candidates, and
+shows the Hydro and routing surfaces with the derived line for review. Fill depth
+is retained as diagnostic evidence but is not part of the normal review map.
+Saved-Study restoration and extraction provide visible working feedback for long
+operations. The accepted boundary is local candidate production and review;
+qualification on additional terrain forms and governed FGDB delivery remain
+separate future work.
+
+The unavailable Mapbox account was also removed from the legacy static reach-map
+path. Those maps now obtain credential-free USDA FPAC NAIP imagery, bounded to a
+safe output size and cached for the R session. Imagery is review context only and
+does not participate in terrain routing. A temporal or multi-provider catalog of
+sub-metre imagery is explicitly deferred as a nice-to-have feature.

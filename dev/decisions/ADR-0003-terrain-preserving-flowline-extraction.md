@@ -52,16 +52,34 @@ extraction, not an absolute ban on filling or breaching.
   governed Stream Network Configuration or Observation.
 - Treat D8-LTD as the first benchmark candidate, not the accepted final method.
   Compare direct routing and bounded conditioning on the saved Spencer Creek
-  Hydro DEMs before selecting an implementation.
+  Hydro DEMs before selecting an implementation. The accepted implementation
+  outcome is recorded below.
 - Treat stream-initiation threshold choice as a compact analyst control with
   explicit accumulation meaning and units. The focused Stream AOI reduces its
   importance but does not make its semantics optional.
 - Keep reusable scientific processing and evidence in `fluvgeo`; keep exact-edition
   selection, background execution, preview and local publication in the client.
 
-No stable public API, exact vector schema, conditioning algorithm, threshold
-heuristic or governed storage binding is accepted by this decision. Those choices
-follow comparative evidence and review.
+This decision did not initially select a stable public API, exact vector schema,
+conditioning algorithm, threshold heuristic or governed storage binding. The
+first four were admitted only after comparative evidence and review; governed
+storage remains outside this decision.
+
+## Accepted implementation outcome
+
+The Spencer Creek benchmark and whole-app review satisfied the acceptance
+condition on 2026-10-02. The selected local workflow uses compact Priority-Flood
+conditioning, compiled steepest-downslope D8 routing, Barnes-style flat
+resolution, compact upstream-cell accumulation and a one-hectare default
+initiation threshold. `locate_stream_outlet()`,
+`extract_synthetic_stream_network()` and
+`threshold_synthetic_stream_network()` provide the reusable backend boundary.
+
+FG Studio saves and restores the resulting local candidate with its analytical
+rasters and provenance. Changing the threshold reuses direction and accumulation
+rather than repeating terrain conditioning. Fill depth remains diagnostic
+evidence. This outcome accepts local `stream_network` derivation; it does not
+accept governed FGDB delivery or claim validation across all terrain forms.
 
 ## Consequences
 
@@ -81,5 +99,5 @@ Supporting both unconditioned and conditioned recipes adds implementation and
 verification work. It also allows practical routing through difficult terrain
 without misrepresenting the routing surface as measurement terrain.
 
-The ADR remains proposed until the Spencer Creek benchmark establishes a viable
-method and the resulting scientific behavior is reviewed.
+The Spencer Creek acceptance condition is complete. Broader terrain-form
+qualification and governed FGDB delivery remain follow-on decisions.

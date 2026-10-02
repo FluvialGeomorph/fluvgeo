@@ -76,6 +76,12 @@ working feedback and terrain-overlay behavior. The dated investigation notes
 below retain performance evidence only; their intermediate “next” and “do not”
 directions are superseded by this accepted status.
 
+As operational cleanup, legacy static reach maps now use credential-free USDA
+FPAC NAIP imagery instead of the unavailable Mapbox account. The bounded,
+session-cached imagery is review context only and does not affect terrain
+processing. A multi-year or multi-provider catalog of sub-metre imagery is a
+separate nice-to-have feature and is not part of the current stream-network work.
+
 Current real-terrain status (2026-09-30): the native sparse Priority-Flood filled
 the smallest Spencer Hydro DEM in 6.66 seconds, changing 44,353 of 1,956,115
 valid cells (2.267 percent). Subsequent terra D8-LTD took 72.57 seconds, exceeded
