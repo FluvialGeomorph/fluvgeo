@@ -49,7 +49,8 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.09.29.9066" id="fluvgeo-202609299066">fluvgeo 2026.09.29.9066<a class="anchor" aria-label="anchor" href="#fluvgeo-202609299066"></a></h2>
-<ul><li>Add native, file-backed synthetic stream extraction from a reviewed Hydro DEM: outlet approximation, compact Priority-Flood conditioning, resolved D8 routing, upstream-cell accumulation, hectare thresholding and consolidated GeoPackage linework. Threshold-only updates reuse saved direction and accumulation rasters.</li>
+<ul><li>Replace the unavailable Mapbox aerial background with credential-free USDA NAIP imagery. Requests are bounded to the mapped reach and cached for the R session so repeated rendering does not repeat the download.</li>
+<li>Add native, file-backed synthetic stream extraction from a reviewed Hydro DEM: outlet approximation, compact Priority-Flood conditioning, resolved D8 routing, upstream-cell accumulation, hectare thresholding and consolidated GeoPackage linework. Threshold-only updates reuse saved direction and accumulation rasters.</li>
 <li>Allow viewport display without building missing full-raster pyramids. Reuse existing caches; otherwise calculate hillshade only on the bounded display window, leaving analytical elevations and input files unchanged.</li>
 </ul></div>
     <div class="section level2">
