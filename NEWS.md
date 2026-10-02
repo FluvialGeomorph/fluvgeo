@@ -1,5 +1,8 @@
 # fluvgeo 2026.09.29.9066
 
+* Replace the unavailable Mapbox aerial background with credential-free USDA
+  NAIP imagery. Requests are bounded to the mapped reach and cached for the R
+  session so repeated rendering does not repeat the download.
 * Add native, file-backed synthetic stream extraction from a reviewed Hydro DEM:
   outlet approximation, compact Priority-Flood conditioning, resolved D8 routing,
   upstream-cell accumulation, hectare thresholding and consolidated GeoPackage

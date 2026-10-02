@@ -92,16 +92,7 @@ map_reach_overview <- function(flowline_sf, cross_section_sf,
 
   # Aerial
   if(background == "aerial") {
-    # Get aerial photos
-    aerial_photos <- mapboxapi::get_static_tiles(
-      location = xs_extent_poly,
-      zoom = 15,
-      style_id = "satellite-streets-v12",
-      style_url = "mapbox://styles/mapbox/satellite-streets-v12",
-      scaling_factor = "2x",
-      buffer_dist = 0,
-      crop = TRUE,
-      username = "mikedoc")
+    aerial_photos <- .fg_naip_image(xs_extent_poly)
 
     background_map <- tm_shape(aerial_photos, raster.downsample = TRUE) +
                         tm_rgb()
