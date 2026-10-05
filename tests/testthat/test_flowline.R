@@ -37,3 +37,15 @@ test_that("fl_mapedit digitized in the downstream direction", {
   expect_true(fluvgeo::check_flowline(fl, step = "create_flowline"))
   expect_true(start_z <= end_z)
 })
+
+test_that("a correctly projected terrain flowline retains its CRS", {
+  line <- sf::st_sf(geometry = sf::st_sfc(sf::st_linestring(
+    matrix(c(3, 1, 0, 1), ncol = 2, byrow = TRUE)), crs = 26915))
+  dem <- -terra::init(terra::rast(ncols = 4, nrows = 3,
+    extent = terra::ext(0, 4, 0, 3), crs = "EPSG:26915"), "x")
+
+  result <- flowline(line, "Terrain Reach", dem)
+
+  expect_identical(sf::st_crs(result), sf::st_crs(line))
+  expect_equal(sf::st_geometry(result), sf::st_geometry(line))
+})

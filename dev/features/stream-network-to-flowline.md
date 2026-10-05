@@ -1,6 +1,7 @@
 # Automatic Flowline derivation from a synthetic Stream Network
 
-- Status: owner requirements defined; implementation pending
+- Status: automatic raw-path selection and FG Studio review implemented;
+  smoothing, Reach division and candidate persistence pending
 - Updated: 2026-10-05
 - Workflow position: after accepted local `stream_network` extraction and before
   Flowline Points
@@ -226,6 +227,26 @@ Reaches. Each result must be repeatable without segment-selection input. Review
 maps must make incorrect branch selection, boundary placement, over-smoothing,
 and channel departure visible. Small fixtures can verify graph and geometry
 invariants, but they do not replace the real-terrain review.
+
+### Implemented raw-path evidence
+
+`select_stream_mainstem()` now validates the directed one-outlet tree, enumerates
+complete paths, calculates full-route discrete Hausdorff distance to the saved
+reference, selects the longest route among equivalent best matches, preserves
+ordered source segments and returns canonical downstream-to-upstream linework.
+FG Studio presents that result in its Flowline tab over the viewport-stretched
+Hydro DEM, muted source network and retained NHDPlusV2 reference. This result is
+transient and review-only; it does not claim that the later smoothing, Reach
+split or immutable-candidate requirements are complete.
+
+On the saved Spencer candidates, the selector evaluated 15 mainstem, 16 east
+tributary and 15 west tributary routes in 1.38, 0.44 and 0.31 seconds. The selected
+route was also the longest complete path in every case. Mainstem and east had
+447.8 m and 475.9 m separation from the next reference match. West had equal
+best reference distance for two routes, so the specified longest-route rule
+selected the longer one. The selected raw lengths are 23,421.76 m, 9,477.89 m
+and 7,833.08 m respectively. These are current real-data review results, not
+general qualification across terrain forms.
 
 ## Deferred from this increment
 

@@ -7,7 +7,7 @@
 flowline(flowline, reach_name, dem)
 }
 \arguments{
-\item{flowline}{sf object; A newly digitized flowline.}
+\item{flowline}{sf object; One flowline with a defined CRS.}
 
 \item{reach_name}{character; The name of the stream reach.}
 
@@ -17,10 +17,12 @@ flowline(flowline, reach_name, dem)
 a valid flowline sf object
 }
 \description{
-Takes a newly drawn flowline and uses the dem to ensure
-the flowline is digitized in the upstream direction.
+Takes one drawn or terrain-derived flowline and uses the DEM to
+ensure the flowline is digitized in the upstream direction.
 }
 \details{
 Uses orient_lines_from_dem() for endpoint-based upstream orientation.
-  If direction cannot be resolved, returns unchanged linework with a warning.
+  Browser-drawn WGS84/Web Mercator input retains the historical GeoJSON CRS
+  repair. Other explicitly defined projected CRSs pass through unchanged. If
+  direction cannot be resolved, returns unchanged linework with a warning.
 }

@@ -1,3 +1,11 @@
+# fluvgeo 2026.10.05.9067
+
+* Add deterministic `select_stream_mainstem()` path selection from a directed
+  synthetic Stream Network using full-route NHDPlusV2 reference agreement,
+  longest-path resolution and retained source-segment evidence.
+* Allow `flowline()` to accept correctly defined projected terrain linework while
+  preserving its historical WGS84/Web Mercator GeoJSON repair behavior.
+
 # fluvgeo 2026.09.29.9066
 
 * Replace the unavailable Mapbox aerial background with credential-free USDA
