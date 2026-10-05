@@ -136,14 +136,18 @@ PAEK is not available in the portable R workflow. The legacy toolbox records a
 default PAEK tolerance of 2 map units and describes 2–5 as acceptable. The
 portable default therefore applies `smoothr` Gaussian kernel regression with a
 2-map-unit bandwidth and no unnecessary densification. This is a behavioral
-replacement, not a claim of vertex equivalence with PAEK. The app presents the
-smoothed result as the Flowline while retaining the raw selected path in memory
-as provenance.
+replacement, not a claim of vertex equivalence with PAEK. FG Studio computes the
+four integer candidates in the historical 2–5 map-unit range once, presents 2 as
+the conservative default, and lets the analyst switch the displayed Flowline to
+a more aggressive candidate without repeating path selection or terrain work.
+The raw selected path and every candidate remain in memory as provenance.
 
 `smooth_flowline()` preserves both endpoints, requires a simple valid output,
 and rejects a result whose Hausdorff displacement exceeds the bandwidth. On the
-three Spencer paths the 2 m default moved the line by at most 0.54–0.57 m,
-shortened it by about 5.9–6.2 percent, and completed in 0.14–0.48 seconds.
+three Spencer paths the 2 m default moved the line by at most 0.54–0.57 m and
+shortened it by about 5.9–6.2 percent. The 5 m candidates moved the line by at
+most 1.05–1.25 m and shortened it by about 9.4–10.6 percent. Each tested result
+remained valid and simple; individual candidates completed in 0.14–0.48 seconds.
 
 ### 6. Divide the reviewed path into Reach Flowlines
 
@@ -232,11 +236,13 @@ invariants, but they do not replace the real-terrain review.
 complete paths, calculates full-route discrete Hausdorff distance to the saved
 reference, selects the longest route among equivalent best matches, preserves
 ordered source segments and returns canonical downstream-to-upstream linework.
-`smooth_flowline()` then applies the bounded historical 2-map-unit default and
-FG Studio presents the smoothed result over the viewport-stretched Hydro DEM,
-muted source network and retained NHDPlusV2 reference. The raw selected path is
-retained as provenance. This result is transient and review-only; it does not
-claim that Reach splitting or immutable-candidate requirements are complete.
+`smooth_flowline()` then produces bounded candidates at 2, 3, 4 and 5 map units.
+FG Studio presents 2 as the conservative default and permits an immediate switch
+among those candidates over the viewport-stretched Hydro DEM, muted source
+network and retained NHDPlusV2 reference. The raw selected path and all four
+candidates are retained as transient provenance. This result is review-only; it
+does not claim that the chosen candidate is persisted or that Reach splitting or
+immutable-candidate requirements are complete.
 
 On the saved Spencer candidates, the selector evaluated 15 mainstem, 16 east
 tributary and 15 west tributary routes in 1.38, 0.44 and 0.31 seconds. The selected

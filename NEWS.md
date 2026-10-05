@@ -1,3 +1,8 @@
+# fluvgeo 2026.10.05.9069
+
+* Qualify the historical 2–5 map-unit range as progressively more aggressive
+  bounded `smooth_flowline()` candidates for analyst selection.
+
 # fluvgeo 2026.10.05.9068
 
 * Add bounded `smooth_flowline()` Gaussian-kernel smoothing with the historical

@@ -146,9 +146,11 @@ selection is added to the Flowline UI.
 
 Automatic raw-path selection is implemented as the reusable
 `select_stream_mainstem()` preprocessor. `smooth_flowline()` then applies the
-legacy-informed 2-map-unit Gaussian-kernel default with fixed endpoints and a
-maximum-displacement guard, and FG Studio displays the smoothed result without
-branch or smoothing controls over the Hydro DEM, complete network and retained reference. Real Spencer
+legacy-informed Gaussian-kernel method with fixed endpoints and a
+maximum-displacement guard. FG Studio precomputes the historical 2–5-map-unit
+candidate range, defaults to the conservative 2-map-unit result, and lets the
+analyst switch candidates without repeating path selection or terrain processing.
+There remains no manual branch control. Real Spencer
 execution selected the longest complete route in all three Streams while recording
 full-route reference distance and runner-up evidence. `flowline()` now also accepts
 correctly defined projected terrain lines while retaining its existing browser-line

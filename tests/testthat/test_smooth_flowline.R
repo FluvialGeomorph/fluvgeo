@@ -30,3 +30,18 @@ test_that("Flowline smoothing validates input and displacement", {
   expect_error(smooth_flowline(raw, bandwidth = 0), "positive finite")
   expect_error(smooth_flowline(raw, max_displacement = 0.01), "exceeds")
 })
+
+test_that("historical smoothing candidates become progressively more aggressive", {
+  raw <- sf::st_sf(geometry = sf::st_sfc(sf::st_linestring(
+    matrix(c(0, 0, 1, 1, 2, 0, 3, 1, 4, 0, 5, 1, 6, 0),
+      ncol = 2, byrow = TRUE)), crs = 26915))
+
+  candidates <- lapply(2:5, function(bandwidth)
+    smooth_flowline(raw, bandwidth = bandwidth))
+  displacement <- vapply(candidates, `[[`, numeric(1), "maximum_displacement")
+  length_change <- vapply(candidates, `[[`, numeric(1), "length_change_percent")
+
+  expect_true(all(diff(displacement) > 0))
+  expect_true(all(diff(length_change) < 0))
+  expect_true(all(vapply(candidates, `[[`, logical(1), "smoothing_valid")))
+})
