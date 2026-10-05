@@ -1,7 +1,7 @@
 # Automatic Flowline derivation from a synthetic Stream Network
 
-- Status: automatic raw-path selection and FG Studio review implemented;
-  smoothing, Reach division and candidate persistence pending
+- Status: automatic path selection, bounded default smoothing and FG Studio
+  review implemented; Reach division and candidate persistence pending
 - Updated: 2026-10-05
 - Workflow position: after accepted local `stream_network` extraction and before
   Flowline Points
@@ -132,20 +132,18 @@ each Reach independently could create boundary kinks or gaps. Preserve the raw
 path as evidence and record the algorithm, parameter, unit, package, version,
 maximum displacement, length change, and validation result.
 
-PAEK is not available in the portable R workflow, and the existing
-`smoothr` methods are not presumed equivalent. The first real-data comparison
-should show the owner:
+PAEK is not available in the portable R workflow. The legacy toolbox records a
+default PAEK tolerance of 2 map units and describes 2–5 as acceptable. The
+portable default therefore applies `smoothr` Gaussian kernel regression with a
+2-map-unit bandwidth and no unnecessary densification. This is a behavioral
+replacement, not a claim of vertex equivalence with PAEK. The app presents the
+smoothed result as the Flowline while retaining the raw selected path in memory
+as provenance.
 
-- the unsmoothed D8 path;
-- Gaussian kernel smoothing with explicit map-unit bandwidths in the historical
-  2–5 unit range; and
-- a small bounded Chaikin comparison.
-
-The selected open method must preserve the two Stream endpoints, remain simple,
-stay within the accepted channel/Reach corridor, and use an explicit maximum
-deviation rule. Exact vertex reproduction of PAEK is not the acceptance goal.
-The default method and tolerance remain an owner review decision after the
-Spencer maps are available.
+`smooth_flowline()` preserves both endpoints, requires a simple valid output,
+and rejects a result whose Hausdorff displacement exceeds the bandwidth. On the
+three Spencer paths the 2 m default moved the line by at most 0.54–0.57 m,
+shortened it by about 5.9–6.2 percent, and completed in 0.14–0.48 seconds.
 
 ### 6. Divide the reviewed path into Reach Flowlines
 
@@ -228,16 +226,17 @@ maps must make incorrect branch selection, boundary placement, over-smoothing,
 and channel departure visible. Small fixtures can verify graph and geometry
 invariants, but they do not replace the real-terrain review.
 
-### Implemented raw-path evidence
+### Implemented selection and smoothing evidence
 
 `select_stream_mainstem()` now validates the directed one-outlet tree, enumerates
 complete paths, calculates full-route discrete Hausdorff distance to the saved
 reference, selects the longest route among equivalent best matches, preserves
 ordered source segments and returns canonical downstream-to-upstream linework.
-FG Studio presents that result in its Flowline tab over the viewport-stretched
-Hydro DEM, muted source network and retained NHDPlusV2 reference. This result is
-transient and review-only; it does not claim that the later smoothing, Reach
-split or immutable-candidate requirements are complete.
+`smooth_flowline()` then applies the bounded historical 2-map-unit default and
+FG Studio presents the smoothed result over the viewport-stretched Hydro DEM,
+muted source network and retained NHDPlusV2 reference. The raw selected path is
+retained as provenance. This result is transient and review-only; it does not
+claim that Reach splitting or immutable-candidate requirements are complete.
 
 On the saved Spencer candidates, the selector evaluated 15 mainstem, 16 east
 tributary and 15 west tributary routes in 1.38, 0.44 and 0.31 seconds. The selected

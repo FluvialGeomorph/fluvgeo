@@ -1,3 +1,8 @@
+# fluvgeo 2026.10.05.9068
+
+* Add bounded `smooth_flowline()` Gaussian-kernel smoothing with the historical
+  2-map-unit Flowline default, fixed endpoints and recorded validation evidence.
+
 # fluvgeo 2026.10.05.9067
 
 * Add deterministic `select_stream_mainstem()` path selection from a directed

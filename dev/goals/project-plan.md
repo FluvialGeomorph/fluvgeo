@@ -144,20 +144,21 @@ the retained NHDPlusV2 chain identifies and disambiguates the intended Stream,
 while the synthetic network supplies every output coordinate. No segment or head
 selection is added to the Flowline UI.
 
-Automatic raw-path selection is now implemented as the reusable
-`select_stream_mainstem()` preprocessor, and FG Studio displays it without branch
-controls over the Hydro DEM, complete network and retained reference. Real Spencer
+Automatic raw-path selection is implemented as the reusable
+`select_stream_mainstem()` preprocessor. `smooth_flowline()` then applies the
+legacy-informed 2-map-unit Gaussian-kernel default with fixed endpoints and a
+maximum-displacement guard, and FG Studio displays the smoothed result without
+branch or smoothing controls over the Hydro DEM, complete network and retained reference. Real Spencer
 execution selected the longest complete route in all three Streams while recording
 full-route reference distance and runner-up evidence. `flowline()` now also accepts
 correctly defined projected terrain lines while retaining its existing browser-line
 behavior for `{ohwm2}`.
 
-Next compare bounded smoothing methods on these exact selected paths in the app,
-then implement ordered Reach-boundary splitting and immutable local candidates.
+Next implement ordered Reach-boundary splitting and immutable local candidates.
 Do not define a mainstem from maximum accumulation alone, clip the branched
 network by overlapping Reach polygons, or claim an open smoothing method is
-equivalent to PAEK. Owner review of the three automatic routes and smoothing
-comparisons selects the smoothing default before the candidate contract is finalized.
+equivalent to PAEK. Preserve the raw selected path and smoothing evidence when
+the candidate contract is finalized.
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
