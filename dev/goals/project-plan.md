@@ -129,23 +129,29 @@ the small case under the 75-percent safety policy. A read-only preflight of the
 GiB. No medium routing was run. Next establish the actual deployment memory
 budget; do not process the medium terrain below three GiB.
 
-## Proposed next feature: reviewed Flowline derivation
+## Proposed next feature: automatic Flowline derivation
 
 The owner selected Flowline as the next feature after the accepted local
 `stream_network`. The functional gap is path selection and Reach binding, not
 another terrain-routing calculation: the legacy tool expected an analyst-pruned,
 Reach-named network before it dissolved and smoothed the line. The proposed
 [Stream Network to Flowline design](../features/stream-network-to-flowline.md)
-uses the directed terrain network to recommend one Stream-level head-to-outlet
-path, requires efficient visual review, smooths the continuous path once, and
-then splits it at ordered retained Reach-source boundaries. NHDPlusV2 remains
-approximate branch/extent evidence and never supplies output coordinates.
+uses the directed terrain network to select one Stream-level head-to-outlet path
+automatically, smooths the continuous path once, and then splits it at ordered
+retained Reach-source boundaries. Stream definition already records analyst
+intent. The selector therefore uses a reference-constrained longest-path rule:
+the retained NHDPlusV2 chain identifies and disambiguates the intended Stream,
+while the synthetic network supplies every output coordinate. No segment or head
+selection is added to the Flowline UI.
 
 Implementation should begin with real Spencer Creek route and smoothing
-comparisons. Do not silently define a mainstem from maximum accumulation, clip
-the branched network by overlapping Reach polygons, or claim an open smoothing
-method is equivalent to PAEK. The first owner review selects the path behavior
-and smoothing default before the local candidate contract is finalized.
+comparisons. Implement selection as a reusable preprocessor whose assembled line
+is passed to the existing `fluvgeo::flowline()` contract. Preserve that function's
+arbitrary drawn-line behavior and the current `{ohwm2}` integration. Do not define
+a mainstem from maximum accumulation alone, clip the branched network by
+overlapping Reach polygons, or claim an open smoothing method is equivalent to
+PAEK. The first owner review verifies automatic paths on the three Spencer Streams
+and selects the smoothing default before the local candidate contract is finalized.
 
 ## Purpose
 This file is the canonical ordered task list for active development work.
