@@ -1,3 +1,18 @@
+# fluvgeo 2026.10.06.9071
+
+* Add continuous Stream-outlet measures and explicit Reach identity to Flowline
+  Points derived from ordered saved Reach Flowlines. The wrapper emits the
+  ArcPy-replacement profile with `POINT_M` and `km_to_mouth` in kilometres while
+  retaining the established 5 m sampling default.
+* Make `flowline_points()` retain the input projected CRS, accept an optional
+  offset and explicit measure-unit profile, handle arbitrary single-layer DEM
+  names and fail explicitly on invalid spacing or missing sampled elevations.
+  Its existing three-argument metre-based call remains compatible for current R
+  clients such as `{ohwm2}`.
+* Strengthen Flowline and Flowline Point validators for exact legacy fields,
+  geometry, finite values, coordinate agreement, measure ordering and the
+  explicit FG Studio kilometer replacement profile.
+
 # fluvgeo 2026.10.06.9070
 
 * Divide a topology-selected, smoothed Stream path deterministically into one

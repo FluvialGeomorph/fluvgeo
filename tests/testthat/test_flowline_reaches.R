@@ -17,6 +17,11 @@ test_that("Reach Flowlines follow ordered retained Stream transitions", {
   expect_identical(value$reach_order,c("lower","upper"))
   expect_identical(value$flowlines$ReachName,c("Lower Reach","Upper Reach"))
   expect_equal(value$flowlines$length_m,c(7,3))
+  expect_equal(value$flowlines$from_measure,c(0,.007))
+  expect_equal(value$flowlines$to_measure,c(.007,.010))
+  expect_true(all(vapply(seq_len(nrow(value$flowlines)), function(i) {
+    check_flowline(value$flowlines[i, ], step = "profile_points")
+  }, logical(1))))
   expect_equal(value$boundaries$raw_fraction,.7)
   expect_equal(tail(sf::st_coordinates(value$flowlines[1,]),1)[1,c("X","Y")],
     head(sf::st_coordinates(value$flowlines[2,]),1)[1,c("X","Y")])

@@ -19,7 +19,8 @@ test_that("synthetic stream extraction writes a reviewable, reproducible candida
   network <- sf::st_read(file.path(output,result$files$stream_network),quiet=TRUE)
   expect_s3_class(network,"sf")
   expect_true(all(c("stream_line_id","upstream_cell","downstream_cell",
-    "length_m","threshold_ha") %in% names(network)))
+    "ReachName","length_m","threshold_ha") %in% names(network)))
+  expect_type(network$ReachName,"character")
 
   second <- file.path(output,"stream-network-2ha.gpkg")
   direction_path <- file.path(output,result$files$direction)

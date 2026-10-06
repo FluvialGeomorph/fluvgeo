@@ -23,3 +23,17 @@ test_that("other data sturctures", {
   expect_error(check_flowline(fluvgeo::sin_banklines_sf, "profile_points"))
   expect_error(check_flowline(fluvgeo::sin_loop_points_sf, "profile_points"))
 })
+
+test_that("profile-ready flowlines reject renamed, mistyped and invalid measures", {
+  renamed <- sin_fl_2
+  names(renamed)[names(renamed) == "from_measure"] <- "fromMeasure"
+  expect_error(check_flowline(renamed, "profile_points"), "from_measure")
+
+  mistyped <- sin_fl_2
+  mistyped$to_measure <- as.character(mistyped$to_measure)
+  expect_error(check_flowline(mistyped, "profile_points"), "to_measure")
+
+  reversed <- sin_fl_2
+  reversed$to_measure <- reversed$from_measure
+  expect_error(check_flowline(reversed, "profile_points"), "zero length")
+})

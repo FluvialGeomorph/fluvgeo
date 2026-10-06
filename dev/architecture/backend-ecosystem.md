@@ -74,6 +74,9 @@ geospatial capabilities now implement some operations previously performed
 upstream, but coverage remains partial. Therefore:
 
 - preserve compatibility with currently supported ArcGIS-derived inputs;
+- when replacing an ArcPy producer, preserve its established derived feature-
+  class/layer and field contract exactly; new fields may be additive, while a
+  normalized FGDB base schema remains a separate enterprise concern;
 - state required input artifacts and coordinate/spatial assumptions explicitly;
 - distinguish capabilities implemented in R from those still supplied upstream;
 - prefer open-source implementations when they satisfy scientific and
@@ -114,6 +117,10 @@ methods require a separately approved experiment and later deployment decision.
 - Exported API changes require downstream impact assessment.
 - Breaking changes require a deliberate decision, migration guidance, tests,
   documentation, and release notes.
+- Legacy replacement outputs require constructor tests and strengthened
+  `check_*` validation against the FGDB compatibility profile; field presence
+  alone is not sufficient where geometry, units, direction or cross-field
+  relationships can be checked.
 - Prefer the smallest change that keeps the shared backend clear and reusable.
 - Remote enrichment services must expose explicit failure behavior. A client
   that does not require an enrichment value may opt out while retaining the

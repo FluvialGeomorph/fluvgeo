@@ -39,8 +39,10 @@ reference lines, in reference CRS map units. Defaults to 0.01.}
 }
 \value{
 A list containing \code{flowlines} (one downstream-to-upstream feature per
-  Reach), \code{boundaries} (transferred Reach boundary points and projection
-  evidence), and \code{reach_order}.
+  Reach with legacy \code{ReachName}, \code{from_measure}, and \code{to_measure}
+  fields; measures are continuous kilometres from the selected Stream outlet),
+  \code{boundaries} (transferred Reach boundary points and projection evidence),
+  and \code{reach_order}.
 }
 \description{
 Transfers ordered Reach transitions from the retained Stream reference to a

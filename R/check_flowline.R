@@ -1,7 +1,8 @@
 #' @title Check the validity of an `fluvgeo` `flowline` data structure
 #'
 #' @description Checks that the input data structure `flowline` meets
-#' the requirements for this data structure.
+#' the required legacy field, line geometry, CRS, cardinality and stationing
+#' requirements for the selected processing step.
 #'
 #' @export
 #' @param flowline        sf: a `flowline` data structure
@@ -18,24 +19,31 @@
 #'
 check_flowline <- function(flowline,
                            step = c("create_flowline", "profile_points")) {
-
+  step <- match.arg(step)
   name <- deparse(substitute(flowline))
-  if(class(flowline)[1] == "sf") {
-    flowline_df <- flowline
-  }
+  assert_that(inherits(flowline, "sf"),
+              msg = paste(name, "must be a sf object"))
+  flowline_df <- flowline
 
   # Step: create_flowline
   if(step %in% c("create_flowline", "profile_points")) {
-  assert_that((class(flowline)[1] == "sf"),
-              msg = paste(name, "must be a sf object"))
   assert_that(is.data.frame(flowline_df),
               msg = paste(name, "must be a data frame"))
+  assert_that(!is.na(sf::st_crs(flowline_df)),
+              msg = paste(name, "must have a defined CRS"))
+  geometry_type <- unique(as.character(sf::st_geometry_type(flowline_df)))
+  assert_that(length(geometry_type) == 1L &&
+                geometry_type %in% c("LINESTRING", "MULTILINESTRING") &&
+                !any(sf::st_is_empty(flowline_df)) &&
+                all(sf::st_is_valid(flowline_df)),
+              msg = paste(name, "must contain valid, nonempty line geometry"))
   assert_that("ReachName" %in% colnames(flowline_df) &
                 is.character(flowline_df$ReachName),
               msg = paste("Character field 'ReachName' missing from", name))
 
   # Check the field `ReachName` is not empty
-  assert_that(nchar(unique(flowline_df$ReachName[1])) > 0,
+  assert_that(!anyNA(flowline_df$ReachName) &&
+                all(nzchar(trimws(flowline_df$ReachName))),
               msg = paste("Field `ReachName` is empty in", name))
 
   # Check that there is only one flowline
@@ -53,7 +61,12 @@ check_flowline <- function(flowline,
               msg = paste("Numeric field 'to_measure' missing from", name))
 
   # Check that flowline has greater than zero length
-  assert_that(flowline_df$from_measure < flowline_df$to_measure,
+  assert_that(!anyNA(flowline_df$from_measure) &&
+                !anyNA(flowline_df$to_measure) &&
+                all(is.finite(flowline_df$from_measure)) &&
+                all(is.finite(flowline_df$to_measure)) &&
+                all(flowline_df$from_measure >= 0) &&
+                all(flowline_df$from_measure < flowline_df$to_measure),
               msg = paste("The flowline", name, "appears to have zero length"))
   }
 

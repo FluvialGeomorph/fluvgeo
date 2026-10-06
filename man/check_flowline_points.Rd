@@ -4,11 +4,19 @@
 \alias{check_flowline_points}
 \title{Check the validity of an `fluvgeo` `flowline_points` data structure}
 \usage{
-check_flowline_points(flowline_points)
+check_flowline_points(
+  flowline_points,
+  contract = c("legacy_core", "fgstudio_replacement")
+)
 }
 \arguments{
-\item{flowline_points}{sf object; a `flowline_points` data
-structure used by the fluvgeo package.}
+\item{flowline_points}{sf object; a \code{flowline_points} data structure used by
+the fluvgeo package.}
+
+\item{contract}{character; \code{"legacy_core"} validates the historical common
+field contract without assuming measure units. \code{"fgstudio_replacement"}
+additionally requires kilometer \code{POINT_M}/\code{km_to_mouth} equality and unit
+declarations for the ArcPy-replacement chain.}
 }
 \value{
 Returns TRUE if the `flowline_points` data structure matches the

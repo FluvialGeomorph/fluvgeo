@@ -21,5 +21,6 @@ doesn't match the requirement.
 }
 \description{
 Checks that the input data structure `flowline` meets
-the requirements for this data structure.
+the required legacy field, line geometry, CRS, cardinality and stationing
+requirements for the selected processing step.
 }

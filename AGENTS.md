@@ -10,6 +10,11 @@
 - Keep this file concise; route detailed knowledge into maintained artifacts under `dev/`.
 - Preserve unrelated user changes and keep work within the requested repository scope.
 - Distinguish verified evidence, reasonable inference, and unknowns.
+- Open-source functions that replace `FluvialGeomorph-toolbox` ArcPy tools must
+  preserve the legacy derived feature-class contract: entity/layer name and all
+  established field names, capitalization, types, units, and meanings. New
+  fields, validation and provenance may be additive. Breaking that contract
+  requires an explicit reviewed migration decision and downstream plan.
 
 ## Conditional context routes
 
@@ -26,6 +31,11 @@
 - Backend implementation, troubleshooting, compatibility, or release impact: `dev/workflows/backend-change-assessment.md`
 - Current package architecture and the ESRI-to-open-source transition: `dev/architecture/design.md`
 - Data, file, spatial, or interface contracts: `dev/schemas/project-schemas.md`
+- Legacy ArcPy replacement or derived-output changes: read
+  `dev/workflows/legacy-derived-feature-compatibility.md`, the applicable FGDB
+  compatibility profile, original ArcPy producer, Technical Manual data
+  dictionary, representative legacy data, downstream call sites, and relevant
+  `check_*` validators before editing.
 
 Full session transcripts are not normal context sources. Use maintained durable artifacts and concise checkpoints.
 

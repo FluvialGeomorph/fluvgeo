@@ -4,20 +4,43 @@
 \alias{flowline_points}
 \title{Flowline Points}
 \usage{
-flowline_points(flowline, dem, station_distance)
+flowline_points(
+  flowline,
+  dem,
+  station_distance,
+  measure_offset = 0,
+  measure_units = c("m", "km")
+)
 }
 \arguments{
 \item{flowline}{sf object; A flowline object.}
 
-\item{dem}{terra SpatRast object; A DEM.}
+\item{dem}{terra SpatRaster object; A single-layer DEM in the
+Flowline CRS.}
 
-\item{station_distance}{numeric; Disired distance between the 
-flowline_points (units: meters)}
+\item{station_distance}{numeric; Maximum distance between Flowline points,
+in metres. Existing vertices are retained.}
+
+\item{measure_offset}{numeric; Measure assigned to the downstream endpoint,
+in \code{measure_units}. Defaults to zero.}
+
+\item{measure_units}{character; \code{"m"} preserves the established R API and
+current clients. \code{"km"} produces the legacy ArcPy replacement measure
+profile.}
 }
 \value{
-an sf object of type point
+An \code{sf} point object with \code{ID}, \code{ReachName}, \code{POINT_X}, \code{POINT_Y},
+\code{POINT_M} in \code{measure_units}, \code{km_to_mouth} in kilometres and
+sampled \code{Z}.
 }
 \description{
-Converts a stream flowline to a route using the km to mouth 
-parameter and creates an sf object stream profile points.
+Samples one downstream-to-upstream Flowline at no more than the
+requested spacing, assigns route measures and extracts DEM elevations.
+}
+\details{
+This retains the established \code{\{fluvgeo\}} behavior of preserving all
+existing vertices and densifying only segments longer than
+\code{station_distance}. The input CRS is retained. The default metre profile and
+zero origin preserve existing \code{\{ohwm2\}} behavior. FG Studio's ArcPy-
+replacement chain requests \code{measure_units = "km"} explicitly.
 }

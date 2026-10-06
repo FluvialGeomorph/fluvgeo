@@ -180,6 +180,10 @@ locate_stream_outlet <- function(dem,reference_lines,search_radius_m=200,
   if(any(!used)) stop("Thresholded stream graph contains a cycle or unreachable edge.")
   network <- sf::st_sf(do.call(rbind,records),geometry=sf::st_sfc(geometries,
     crs=sf::st_crs(terra::crs(grid))))
+  # The ArcPy _04_StreamNetwork output always carried a nullable ReachName
+  # field for later analyst assignment. Retain that exact legacy field even
+  # though FG Studio now assigns Reaches in a later automated step.
+  network$ReachName <- NA_character_
   network$length_m <- as.numeric(units::set_units(sf::st_length(network),"m"))
   network
 }

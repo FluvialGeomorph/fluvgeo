@@ -31,6 +31,12 @@ Review the smallest authoritative set of:
 Do not infer scientific or spatial requirements when repository evidence,
 reference methods, or a reproducible example can establish them.
 
+If the change replaces or overlaps a `FluvialGeomorph-toolbox` ArcPy output,
+apply `legacy-derived-feature-compatibility.md` before defining the contract.
+The ArcPy producer, Technical Manual, representative data, downstream consumers,
+and FGDB compatibility profile are joint evidence. A normalized enterprise
+schema is not permission to change the open-source producer's legacy output.
+
 ## 3. Define the change contract
 
 State:
@@ -41,6 +47,10 @@ State:
 - error and missing-data behavior;
 - upstream and downstream effects;
 - the smallest verification that would demonstrate correctness.
+
+For a legacy replacement, explicitly list the retained entity/layer name,
+fields, capitalization, types, units and meanings; additions; platform-managed
+fields; and any conditional/versioned legacy fields.
 
 Update `dev/schemas/` when a maintained structural contract changes. Record a
 decision when the choice has durable tradeoffs or changes an ownership boundary.

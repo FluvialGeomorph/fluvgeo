@@ -1,5 +1,12 @@
 # Schemas
 
+Open-source replacements for legacy ArcPy-derived vector products follow
+[FGDB's legacy-derived-feature compatibility profile](../../../FGDB/dev/schemas/legacy-derived-feature-compatibility.md)
+and the package's
+[replacement workflow](../workflows/legacy-derived-feature-compatibility.md).
+The legacy output contract remains mandatory for replacement producers even
+when future normalized enterprise storage differs.
+
 Static horizontal raster processing uses the additive
 [qualified warp contract](horizontal-terrain-warp.md). It retains source vertical
 evidence and blocks unqualified datum/epoch and elevation-unit operations.

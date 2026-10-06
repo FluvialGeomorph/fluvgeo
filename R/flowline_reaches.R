@@ -19,8 +19,10 @@
 #' @param connectivity_tolerance Maximum permitted gap between consecutive
 #'   reference lines, in reference CRS map units. Defaults to 0.01.
 #' @return A list containing \code{flowlines} (one downstream-to-upstream feature per
-#'   Reach), \code{boundaries} (transferred Reach boundary points and projection
-#'   evidence), and \code{reach_order}.
+#'   Reach with legacy \code{ReachName}, \code{from_measure}, and \code{to_measure}
+#'   fields; measures are continuous kilometres from the selected Stream outlet),
+#'   \code{boundaries} (transferred Reach boundary points and projection evidence),
+#'   and \code{reach_order}.
 #' @details Each Reach must occupy one contiguous block in the ordered retained
 #'   Stream reference. Every reference line must be assigned exactly once. Reach
 #'   boundaries are the shared or near-coincident endpoints between consecutive
@@ -136,6 +138,13 @@ derive_reach_flowlines <- function(raw_flowline, smoothed_flowline,
         stop("Adjacent Reach Flowlines do not share an exact endpoint.")
     }
   }
+  flowlines$from_measure <- c(0, head(cumsum(flowlines$length_m / 1000), -1L))
+  flowlines$to_measure <- cumsum(flowlines$length_m / 1000)
+  geometry_column <- attr(flowlines, "sf_column")
+  flowlines <- flowlines[, c("reach_id", "ReachName", "reach_order",
+    "from_measure", "to_measure", "length_m", geometry_column)]
+  for (i in seq_len(nrow(flowlines)))
+    check_flowline(flowlines[i, ], step = "profile_points")
   boundaries <- sf::st_sf(
     downstream_reach_id = if (length(transitions)) reach_id[transitions] else character(),
     upstream_reach_id = if (length(transitions)) reach_id[transitions + 1L] else character(),
