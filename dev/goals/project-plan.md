@@ -129,7 +129,7 @@ the small case under the 75-percent safety policy. A read-only preflight of the
 GiB. No medium routing was run. Next establish the actual deployment memory
 budget; do not process the medium terrain below three GiB.
 
-## Proposed next feature: automatic Flowline derivation
+## Accepted local feature: automatic Flowline derivation
 
 The owner selected Flowline as the next feature after the accepted local
 `stream_network`. The functional gap is path selection and Reach binding, not
@@ -156,7 +156,11 @@ full-route reference distance and runner-up evidence. `flowline()` now also acce
 correctly defined projected terrain lines while retaining its existing browser-line
 behavior for `{ohwm2}`.
 
-Next implement ordered Reach-boundary splitting and immutable local candidates.
+`derive_reach_flowlines()` now performs ordered Reach-boundary splitting and
+compatible `flowline()` preparation. FG Studio publishes immutable local
+candidates with reopen and stale-input checks. This completes the local Flowline
+product required by Flowline Points; transient Stream-scale review geometry is
+not a downstream input. Flowline Points is the next selected workflow feature.
 Do not define a mainstem from maximum accumulation alone, clip the branched
 network by overlapping Reach polygons, or claim an open smoothing method is
 equivalent to PAEK. Preserve the raw selected path and smoothing evidence when

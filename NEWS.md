@@ -1,3 +1,11 @@
+# fluvgeo 2026.10.06.9070
+
+* Divide a topology-selected, smoothed Stream path deterministically into one
+  continuous Flowline per saved Reach using ordered retained-segment transitions,
+  exact shared endpoints and fail-closed mapping checks.
+* Extend `flowline()` with an opt-in topology-preserving direction mode while
+  retaining the historical DEM endpoint orientation as its default.
+
 # fluvgeo 2026.10.05.9069
 
 * Qualify the historical 2–5 map-unit range as progressively more aggressive

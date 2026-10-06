@@ -1,8 +1,9 @@
 # Automatic Flowline derivation from a synthetic Stream Network
 
-- Status: automatic path selection, bounded default smoothing and FG Studio
-  review implemented; Reach division and candidate persistence pending
-- Updated: 2026-10-05
+- Status: local Flowline creation implemented: automatic path selection,
+  selectable bounded smoothing, deterministic Reach division, compatible
+  `flowline()` preparation and immutable FG Studio save/reopen
+- Updated: 2026-10-06
 - Workflow position: after accepted local `stream_network` extraction and before
   Flowline Points
 - Governing domain draft:
@@ -46,7 +47,7 @@ adjacent tributary when a named Stream joins a larger or longer channel. The
 chosen NHDPlusV2 Stream chain must therefore constrain and disambiguate the
 terrain-derived route without supplying its output coordinates.
 
-## Proposed derivation
+## Implemented derivation
 
 ### 1. Bind exact inputs
 
@@ -105,12 +106,15 @@ derived path can proceed.
 The map must distinguish:
 
 - raw Stream Network;
-- automatically selected raw path;
 - retained NHDPlusV2 reference evidence; and
-- the smoothed Flowline preview.
+- the selected smoothed Flowline candidate.
 
-The analyst can inspect the selected route and smoothing preview before saving.
-If the route contradicts the intended Stream, the corrective action belongs in
+The automatically selected raw path remains retained as provenance and as the
+stable source for every smoothing candidate; it need not be a separate competing
+map overlay when the complete raw network is already visible.
+
+The analyst can inspect the selected route, Reach divisions and smoothing preview,
+then save the chosen candidate. If the route contradicts the intended Stream, the corrective action belongs in
 Stream definition or in the reusable deterministic selection rule, not in a
 one-off branch choice that cannot be reproduced.
 
@@ -121,9 +125,11 @@ coordinates. Retain ordered `stream_line_id` lineage. Reverse the assembled line
 once so canonical Flowline coordinates begin downstream and end upstream. D8
 topology is the primary direction evidence; Hydro DEM endpoint elevations are a
 corroborating diagnostic and must report ambiguity rather than overturning known
-routing direction. Supply this single assembled line to the existing
-`fluvgeo::flowline()` preparation contract rather than creating a parallel
-Flowline representation.
+routing direction. Retain this single assembled Stream-scale line as the common
+source for smoothing and Reach division. After division, supply each Reach-owned
+line to the existing `fluvgeo::flowline()` preparation contract with its Reach
+name and applicable Hydro DEM rather than creating a parallel Flowline
+representation.
 
 ### 5. Smooth once at Stream scale
 
@@ -140,7 +146,8 @@ replacement, not a claim of vertex equivalence with PAEK. FG Studio computes the
 four integer candidates in the historical 2–5 map-unit range once, presents 2 as
 the conservative default, and lets the analyst switch the displayed Flowline to
 a more aggressive candidate without repeating path selection or terrain work.
-The raw selected path and every candidate remain in memory as provenance.
+The raw selected path and every candidate remain in session memory for review.
+The application persists the raw path and only the chosen smoothed candidate.
 
 `smooth_flowline()` preserves both endpoints, requires a simple valid output,
 and rejects a result whose Hausdorff displacement exceeds the bandwidth. On the
@@ -165,7 +172,7 @@ receives exactly one continuous, single-part, downstream-to-upstream candidate.
 
 ## Backend and application boundary
 
-`fluvgeo` should own graph validation, deterministic route selection evidence,
+`fluvgeo` owns graph validation, deterministic route selection evidence,
 raw path assembly, smoothing, Reach-boundary projection/splitting, geometry
 checks, and portable provenance. The functions must accept ordinary `sf` inputs
 and have no Shiny session state.
@@ -174,31 +181,39 @@ Implement network selection as a separate reusable preprocessor rather than
 changing the meaning of `fluvgeo::flowline(flowline, reach_name, dem)`. The
 existing function accepts one arbitrary user-drawn line, gives it a Reach name
 and orients it from DEM endpoints. `{ohwm2}` depends on that three-argument
-behavior. The new preprocessor returns one assembled, downstream-to-upstream `sf`
-line plus structured selection evidence; FG Studio passes that line into the
-existing `flowline()` workflow. Any later optional extension to `flowline()` must
-retain its current signature defaults, return shape, arbitrary-line support and
-`{ohwm2}` tests.
+behavior. The preprocessor currently returns one assembled,
+downstream-to-upstream Stream-scale `sf` line plus structured selection evidence.
+FG Studio passes the chosen smoothed candidate, transformed retained reference,
+current mappings and Reach inventory to `derive_reach_flowlines()`. The backend
+splits at ordered Reach boundaries and passes each line through `flowline()` with
+its Reach name and `direction="preserve"`. This optional direction argument retains
+the historical DEM-oriented default, return shape, arbitrary-line support and
+`{ohwm2}` behavior.
 
-FG Studio should own exact saved-revision selection, review-only map display,
+FG Studio owns exact saved-revision selection, review map display,
 immutable local publication, reopening, working/failure feedback, and stale-input
 rejection. This is a new Flowline step after Hydro Modify rather than another
 terrain calculation inside stream extraction.
 
 ## Local candidate representation
 
-The implementation schema should keep local candidates distinct from governed
-FGDB acceptance. One immutable revision needs at least:
+The implemented FG Studio schema keeps local candidates distinct from governed
+FGDB acceptance. One immutable revision contains `flowlines.gpkg`, `result.rds`
+and `provenance.json`. The GeoPackage preserves the selected raw path, chosen
+smoothed Stream path, one Flowline per applicable Reach, selected source segments
+and shared boundaries when present. Feature attributes retain the backend's
+selection, smoothing, length, displacement and direction evidence. The index and
+JSON record the chosen bandwidth, Reach IDs, time, GeoPackage hash and hashes for
+the exact Study context, local event setting, Hydro output, Stream Network,
+retained reference and Reach mapping. A completion marker prevents partial
+directories from being reopened.
 
-- a GeoPackage raw Stream path;
-- one GeoPackage Flowline-candidate row per applicable Reach and local event
-  setting, with an optional governed Survey Event link only when it exists;
-- ordered Stream Network source-segment relationships;
-- ordered Reach-boundary evidence;
-- selection scores, selected-route margin, method, parameter, displacement,
-  length, direction and software provenance; and
-- hashes for the exact Stream Network, Hydro DEM, context revision, and Reach
-  source-piece evidence.
+Alternative route scores and the three unchosen smoothing candidates remain
+transient review results; the local store does not claim a complete governed
+method execution record. It also does not invent `flowline_id`, Reach-owned
+`survey_event_id`, Dataset Edition or acceptance rows. Those identities and
+additional software/review provenance belong to the later FGDB publication
+contract.
 
 Changing only the smoothing choice should reuse the selected raw path. Changing
 the Stream definition, reference evidence or network revision must rebuild the
@@ -208,7 +223,7 @@ itself is unchanged.
 
 ## Validation and acceptance evidence
 
-Backend checks must cover:
+Implemented backend and local-store checks cover:
 
 1. directed acyclic topology, one observed outlet, and unique head-to-outlet paths;
 2. deterministic reference-constrained longest-path selection, score evidence,
@@ -217,12 +232,17 @@ Backend checks must cover:
 4. one simple, nonempty, single-part line per applicable Reach/event-setting pair;
 5. downstream-to-upstream coordinate order;
 6. exact shared endpoints between adjacent Reach Flowlines;
-7. Hydro DEM coverage and containment within the reviewed corridor;
+7. matching projected CRS for Reach preparation;
 8. bounded smoothing displacement and recorded length change;
-9. immutable save/reopen and stale-input refusal;
+9. immutable save/reopen, file-integrity checks and stale-input refusal;
 10. no change to the saved Hydro DEM or Stream Network artifacts; and
 11. the existing arbitrary drawn-line `flowline()` behavior and `{ohwm2}` call
     remain compatible.
+
+Hydro DEM coverage, channel-corridor containment, governed identity, complete
+software/method provenance and analyst acceptance remain FGDB qualification
+requirements. The local candidate does not yet assert that those publication
+checks have passed.
 
 Whole-app acceptance uses all three Spencer Streams and all eleven current
 Reaches. Each result must be repeatable without segment-selection input. Review
@@ -230,7 +250,7 @@ maps must make incorrect branch selection, boundary placement, over-smoothing,
 and channel departure visible. Small fixtures can verify graph and geometry
 invariants, but they do not replace the real-terrain review.
 
-### Implemented selection and smoothing evidence
+### Implemented selection, division and persistence evidence
 
 `select_stream_mainstem()` now validates the directed one-outlet tree, enumerates
 complete paths, calculates full-route discrete Hausdorff distance to the saved
@@ -239,10 +259,12 @@ ordered source segments and returns canonical downstream-to-upstream linework.
 `smooth_flowline()` then produces bounded candidates at 2, 3, 4 and 5 map units.
 FG Studio presents 2 as the conservative default and permits an immediate switch
 among those candidates over the viewport-stretched Hydro DEM, muted source
-network and retained NHDPlusV2 reference. The raw selected path and all four
-candidates are retained as transient provenance. This result is review-only; it
-does not claim that the chosen candidate is persisted or that Reach splitting or
-immutable-candidate requirements are complete.
+network and retained NHDPlusV2 reference. `derive_reach_flowlines()` divides each
+preview candidate from ordered retained Reach-source transitions, refusing
+missing, duplicated, noncontiguous, gapped, reversed or ambiguous evidence.
+`study_flowline_store()` publishes the chosen raw path, smoothed Stream path,
+Reach lines, shared boundaries and selected network segments in one immutable
+GeoPackage with RDS/JSON provenance and exact-input fingerprints.
 
 On the saved Spencer candidates, the selector evaluated 15 mainstem, 16 east
 tributary and 15 west tributary routes in 1.38, 0.44 and 0.31 seconds. The selected
@@ -252,6 +274,30 @@ best reference distance for two routes, so the specified longest-route rule
 selected the longer one. The selected raw lengths are 23,421.76 m, 9,477.89 m
 and 7,833.08 m respectively. These are current real-data review results, not
 general qualification across terrain forms.
+
+## Completed local gate before Flowline Points
+
+The local Flowline product now:
+
+1. projects ordered retained Reach-source transitions onto the chosen smoothed
+   Stream path and splits it into exactly one candidate per applicable Reach;
+2. prepares each Reach line through the compatible `fluvgeo::flowline()` contract,
+   retaining downstream-to-upstream topology as primary direction evidence;
+3. saves an immutable local revision containing the raw path, chosen smoothing
+   parameter, Reach candidates, source-segment/boundary evidence and exact input
+   fingerprints;
+4. reopens the same revision after an app restart and refuses it as current when
+   its Stream definition, Hydro DEM, network, Reach assignment or event setting
+   has changed; and
+5. presents the saved Reach candidates in the normal Flowline review.
+
+On current Spencer inputs this yields five mainstem, three east-tributary and
+three west-tributary Flowlines, with exact shared endpoints. Focused tests cover
+division failure modes, historical `flowline()` compatibility, local immutable
+save/reopen and stale mapping refusal.
+
+Enterprise/FileGDB acceptance can remain deferred. Flowline Points may consume
+the completed local candidates, but must not depend on transient session geometry.
 
 ## Deferred from this increment
 

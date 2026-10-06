@@ -4,24 +4,38 @@
 \alias{flowline}
 \title{Flowline}
 \usage{
-flowline(flowline, reach_name, dem)
+flowline(flowline, reach_name, dem, direction = c("dem", "preserve"))
 }
 \arguments{
 \item{flowline}{sf object; One flowline with a defined CRS.}
 
 \item{reach_name}{character; The name of the stream reach.}
 
-\item{dem}{terra SpatRast object; A DEM for the stream reach.}
+\item{dem}{terra SpatRaster object; A DEM in the Flowline CRS. In
+\code{"dem"} mode it supplies endpoint-elevation direction evidence; in
+\code{"preserve"} mode it remains part of the shared preparation contract.}
+
+\item{direction}{Character; \code{"dem"} retains the historical endpoint-elevation
+orientation. \code{"preserve"} keeps an upstream-directed line whose direction
+has already been established by saved network topology.}
 }
 \value{
-a valid flowline sf object
+One \code{sf} Flowline with only \code{ReachName} and geometry fields. Its
+  coordinates begin downstream and end upstream when the selected direction
+  method supplies or preserves that evidence.
 }
 \description{
-Takes one drawn or terrain-derived flowline and uses the DEM to
-ensure the flowline is digitized in the upstream direction.
+Validates and prepares one drawn or terrain-derived Flowline.
+By default, DEM endpoint elevations orient it downstream-to-upstream. An
+explicit topology-preserving mode retains direction already established by
+a routed Stream Network.
 }
 \details{
-Uses orient_lines_from_dem() for endpoint-based upstream orientation.
+Uses \code{orient_lines_from_dem()} for endpoint-based upstream orientation
+  by default. \code{direction = "preserve"} is intended for linework whose
+  downstream-to-upstream direction is already established by topology; it
+  retains that direction while applying the same CRS, cardinality and output
+  field contract.
   Browser-drawn WGS84/Web Mercator input retains the historical GeoJSON CRS
   repair. Other explicitly defined projected CRSs pass through unchanged. If
   direction cannot be resolved, returns unchanged linework with a warning.
