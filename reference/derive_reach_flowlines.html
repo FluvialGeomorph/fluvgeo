@@ -18,7 +18,7 @@ terrain-derived Flowline, then prepares one continuous Flowline per Reach."><!--
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9070</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
       </span>
     </div>
 
@@ -109,8 +109,10 @@ reference lines, in reference CRS map units. Defaults to 0.01.</p></dd>
     <div id="value">
     <h2>Value</h2>
     <p>A list containing <code>flowlines</code> (one downstream-to-upstream feature per
-  Reach), <code>boundaries</code> (transferred Reach boundary points and projection
-  evidence), and <code>reach_order</code>.</p>
+  Reach with legacy <code>ReachName</code>, <code>from_measure</code>, and <code>to_measure</code>
+  fields; measures are continuous kilometres from the selected Stream outlet),
+  <code>boundaries</code> (transferred Reach boundary points and projection evidence),
+  and <code>reach_order</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>

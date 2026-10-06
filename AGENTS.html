@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9070</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
       </span>
     </div>
 
@@ -58,6 +58,7 @@
 <li>Keep this file concise; route detailed knowledge into maintained artifacts under <code>dev/</code>.</li>
 <li>Preserve unrelated user changes and keep work within the requested repository scope.</li>
 <li>Distinguish verified evidence, reasonable inference, and unknowns.</li>
+<li>Open-source functions that replace <code>FluvialGeomorph-toolbox</code> ArcPy tools must preserve the legacy derived feature-class contract: entity/layer name and all established field names, capitalization, types, units, and meanings. New fields, validation and provenance may be additive. Breaking that contract requires an explicit reviewed migration decision and downstream plan.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="conditional-context-routes">Conditional context routes<a class="anchor" aria-label="anchor" href="#conditional-context-routes"></a></h2>
@@ -87,6 +88,7 @@
 </li>
 <li>Data, file, spatial, or interface contracts: <code>dev/schemas/project-schemas.md</code>
 </li>
+<li>Legacy ArcPy replacement or derived-output changes: read <code>dev/workflows/legacy-derived-feature-compatibility.md</code>, the applicable FGDB compatibility profile, original ArcPy producer, Technical Manual data dictionary, representative legacy data, downstream call sites, and relevant <code>check_*</code> validators before editing.</li>
 </ul><p>Full session transcripts are not normal context sources. Use maintained durable artifacts and concise checkpoints.</p>
 </div>
 <div class="section level2">

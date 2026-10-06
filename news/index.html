@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9070</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
       </span>
     </div>
 
@@ -47,6 +47,12 @@
       <small>Source: <a href="https://github.com/FluvialGeomorph/fluvgeo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2026.10.06.9071" id="fluvgeo-202610069071">fluvgeo 2026.10.06.9071<a class="anchor" aria-label="anchor" href="#fluvgeo-202610069071"></a></h2>
+<ul><li>Add continuous Stream-outlet measures and explicit Reach identity to Flowline Points derived from ordered saved Reach Flowlines. The wrapper emits the ArcPy-replacement profile with <code>POINT_M</code> and <code>km_to_mouth</code> in kilometres while retaining the established 5 m sampling default.</li>
+<li>Make <code><a href="../reference/flowline_points.html">flowline_points()</a></code> retain the input projected CRS, accept an optional offset and explicit measure-unit profile, handle arbitrary single-layer DEM names and fail explicitly on invalid spacing or missing sampled elevations. Its existing three-argument metre-based call remains compatible for current R clients such as <code>{ohwm2}</code>.</li>
+<li>Strengthen Flowline and Flowline Point validators for exact legacy fields, geometry, finite values, coordinate agreement, measure ordering and the explicit FG Studio kilometer replacement profile.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2026.10.06.9070" id="fluvgeo-202610069070">fluvgeo 2026.10.06.9070<a class="anchor" aria-label="anchor" href="#fluvgeo-202610069070"></a></h2>
 <ul><li>Divide a topology-selected, smoothed Stream path deterministically into one continuous Flowline per saved Reach using ordered retained-segment transitions, exact shared endpoints and fail-closed mapping checks.</li>
