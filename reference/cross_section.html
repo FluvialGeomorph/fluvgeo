@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9073</span>
       </span>
     </div>
 
@@ -71,7 +71,10 @@
 
 
 <dt id="arg-flowline-points">flowline_points<a class="anchor" aria-label="anchor" href="#arg-flowline-points"></a></dt>
-<dd><p>sf object; A flowline_points feature.</p></dd>
+<dd><p>sf object; A flowline_points feature. `POINT_M` is
+treated as metres when `POINT_M_units` is absent,
+preserving existing clients. Explicit `"m"` and
+`"km"` declarations are honored.</p></dd>
 
 
 <dt id="arg-watershed">watershed<a class="anchor" aria-label="anchor" href="#arg-watershed"></a></dt>

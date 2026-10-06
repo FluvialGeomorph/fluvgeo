@@ -18,7 +18,7 @@ the requirements for this data structure."><!-- mathjax --><script src="https://
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9073</span>
       </span>
     </div>
 
@@ -66,15 +66,16 @@ the requirements for this data structure.</p>
 
 
 <dl><dt id="arg-flowline-points">flowline_points<a class="anchor" aria-label="anchor" href="#arg-flowline-points"></a></dt>
-<dd><p>sf object; a <code>flowline_points</code> data structure used by
+<dd><p>sf object; a `flowline_points` data structure used by
 the fluvgeo package.</p></dd>
 
 
 <dt id="arg-contract">contract<a class="anchor" aria-label="anchor" href="#arg-contract"></a></dt>
-<dd><p>character; <code>"legacy_core"</code> validates the historical common
-field contract without assuming measure units. <code>"fgstudio_replacement"</code>
-additionally requires kilometer <code>POINT_M</code>/<code>km_to_mouth</code> equality and unit
-declarations for the ArcPy-replacement chain.</p></dd>
+<dd><p>character; `"legacy_core"` validates the historical common
+field contract without assuming measure units. `"fgstudio_replacement"`
+additionally requires kilometer `POINT_M`, `POINT_M_uncalibrated`,
+`calibration_diff`, and `km_to_mouth` relationships and unit declarations
+for the ArcPy-replacement chain.</p></dd>
 
 </dl></div>
     <div id="value">

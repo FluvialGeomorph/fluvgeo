@@ -18,7 +18,7 @@ requested spacing, assigns route measures and extracts DEM elevations."><!-- mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fluvgeo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9071</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2026.10.06.9073</span>
       </span>
     </div>
 
@@ -84,28 +84,28 @@ in metres. Existing vertices are retained.</p></dd>
 
 <dt id="arg-measure-offset">measure_offset<a class="anchor" aria-label="anchor" href="#arg-measure-offset"></a></dt>
 <dd><p>numeric; Measure assigned to the downstream endpoint,
-in <code>measure_units</code>. Defaults to zero.</p></dd>
+in `measure_units`. Defaults to zero.</p></dd>
 
 
 <dt id="arg-measure-units">measure_units<a class="anchor" aria-label="anchor" href="#arg-measure-units"></a></dt>
-<dd><p>character; <code>"m"</code> preserves the established R API and
-current clients. <code>"km"</code> produces the legacy ArcPy replacement measure
-profile.</p></dd>
+<dd><p>character; `"m"` preserves the established R API and
+current clients. `"km"` produces the legacy ArcPy
+replacement measure profile.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>sf</code> point object with <code>ID</code>, <code>ReachName</code>, <code>POINT_X</code>, <code>POINT_Y</code>,
-<code>POINT_M</code> in <code>measure_units</code>, <code>km_to_mouth</code> in kilometres and
-sampled <code>Z</code>.</p>
+    <p>An `sf` point object with `ID`, `ReachName`, `POINT_X`, `POINT_Y`,
+`POINT_M` in `measure_units`, `km_to_mouth` in kilometres and
+sampled `Z`.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>This retains the established <code>{fluvgeo}</code> behavior of preserving all
+    <p>This retains the established `fluvgeo` behavior of preserving all
 existing vertices and densifying only segments longer than
-<code>station_distance</code>. The input CRS is retained. The default metre profile and
-zero origin preserve existing <code>{ohwm2}</code> behavior. FG Studio's ArcPy-
-replacement chain requests <code>measure_units = "km"</code> explicitly.</p>
+`station_distance`. The input CRS is retained. The default metre profile and
+zero origin preserve existing `ohwm2` behavior. FG Studio's ArcPy-
+replacement chain requests `measure_units = "km"` explicitly.</p>
     </div>
 
   </div>
