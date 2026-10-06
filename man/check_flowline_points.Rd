@@ -10,13 +10,14 @@ check_flowline_points(
 )
 }
 \arguments{
-\item{flowline_points}{sf object; a \code{flowline_points} data structure used by
+\item{flowline_points}{sf object; a `flowline_points` data structure used by
 the fluvgeo package.}
 
-\item{contract}{character; \code{"legacy_core"} validates the historical common
-field contract without assuming measure units. \code{"fgstudio_replacement"}
-additionally requires kilometer \code{POINT_M}/\code{km_to_mouth} equality and unit
-declarations for the ArcPy-replacement chain.}
+\item{contract}{character; `"legacy_core"` validates the historical common
+field contract without assuming measure units. `"fgstudio_replacement"`
+additionally requires kilometer `POINT_M`, `POINT_M_uncalibrated`,
+`calibration_diff`, and `km_to_mouth` relationships and unit declarations
+for the ArcPy-replacement chain.}
 }
 \value{
 Returns TRUE if the `flowline_points` data structure matches the

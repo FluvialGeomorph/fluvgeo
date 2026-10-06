@@ -13,7 +13,10 @@ cross_section(
 \arguments{
 \item{xs}{sf object; A newly digitized set of cross sections.}
 
-\item{flowline_points}{sf object; A flowline_points feature.}
+\item{flowline_points}{sf object; A flowline_points feature. `POINT_M` is
+treated as metres when `POINT_M_units` is absent,
+preserving existing clients. Explicit `"m"` and
+`"km"` declarations are honored.}
 
 \item{watershed}{character; Controls upstream watershed lookup.
 `"required"` preserves strict behavior and stops

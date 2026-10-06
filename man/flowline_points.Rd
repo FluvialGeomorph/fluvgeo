@@ -22,25 +22,25 @@ Flowline CRS.}
 in metres. Existing vertices are retained.}
 
 \item{measure_offset}{numeric; Measure assigned to the downstream endpoint,
-in \code{measure_units}. Defaults to zero.}
+in `measure_units`. Defaults to zero.}
 
-\item{measure_units}{character; \code{"m"} preserves the established R API and
-current clients. \code{"km"} produces the legacy ArcPy replacement measure
-profile.}
+\item{measure_units}{character; `"m"` preserves the established R API and
+current clients. `"km"` produces the legacy ArcPy
+replacement measure profile.}
 }
 \value{
-An \code{sf} point object with \code{ID}, \code{ReachName}, \code{POINT_X}, \code{POINT_Y},
-\code{POINT_M} in \code{measure_units}, \code{km_to_mouth} in kilometres and
-sampled \code{Z}.
+An `sf` point object with `ID`, `ReachName`, `POINT_X`, `POINT_Y`,
+`POINT_M` in `measure_units`, `km_to_mouth` in kilometres and
+sampled `Z`.
 }
 \description{
 Samples one downstream-to-upstream Flowline at no more than the
 requested spacing, assigns route measures and extracts DEM elevations.
 }
 \details{
-This retains the established \code{\{fluvgeo\}} behavior of preserving all
+This retains the established `{fluvgeo}` behavior of preserving all
 existing vertices and densifying only segments longer than
-\code{station_distance}. The input CRS is retained. The default metre profile and
-zero origin preserve existing \code{\{ohwm2\}} behavior. FG Studio's ArcPy-
-replacement chain requests \code{measure_units = "km"} explicitly.
+`station_distance`. The input CRS is retained. The default metre profile and
+zero origin preserve existing `{ohwm2}` behavior. FG Studio's ArcPy-
+replacement chain requests `measure_units = "km"` explicitly.
 }

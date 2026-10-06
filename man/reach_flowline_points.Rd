@@ -7,34 +7,41 @@
 reach_flowline_points(
   flowlines,
   dem,
-  station_distance = 5,
-  measure_origin = "SELECTED_STREAM_OUTLET"
+  station_distance = 1,
+  measure_origin = "SELECTED_STREAM_OUTLET",
+  measure_offset_km = 0
 )
 }
 \arguments{
-\item{flowlines}{Projected \code{sf} lines with unique \code{reach_id}, \code{ReachName} and
-downstream-to-upstream \code{reach_order} fields. Adjacent Reaches must share an
+\item{flowlines}{Projected `sf` lines with unique `reach_id`, `ReachName` and
+downstream-to-upstream `reach_order` fields. Adjacent Reaches must share an
 exact endpoint.}
 
-\item{dem}{A single-layer \code{terra::SpatRaster} in the Flowline CRS.}
+\item{dem}{A single-layer `terra::SpatRaster` in the Flowline CRS.}
 
-\item{station_distance}{Maximum spacing in metres. Defaults to 5, matching
-the established \code{\{ohwm2\}} Flowline Points workflow.}
+\item{station_distance}{Maximum spacing in metres. Defaults to 1 for the FG
+Studio saved-Reach workflow. This does not change the explicit spacing used
+by existing [flowline_points()] callers such as `{ohwm2}`.}
 
 \item{measure_origin}{Nonempty label describing the zero-measure origin.}
+
+\item{measure_offset_km}{Non-negative kilometer measure assigned to the
+downstream endpoint of the first Reach. Defaults to zero for the existing
+single-Stream behavior.}
 }
 \value{
-One \code{sf} point object containing the historical Flowline Point fields
-plus \code{km_to_mouth}, stable Reach identity/order, local Reach distance, explicit units,
-sampling interval and measure-origin label. Shared Reach endpoints occur
-once for each owning Reach with the same \code{POINT_M}.
+One `sf` point object containing the historical Flowline Point fields,
+  including `POINT_M_uncalibrated` and `calibration_diff`, plus
+  `km_to_mouth`, stable Reach identity/order, local Reach distance, explicit
+  units, sampling interval and measure-origin label. Shared Reach endpoints
+  occur once for each owning Reach with the same `POINT_M`.
 }
 \description{
-Applies \code{flowline_points()} to exact saved Reach Flowlines and
+Applies [flowline_points()] to exact saved Reach Flowlines and
 carries one continuous kilometer measure upstream from the selected Stream outlet.
 }
 \details{
-\code{POINT_M} and \code{km_to_mouth} are the same local preparation measure in
+`POINT_M` and `km_to_mouth` are the same local preparation measure in
 kilometres from the selected Stream outlet, matching the ArcPy replacement
 profile. Neither field is yet a governed
 longitudinal-reference-frame coordinate.

@@ -1,3 +1,20 @@
+# fluvgeo 2026.10.06.9073
+
+* Add `study_area_flowline_points()` to derive a single mouth-referenced
+  kilometer frame across all Streams and Reaches in a Study Area. Stream
+  corridors determine tributary parentage, confluences are projected onto the
+  saved downstream Flowline, and raster-resolution-aware connection checks
+  fail closed on gaps, ambiguity, multiple outlets, or cycles.
+
+# fluvgeo 2026.10.06.9072
+
+* Complete the uncalibrated FG Studio Flowline Points replacement profile with
+  required `POINT_M_uncalibrated` and `calibration_diff` fields, one-meter
+  default spacing for ordered saved Reach Flowlines, and strengthened cross-
+  field validation.
+* Let `cross_section()` honor explicit kilometer `POINT_M_units` while retaining
+  the established implicit-metre behavior used by `{ohwm2}`.
+
 # fluvgeo 2026.10.06.9071
 
 * Add continuous Stream-outlet measures and explicit Reach identity to Flowline

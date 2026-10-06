@@ -2,7 +2,10 @@
 #' @description Creates a valid set of cross section features from newly
 #'              digitized stream cross section lines.
 #' @param xs               sf object; A newly digitized set of cross sections.
-#' @param flowline_points  sf object; A flowline_points feature.
+#' @param flowline_points  sf object; A flowline_points feature. `POINT_M` is
+#'                         treated as metres when `POINT_M_units` is absent,
+#'                         preserving existing clients. Explicit `"m"` and
+#'                         `"km"` declarations are honored.
 #' @param watershed        character; Controls upstream watershed lookup.
 #'                         `"required"` preserves strict behavior and stops
 #'                         when the remote watershed service fails.
@@ -35,6 +38,14 @@ cross_section <- function(
               msg = "flowline_points must be sf object")
   assert_that(st_crs(xs) == st_crs(flowline_points),
               msg = "xs and flowline_points must have the same crs")
+  point_m_to_km <- 0.001
+  if ("POINT_M_units" %in% names(flowline_points)) {
+    point_m_units <- unique(as.character(flowline_points$POINT_M_units))
+    assert_that(length(point_m_units) == 1L && !is.na(point_m_units) &&
+                  point_m_units %in% c("m", "km"),
+                msg = "flowline_points POINT_M_units must be uniformly 'm' or 'km'")
+    point_m_to_km <- if (identical(point_m_units, "km")) 1 else 0.001
+  }
 
   # Set river position (check step: river_position)
   ## add fields POINT_X, POINT_Y, POINT_M, Z, km_to_mouth
@@ -55,7 +66,7 @@ cross_section <- function(
     left_join(st_drop_geometry(flowline_points),
               join_by(nearest_fl_pt_id == ID)) %>%
     select(-nearest_fl_pt_id) %>%
-    mutate(km_to_mouth = POINT_M * 0.001)                      # 1 m = 0.001 km
+    mutate(km_to_mouth = POINT_M * point_m_to_km)
 
   # Set sequence number (check step: assign_ids)
   ## add field `Seq` and calculate

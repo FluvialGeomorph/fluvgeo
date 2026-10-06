@@ -8,8 +8,9 @@
 #'   the fluvgeo package.
 #' @param contract character; `"legacy_core"` validates the historical common
 #'   field contract without assuming measure units. `"fgstudio_replacement"`
-#'   additionally requires kilometer `POINT_M`/`km_to_mouth` equality and unit
-#'   declarations for the ArcPy-replacement chain.
+#'   additionally requires kilometer `POINT_M`, `POINT_M_uncalibrated`,
+#'   `calibration_diff`, and `km_to_mouth` relationships and unit declarations
+#'   for the ArcPy-replacement chain.
 #'
 #' @return Returns TRUE if the `flowline_points` data structure matches the
 #' requirements. The function throws an error for a data structure not matching
@@ -69,39 +70,82 @@ check_flowline_points <- function(flowline_points,
   assert_that(all(abs(coordinates[, "X"] - flowline_points$POINT_X) <= coordinate_tolerance) &&
                 all(abs(coordinates[, "Y"] - flowline_points$POINT_Y) <= coordinate_tolerance),
               msg = paste(name, "POINT_X/POINT_Y do not match point geometry"))
-  assert_that(all(diff(flowline_points$POINT_M) >= 0),
-              msg = paste(name, "POINT_M must be ordered downstream to upstream"))
+  measure_tolerance <- sqrt(.Machine$double.eps) *
+    max(1, abs(flowline_points$POINT_M))
+  measure_groups <- if ("stream_id" %in% names(flowline_points))
+    split(flowline_points$POINT_M, flowline_points$stream_id) else
+    list(flowline_points$POINT_M)
+  assert_that(all(vapply(measure_groups, function(x)
+    all(diff(x) >= -measure_tolerance), logical(1))),
+    msg = paste(name, "POINT_M must be ordered downstream to upstream within each Stream"))
 
   if (identical(contract, "fgstudio_replacement")) {
-    assert_that("km_to_mouth" %in% names(flowline_points) &&
-                  is.numeric(flowline_points$km_to_mouth) &&
-                  !anyNA(flowline_points$km_to_mouth) &&
-                  all(is.finite(flowline_points$km_to_mouth)),
-                msg = paste("Numeric field 'km_to_mouth' missing from", name))
+    replacement_fields <- c("POINT_M_uncalibrated", "calibration_diff",
+                            "km_to_mouth")
+    assert_that(all(replacement_fields %in% names(flowline_points)) &&
+                  all(vapply(sf::st_drop_geometry(flowline_points)[replacement_fields],
+                    function(x) is.numeric(x) && !anyNA(x) && all(is.finite(x)),
+                    logical(1))),
+                msg = paste(name, "must contain finite numeric replacement measure fields"))
     assert_that(isTRUE(all.equal(flowline_points$POINT_M,
                                 flowline_points$km_to_mouth,
                                 tolerance = sqrt(.Machine$double.eps))),
                 msg = "FG Studio replacement POINT_M and km_to_mouth must be identical kilometres")
+    assert_that(isTRUE(all.equal(
+                  flowline_points$POINT_M - flowline_points$POINT_M_uncalibrated,
+                  flowline_points$calibration_diff,
+                  tolerance = sqrt(.Machine$double.eps))),
+                msg = "calibration_diff must equal POINT_M minus POINT_M_uncalibrated")
     assert_that("POINT_M_units" %in% names(flowline_points) &&
                   all(flowline_points$POINT_M_units == "km") &&
+                  "POINT_M_uncalibrated_units" %in% names(flowline_points) &&
+                  all(flowline_points$POINT_M_uncalibrated_units == "km") &&
+                  "calibration_diff_units" %in% names(flowline_points) &&
+                  all(flowline_points$calibration_diff_units == "km") &&
                   "km_to_mouth_units" %in% names(flowline_points) &&
                   all(flowline_points$km_to_mouth_units == "km"),
                 msg = "FG Studio replacement measure-unit fields must be 'km'")
+    if ("reference_frame_scope" %in% names(flowline_points) &&
+        any(flowline_points$reference_frame_scope == "STUDY_AREA_NETWORK")) {
+      network_fields <- c("stream_id", "stream_name", "downstream_stream_id",
+        "confluence_measure_km", "stream_offset_km", "measure_origin")
+      assert_that(all(network_fields %in% names(flowline_points)),
+        msg = "Study Area network points must contain Stream and confluence fields")
+      assert_that(!anyNA(flowline_points[c("stream_id", "stream_name",
+          "confluence_measure_km", "stream_offset_km", "measure_origin")]) &&
+          all(flowline_points$measure_origin == "STUDY_AREA_OUTLET") &&
+          all(flowline_points$reference_frame_scope == "STUDY_AREA_NETWORK"),
+        msg = "Study Area network points must use one declared Study Area outlet frame")
+      stream_offsets <- vapply(split(seq_len(nrow(flowline_points)),
+        flowline_points$stream_id), function(i) {
+          values <- unique(flowline_points$stream_offset_km[i])
+          if (length(values) != 1L) return(NA_real_)
+          values
+        }, numeric(1))
+      assert_that(!anyNA(stream_offsets) && sum(abs(stream_offsets) <=
+          measure_tolerance) == 1L,
+        msg = "Study Area network points must have exactly one outlet Stream at zero")
+      assert_that(all(abs(flowline_points$stream_offset_km -
+          flowline_points$confluence_measure_km) <= measure_tolerance) &&
+          all(flowline_points$POINT_M >= flowline_points$stream_offset_km -
+            measure_tolerance),
+        msg = "Study Area network Stream measures must begin at their confluence measure")
+    }
   }
 
   # Check flowline is digitized from downstream end to upstream end
-  ## Get min and max POINT_M value
-  m_min <- min(flowline_points$POINT_M)
-  m_max <- max(flowline_points$POINT_M)
-
-  ## Calculate min and max z
-  m_min_z <- min(flowline_points[flowline_points$POINT_M == m_min, ]$Z)
-  m_max_z <- max(flowline_points[flowline_points$POINT_M == m_max, ]$Z)
-
-  ## Check downstream end is a lower elevation than upstream end
-  assert_that(m_min_z < m_max_z,
-              msg = paste("The flowline used to create", name,
-                          "is not digitized beginning at the downstream end."))
+  direction_groups <- if ("stream_id" %in% names(flowline_points))
+    split(seq_len(nrow(flowline_points)), flowline_points$stream_id) else
+    list(seq_len(nrow(flowline_points)))
+  direction_ok <- vapply(direction_groups, function(i) {
+    values <- flowline_points$POINT_M[i]
+    downstream <- flowline_points$Z[i][values == min(values)]
+    upstream <- flowline_points$Z[i][values == max(values)]
+    min(downstream) < max(upstream)
+  }, logical(1))
+  assert_that(all(direction_ok),
+    msg = paste("A flowline used to create", name,
+      "is not digitized beginning at the downstream end."))
 
   TRUE
 }

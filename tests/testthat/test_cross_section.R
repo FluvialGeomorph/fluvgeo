@@ -55,3 +55,22 @@ test_that("check for flipped cross sections", {
     watershed = "skip"
   ))
 })
+
+test_that("cross sections honor explicit kilometer Flowline Point measures", {
+  line <- sf::st_sf(ReachName = "Reach one", geometry = sf::st_sfc(
+    sf::st_linestring(matrix(c(0, 0, 0, 10), ncol = 2, byrow = TRUE)),
+    crs = 26915))
+  dem <- terra::rast(ncols = 4, nrows = 14, xmin = -2, xmax = 2,
+    ymin = -2, ymax = 12, crs = "EPSG:26915")
+  terra::values(dem) <- rep(seq(20, 10, length.out = 14), each = 4)
+  points <- flowline_points(line, dem, station_distance = 1,
+    measure_units = "km")
+  points$POINT_M_units <- "km"
+  xs <- sf::st_sf(geometry = sf::st_sfc(
+    sf::st_linestring(matrix(c(-1, 5, 1, 5), ncol = 2, byrow = TRUE)),
+    crs = 26915))
+
+  result <- cross_section(xs, points, watershed = "skip")
+
+  expect_equal(result$km_to_mouth, result$POINT_M, tolerance = 1e-12)
+})

@@ -84,6 +84,32 @@ upstream, but coverage remains partial. Therefore:
 - evaluate replacements for scientific validity, portability, licensing,
   reproducibility, performance, and maintenance cost.
 
+`ohwm2` already established the refactoring pattern of adding reusable spatial
+capabilities here so Shiny could operate without ArcPy. For rapid deployment it
+used a manually digitized Flowline as the entry point and drove development of
+`flowline()` and `flowline_points()` plus their downstream analyses. FG Studio
+continues that proven strategy, supplies the automated upstream workflow that
+`ohwm2` intentionally deferred, and checks existing functions against the full
+legacy and downstream requirements before adding or changing behavior.
+
+Replacement development follows the User Manual workflow sequence, but package
+functions do not need to mirror ArcPy scripts one for one. Define a reusable
+analyst outcome, remove avoidable client inputs, and encode deterministic checks
+in the backend. FG Studio supplies the implementation-first workflow and real-
+data evidence; verified representation requirements feed back into FGDB. The
+target is for L1/L2/L3 desktop script tools to become thin callers of these
+functions and ultimately shed ArcPy derivation dependencies, without disrupting
+production before each capability is qualified.
+
+The Flowline Points replacement follows that boundary. The established
+`flowline_points()` metre-based API remains available to `ohwm2` and arbitrary
+single-line callers. `reach_flowline_points()` supplies the kilometer legacy
+profile for one ordered Stream, while `study_area_flowline_points()` composes
+all saved Streams into one mouth-referenced network using analyst-defined
+Stream corridors and raster-aware confluence checks. FG Studio owns review and
+immutable candidate persistence; FGDB owns governed reference-frame identity,
+acceptance, and comparison-event calibration.
+
 The package must not be described as fully standalone until repository evidence
 supports that claim.
 
