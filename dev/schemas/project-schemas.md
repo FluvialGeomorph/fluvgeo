@@ -43,6 +43,18 @@ Receipt-bound read-only metadata inspection is defined in
 [source DEM inspection](stream-dem-inspection.md), including the additive grid
 fields in vertical-reference observations. It does not create accepted terrain.
 
+## Paired inundation footprints
+
+`water_surface_extents()` accepts a single-layer REM, a same-CRS flowline, and
+finite channel and floodplain elevations in the REM's vertical units, with the
+channel strictly lower. It returns unsimplified flowline-connected `channel`
+and `floodplain` polygons and hole-filled `channel_outer` and
+`floodplain_outer` polygons. The outer variants fill interior rings without
+connecting disconnected components. These are transient bathtub inundation
+footprints, not established bank lines, modeled flow paths, or a replacement
+for a legacy cross-section feature class. The existing `water_surface_poly()`
+API and its simplification remain unchanged for existing consumers.
+
 ## Cross-section watershed contract
 
 Validated Study Area CRS choices use the existing analysis_reference table;

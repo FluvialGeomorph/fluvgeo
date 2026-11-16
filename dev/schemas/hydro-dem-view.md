@@ -1,14 +1,23 @@
 # Hydro DEM viewport display
 
-`prepare_hydro_dem_view(source, bounds, directory, pixels, cache_directory, build_cache)` accepts a file-backed
-single-band elevation GeoTIFF and geographic viewport bounds. It returns temporary
-elevation/hillshade raster paths, local elevation limits, source resolution and
+`prepare_hydro_dem_view(source, bounds, directory, pixels, cache_directory, build_cache, source_id)` accepts a file-backed
+single-band elevation GeoTIFF and geographic viewport bounds. It returns
+file-backed elevation/hillshade raster paths, local elevation limits, source resolution and
 units, and a flag identifying unaggregated source sampling. It does not produce
 an analytical hydro DEM or modify the input raster.
 
 Cache full-resolution elevation and hillshade COGs with averaged overviews in
-the caller's display cache directory. Key by path, size, modification time and
-display recipe; publish completed caches atomically. Source DEMs are unchanged.
+the caller's display cache directory. Also retain the 12 most recently used
+prepared viewports in that directory, keyed by source identity, snapped source
+extent, output dimensions, and pyramid use. This bounded, file-backed reuse lets
+multiple app maps avoid repeating crop, hillshade, and Web Mercator reprojection
+without retaining raster values in an R session or adding extra browser layers.
+Publish completed caches atomically. Source DEMs are unchanged.
+Managed producers call `prepare_hydro_dem_display_cache()` in their existing
+background terrain job before publishing a Hydro DEM. They pass the immutable
+output content identity both while building and while reading so an atomic move
+does not invalidate the cache. Interactive maps set `build_cache=FALSE`: raster
+overview and statistics construction is production work, never first-draw work.
 Read viewport windows using GDAL translate with overview-aware output sizing;
 `build_cache=FALSE` reuses a completed cache but never builds a missing one.
 Without a cache, translate the source directly into a bounded display window and

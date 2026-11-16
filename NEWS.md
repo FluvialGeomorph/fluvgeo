@@ -1,3 +1,13 @@
+# fluvgeo 2026.11.12.9074
+
+* Reuse recently prepared Hydro DEM viewports from a bounded 12-entry,
+  file-backed display cache. Flowline and Flowline Points clients can share the
+  crop, hillshade, and display reprojection work without retaining raster
+  values in R or accumulating browser layers.
+* Add `prepare_hydro_dem_display_cache()` so a background producer can
+  precompute elevation/hillshade COG overviews and statistics. Immutable content
+  identities keep that cache valid across atomic publication moves.
+
 # fluvgeo 2026.10.06.9073
 
 * Add `study_area_flowline_points()` to derive a single mouth-referenced
