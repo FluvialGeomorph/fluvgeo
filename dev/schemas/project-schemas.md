@@ -333,3 +333,70 @@ requires separate piece identities and source lineage to support splitting befor
 or after assembly. The [9032 piece evidence contract](reach-pieces.md) implements
 saved-Reach splitting first. Whole-COMID contexts remain compatible; explicit
 piece-enabled editing requires 9032 or newer. No production clients are upgraded.
+## Exploratory cross-section layout interface
+
+`cross_section_layout()` consumes one downstream-to-upstream simple XY
+LINESTRING and nested hole-filled channel/floodplain polygons in the same known
+projected CRS. Metre spacing/tangent parameters are converted to that CRS unit.
+It returns sections, centerlines, direction samples, failures and parameters plus three multipart region polygons, component polygons, Voronoi skeletons, raw centerlines and component diagnostics.
+This interface does not replace an existing `cross_section()` data structure.
+
+Sections have at least four XY vertices in downstream left-to-right order, mutable integer
+`Seq`, `ReachName`, a session `candidate_id`, local `distance_m`, channel rotation,
+downstream tangent components, side inferred/supported flags and an edited flag.
+Method v4 adds per-side leg status, signed rotation in degrees, shortened-tangent,
+raw-centerline and polygon-visibility-adjusted flags. Channel direction absence
+is distinct from raw-source/short-window information. `no_floodplain` denotes a
+bank on the outer boundary without adjacent mapped overbank; this has no leg but
+is not missing direction evidence. A failed bank-to-centerline visibility test
+selects the nearest tested visible segment projection, preserving source paths.
+Method v6 constructs perpendicular channel-centerline-normal cuts containing
+each sampled station. Width minimization and conflict-driven channel rotation
+are removed; the historical channel angle bound remains accepted for API
+compatibility. Selected banks remain fixed during floodplain routing.
+Full-coverage alternatives stay within the same component. Straight floodplain
+legs are the default (`allow_overbank_bends = FALSE`). When enabled, additional
+vertices may occur throughout that polygon without a one-bend or centerline-only
+restriction. GEOS constrained triangulation, graph routing and visibility
+shortcuts route around other sections. Integer left_bank_vertex/right_bank_vertex
+indices identify adjacent channel banks; per-side bend counts and routed flags
+describe added geometry. Directed shared boundary chains and whole-channel bank
+arcs check station rank, including across floodplain components. Outer targets
+are assigned to increasing Seq, refined within ordered neighbor intervals when
+needed, then frozen. Straight contained connections or optional constrained
+polygon routes avoid accepted legs and other channel cuts. A routed endpoint
+cannot slide along its boundary. Residual contacts and unavailable complete
+routes remain explicit; no_ordered_route leaves a flagged bank-only leg. The initial
+overbank bound is 30 degrees, adjustable through 60; it is an explicit parameter,
+not hydraulic acceptance. Neither leg is shortened to hide a collision.
+`cross_section_layout_review()` refreshes exact legacy-named double endpoint
+fields (`x_start`, `y_start`, `x_end`, `y_end`) in coordinate units, all-pair
+conflict/contact labels, separate channel/left/right conflict flags, self-crossing and orientation flags, and separate
+left/right boundary gaps and outside-floodplain length in metres. It retains
+geometry unchanged. A zero endpoint gap is not sufficient coverage evidence.
+With optional boundary_chains supplied, review also refreshes actual bank/outer
+order status/conflicts and departure from perpendicular. boundary_chains
+LINESTRINGs and boundary_anchors POINTs retain local chain identity/role,
+orientation, candidate/Seq/side links, proposed/assigned chainage and explicit
+feature-CRS measure units. Generated targets remain separate from manual edits.
+Missing channel crossings remain failures; missing side support retains a
+flagged candidate with an unavailable endpoint at its bank. Side paths and
+sample observed/inferred flags are direction proxies, not hydraulic results. `cross_section_regions()` owns independent channel/left/right polygon partition and centerline extraction. Centerlines are Voronoi routes with separate Douglas-Peucker/Chaikin proposals; containment failures retain the raw route and an explicit flag. Gaps remain disconnected. A matching geometry/settings fingerprint permits reuse independently of cut-line spacing.
+
+`check_cross_section_layout()` enforces finite XY geometry, exact endpoint
+fields, integer contiguous `Seq`, upstream local distances and unique candidate
+keys. Its `candidate_table` profile additionally validates explicit typed
+layout/REM metadata for the standard `cross_section` table. Polygon-centerline
+methods use distinct tangent-distance, boundary-spacing and Chaikin-pass fields;
+v4 additionally validates declared overbank rotation bounds, leg status,
+rotation angles, bend permission and explicit bank indices. Method v6 requires
+explicit typed boundary-order diagnostics and supports
+multiple bends without a vertex cap; optional polygon routing requires sf >=
+1.1-2 and GEOS >= 3.10. Historical four-node
+profiles remain readable without silently accepting added vertices. The retired loess support field is typed missing, never
+repurposed. FG Studio assigns
+opaque local keys and owns immutable GeoPackage draft persistence; this backend
+does not create governed identities or accepted calibrated stationing. The
+standard name and metadata contract live in
+`../../../FGDB/dev/schemas/cross-section-feature-contract.md`. Existing
+`cross_section()`, `check_cross_section()` and downstream consumers are unchanged.

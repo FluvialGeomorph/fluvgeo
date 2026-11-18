@@ -3,6 +3,10 @@
 useDynLib(fluvgeo, .registration=TRUE)
 
 export(arcgis_auth)
+export(cross_section_layout)
+export(cross_section_regions)
+export(cross_section_layout_review)
+export(check_cross_section_layout)
 export(combine_study_area_polygons)
 export(preview_stream_corridor)
 export(order_drainage_flowlines)

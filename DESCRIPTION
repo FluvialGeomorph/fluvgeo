@@ -28,6 +28,7 @@ BugReports: https://github.com/FluvialGeomorph/fluvgeo/issues
 Depends: 
     R (>= 2.10)
 Imports: 
+    centerline (>= 0.2.5),
     arcgislayers,
     arcgisutils,
     assertthat,
@@ -60,7 +61,7 @@ Imports:
     rlang,
     rLFT,
     scales,
-    sf,
+    sf (>= 1.1-2),
     sfnetworks (>= 0.6.6),
     smoothr,
     stats,

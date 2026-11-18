@@ -1,5 +1,43 @@
 # fluvgeo 2026.11.12.9074
 
+* Polygon-centerline layout v6 replaces channel-width minimization and
+  conflict-driven channel rotation with perpendicular centerline-normal cuts.
+  Shared boundary chains and whole-channel bank arcs retain ordering evidence;
+  outer targets follow Seq order before fixed-target nonintersecting floodplain
+  routing. Optional extra vertices cannot slide an endpoint past its neighbor.
+  Review refreshes actual anchor order and channel skew after edits; unavailable
+  routes and remaining channel contacts stay explicit. Existing cross_section
+  APIs and legacy field contracts remain unchanged.
+
+* Polygon-centerline layout v5 selects channel cuts jointly to reduce conflicts,
+  then searches full-coverage floodplain alternatives without shortening them.
+  Straight legs are the default. Optional additional vertices can follow routes
+  throughout each floodplain polygon, with no one-bend cap or centerline-only
+  restriction. Constrained GEOS triangulation and visibility shortcuts provide
+  routes around other sections; this option requires sf >= 1.1-2 and GEOS >= 3.10.
+  Explicit bank indices preserve the channel in polylines with multiple bends.
+  Separate channel/side conflict flags, bend counts, incomplete legs and source
+  evidence remain reviewable. Residual conflicts stay explicit; this is a
+  provisional geometric layout, not hydraulic approval. Existing four-vertex
+  profiles remain readable and existing cross_section APIs are unchanged.
+
+
+* Replace exploratory slice-midpoint/loess paths with independent channel,
+  left-floodplain and right-floodplain polygon centerlines. New
+  `cross_section_regions()` retains three multipart regions, components,
+  Voronoi skeletons, raw routes, constrained Chaikin proposals and diagnostics.
+  It uses maintained `centerline`/`smoothr` facilities; copied toolbox thinning
+  code is not retained. Cartographic settings and local tangent distance are
+  distinct, and matching centerline artifacts can be reused across section spacing.
+
+* Add exploratory `cross_section_layout()` for editable candidate polylines,
+  independent side-path estimates, missing-support evidence and bounded shortest
+  channel crossings. `cross_section_layout_review()` refreshes all-pair contacts,
+  orientation, endpoint fields and separate floodplain diagnostics after edits.
+  `check_cross_section_layout()` validates geometry and the standard candidate
+  table's explicit layout/REM metadata. No automatic trimming, legacy export or
+  hydraulic-model suitability is asserted.
+
 * Reuse recently prepared Hydro DEM viewports from a bounded 12-entry,
   file-backed display cache. Flowline and Flowline Points clients can share the
   crop, hillshade, and display reprojection work without retaining raster
