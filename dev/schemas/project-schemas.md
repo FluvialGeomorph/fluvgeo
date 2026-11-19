@@ -333,7 +333,7 @@ requires separate piece identities and source lineage to support splitting befor
 or after assembly. The [9032 piece evidence contract](reach-pieces.md) implements
 saved-Reach splitting first. Whole-COMID contexts remain compatible; explicit
 piece-enabled editing requires 9032 or newer. No production clients are upgraded.
-## Exploratory cross-section layout interface
+## Cross-section layout MVP interface
 
 `cross_section_layout()` consumes one downstream-to-upstream simple XY
 LINESTRING and nested hole-filled channel/floodplain polygons in the same known
@@ -341,21 +341,40 @@ projected CRS. Metre spacing/tangent parameters are converted to that CRS unit.
 It returns sections, centerlines, direction samples, failures and parameters plus three multipart region polygons, component polygons, Voronoi skeletons, raw centerlines and component diagnostics.
 This interface does not replace an existing `cross_section()` data structure.
 
-Sections have at least four XY vertices in downstream left-to-right order, mutable integer
+Sections have at least two XY vertices in downstream left-to-right order, mutable integer
 `Seq`, `ReachName`, a session `candidate_id`, local `distance_m`, channel rotation,
 downstream tangent components, side inferred/supported flags and an edited flag.
-Method v4 adds per-side leg status, signed rotation in degrees, shortened-tangent,
+Endpoint banks are permitted: channel-only cross sections have two vertices and
+one straight overbank yields three. Absent/unconstructed legs contribute no
+duplicate coordinates. Explicit side status distinguishes no_floodplain from
+failed construction; boundary gaps still expose incomplete coverage. Complete
+legs require positive geometry, no_floodplain forbids positive legs and the current method
+rejects adjacent duplicate vertices. Review's section_parts field describes
+constructed parts (channel_only, channel_left_overbank, channel_right_overbank,
+channel_both_overbanks), independently of acceptance or coverage.
+Per-side diagnostics retain leg status, signed rotation in degrees, shortened-tangent,
 raw-centerline and polygon-visibility-adjusted flags. Channel direction absence
 is distinct from raw-source/short-window information. `no_floodplain` denotes a
 bank on the outer boundary without adjacent mapped overbank; this has no leg but
 is not missing direction evidence. A failed bank-to-centerline visibility test
 selects the nearest tested visible segment projection, preserving source paths.
-Method v6 constructs perpendicular channel-centerline-normal cuts containing
-each sampled station. Width minimization and conflict-driven channel rotation
-are removed; the historical channel angle bound remains accepted for API
-compatibility. Selected banks remain fixed during floodplain routing.
-Full-coverage alternatives stay within the same component. Straight floodplain
-legs are the default (`allow_overbank_bends = FALSE`). When enabled, additional
+The current method starts with perpendicular channel-centerline-normal segments through
+each saved Flowline station. Contact/bank-order windows, including sections with
+mapped overbanks, receive joint bounded angular search before overbank construction
+with hard bank-rank and all-pair separation constraints, a 2.5-degree grid and
+30-degree default search bound. Smaller tested maximum departures are tried
+first; there is no width/length objective. Windows include up to two eligible
+neighbors per side, at most 64 sections and 50,000 search nodes. Actual bank arcs
+and GEOS contacts audit the selected geometry independently of search pruning.
+Failure/budget exhaustion leaves original flagged geometry. Selected banks
+remain fixed during floodplain routing. channel_deconfliction_status records
+the outcome; actual rotation, channel_rotated, channel_skewed and
+channel_limit_exceeded refresh on review. A provisional 15-degree review bound
+is separate from the search bound; neither is hydraulic acceptance. Per-row
+channel_angle_limit_deg/channel_rotation_review_deg and candidate-table
+layout_channel_angle_limit_deg/layout_channel_rotation_review_deg retain policy.
+Full-coverage alternatives stay within the same component. Additional floodplain
+vertices are enabled by default (`allow_overbank_bends = TRUE`). Additional
 vertices may occur throughout that polygon without a one-bend or centerline-only
 restriction. GEOS constrained triangulation, graph routing and visibility
 shortcuts route around other sections. Integer left_bank_vertex/right_bank_vertex
@@ -364,7 +383,7 @@ describe added geometry. Directed shared boundary chains and whole-channel bank
 arcs check station rank, including across floodplain components. Outer targets
 are assigned to increasing Seq, refined within ordered neighbor intervals when
 needed, then frozen. Straight contained connections or optional constrained
-polygon routes avoid accepted legs and other channel cuts. A routed endpoint
+polygon routes avoid accepted legs and other channel XS segments. A routed endpoint
 cannot slide along its boundary. Residual contacts and unavailable complete
 routes remain explicit; no_ordered_route leaves a flagged bank-only leg. The initial
 overbank bound is 30 degrees, adjustable through 60; it is an explicit parameter,
@@ -381,15 +400,15 @@ orientation, candidate/Seq/side links, proposed/assigned chainage and explicit
 feature-CRS measure units. Generated targets remain separate from manual edits.
 Missing channel crossings remain failures; missing side support retains a
 flagged candidate with an unavailable endpoint at its bank. Side paths and
-sample observed/inferred flags are direction proxies, not hydraulic results. `cross_section_regions()` owns independent channel/left/right polygon partition and centerline extraction. Centerlines are Voronoi routes with separate Douglas-Peucker/Chaikin proposals; containment failures retain the raw route and an explicit flag. Gaps remain disconnected. A matching geometry/settings fingerprint permits reuse independently of cut-line spacing.
+sample observed/inferred flags are direction proxies, not hydraulic results. `cross_section_regions()` owns independent channel/left/right polygon partition and centerline extraction. Centerlines are Voronoi routes with separate Douglas-Peucker/Chaikin proposals; containment failures retain the raw route and an explicit flag. Gaps remain disconnected. A matching geometry/settings fingerprint permits reuse independently of cross-section spacing.
 
 `check_cross_section_layout()` enforces finite XY geometry, exact endpoint
 fields, integer contiguous `Seq`, upstream local distances and unique candidate
 keys. Its `candidate_table` profile additionally validates explicit typed
 layout/REM metadata for the standard `cross_section` table. Polygon-centerline
-methods use distinct tangent-distance, boundary-spacing and Chaikin-pass fields;
-v4 additionally validates declared overbank rotation bounds, leg status,
-rotation angles, bend permission and explicit bank indices. Method v6 requires
+methods use distinct tangent-distance, boundary-spacing and Chaikin-pass fields.
+The current profile also validates declared overbank rotation bounds, leg status,
+rotation angles, bend permission and explicit bank indices. It requires
 explicit typed boundary-order diagnostics and supports
 multiple bends without a vertex cap; optional polygon routing requires sf >=
 1.1-2 and GEOS >= 3.10. Historical four-node
@@ -400,3 +419,55 @@ does not create governed identities or accepted calibrated stationing. The
 standard name and metadata contract live in
 `../../../FGDB/dev/schemas/cross-section-feature-contract.md`. Existing
 `cross_section()`, `check_cross_section()` and downstream consumers are unchanged.
+
+Current layout method polygon-centerline-v11 retains the accepted method-v10
+preparation of the mainstem channel before
+LOB/ROB partitioning. The polygon's raw channel medial route supplies geometry
+and local width; the saved Flowline selects the longitudinal route. Eligible
+off-route lobes are pruned along the disc envelope while preserving the reference
+route, source component count and other banks. A native 1 m depth screen precedes
+single-attachment testing; defaults use 0.5 m padding and attachment depth at
+least half the attachment endpoint chord width. Padding/depth are independent
+of boundary sampling. Tangent extent is diagnostic, so hooked arms can qualify.
+One final overlay replaces repeated full-channel mouth splits; no recursive
+pruning is performed. The owner accepts this method-v10 pruning recipe and its
+defaults as the cross-section channel-preparation baseline. This does not confer
+hydraulic acceptance or accept unresolved station/bank-order/routing behavior.
+source_channel, channel_footprint, channel_reference and channel_branches retain
+raw/prepared/reference/lobe evidence. Branch dimensions declare native
+measure_units. Existing depth remains distance from the attachment endpoint
+chord; additive attachment_depth uses the full attachment curve. cleanup_status
+records removal or retention by shape/reference/topology checks. Region artifacts
+declare prepare_channel explicitly; matching constructor reuse honors and records
+that choice. The normal FG Studio path enables cleanup.
+Region diagnostics add route_fragment_fallback and route_span_fraction. Failed
+global-anchor extraction retries within the connected skeleton component with
+the greatest Flowline-measure span, with clearance/coordinate tie breaks.
+Existing successful routes remain unchanged and disconnected fragments are not
+joined. The fraction is measured for fallback routes only; original successful
+and unavailable routes have a missing fraction.
+Removed channel area remains in the total floodplain partition.
+
+Hidden centerlines can be associated through contained geodesic paths, with
+explicit left/right_geodesic_direction flags and geodesic_centerline support
+status. Shared component meshes support local group repair. Four priorities,
+64-section windows and 16 exact-route fallbacks bound each group; complete-route
+count precedes an interior-crowding score. Weighted mesh routes prefer room away
+from boundaries with contained simplification/smoothing. Banks and ordered outer
+targets remain fixed. left/right_group_routed records generated group selection.
+Candidate-table validation requires these logical flags without changing any
+legacy field names, types or coordinate units. Local draft schema 9 persists
+these additions; prior methods remain separate compatibility profiles.
+
+Method v11 additionally plans outer targets and routes jointly in difficult
+families of at most 32 sections. Five target allocations and three route orders
+are bounded alternatives; shared component meshes are reused. Completion,
+adaptive endpoint spacing and turn quality govern selection, in that order.
+Every replacement completes the family without losing an existing complete leg,
+moving channel banks or changing saved Flowline station measures. Unsuccessful
+searches retain the incumbent. Generated outer measures and existing group flags
+record the selected family. No field names, units, schema-9 representation,
+accepted pruning recipe or existing consumer defaults change.
+Valid incumbent paths can guide contained deformation before mesh reconstruction.
+Static mesh geometry/clearance/point attachments are cached independently of
+obstacle checks, which are refreshed for each route proposal.

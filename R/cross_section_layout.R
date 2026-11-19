@@ -1,8 +1,8 @@
-#' Exploratory cross-section layout with optional floodplain bends
+#' Cross-section layout with automatic deconfliction
 #'
-#' Estimate separate overbank paths and editable cut lines from reviewed outer
-#' inundation footprints. This is a geometry experiment, not a hydraulic model
-#' or a replacement legacy feature class.
+#' Build reviewable channel and overbank XS segments from reviewed inundation
+#' footprints, with polygon-derived direction, ordered endpoints and automatic
+#' deconfliction. Return source evidence and diagnostics for local draft workflows.
 #' @param flowline One simple LINESTRING, directed downstream to upstream.
 #' @param channel,floodplain Hole-filled sf polygon footprints in the same
 #'   projected CRS as flowline. Channel must be contained in floodplain.
@@ -14,15 +14,18 @@
 #' @param smoothing_refinements Number of Chaikin smoothing passes, 0 to 10.
 #' @param region_artifacts Optional matching output of cross_section_regions(),
 #'   reused only when its geometry/settings fingerprint matches these inputs.
-#' @param angle_limit_deg Historical channel rotation bound, retained for API
-#'   compatibility. Method v6 uses perpendicular channel cuts without rotation.
+#'   Its explicit prepare_channel choice is honored and recorded in parameters.
+#' @param angle_limit_deg Maximum channel-normal departure searched to resolve
+#'   channel contacts, with or without overbanks, 0 to 60 degrees; default 30. Search uses 2.5-degree
+#'   steps. Zero disables angular repair. Rotations above 15 degrees retain a
+#'   review flag; these are provisional geometric settings, not hydraulic limits.
 #' @param overbank_angle_limit_deg Maximum overbank-normal rotation in degrees,
 #'   0 to 60. Straight targets respect this bound; five-degree angular alternatives
 #'   provide tentative targets before ordered assignment and routing.
 #' @param allow_overbank_bends Allow additional floodplain vertices for
-#'   deconfliction. Defaults to FALSE. Optional polygon-contained routes may have
+#'   deconfliction. Defaults to TRUE. Polygon-contained routes may have
 #'   multiple vertices away from the centerline; there is no one-bend cap.
-#' @return A list with sections (sf lines with at least four XY vertices), paths (separate side
+#' @return A list with sections (sf lines with at least two XY vertices), paths (separate side
 #'   estimates), samples (observed/inferred side evidence), failures, conflicts
 #'   and parameters. Empty or unsupported sections remain explicit failures.
 #'   candidate_id is a session key, not governed or durable identity. Full-coverage
@@ -31,20 +34,34 @@
 #'   conflicts remain explicit. Seq increases upstream.
 #'   boundary_chains and boundary_anchors retain directed ordering edges and
 #'   generated bank/planned outer targets in the feature CRS unit.
+#'   Source/prepared channel polygons, the raw channel reference centerline and
+#'   lobe review polygons retain channel-cleanup evidence. Per-side geodesic and
+#'   group-routing flags distinguish generated evidence. channel_oriented checks
+#'   channel-bank direction, outer_chord_oriented checks the endpoint chord, and
+#'   the established oriented field retains their conjunction.
 #' @details Contiguous channel crossings containing each center are selected
-#'   perpendicular to the local centerline tangent. Width minimization and
-#'   conflict-driven channel rotation are not used. All three polygon centerlines derive
+#'   perpendicular to the local centerline tangent. Contacting
+#'   channel windows may use bounded joint rotations before overbank construction. There is no
+#'   width or length objective. All three polygon centerlines derive
 #'   from Voronoi skeleton routing and cartographic Chaikin smoothing. An
 #'   overbank leg uses the component touching its bank vertex. Missing/ambiguous
 #'   side support retains a flagged bank-only leg. A bank on the outer boundary
 #'   with no adjacent overbank is separately classified as no_floodplain.
+#'   Method v7 omits absent or unconstructed overbank edges: channel-only
+#'   cross sections have two vertices; a straight one-sided cross section has three. Failed
+#'   construction retains its warning status and boundary gap. Explicit bank
+#'   indices may identify endpoints; no zero-width placeholder edge is required.
 #'   If nearest-point matching crosses a channel indentation, the nearest tested
 #'   segment projection visible through the component supplies the measurement
 #'   location. The original centerline is unchanged. A one-millimetre numerical
 #'   polygon margin is used for visibility and connected ray intersections.
+#'   Channel angular search includes up to two eligible neighbors on each side,
+#'   at most 64 sections and 50,000 constraint-search nodes per window. A failed
+#'   or exhausted search retains the original flagged geometry. Both bank rank
+#'   and all-pair nonintersection must pass an independent final geometry audit.
 #'   Bank ranks are checked along directed shared boundaries; outer targets are
 #'   assigned in Seq order and refined within their ordered neighbor interval
-#'   before routing. Previously accepted legs and other channel cuts are barriers.
+#'   before routing. Previously accepted legs and other channel XS segments are barriers.
 #'   A routed endpoint cannot slide along the boundary. These are
 #'   provisional direction proxies requiring analyst review. All distance
 #'   parameters are converted to the projected CRS unit.
@@ -53,12 +70,26 @@
 #'   additional routes around neighboring sections. Bends need not be on a
 #'   centerline. Every route must remain in its component and reach the outer
 #'   boundary. This optional routing requires GEOS 3.10 or later.
+#'   The channel polygon's own medial route and local width guide lobe cleanup
+#'   before LOB/ROB partitioning. Hidden centerlines use contained mesh geodesic
+#'   associations. Difficult overbank neighborhoods can be reconsidered together
+#'   with fixed banks/targets; complete coverage precedes reducing interior
+#'   crowding. Four priorities, 64-section groups and 16 exact-route fallbacks
+#'   bound this search. Neither channel width nor section length is minimized.
+#'   A subsequent whole-bend pass jointly tests targets and routes in families of
+#'   at most 32 sections, including complete but crowded or awkward legs. It tests
+#'   adaptive isotonic, relaxed and uniform target distributions in three routing orders,
+#'   reusing valid existing paths as deformation guides before mesh reconstruction.
+#'   Complete coverage, useful endpoint separation and fewer unnecessary turns
+#'   take priority in that order. A complete incumbent is retained whenever no
+#'   feasible improvement is found. Channel banks and saved Flowline stations
+#'   remain fixed. Accepted method-v10 channel pruning is unchanged.
 #' @export
 cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
                                  tangent_distance_m = 20, angle_limit_deg = 30,
                                  centerline_spacing_m = 2, smoothing_refinements = 2L,
                                  region_artifacts = NULL, overbank_angle_limit_deg = 30,
-                                 allow_overbank_bends = FALSE) {
+                                 allow_overbank_bends = TRUE) {
   scalar <- function(x) is.numeric(x) && length(x) == 1L && is.finite(x)
   if(!is.logical(allow_overbank_bends) || length(allow_overbank_bends)!=1L || is.na(allow_overbank_bends))
     stop("Declare whether floodplain bends are allowed.",call.=FALSE)
@@ -85,14 +116,16 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   fp <- sf::st_union(sf::st_geometry(floodplain))
   if (sum(as.numeric(sf::st_area(sf::st_difference(ch, fp)))) > 1e-6)
     stop("Channel footprint must be contained in floodplain.", call. = FALSE)
+  coordinate_unit <- crs$ud_unit
   to_unit <- function(m) as.numeric(units::set_units(
-    units::set_units(m, "m"), crs$ud_unit, mode = "standard"))
+    units::set_units(m, "m"), coordinate_unit, mode = "standard"))
   spacing <- to_unit(spacing_m); window <- to_unit(tangent_distance_m)
   length <- as.numeric(sf::st_length(flowline))
   if (!is.finite(length) || length <= spacing / 2)
     stop("The selected flowline is shorter than half the section spacing.", call. = FALSE)
+  sampling_flowline <- sf::st_set_crs(sf::st_geometry(flowline),NA)
   xy_at <- function(s) sf::st_coordinates(sf::st_line_sample(
-    sf::st_geometry(flowline), sample = pmin(1, pmax(0, s / length))))[, 1:2, drop = FALSE]
+    sampling_flowline, sample = pmin(1, pmax(0, s / length))))[, 1:2, drop = FALSE]
   stations <- seq(spacing / 2, length, by = spacing)
   stations <- stations[stations < length]
   support <- stations
@@ -129,10 +162,28 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   artifacts <- region_artifacts
   if(is.null(artifacts))artifacts <- cross_section_regions(flowline,channel,floodplain,
     centerline_spacing_m=centerline_spacing_m,smoothing_refinements=smoothing_refinements)
+  prepare_channel <- artifacts$prepare_channel
+  if(!is.logical(prepare_channel) || length(prepare_channel)!=1L || is.na(prepare_channel))
+    stop("Polygon artifacts must declare their channel preparation choice.",call.=FALSE)
   if(!identical(artifacts$input_key,cross_section_regions_key(flowline,channel,floodplain,
-      centerline_spacing_m,smoothing_refinements)))
+      centerline_spacing_m,smoothing_refinements,prepare_channel)))
     stop("Polygon centerline artifacts do not match these inputs and settings.",call.=FALSE)
-  paths <- artifacts$centerlines
+  channel <- artifacts$channel_footprint
+  ch <- sf::st_union(sf::st_geometry(channel))
+  # Validate the projected CRS and convert physical distances once, then run
+  # native planar GDAL/GEOS operations on coordinate-preserving working copies.
+  # This avoids repeated PROJ/unit parsing (about 90% of sampled R2 layout time).
+  # Source artifacts stay untouched; restore original CRS/unit metadata at the
+  # output boundary. No reprojection, simplification or unit change occurs.
+  source_crs <- crs;source_floodplain <- floodplain
+  crs <- sf::st_crs(NA)
+  channel <- sf::st_set_crs(channel,NA);floodplain <- sf::st_set_crs(floodplain,NA)
+  flowline <- sf::st_set_crs(flowline,NA)
+  ch <- sf::st_set_crs(ch,NA);fp <- sf::st_set_crs(fp,NA)
+  paths <- sf::st_set_crs(artifacts$centerlines,NA)
+  regions <- sf::st_set_crs(artifacts$regions,NA)
+  sampling_paths <- sf::st_set_crs(sf::st_geometry(paths),NA)
+  sampling_lengths <- as.numeric(sf::st_length(sampling_paths))
   observed <- list(matrix(NA_real_,nrow(centers),2),matrix(NA_real_,nrow(centers),2))
   side_normals <- list(matrix(NA_real_,nrow(centers),2),matrix(NA_real_,nrow(centers),2))
   inferred <- list(rep(TRUE,nrow(centers)),rep(TRUE,nrow(centers)))
@@ -141,22 +192,28 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   short_tangent <- raw_direction <- list(rep(FALSE,nrow(centers)),rep(FALSE,nrow(centers)))
   visibility_adjusted <- list(rep(FALSE,nrow(centers)),rep(FALSE,nrow(centers)))
   visibility_polygons <- new.env(parent=emptyenv())
+  navigation_meshes <- new.env(parent=emptyenv())
+  mesh_for <- function(id,polygon) {
+    if(!exists(id,envir=navigation_meshes,inherits=FALSE))assign(id,cross_section_mesh(polygon),envir=navigation_meshes)
+    get(id,envir=navigation_meshes,inherits=FALSE)
+  }
   tolerance <- to_unit(.001)
   outer_boundary <- sf::st_boundary(fp)
   direction_for <- function(bank,side,reference) {
     region <- if(side==0)"channel" else c("left_floodplain","right_floodplain")[side]
-    components <- artifacts$regions[artifacts$regions$region==region,,drop=FALSE]
+    components <- regions[regions$region==region,,drop=FALSE]
     if(!nrow(components))return(NULL)
     point <- sf::st_sfc(sf::st_point(bank),crs=crs)
     touched <- sf::st_is_within_distance(point,components,dist=to_unit(.001))[[1]]
     eligible <- which(paths$region_id %in% components$region_id[touched])
     if(length(eligible)!=1L)return(NULL)
     j <- eligible[1];path <- sf::st_geometry(paths[j,])
-    position <- as.numeric(sf::st_line_project(path,point))
-    path_length <- as.numeric(sf::st_length(path))
-    at <- function(m)sf::st_coordinates(sf::st_line_sample(path,
+    sample_path <- sampling_paths[j]
+    position <- as.numeric(sf::st_line_project(sample_path,sf::st_set_crs(point,NA)))
+    path_length <- sampling_lengths[j]
+    at <- function(m)sf::st_coordinates(sf::st_line_sample(sample_path,
       sample=pmin(1,pmax(0,m/path_length))))[1,1:2]
-    adjusted <- FALSE
+    adjusted <- FALSE;geodesic <- FALSE;approach <- NULL
     if(side>0) {
       id <- paths$region_id[j]
       if(!exists(id,envir=visibility_polygons,inherits=FALSE))
@@ -173,11 +230,20 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
           sf::st_linestring(coordinates[k:(k+1L),,drop=FALSE])),crs=crs)
         connectors <- sf::st_nearest_points(point,segments)
         visible <- sf::st_covered_by(connectors,polygon,sparse=FALSE)[,1]
-        if(!any(visible))return(NULL)
-        eligible <- which(visible)
-        nearest <- eligible[which.min(as.numeric(sf::st_length(connectors[eligible])))]
-        target <- sf::st_sfc(sf::st_point(sf::st_coordinates(connectors[nearest])[2,1:2]),crs=crs)
-        position <- as.numeric(sf::st_line_project(path,target))
+        if(!any(visible)) {
+          mesh <- mesh_for(id,sf::st_geometry(components[components$region_id==id,]))
+          if(is.null(mesh))return(NULL)
+          match <- cross_section_geodesic_match(bank,path,sf::st_geometry(components[components$region_id==id,]),mesh,tolerance)
+          if(is.null(match))return(NULL)
+          target <- sf::st_sfc(sf::st_point(match$point),crs=crs)
+          approach <- sf::st_coordinates(match$route)[2,1:2]-bank
+          geodesic <- TRUE
+        } else {
+          eligible <- which(visible)
+          nearest <- eligible[which.min(as.numeric(sf::st_length(connectors[eligible])))]
+          target <- sf::st_sfc(sf::st_point(sf::st_coordinates(connectors[nearest])[2,1:2]),crs=crs)
+        }
+        position <- as.numeric(sf::st_line_project(sample_path,sf::st_set_crs(target,NA)))
         adjusted <- TRUE
       }
     }
@@ -188,7 +254,8 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       short=position<window/2 || position>path_length-window/2,
       raw=paths$smoothing_rejected[j],
       visibility_adjusted=adjusted,
-      inferred=paths$smoothing_rejected[j] || position<window/2 || position>path_length-window/2)
+      geodesic=geodesic,approach=approach,
+      inferred=geodesic || paths$smoothing_rejected[j] || position<window/2 || position>path_length-window/2)
   }
   # Use a one-sided GEOS ray, retaining only the connected interval at the bank.
   # Never bridge a gap, exit through the channel, or stop at an inner boundary.
@@ -222,8 +289,8 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   rotations <- rotations[order(abs(rotations),rotations)]
   proposals <- list();proposal_groups <- list();channel_lines <- list()
   angles <- 0
-  # Perpendicularity is a channel invariant. A wide confluence must not rotate
-  # a cut merely to find a narrower crossing or avoid another section.
+  # Begin perpendicular. Contacting runs receive a joint
+  # angular search; a shorter confluence crossing is never an objective.
   channel_options<-list();channel_groups<-vector("list",length(stations));channel_directions<-vector("list",length(stations))
   independent<-rep(NA_integer_,length(stations))
   for(k in seq_along(stations)) {
@@ -244,6 +311,31 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   chosen_channel<-rep(NA_integer_,length(stations))
   if(length(channel_options))chosen_channel<-vapply(channel_groups,function(g)
     if(length(g))g[1] else NA_integer_,integer(1))
+  valid <- which(!is.na(chosen_channel))
+  channel_status <- rep("perpendicular",length(stations));channel_nodes <- 0L
+  if(length(valid)) {
+    initial <- sf::st_sf(candidate_id=paste0("sample-",valid),Seq=as.integer(valid),
+      left_bank_vertex=1L,right_bank_vertex=2L,
+      geometry=sf::st_sfc(lapply(chosen_channel[valid],function(j)sf::st_linestring(channel_options[[j]]$banks)),crs=crs))
+    # Repair banks before deriving any overbank directions, components or targets.
+    # Mapped overbanks must not exclude a contacting channel from this search.
+    eligible <- !vapply(channel_directions[valid],is.null,logical(1))
+    alternatives <- function(j) {
+      k <- valid[j];normal <- c(-tangents[k,2],tangents[k,1])
+      grid <- unique(c(seq(0,angle_limit_deg,by=2.5),angle_limit_deg))
+      angles <- sort(unique(c(-grid,grid)))
+      cuts <- Filter(Negate(is.null),intervals(centers[k,],normal,ch,angles))
+      lapply(cuts,function(cut)list(angle=cut$angle,
+        banks=rbind(centers[k,]+cut$n*cut$cut[1],centers[k,]+cut$n*cut$cut[2])))
+    }
+    solution <- cross_section_channel_deconflict(initial,channel,eligible,alternatives,tolerance,angle_limit_deg)
+    for(j in seq_along(valid)) {
+      index <- chosen_channel[valid[j]]
+      channel_options[[index]]$banks <- sf::st_coordinates(solution$sections[j,])[,1:2,drop=FALSE]
+      channel_options[[index]]$angle <- solution$angle[j]
+    }
+    channel_status[valid] <- solution$status;channel_nodes <- solution$nodes
+  }
   rows <- list(); geometries <- list(); failures <- list()
   for (k in seq_along(stations)) {
     i <- match(stations[k], support); p <- centers[i, ]; normal <- normals[i, ]
@@ -259,7 +351,7 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
     channel_lines[[length(channel_lines)+1L]] <- sf::st_linestring(banks)
     for (side in 1:2) {
       group <- 2L*length(rows)+side;proposal_groups[[group]] <- integer()
-      components <- artifacts$regions[artifacts$regions$region==c("left_floodplain","right_floodplain")[side],,drop=FALSE]
+      components <- regions[regions$region==c("left_floodplain","right_floodplain")[side],,drop=FALSE]
       point <- sf::st_sfc(sf::st_point(banks[side,]),crs=crs)
       touched <- sf::st_is_within_distance(point,components,dist=tolerance)[[1]]
       if(!length(touched)) {
@@ -281,16 +373,17 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       short_tangent[[side]][i] <- direction$short
       raw_direction[[side]][i] <- direction$raw
       visibility_adjusted[[side]][i] <- direction$visibility_adjusted
-      source_status[[side]][i] <- "centerline"
+      source_status[[side]][i] <- if(direction$geodesic)"geodesic_centerline" else "centerline"
       t <- direction$tangent
       n <- c(-t[2], t[1])
       desired <- direction$point-banks[side,]
+      if(!is.null(direction$approach))desired <- direction$approach
       if(sqrt(sum(desired^2))<=tolerance)desired <- banks[side,]-p
       if (sum(n * desired) < 0) n <- -n
       side_normals[[side]][i,] <- n
       region_id <- side_regions[[side]][i]
       if(is.na(region_id))next
-      polygon <- sf::st_geometry(artifacts$regions[artifacts$regions$region_id==region_id,])
+      polygon <- sf::st_geometry(regions[regions$region_id==region_id,])
       alternatives <- outward_options(banks[side,],n,polygon,desired)
       for(option in alternatives) {
         index <- length(proposals)+1L
@@ -301,6 +394,14 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       leg_status[side] <- if(length(alternatives))"complete" else "no_outward_intersection"
       if(length(alternatives)) {
         ends[side,] <- alternatives[[1]]$endpoint;available[side] <- TRUE
+      } else if(allow_overbank_bends) {
+        outer <- suppressWarnings(sf::st_intersection(sf::st_boundary(polygon),outer_boundary))
+        outer <- cross_section_lines(outer)
+        mesh <- mesh_for(region_id,polygon)
+        if(length(outer) && !all(sf::st_is_empty(outer)) && !is.null(mesh)) {
+          target <- cross_section_geodesic_match(banks[side,],sf::st_union(outer),polygon,mesh,tolerance)
+          if(!is.null(target)) {ends[side,]<-target$point;available[side]<-TRUE;leg_status[side]<-"complete"}
+        }
       }
     }
     xy <- rbind(ends[1, ], banks[1, ], banks[2, ], ends[2, ])
@@ -309,7 +410,9 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       sample = k, Seq = as.integer(length(rows) + 1L),
       ReachName = if ("ReachName" %in% names(flowline)) as.character(flowline$ReachName) else "",
       distance_m = stations[k] / to_unit(1), channel_rotation_deg = best$angle,
-      channel_adjusted=chosen_channel[k]!=independent[k],
+      channel_adjusted=abs(best$angle)>1e-7,
+      channel_deconfliction_status=channel_status[k],
+      channel_angle_limit_deg=as.numeric(angle_limit_deg),channel_rotation_review_deg=15,
       channel_inferred=is.null(channel_direction) || channel_direction$inferred,
       channel_direction_unavailable=is.null(channel_direction),
       channel_short_tangent=!is.null(channel_direction) && channel_direction$short,
@@ -322,6 +425,8 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       left_leg_status=leg_status[1],right_leg_status=leg_status[2],
       left_short_tangent=short_tangent[[1]][i],right_short_tangent=short_tangent[[2]][i],
       left_raw_centerline=raw_direction[[1]][i],right_raw_centerline=raw_direction[[2]][i],
+      left_geodesic_direction=source_status[[1]][i]=="geodesic_centerline",
+      right_geodesic_direction=source_status[[2]][i]=="geodesic_centerline",
       left_visibility_adjusted=visibility_adjusted[[1]][i],right_visibility_adjusted=visibility_adjusted[[2]][i],
       left_rotation_deg=NA_real_,right_rotation_deg=NA_real_,
       left_bank_vertex=2L,right_bank_vertex=3L,left_bend_added=FALSE,right_bend_added=FALSE,
@@ -335,6 +440,8 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
   empty$left_region_id <- character();empty$right_region_id <- character()
   empty$channel_inferred <- logical()
   empty$channel_adjusted <- logical()
+  empty$channel_deconfliction_status <- character()
+  empty$channel_angle_limit_deg <- double();empty$channel_rotation_review_deg <- double()
   empty$channel_direction_unavailable <- logical()
   empty$channel_short_tangent <- logical();empty$channel_raw_centerline <- logical()
   for(side in c("left","right"))for(axis in c("dx","dy"))empty[[paste0(side,"_normal_",axis)]] <- double()
@@ -344,6 +451,7 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
     empty[[paste0(side,"_leg_status")]] <- character()
     empty[[paste0(side,"_short_tangent")]] <- logical()
     empty[[paste0(side,"_raw_centerline")]] <- logical()
+    empty[[paste0(side,"_geodesic_direction")]] <- logical()
     empty[[paste0(side,"_visibility_adjusted")]] <- logical()
     empty[[paste0(side,"_rotation_deg")]] <- numeric()
   }
@@ -372,18 +480,29 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
     geometry=sf::st_sfc(lapply(seq_along(support),function(i)
       sf::st_point(if(all(is.finite(observed[[side]][i,])))observed[[side]][i,] else centers[i,])),crs=crs)))
   sections$left_routed<-rep(FALSE,nrow(sections));sections$right_routed<-rep(FALSE,nrow(sections))
-  used_regions <- artifacts$regions[artifacts$regions$region_id %in%
+  used_regions <- regions[regions$region_id %in%
     c(sections$left_region_id,sections$right_region_id),,drop=FALSE]
   chains <- cross_section_boundary_chains(used_regions,channel,floodplain,flowline,paths,tolerance,sections)
   anchors <- cross_section_order_anchors(sections,chains,tolerance)
   margins <- new.env(parent=emptyenv())
-  anchors <- cross_section_refine_targets(sections,artifacts$regions,chains,anchors,tolerance,overbank_angle_limit_deg,margins)
-  sections <- cross_section_ordered_routes(sections,artifacts$regions,anchors,tolerance,
+  anchors <- cross_section_refine_targets(sections,regions,chains,anchors,tolerance,overbank_angle_limit_deg,margins)
+  sections <- cross_section_ordered_routes(sections,regions,anchors,tolerance,
     allow_overbank_bends,overbank_angle_limit_deg,margins)
-  sections <- cross_section_layout_review(sections, floodplain, boundary_chains=chains)
+  bend_plan <- list(windows=0L,accepted=0L,attempts=0L)
+  if(allow_overbank_bends && nrow(sections)) {
+    bend_plan <- cross_section_bend_plan(sections,regions,chains,anchors,tolerance,overbank_angle_limit_deg)
+    sections <- bend_plan$sections;anchors <- bend_plan$anchors
+  }
   channel_anchors <- cross_section_channel_anchors(sections,chains,tolerance)
   if(!is.null(channel_anchors))anchors <- rbind(anchors,channel_anchors)
-  list(sections = sections, paths = paths, samples = do.call(rbind, sample_rows),
+  sections <- sf::st_set_crs(sections,source_crs)
+  chains <- sf::st_set_crs(chains,source_crs);anchors <- sf::st_set_crs(anchors,source_crs)
+  anchors$measure_units <- rep(source_crs$units_gdal,nrow(anchors))
+  sections <- cross_section_layout_review(sections,source_floodplain,boundary_chains=chains)
+  list(sections = sections, paths = artifacts$centerlines,
+    channel_footprint=artifacts$channel_footprint,source_channel=artifacts$source_channel,
+    channel_branches=artifacts$channel_branches,channel_reference=artifacts$channel_reference,
+    samples = sf::st_set_crs(do.call(rbind, sample_rows),source_crs),
     boundary_chains=chains,boundary_anchors=anchors,
     regions=artifacts$regions,region_polygons=artifacts$region_polygons,skeletons=artifacts$skeletons,
     raw_centerlines=artifacts$raw_centerlines,region_diagnostics=artifacts$diagnostics,
@@ -393,13 +512,30 @@ cross_section_layout <- function(flowline, channel, floodplain, spacing_m = 20,
       centerline_spacing_m=centerline_spacing_m,smoothing_refinements=as.integer(smoothing_refinements),
       centerline_method="centerline Voronoi skeleton routing",smoothing_method="Douglas-Peucker and Chaikin",
       smoothing_tolerance_m=centerline_spacing_m/2,centerline_orientation="downstream_to_upstream",
-      angle_limit_deg = 0,historical_angle_limit_deg=angle_limit_deg, origin = "half-spacing from downstream endpoint",
+      angle_limit_deg = angle_limit_deg,channel_rotation_review_deg=15,channel_angle_step_deg=2.5,
+      channel_search_nodes=channel_nodes,origin = "half-spacing from downstream endpoint",
       overbank_angle_limit_deg=overbank_angle_limit_deg,overbank_angle_step_deg=5,
-      overlap_method="ordered boundary anchors; fixed-target nonintersecting routing",
+      overlap_method="ordered boundary anchors; joint bend target/route planning; fixed-target final routes",
       allow_overbank_bends=allow_overbank_bends,overbank_max_segments=if(allow_overbank_bends)NA_integer_ else 1L,
       overbank_bend_location="polygon-contained route; no centerline placement restriction",
-      channel_method="perpendicular centerline-normal cuts; no width minimization or rotation",
-      method = "polygon-centerline-v6"))
+      overbank_angle_bend="one clamped-initial-angle waypoint at half endpoint distance when ordered straight ray exceeds bound",
+      channel_method="perpendicular first; joint ordered nonintersecting channel angular search before overbanks; no width objective",
+      prepare_channel=prepare_channel,
+      channel_preparation=if(prepare_channel)"polygon medial route; depth-screened lobes; single-attachment envelope pruning; topology guard" else "disabled by region-artifact preparation choice",
+      channel_branch_aspect=.5,channel_branch_min_depth_m=1,
+      channel_envelope_padding_m=.5,channel_disc_sides=32L,
+      channel_attachment_tolerance_m=centerline_spacing_m*1e-7,
+      channel_cleanup_reference="raw channel polygon Voronoi route before cleanup",
+      channel_branch_advance="local channel-centerline tangent extent; diagnostic only",
+      direction_association="visible projection with contained geodesic fallback",
+      overbank_group_priorities=4L,overbank_group_max_sections=64L,
+      overbank_group_exact_route_budget=16L,
+      overbank_group_clearance="median neighboring bank spacing / 4; minimum four geometry tolerances",
+      overbank_target_spacing="median neighboring bank spacing / 4; capped at 0.7 of available boundary interval per slot",
+      overbank_bend_max_sections=32L,overbank_bend_distributions=5L,overbank_bend_priorities=3L,
+      overbank_bend_windows=bend_plan$windows,overbank_bend_accepted=bend_plan$accepted,
+      overbank_bend_attempts=bend_plan$attempts,
+      method = "polygon-centerline-v11"))
 }
 
 # Explicit indices keep the channel vertices identifiable when an overbank has
@@ -412,17 +548,32 @@ cross_section_bank_vertices <- function(sections,xy) {
     return(cbind(left=rep(2L,length(xy)),right=rep(3L,length(xy))))
   }
   left <- sections$left_bank_vertex;right <- sections$right_bank_vertex
-  if(!is.integer(left) || !is.integer(right) || anyNA(left) || anyNA(right) ||
-      any(left<2L | right!=left+1L | count-right<1L))
-    stop("Bank vertex indices must bound one channel segment and at least one segment per floodplain.",call.=FALSE)
+  if(!is.integer(left) || !is.integer(right) || length(left)!=length(xy) || length(right)!=length(xy) || anyNA(left) || anyNA(right) ||
+      any(left<1L | right!=left+1L | right>count))
+    stop("Bank vertex indices must bound one channel segment within the cross section.",call.=FALSE)
+  # End banks mean no constructed overbank edge. Require explicit evidence;
+  # complete legs cannot disappear and absent mapped floodplains cannot grow one.
+  for(side in c("left","right")) {
+    absent <- if(side=="left")left==1L else right==count
+    status <- sections[[paste0(side,"_leg_status")]]
+    if(any(absent) && (is.null(status) || length(status)!=length(xy) || anyNA(status)))
+      stop("Declare leg status for a bank at a cross section endpoint.",call.=FALSE)
+    positive <- vapply(seq_along(xy),function(i) {
+      z <- xy[[i]];idx <- if(side=="left")seq_len(left[i]) else right[i]:nrow(z)
+      length(idx)>1L && any(rowSums(diff(z[idx,,drop=FALSE])^2)>0)
+    },logical(1))
+    if(!is.null(status) && length(status)==length(xy) &&
+        any((!positive & status=="complete") | (positive & status=="no_floodplain"),na.rm=TRUE))
+      stop("Leg status must agree with optional overbank geometry.",call.=FALSE)
+  }
   cbind(left=left,right=right)
 }
 
-#' Review or manually correct an exploratory cross-section layout
+#' Review or manually correct a cross-section layout
 #'
 #' Recalculate endpoint fields, all-pair collision flags and floodplain endpoint
 #' gaps after editing. No geometry is shortened or silently repaired.
-#' @param sections sf LINESTRING candidates with four or more vertices and explicit
+#' @param sections sf LINESTRING candidates with two or more vertices and explicit
 #'   bank vertex indices. Historical four-vertex candidates remain readable.
 #' @param floodplain Floodplain polygons in the candidates' CRS.
 #' @return sf candidates with refreshed endpoint fields, conflict flags and
@@ -439,12 +590,17 @@ cross_section_layout_review <- function(sections, floodplain, boundary_chains=NU
       any(sf::st_geometry_type(sections) != "LINESTRING"))
     stop("Candidates and floodplain must share a projected CRS.", call. = FALSE)
   xy <- lapply(sf::st_geometry(sections), function(z) sf::st_coordinates(z)[, 1:2, drop = FALSE])
-  if (any(vapply(xy,nrow,integer(1))<4L) ||
+  if (any(vapply(xy,nrow,integer(1))<2L) ||
       any(!vapply(xy, function(z) all(is.finite(z)), logical(1))))
-    stop("Each candidate must have at least four finite XY vertices.", call. = FALSE)
+    stop("Each candidate must have at least two finite XY vertices.", call. = FALSE)
   banks <- cross_section_bank_vertices(sections,xy)
-  sections$left_bend_count<-as.integer(banks[,1]-2L)
-  sections$right_bend_count<-as.integer(vapply(xy,nrow,integer(1))-banks[,2]-1L)
+  sections$section_parts <- vapply(seq_along(xy),function(i) {
+    left <- banks[i,1]>1L;right <- banks[i,2]<nrow(xy[[i]])
+    if(left && right)"channel_both_overbanks" else if(left)"channel_left_overbank" else
+      if(right)"channel_right_overbank" else "channel_only"
+  },character(1))
+  sections$left_bend_count<-as.integer(pmax(0L,banks[,1]-2L))
+  sections$right_bend_count<-as.integer(pmax(0L,vapply(xy,nrow,integer(1))-banks[,2]-1L))
   sections$left_bend_added<-sections$left_bend_count>0L;sections$right_bend_added<-sections$right_bend_count>0L
   for (field in c("x_start", "y_start", "x_end", "y_end")) sections[[field]] <- numeric(nrow(sections))
   if (nrow(sections)) {
@@ -462,11 +618,16 @@ cross_section_layout_review <- function(sections, floodplain, boundary_chains=NU
     delta <- xy[[i]][banks[i,2],]-xy[[i]][banks[i,1],]
     atan2(normal[1]*delta[2]-normal[2]*delta[1],sum(normal*delta))*180/pi
   },numeric(1))
-  sections$channel_skewed <- abs(sections$channel_rotation_deg)>1e-6
+  sections$channel_rotated <- abs(sections$channel_rotation_deg)>1e-6
+  sections$channel_skewed <- abs(sections$channel_rotation_deg)>
+    if("channel_rotation_review_deg" %in% names(sections))sections$channel_rotation_review_deg+1e-7 else 1e-6
+  sections$channel_limit_exceeded <- if("channel_angle_limit_deg" %in% names(sections))
+    abs(sections$channel_rotation_deg)>sections$channel_angle_limit_deg+1e-7 else rep(FALSE,nrow(sections))
   for(side in c("left","right")) {
     legs<-sf::st_sfc(lapply(seq_along(xy),function(i) {
       z<-xy[[i]];indices<-if(side=="left")seq_len(banks[i,1]) else banks[i,2]:nrow(z)
-      sf::st_linestring(z[indices,,drop=FALSE])
+      if(length(indices)==1L)sf::st_linestring(matrix(numeric(),ncol=2L)) else
+        sf::st_linestring(z[indices,,drop=FALSE])
     }),crs=sf::st_crs(sections))
     leg_hits<-sf::st_intersects(legs,sections)
     sections[[paste0(side,"_conflict")]]<-vapply(seq_along(leg_hits),function(i)
@@ -475,11 +636,17 @@ cross_section_layout_review <- function(sections, floodplain, boundary_chains=NU
   sections$conflicts_with <- vapply(seq_along(hits), function(i)
     paste(sections$Seq[setdiff(hits[[i]], i)], collapse = ", "), character(1))
   sections$self_crossing <- !sf::st_is_simple(sections)
-  sections$oriented <- vapply(seq_along(xy), function(i) {
+  orientation <- vapply(seq_along(xy), function(i) {
     z <- xy[[i]]; downstream <- c(sections$downstream_dx[i], sections$downstream_dy[i])
     cross <- function(delta) downstream[1] * delta[2] - downstream[2] * delta[1]
-    cross(z[banks[i,2], ] - z[banks[i,1], ]) < 0 && cross(z[nrow(z), ] - z[1, ]) < 0
-  }, logical(1))
+    c(channel=cross(z[banks[i,2], ] - z[banks[i,1], ]) < 0,
+      outer_chord=cross(z[nrow(z), ] - z[1, ]) < 0)
+  }, logical(2))
+  sections$channel_oriented <- as.logical(orientation[1,])
+  sections$outer_chord_oriented <- as.logical(orientation[2,])
+  # Retain the established combined diagnostic without mistaking a looping
+  # overbank's endpoint chord for a reversal of the channel-bank order.
+  sections$oriented <- sections$channel_oriented & sections$outer_chord_oriented
   outside <- suppressWarnings(sf::st_difference(sf::st_sf(
     source_row = seq_len(nrow(sections)), geometry = sf::st_geometry(sections)),
     sf::st_union(sf::st_geometry(floodplain))))
@@ -494,14 +661,18 @@ cross_section_layout_review <- function(sections, floodplain, boundary_chains=NU
   }
   sections$left_boundary_gap_m <- gap(1)
   sections$right_boundary_gap_m <- gap(4)
-  if(!is.null(boundary_chains))sections <- cross_section_review_order(sections,boundary_chains,
-    as.numeric(units::set_units(units::set_units(.001,"m"),sf::st_crs(sections)$ud_unit,mode="standard")))
+  if(!is.null(boundary_chains)) {
+    crs <- sf::st_crs(sections)
+    tolerance <- as.numeric(units::set_units(units::set_units(.001,"m"),crs$ud_unit,mode="standard"))
+    sections <- sf::st_set_crs(cross_section_review_order(sf::st_set_crs(sections,NA),
+      sf::st_set_crs(boundary_chains,NA),tolerance),crs)
+  }
   sections
 }
 
-#' Validate exploratory cross-section candidates
+#' Validate cross-section draft geometry and metadata
 #'
-#' @param sections sf candidates with four or more vertices and explicit bank
+#' @param sections sf candidates with two or more vertices and explicit bank
 #'   indices. Historical four-vertex candidates remain readable.
 #' @param profile `geometry` for backend candidates; `candidate_table` also
 #'   requires explicit layout/REM metadata for the standard cross_section table.
@@ -529,17 +700,50 @@ check_cross_section_layout <- function(sections, profile = c("geometry", "candid
   if (any(sections$distance_m < 0) || is.unsorted(sections$distance_m[order(sections$Seq)]))
     fail("Candidate distances must increase upstream in Seq order.")
   xy <- lapply(sf::st_geometry(sections), unclass)
-  if (any(vapply(xy, nrow, integer(1))<4L) ||
+  if (any(vapply(xy, nrow, integer(1))<2L) ||
       any(!vapply(xy, function(z) ncol(z) == 2L && all(is.finite(z)), logical(1))))
-    fail("Candidates must contain at least four finite XY vertices.")
-  cross_section_bank_vertices(sections,xy)
+    fail("Candidates must contain at least two finite XY vertices.")
+  banks <- cross_section_bank_vertices(sections,xy)
+  if("layout_method" %in% names(sections) && any(sections$layout_method %in% c("polygon-centerline-v7","polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
+    if(any(vapply(xy,function(z)any(rowSums(diff(z)^2)==0),logical(1))))
+      fail("Current cross sections must not contain duplicated adjacent vertices.")
+  }
+  if("layout_method" %in% names(sections) && any(sections$layout_method %in%
+      paste0("polygon-centerline-v",2:6)) && any(vapply(xy,nrow,integer(1))<4L))
+    fail("Historical layout methods require at least four vertices.")
+  if(any(vapply(seq_along(xy),function(i)
+      sum((xy[[i]][banks[i,1],]-xy[[i]][banks[i,2],])^2)<=0,logical(1))))
+    fail("Channel bank vertices must be distinct.")
   if (length(xy)) {
     endpoints <- t(vapply(xy, function(z) c(z[1, ], z[nrow(z), ]), numeric(4)))
     fields <- as.matrix(sf::st_drop_geometry(sections)[, c("x_start", "y_start", "x_end", "y_end")])
     if (any(abs(endpoints - fields) > 1e-7)) fail("Endpoint fields do not match candidate geometry.")
   }
   if (profile == "candidate_table") {
-    v2 <- "layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v2","polygon-centerline-v3","polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6"))
+    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
+      for(field in c("channel_oriented","outer_chord_oriented"))
+        if(!is.logical(sections[[field]]) || length(sections[[field]])!=nrow(sections) || anyNA(sections[[field]]))
+          fail("Methods v9/v10 require separate channel-bank and endpoint-chord orientation diagnostics.")
+      for(side in c("left","right"))for(field in c("geodesic_direction","group_routed")) {
+        value <- sections[[paste0(side,"_",field)]]
+        if(!is.logical(value) || length(value)!=nrow(sections) || anyNA(value))
+          fail("Methods v9/v10 require explicit geodesic-direction and group-routing flags.")
+      }
+    }
+    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
+      for(field in c("layout_channel_angle_limit_deg","layout_channel_rotation_review_deg"))
+        if(!is.double(sections[[field]]) || length(sections[[field]])!=nrow(sections) ||
+            any(!is.finite(sections[[field]])) || any(sections[[field]]<0 | sections[[field]]>60))
+          fail("Method v8 requires explicit channel angular search and review bounds.")
+      if(!is.character(sections$channel_deconfliction_status) ||
+          length(sections$channel_deconfliction_status)!=nrow(sections) || anyNA(sections$channel_deconfliction_status) ||
+          any(!sections$channel_deconfliction_status %in% c("perpendicular","resolved_rotation","unresolved_contact",
+            "unavailable_bank_order","search_limit","no_feasible_grid","unresolved_order","manual_review")))
+        fail("Method v8 requires channel deconfliction status.")
+      if(any(!sections$edited & abs(sections$channel_rotation_deg)>sections$layout_channel_angle_limit_deg+1e-7))
+        fail("Generated channel rotations exceed the declared bound.")
+    }
+    v2 <- "layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v2","polygon-centerline-v3","polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6","polygon-centerline-v7","polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))
     numeric_fields <- c("layout_spacing_m", "channel_rem_elevation",
       "floodplain_rem_elevation", "rem_reference_elevation")
     numeric_fields <- c(numeric_fields,if(v2)c("layout_tangent_distance_m","layout_centerline_spacing_m") else "layout_direction_window_m")
@@ -554,7 +758,7 @@ check_cross_section_layout <- function(sections, profile = c("geometry", "candid
       anyNA(sections$layout_smoothing_refinements) ||
       any(sections$layout_smoothing_refinements<0 | sections$layout_smoothing_refinements>10)))
       fail("Chaikin refinements must be integers from 0 to 10.")
-    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v3","polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6"))) {
+    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v3","polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6","polygon-centerline-v7","polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
       if(!is.double(sections$layout_overbank_angle_limit_deg) ||
           length(sections$layout_overbank_angle_limit_deg)!=nrow(sections) ||
           any(!is.finite(sections$layout_overbank_angle_limit_deg)) ||
@@ -572,7 +776,7 @@ check_cross_section_layout <- function(sections, profile = c("geometry", "candid
           fail("Overbank rotations must respect their declared bound.")
       }
     }
-    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6"))) {
+    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v4","polygon-centerline-v5","polygon-centerline-v6","polygon-centerline-v7","polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
       if(!all(c("left_bank_vertex","right_bank_vertex") %in% names(sections)))
         fail("Polygon-centerline methods require explicit bank vertex indices.")
       if(!is.logical(sections$layout_allow_overbank_bends) ||
@@ -581,7 +785,7 @@ check_cross_section_layout <- function(sections, profile = c("geometry", "candid
     }
     if("layout_method" %in% names(sections) && all(sections$layout_method=="polygon-centerline-v4") &&
         any(vapply(xy,nrow,integer(1))>6L))fail("Historical method v4 allows at most six vertices.")
-    if("layout_method" %in% names(sections) && all(sections$layout_method=="polygon-centerline-v6")) {
+    if("layout_method" %in% names(sections) && all(sections$layout_method %in% c("polygon-centerline-v6","polygon-centerline-v7","polygon-centerline-v8","polygon-centerline-v9","polygon-centerline-v10","polygon-centerline-v11"))) {
       if(!is.logical(sections$channel_order_conflict) || length(sections$channel_order_conflict)!=nrow(sections) ||
           anyNA(sections$channel_order_conflict) || !is.logical(sections$channel_order_review) ||
           length(sections$channel_order_review)!=nrow(sections) || anyNA(sections$channel_order_review))

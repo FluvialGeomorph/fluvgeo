@@ -2,12 +2,12 @@
 % Please edit documentation in R/cross_section_layout.R
 \name{cross_section_layout_review}
 \alias{cross_section_layout_review}
-\title{Review or manually correct an exploratory cross-section layout}
+\title{Review or manually correct a cross-section layout}
 \usage{
 cross_section_layout_review(sections, floodplain, boundary_chains = NULL)
 }
 \arguments{
-\item{sections}{sf LINESTRING candidates with four or more vertices and explicit
+\item{sections}{sf LINESTRING candidates with two or more vertices and explicit
 bank vertex indices. Historical four-vertex candidates remain readable.}
 
 \item{floodplain}{Floodplain polygons in the candidates' CRS.}
@@ -18,8 +18,8 @@ after edits, without moving geometry or reassigning targets.}
 }
 \value{
 sf candidates with refreshed endpoint fields, conflict flags and
-left/right endpoint-to-outer-boundary gaps in metres. A zero endpoint gap
-alone does not establish adequate coverage or hydraulic suitability.
+  left/right endpoint-to-outer-boundary gaps in metres. A zero endpoint gap
+  alone does not establish adequate coverage or hydraulic suitability.
 }
 \description{
 Recalculate endpoint fields, all-pair collision flags and floodplain endpoint

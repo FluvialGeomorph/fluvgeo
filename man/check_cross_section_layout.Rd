@@ -2,7 +2,7 @@
 % Please edit documentation in R/cross_section_layout.R
 \name{check_cross_section_layout}
 \alias{check_cross_section_layout}
-\title{Validate exploratory cross-section candidates}
+\title{Validate cross-section draft geometry and metadata}
 \usage{
 check_cross_section_layout(
   sections,
@@ -10,16 +10,16 @@ check_cross_section_layout(
 )
 }
 \arguments{
-\item{sections}{sf candidates with four or more vertices and explicit bank
+\item{sections}{sf candidates with two or more vertices and explicit bank
 indices. Historical four-vertex candidates remain readable.}
 
-\item{profile}{\code{geometry} for backend candidates; \code{candidate_table} also
+\item{profile}{`geometry` for backend candidates; `candidate_table` also
 requires explicit layout/REM metadata for the standard cross_section table.}
 }
 \value{
 TRUE, or an error describing an invalid structural contract. Draft
-conflicts and coverage warnings are permitted and do not imply acceptance.
+  conflicts and coverage warnings are permitted and do not imply acceptance.
 }
 \description{
-Validate exploratory cross-section candidates
+Validate cross-section draft geometry and metadata
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/cross_section_layout.R
 \name{cross_section_layout}
 \alias{cross_section_layout}
-\title{Exploratory cross-section layout with optional floodplain bends}
+\title{Cross-section layout with automatic deconfliction}
 \usage{
 cross_section_layout(
   flowline,
@@ -15,7 +15,7 @@ cross_section_layout(
   smoothing_refinements = 2L,
   region_artifacts = NULL,
   overbank_angle_limit_deg = 30,
-  allow_overbank_bends = FALSE
+  allow_overbank_bends = TRUE
 )
 }
 \arguments{
@@ -30,61 +30,92 @@ at half this distance from the downstream endpoint; endpoints are excluded.}
 \item{tangent_distance_m}{Distance along a polygon centerline for measuring
 its local tangent, in metres; independent of cartographic smoothing.}
 
-\item{angle_limit_deg}{Historical channel rotation bound, retained for API
-compatibility. Method v6 uses perpendicular channel cuts without rotation.}
+\item{angle_limit_deg}{Maximum channel-normal departure searched to resolve
+channel contacts, with or without overbanks, 0 to 60 degrees; default 30. Search uses 2.5-degree
+steps. Zero disables angular repair. Rotations above 15 degrees retain a
+review flag; these are provisional geometric settings, not hydraulic limits.}
 
 \item{centerline_spacing_m}{Maximum polygon-boundary vertex spacing in metres.}
 
 \item{smoothing_refinements}{Number of Chaikin smoothing passes, 0 to 10.}
 
 \item{region_artifacts}{Optional matching output of cross_section_regions(),
-reused only when its geometry/settings fingerprint matches these inputs.}
+reused only when its geometry/settings fingerprint matches these inputs.
+Its explicit prepare_channel choice is honored and recorded in parameters.}
 
 \item{overbank_angle_limit_deg}{Maximum overbank-normal rotation in degrees,
 0 to 60. Straight targets respect this bound; five-degree angular alternatives
 provide tentative targets before ordered assignment and routing.}
 
 \item{allow_overbank_bends}{Allow additional floodplain vertices for
-deconfliction. Defaults to FALSE. Optional polygon-contained routes may have
+deconfliction. Defaults to TRUE. Polygon-contained routes may have
 multiple vertices away from the centerline; there is no one-bend cap.}
 }
 \value{
-A list with sections (sf lines with at least four XY vertices), paths (separate side
-estimates), samples (observed/inferred side evidence), failures, conflicts
-and parameters. Empty or unsupported sections remain explicit failures.
-candidate_id is a session key, not governed or durable identity. Full-coverage
-straight/bent alternatives reduce conflicts without shortening legs. Explicit
-left_bank_vertex and right_bank_vertex identify the channel. Residual
-conflicts remain explicit. Seq increases upstream.
-boundary_chains and boundary_anchors retain directed ordering edges and
-generated bank/planned outer targets in the feature CRS unit.
+A list with sections (sf lines with at least two XY vertices), paths (separate side
+  estimates), samples (observed/inferred side evidence), failures, conflicts
+  and parameters. Empty or unsupported sections remain explicit failures.
+  candidate_id is a session key, not governed or durable identity. Full-coverage
+  straight/bent alternatives reduce conflicts without shortening legs. Explicit
+  left_bank_vertex and right_bank_vertex identify the channel. Residual
+  conflicts remain explicit. Seq increases upstream.
+  boundary_chains and boundary_anchors retain directed ordering edges and
+  generated bank/planned outer targets in the feature CRS unit.
+  Source/prepared channel polygons, the raw channel reference centerline and
+  lobe review polygons retain channel-cleanup evidence. Per-side geodesic and
+  group-routing flags distinguish generated evidence. channel_oriented checks
+  channel-bank direction, outer_chord_oriented checks the endpoint chord, and
+  the established oriented field retains their conjunction.
 }
 \description{
-Estimate separate overbank paths and editable cut lines from reviewed outer
-inundation footprints. This is a geometry experiment, not a hydraulic model
-or a replacement legacy feature class.
+Build reviewable channel and overbank XS segments from reviewed inundation
+footprints, with polygon-derived direction, ordered endpoints and automatic
+deconfliction. Return source evidence and diagnostics for local draft workflows.
 }
 \details{
 Contiguous channel crossings containing each center are selected
-perpendicular to the local centerline tangent. Width minimization and
-conflict-driven channel rotation are not used. All three polygon centerlines derive
-from Voronoi skeleton routing and cartographic Chaikin smoothing. An
-overbank leg uses the component touching its bank vertex. Missing/ambiguous
-side support retains a flagged bank-only leg. A bank on the outer boundary
-with no adjacent overbank is separately classified as no_floodplain.
-If nearest-point matching crosses a channel indentation, the nearest tested
-segment projection visible through the component supplies the measurement
-location. The original centerline is unchanged. A one-millimetre numerical
-polygon margin is used for visibility and connected ray intersections.
-Bank ranks are checked along directed shared boundaries; outer targets are
-assigned in Seq order and refined within their ordered neighbor interval
-before routing. Previously accepted legs and other channel cuts are barriers.
-A routed endpoint cannot slide along the boundary. These are
-provisional direction proxies requiring analyst review. All distance
-parameters are converted to the projected CRS unit.
-When additional vertices are allowed, GEOS constrained polygon triangulation,
-igraph paths through triangle portals and visibility shortcuts supply
-additional routes around neighboring sections. Bends need not be on a
-centerline. Every route must remain in its component and reach the outer
-boundary. This optional routing requires GEOS 3.10 or later.
+  perpendicular to the local centerline tangent. Contacting
+  channel windows may use bounded joint rotations before overbank construction. There is no
+  width or length objective. All three polygon centerlines derive
+  from Voronoi skeleton routing and cartographic Chaikin smoothing. An
+  overbank leg uses the component touching its bank vertex. Missing/ambiguous
+  side support retains a flagged bank-only leg. A bank on the outer boundary
+  with no adjacent overbank is separately classified as no_floodplain.
+  Method v7 omits absent or unconstructed overbank edges: channel-only
+  cross sections have two vertices; a straight one-sided cross section has three. Failed
+  construction retains its warning status and boundary gap. Explicit bank
+  indices may identify endpoints; no zero-width placeholder edge is required.
+  If nearest-point matching crosses a channel indentation, the nearest tested
+  segment projection visible through the component supplies the measurement
+  location. The original centerline is unchanged. A one-millimetre numerical
+  polygon margin is used for visibility and connected ray intersections.
+  Channel angular search includes up to two eligible neighbors on each side,
+  at most 64 sections and 50,000 constraint-search nodes per window. A failed
+  or exhausted search retains the original flagged geometry. Both bank rank
+  and all-pair nonintersection must pass an independent final geometry audit.
+  Bank ranks are checked along directed shared boundaries; outer targets are
+  assigned in Seq order and refined within their ordered neighbor interval
+  before routing. Previously accepted legs and other channel XS segments are barriers.
+  A routed endpoint cannot slide along the boundary. These are
+  provisional direction proxies requiring analyst review. All distance
+  parameters are converted to the projected CRS unit.
+  When additional vertices are allowed, GEOS constrained polygon triangulation,
+  igraph paths through triangle portals and visibility shortcuts supply
+  additional routes around neighboring sections. Bends need not be on a
+  centerline. Every route must remain in its component and reach the outer
+  boundary. This optional routing requires GEOS 3.10 or later.
+  The channel polygon's own medial route and local width guide lobe cleanup
+  before LOB/ROB partitioning. Hidden centerlines use contained mesh geodesic
+  associations. Difficult overbank neighborhoods can be reconsidered together
+  with fixed banks/targets; complete coverage precedes reducing interior
+  crowding. Four priorities, 64-section groups and 16 exact-route fallbacks
+  bound this search. Neither channel width nor section length is minimized.
+  A subsequent whole-bend pass jointly tests targets and routes in families of
+  at most 32 sections, including complete but crowded or awkward legs. It tests
+  adaptive isotonic, relaxed and uniform target distributions in three routing orders,
+  reusing valid existing paths as deformation guides before mesh reconstruction.
+  Complete coverage, useful endpoint separation and fewer unnecessary turns
+  take priority in that order. A complete incumbent is retained whenever no
+  feasible improvement is found. Channel banks and saved Flowline stations
+  remain fixed. Accepted method-v10 channel pruning is unchanged.
 }

@@ -271,16 +271,21 @@ cross_section_refine_targets <- function(sections,regions,chains,anchors,toleran
 cross_section_ordered_routes <- function(sections, regions, anchors, tolerance, allow_bends, angle_limit=30,
                                          margins=new.env(parent=emptyenv())) {
   crs <- sf::st_crs(sections)
-  for(side in c("left","right"))sections[[paste0(side,"_anchor_status")]] <- rep("unavailable_chain",nrow(sections))
+  for(side in c("left","right")) {
+    sections[[paste0(side,"_anchor_status")]] <- rep("unavailable_chain",nrow(sections))
+    sections[[paste0(side,"_group_routed")]] <- rep(FALSE,nrow(sections))
+  }
   channel <- sf::st_sfc(lapply(seq_len(nrow(sections)),function(i) {
     xy <- sf::st_coordinates(sections[i,])[,1:2,drop=FALSE]
     sf::st_linestring(xy[sections$left_bank_vertex[i]:sections$right_bank_vertex[i],,drop=FALSE])
   }),crs=crs)
-  legs <- vector("list",2L*nrow(sections));accepted <- sf::st_sfc(crs=crs);pending <- list()
+  legs <- vector("list",2L*nrow(sections));accepted <- sf::st_sfc(crs=crs);pending <- list();tasks <- list()
   for(i in order(sections$Seq))for(side in c("left","right")) {
     group <- 2L*(i-1L)+match(side,c("left","right"))
     bank <- sf::st_coordinates(channel[i])[if(side=="left")1L else 2L,1:2]
-    legs[[group]] <- rbind(bank,bank)
+    # A missing/absent leg contributes its bank once, never a zero-length edge.
+    # Its status still distinguishes legitimate absence from a failed route.
+    legs[[group]] <- matrix(bank,nrow=1L)
     sections[[paste0(side,"_anchor_status")]][i] <- "no_floodplain"
     if(sections[[paste0(side,"_leg_status")]][i]=="no_floodplain")next
     a <- anchors[anchors$candidate_id==sections$candidate_id[i] & anchors$side==side &
@@ -293,11 +298,14 @@ cross_section_ordered_routes <- function(sections, regions, anchors, tolerance, 
       target <- sf::st_coordinates(a[a$role=="outer",])[,1:2,drop=FALSE][1,]
       polygon <- sf::st_geometry(regions[regions$region_id==a$region_id[1],])
       id <- a$region_id[1]
+      tasks[[as.character(group)]] <- list(i=i,side=side,group=group,region_id=id,
+        bank=bank,target=target,polygon=polygon,normal=normal,angle=NA_real_)
       if(!exists(id,envir=margins,inherits=FALSE))assign(id,sf::st_buffer(polygon,tolerance/1000,nQuadSegs=1),envir=margins)
       obstacles <- c(channel[-i],accepted)
       direct <- sf::st_sfc(sf::st_linestring(rbind(bank,target)),crs=crs)
       vector <- target-bank
       angle <- atan2(normal[1]*vector[2]-normal[2]*vector[1],sum(normal*vector))*180/pi
+      tasks[[as.character(group)]]$angle <- angle
       if(abs(angle)<=angle_limit+1e-7 &&
           sf::st_covered_by(direct,get(id,envir=margins),sparse=FALSE)[1,1] &&
           !length(sf::st_intersects(direct,obstacles)[[1]]))route <- direct
@@ -305,7 +313,7 @@ cross_section_ordered_routes <- function(sections, regions, anchors, tolerance, 
         if(abs(angle)>angle_limit+1e-7)route <- NULL else rotation <- angle
       }
       if(is.null(route) && allow_bends)pending[[length(pending)+1L]] <- list(i=i,side=side,group=group,
-        bank=bank,target=target,polygon=polygon,angle=angle)
+        bank=bank,target=target,polygon=polygon,normal=normal,angle=angle)
       if(is.null(route))status <- "no_ordered_route"
     }
     sections[[paste0(side,"_anchor_status")]][i] <- status
@@ -323,8 +331,10 @@ cross_section_ordered_routes <- function(sections, regions, anchors, tolerance, 
   # must not needlessly force later, already feasible legs to acquire bends.
   for(task in pending) {
     i <- task$i;side <- task$side
-    route <- cross_section_route_leg(task$bank,task$target,task$polygon,
-      sf::st_sfc(sf::st_point(task$target),crs=crs),c(channel[-i],accepted),tolerance,fixed_target=TRUE)
+    obstacles <- c(channel[-i],accepted)
+    route <- cross_section_angle_bend(task$bank,task$target,task$normal,task$polygon,obstacles,angle_limit)
+    if(is.null(route))route <- cross_section_route_leg(task$bank,task$target,task$polygon,
+      sf::st_sfc(sf::st_point(task$target),crs=crs),obstacles,tolerance,fixed_target=TRUE)
     if(is.null(route))next
     coords <- sf::st_coordinates(route)[,1:2,drop=FALSE]
     if(nrow(coords)==2L && abs(task$angle)>angle_limit+1e-7)next
@@ -335,10 +345,110 @@ cross_section_ordered_routes <- function(sections, regions, anchors, tolerance, 
     sections[[paste0(side,"_leg_status")]][i] <- "complete"
     sections[[paste0(side,"_anchor_status")]][i] <- "ordered"
   }
+  if(allow_bends && length(tasks)) {
+    # Failed neighborhoods release their earlier straight and bent reservations.
+    # Reuse a shared component mesh while trying deterministic group priorities.
+    failed <- Filter(function(t)nrow(legs[[t$group]])<2L ||
+      isTRUE(sections[[paste0(t$side,"_geodesic_direction")]][t$i]),tasks)
+    meshes <- new.env(parent=emptyenv())
+    processed <- integer()
+    for(seed in failed) {
+      if(seed$group %in% processed)next
+      peers <- Filter(function(t)t$region_id==seed$region_id && t$side==seed$side,tasks)
+      peers <- peers[order(vapply(peers,function(t)sections$Seq[t$i],integer(1)))]
+      center <- which(vapply(peers,function(t)t$group==seed$group,logical(1)))
+      lo <- max(1L,center-2L);hi <- min(length(peers),center+2L)
+      # Include neighboring failures and their immediate neighbors in the block.
+      repeat {
+        bad <- which(vapply(peers[lo:hi],function(t)nrow(legs[[t$group]])<2L,logical(1)))+lo-1L
+        if(!length(bad))break
+        next_lo <- max(1L,min(bad)-2L);next_hi <- min(length(peers),max(bad)+2L)
+        if((next_lo==lo && next_hi==hi) || next_hi-next_lo+1L>64L)break
+        lo<-next_lo;hi<-next_hi
+      }
+      block <- peers[lo:hi];groups <- vapply(block,`[[`,integer(1),"group")
+      processed <- c(processed,groups)
+      baseline <- sum(vapply(groups,function(g)nrow(legs[[g]])>1L,logical(1)))
+      outside <- setdiff(which(vapply(legs,function(x)!is.null(x) && nrow(x)>1L,logical(1))),groups)
+      external <- sf::st_sfc(lapply(legs[outside],sf::st_linestring),crs=crs)
+      n <- length(block);middle <- (n+1)/2
+      orders <- list(seq_len(n),rev(seq_len(n)),order(abs(seq_len(n)-middle),seq_len(n)),
+        order(-abs(seq_len(n)-middle),seq_len(n)))
+      bank_steps <- sqrt(rowSums(diff(do.call(rbind,lapply(block,`[[`,"bank")))^2))
+      clearance <- max(tolerance*4,if(length(bank_steps))stats::median(bank_steps)/4 else 0)
+      original <- lapply(groups,function(g)if(nrow(legs[[g]])>1L)sf::st_sfc(sf::st_linestring(legs[[g]]),crs=crs) else NULL)
+      best <- NULL;best_count <- baseline;best_crowding <- cross_section_route_crowding(original,clearance)
+      exact_budget <- 16L
+      for(priority in orders) {
+        proposed <- vector("list",n);reservations <- external
+        for(j in priority) {
+          t <- block[[j]];obstacles <- c(channel[-t$i],reservations)
+          direct <- sf::st_sfc(sf::st_linestring(rbind(t$bank,t$target)),crs=crs)
+          route <- NULL
+          if(abs(t$angle)<=angle_limit+1e-7 && sf::st_covered_by(direct,t$polygon,sparse=FALSE)[1,1] &&
+              !length(sf::st_intersects(direct,obstacles)[[1]]))route <- direct
+          if(is.null(route))route <- cross_section_angle_bend(t$bank,t$target,t$normal,t$polygon,obstacles,angle_limit)
+          if(is.null(route)) {
+            if(!exists(t$region_id,envir=meshes,inherits=FALSE))
+              assign(t$region_id,cross_section_mesh(t$polygon),envir=meshes)
+            mesh <- get(t$region_id,envir=meshes)
+            if(!is.null(mesh))route <- cross_section_mesh_path(t$bank,t$target,t$polygon,mesh,obstacles,tolerance,clearance)
+            if(is.null(route) && exact_budget>0L) {
+              exact_budget<-exact_budget-1L
+              route <- cross_section_route_leg(t$bank,t$target,t$polygon,
+                sf::st_sfc(sf::st_point(t$target),crs=crs),obstacles,tolerance,fixed_target=TRUE)
+            }
+          }
+          if(is.null(route) || (nrow(sf::st_coordinates(route))==2L && abs(t$angle)>angle_limit+1e-7))next
+          proposed[[j]] <- route;reservations <- c(reservations,route)
+        }
+        count <- sum(!vapply(proposed,is.null,logical(1)))
+        crowding <- cross_section_route_crowding(proposed,clearance)
+        if(count>best_count || (count==best_count && crowding<best_crowding-1e-6)) {
+          best<-proposed;best_count<-count;best_crowding<-crowding
+        }
+        if(best_count==n && best_crowding<=1e-8)break
+      }
+      if(!is.null(best))for(j in seq_len(n)) {
+        t<-block[[j]];route<-best[[j]]
+        if(is.null(route)) {
+          legs[[t$group]]<-matrix(t$bank,nrow=1L)
+          sections[[paste0(t$side,"_supported")]][t$i]<-FALSE
+          sections[[paste0(t$side,"_leg_status")]][t$i]<-"no_ordered_route"
+          sections[[paste0(t$side,"_routed")]][t$i]<-FALSE
+          sections[[paste0(t$side,"_rotation_deg")]][t$i]<-NA_real_
+        } else {
+          coords<-sf::st_coordinates(route)[,1:2,drop=FALSE];legs[[t$group]]<-coords
+          sections[[paste0(t$side,"_supported")]][t$i]<-TRUE
+          sections[[paste0(t$side,"_group_routed")]][t$i]<-TRUE
+          sections[[paste0(t$side,"_leg_status")]][t$i]<-"complete"
+          sections[[paste0(t$side,"_anchor_status")]][t$i]<-"ordered"
+          sections[[paste0(t$side,"_routed")]][t$i]<-nrow(coords)>2L
+          sections[[paste0(t$side,"_rotation_deg")]][t$i]<-if(nrow(coords)>2L)NA_real_ else t$angle
+        }
+      }
+    }
+  }
   for(i in seq_len(nrow(sections))) {
     left <- legs[[2L*i-1L]];right <- legs[[2L*i]]
     sf::st_geometry(sections)[[i]] <- sf::st_linestring(rbind(left[nrow(left):1,,drop=FALSE],right))
     sections$left_bank_vertex[i] <- as.integer(nrow(left));sections$right_bank_vertex[i] <- as.integer(nrow(left)+1L)
   }
   sections
+}
+
+cross_section_angle_bend <- function(bank,target,normal,polygon,obstacles,angle_limit) {
+  # Ordered endpoints can push a feasible straight ray just beyond its angular
+  # bound. Try one genuine bend rather than relaxing that bound or adding a
+  # collinear vertex. The initial leg respects the bound; endpoints stay fixed.
+  vector <- target-bank
+  angle <- atan2(normal[1]*vector[2]-normal[2]*vector[1],sum(normal*vector))*180/pi
+  if(!is.finite(angle) || abs(angle)<=angle_limit+1e-7)return(NULL)
+  turn <- sign(angle)*angle_limit*pi/180
+  direction <- c(normal[1]*cos(turn)-normal[2]*sin(turn),normal[1]*sin(turn)+normal[2]*cos(turn))
+  direction <- direction/sqrt(sum(direction^2))
+  waypoint <- bank+direction*sqrt(sum(vector^2))/2
+  route <- sf::st_sfc(sf::st_linestring(rbind(bank,waypoint,target)),crs=sf::st_crs(polygon))
+  if(sf::st_is_simple(route) && sf::st_covered_by(route,polygon,sparse=FALSE)[1,1] &&
+      (!length(obstacles) || !length(sf::st_intersects(route,obstacles)[[1]])))route else NULL
 }

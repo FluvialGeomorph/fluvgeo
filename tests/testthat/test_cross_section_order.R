@@ -54,7 +54,7 @@ test_that("filling an early gap preserves a feasible later straight leg", {
   routed <- cross_section_ordered_routes(sections,regions,anchors,.001,TRUE)
   expect_false(straight$left_supported[1]);expect_true(all(routed$left_supported))
   expect_identical(sf::st_as_binary(sf::st_geometry(straight[2,])),sf::st_as_binary(sf::st_geometry(routed[2,])))
-  expect_equal(nrow(sf::st_coordinates(routed[2,])),4L)
+  expect_equal(nrow(sf::st_coordinates(routed[2,])),3L)
   expect_length(sf::st_intersects(routed[1,],routed[2,])[[1]],0)
 })
 

@@ -9,7 +9,8 @@ cross_section_regions(
   channel,
   floodplain,
   centerline_spacing_m = 2,
-  smoothing_refinements = 2L
+  smoothing_refinements = 2L,
+  prepare_channel = TRUE
 )
 }
 \arguments{
@@ -21,13 +22,26 @@ cross_section_regions(
 for Voronoi construction. Existing boundary vertices are preserved.}
 
 \item{smoothing_refinements}{Number of Chaikin corner-cutting passes, 0 to 10.}
+
+\item{prepare_channel}{Remove eligible off-mainstem lobes using the channel's
+raw polygon centerline before partitioning the floodplain. Raw channel,
+reference centerline and branch review polygons remain in the result.
+Cleanup uses 0.5 m envelope padding, a 1 m minimum protrusion depth and
+attachment depth at least half the attachment endpoint chord width.}
 }
 \value{
 A list with region_polygons (three multipart parent features), regions
-(components), skeletons, raw_centerlines, centerlines and diagnostics.
-Each polygon component retains its own region_id. Disconnected
-components are never joined. Centerlines run downstream to upstream to match
-the input Flowline; descending-bank labels refer to the opposite direction.
+  (components), skeletons, raw_centerlines, centerlines and diagnostics.
+  channel_footprint is the prepared channel; source_channel retains the raw
+  input. channel_reference contains the raw channel medial route used for
+  preparation, and channel_branches records lobe geometry, removal flags and
+  mouth width/depth/local-tangent advance in declared feature-CRS units.
+  attachment_depth measures depth from the full attachment curve, distinct
+  from depth measured from its endpoint chord. cleanup_status records removal
+  or retention. Tangent advance is diagnostic only; hooked arms are eligible.
+  Each polygon component retains its own region_id. Disconnected
+  components are never joined. Centerlines run downstream to upstream to match
+  the input Flowline; descending-bank labels refer to the opposite direction.
 }
 \description{
 Partition reviewed inundation into three hydraulic review regions and derive
@@ -36,12 +50,15 @@ artifacts are flow-direction proxies, not hydraulic flow calculations.
 }
 \details{
 The extended directed Flowline splits the outer floodplain before
-subtraction of the channel. GEOS projection and a local directed tangent
-classify each resulting overbank component. centerline::cnt_skeleton()
-extracts Voronoi geometry without polygon simplification; cnt_path() selects
-a skeleton route between its downstream/upstream projection extremes.
-Ties prefer maximum boundary clearance, then coordinate order. A separate
-cartographic proposal uses Douglas-Peucker simplification at half the boundary
-spacing followed by smoothr Chaikin smoothing. Proposals that leave their
-polygon or become nonsimple are rejected, retaining the raw path with a flag.
+  subtraction of the channel. GEOS projection and a local directed tangent
+  classify each resulting overbank component. centerline::cnt_skeleton()
+  extracts Voronoi geometry without polygon simplification; cnt_path() selects
+  a skeleton route between its downstream/upstream projection extremes.
+  If disconnected skeleton fragments prevent that route, retry within the
+  connected component with the greatest longitudinal span. Fragments remain
+  separate; diagnostics retain the fallback and selected span fraction.
+  Ties prefer maximum boundary clearance, then coordinate order. A separate
+  cartographic proposal uses Douglas-Peucker simplification at half the boundary
+  spacing followed by smoothr Chaikin smoothing. Proposals that leave their
+  polygon or become nonsimple are rejected, retaining the raw path with a flag.
 }
