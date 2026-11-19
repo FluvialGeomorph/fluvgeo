@@ -420,6 +420,11 @@ standard name and metadata contract live in
 `../../../FGDB/dev/schemas/cross-section-feature-contract.md`. Existing
 `cross_section()`, `check_cross_section()` and downstream consumers are unchanged.
 
+The owner accepts polygon-centerline-v11 as a sufficiently performant "80%
+solution" and good for now (2026-11-19). This closes the active geometry
+increment; residual shape optimization is parked. Acceptance does not make
+flagged failures valid, confer hydraulic acceptance or change Flowline stationing.
+
 Current layout method polygon-centerline-v11 retains the accepted method-v10
 preparation of the mainstem channel before
 LOB/ROB partitioning. The polygon's raw channel medial route supplies geometry
@@ -432,7 +437,7 @@ of boundary sampling. Tangent extent is diagnostic, so hooked arms can qualify.
 One final overlay replaces repeated full-channel mouth splits; no recursive
 pruning is performed. The owner accepts this method-v10 pruning recipe and its
 defaults as the cross-section channel-preparation baseline. This does not confer
-hydraulic acceptance or accept unresolved station/bank-order/routing behavior.
+hydraulic acceptance or redefine station/field meanings.
 source_channel, channel_footprint, channel_reference and channel_branches retain
 raw/prepared/reference/lobe evidence. Branch dimensions declare native
 measure_units. Existing depth remains distance from the attachment endpoint
